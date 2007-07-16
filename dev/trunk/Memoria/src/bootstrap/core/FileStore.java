@@ -116,7 +116,7 @@ public class FileStore implements Context {
     if(typeId == 1) {
       
       // a MetaClass was found! register it
-      
+      Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
       return;
     }
     hydratedObjects.add(new HydratedObject(typeId, objectId, stream));
