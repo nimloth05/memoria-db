@@ -3,13 +3,14 @@ package bootstrap.core;
 import java.io.DataInputStream;
 
 /**
- * Stores all information needed to dehydrate the object. References to otehr entities are
+ * Stores all information needed to dehydrate the object. References to other entities are
  * not bound during the dehydration-process. 
  * 
  * @author msc
  *
  */
 public class HydratedObject {
+  
   private final long fTypeId;
   private final long fObjectId;
   private final DataInputStream fInput;

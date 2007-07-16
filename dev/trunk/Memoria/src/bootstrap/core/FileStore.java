@@ -1,7 +1,6 @@
 package bootstrap.core;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.util.*;
 
 public class FileStore implements Context {
@@ -19,7 +18,7 @@ public class FileStore implements Context {
   
   private final File fFile;
   
-  private Set<HydratedObject> hydratedObjects = new HashSet<HydratedObject>();
+  private Set<HydratedObject> fHydratedObjects = new HashSet<HydratedObject>();
   
   public FileStore(File file) {
     fFile = file;
@@ -116,17 +115,17 @@ public class FileStore implements Context {
     if(typeId == 1) {
       
       // a MetaClass was found! register it
-      Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
+      //Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
       return;
     }
-    hydratedObjects.add(new HydratedObject(typeId, objectId, stream));
+    fHydratedObjects.add(new HydratedObject(typeId, objectId, stream));
   }
 
   private void internalWriteObject(List<Object> objects) throws Exception {
     byte[] data = serializeObjects(objects);
     IndexMarker marker = seekFreePosition(data.length);
 
-    //we assume that we can ovveride a block-junk most of the time.
+    //we assume that we can overide a block-junk most of the time.
     if (marker != null) {
       overrideBlock(marker, data);
     } else {
@@ -138,12 +137,12 @@ public class FileStore implements Context {
    * For test-purposes only!
    */
   public Set<HydratedObject> getHydratedObjects() {
-    for(HydratedObject o: hydratedObjects) {
+    for(HydratedObject o: fHydratedObjects) {
       System.out.println(o);
       System.out.println(fMetaData);
       fMetaData.getMetaClass(o.getTypeId()).getClassName();
     }
-    return hydratedObjects;
+    return fHydratedObjects;
   }
 
   private void append(byte[] data) throws IOException {
