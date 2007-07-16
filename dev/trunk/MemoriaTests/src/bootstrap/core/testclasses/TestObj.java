@@ -1,4 +1,4 @@
-package bootstrap.core.classes;
+package bootstrap.core.testclasses;
 
 public class TestObj {
 

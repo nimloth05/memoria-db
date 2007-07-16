@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import junit.framework.TestCase;
-import bootstrap.core.classes.TestObj;
+import bootstrap.core.testclasses.TestObj;
 import bootstrap.examples.*;
 
 public class StreamTest extends TestCase {

@@ -6,7 +6,7 @@ import java.util.*;
 
 public enum FieldType {
 
-  bool {
+  booleanPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -15,7 +15,7 @@ public enum FieldType {
     }
 
   },
-  chr {
+  charPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -24,7 +24,7 @@ public enum FieldType {
     }
 
   },
-  bte {
+  typePrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -33,7 +33,7 @@ public enum FieldType {
     }
 
   },
-  shrt {
+  shortPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -42,7 +42,7 @@ public enum FieldType {
     }
 
   },
-  integer {
+  integerPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -51,7 +51,7 @@ public enum FieldType {
     }
 
   },
-  lng {
+  longPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -69,7 +69,7 @@ public enum FieldType {
     }
 
   },
-  duble {
+  doublePrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
@@ -112,29 +112,32 @@ public enum FieldType {
   private static Map<Class<?>, FieldType> createTypeMap() {
     Map<Class<?>, FieldType> result = new HashMap<Class<?>, FieldType>();
 
-    result.put(Boolean.class, bool);
-    result.put(Boolean.TYPE, bool);
+    
+    //TODO Test if this works for non-primitives
+    
+    result.put(Boolean.class, booleanPrimitive);
+    result.put(Boolean.TYPE, booleanPrimitive);
 
-    result.put(Character.class, chr);
-    result.put(Character.TYPE, chr);
+    result.put(Character.class, charPrimitive);
+    result.put(Character.TYPE, charPrimitive);
 
-    result.put(Byte.class, bte);
-    result.put(Byte.TYPE, bte);
+    result.put(Byte.class, typePrimitive);
+    result.put(Byte.TYPE, typePrimitive);
 
-    result.put(Short.class, shrt);
-    result.put(Short.TYPE, shrt);
+    result.put(Short.class, shortPrimitive);
+    result.put(Short.TYPE, shortPrimitive);
 
-    result.put(Integer.class, integer);
-    result.put(Integer.TYPE, integer);
+    result.put(Integer.class, integerPrimitive);
+    result.put(Integer.TYPE, integerPrimitive);
 
-    result.put(Long.class, lng);
-    result.put(Long.TYPE, lng);
+    result.put(Long.class, longPrimitive);
+    result.put(Long.TYPE, longPrimitive);
 
     result.put(Float.class, flot);
     result.put(Float.TYPE, flot);
 
-    result.put(Double.class, duble);
-    result.put(Double.TYPE, duble);
+    result.put(Double.class, doublePrimitive);
+    result.put(Double.TYPE, doublePrimitive);
 
     result.put(String.class, string);
 

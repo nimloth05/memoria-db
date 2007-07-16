@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import junit.framework.TestCase;
-import bootstrap.core.classes.TestObj;
+import bootstrap.core.testclasses.*;
 
 public class FileStoreTest extends TestCase {
   
@@ -40,6 +40,16 @@ public class FileStoreTest extends TestCase {
 //      assertEquals(oriObj.getI(), readObj.getI());
 //      assertEquals(oriObj.getString(), readObj.getString());
 //    }
+  }
+  
+  public void test_hydration() {
+    FileStore store = new FileStore(fFile);
+    store.writeObject(new A(1, "a"), new A(1, "a"));
+    
+    store = new FileStore(fFile);
+    store.open();
+    
+    //System.out.println(store.getHydratedObjects());
   }
   
 

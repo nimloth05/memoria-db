@@ -58,7 +58,6 @@ public class ObjectInStream implements Closeable {
     return obj;
   }
 
-  @Override
   public void close() throws IOException {
     fStream.close();
   }

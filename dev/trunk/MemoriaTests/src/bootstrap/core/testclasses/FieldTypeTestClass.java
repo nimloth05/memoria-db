@@ -1,4 +1,4 @@
-package bootstrap.core.classes;
+package bootstrap.core.testclasses;
 
 public class FieldTypeTestClass {
   
@@ -6,7 +6,7 @@ public class FieldTypeTestClass {
   private Boolean fBooleanC;
   
   private char fCharP;
-  private Character fCharC;
+  private char fCharC;
   
   private byte fByteP;
   private byte fByteC;

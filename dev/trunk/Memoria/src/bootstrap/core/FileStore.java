@@ -4,7 +4,7 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-public class FileStore {
+public class FileStore implements Context {
   
   private static final byte[] BLOCK_START_TAG = new byte[] {1, 2,3, 4};
   private static final byte[] BLOCK_END_TAG = new byte[] {4, 3, 2, 1};
@@ -19,9 +19,14 @@ public class FileStore {
   
   private final File fFile;
   
+  private Set<HydratedObject> hydratedObjects = new HashSet<HydratedObject>();
   
   public FileStore(File file) {
     fFile = file;
+  }
+  
+  public void writeObject(Object... objects) {
+    writeObject(Arrays.asList(objects));
   }
   
   public void writeObject(List<Object> objects) {
@@ -36,7 +41,9 @@ public class FileStore {
 
   public void open() {
     try {
-      internalOpen();
+      readMetaInfo();
+      dehydrateObjects();
+      bindObjects();
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -44,7 +51,13 @@ public class FileStore {
     }
   }
 
-  private void internalOpen() throws Exception {
+  private void bindObjects() {
+  }
+
+  private void dehydrateObjects() {
+  }
+
+  private void readMetaInfo() throws Exception {
     int bufferSize = (int)Runtime.getRuntime().freeMemory() / 16;
     DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(fFile), bufferSize));
 
@@ -99,6 +112,14 @@ public class FileStore {
     
     long objectId = stream.readLong();
     
+    System.out.println("dehydragte typeId: " + typeId);
+    if(typeId == 1) {
+      
+      // a MetaClass was found! register it
+      
+      return;
+    }
+    hydratedObjects.add(new HydratedObject(typeId, objectId, stream));
   }
 
   private void internalWriteObject(List<Object> objects) throws Exception {
@@ -113,7 +134,17 @@ public class FileStore {
     }
   }
 
-
+  /**
+   * For test-purposes only!
+   */
+  public Set<HydratedObject> getHydratedObjects() {
+    for(HydratedObject o: hydratedObjects) {
+      System.out.println(o);
+      System.out.println(fMetaData);
+      fMetaData.getMetaClass(o.getTypeId()).getClassName();
+    }
+    return hydratedObjects;
+  }
 
   private void append(byte[] data) throws IOException {
     RandomAccessFile file = new RandomAccessFile(fFile, "rw");
@@ -154,29 +185,13 @@ public class FileStore {
     return buffer.toByteArray();
   }
 
-  private void serializeObject(DataOutput dataStream, Object object) throws Exception {
+  public void serializeObject(DataOutput dataStream, Object object) throws Exception {
     
     Class<?> type = object.getClass();
-    MetaClass metaClass = fMetaData.register(type);
-    
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
-    DataOutputStream objectStream = new DataOutputStream(buffer);
-    
-    objectStream.writeLong(metaClass.getTypeId());
-    objectStream.writeLong(fObjectRepo.register(object));
-    
-    metaClass.writeToStream(objectStream, object);
-    
-    if (metaClass.hasChanged()) {
-      //we write the metaInfo to the stream.
-      serializeObject(dataStream, metaClass);
-      metaClass.changesWritten();
-    }
-    
-    byte[] objectData = buffer.toByteArray();
-    
-    dataStream.writeInt(objectData.length);
-    dataStream.write(objectData);
+    long objectId = fObjectRepo.register(object);
+
+    MetaClass metaClass = fMetaData.register(this, dataStream, type);
+    metaClass.writeObject(dataStream, object, objectId);
   }
 
 }
