@@ -96,6 +96,7 @@ public class FileStore {
   private void readObject(byte[] data, int offset, int size) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
     long typeId = stream.readLong();
+    
     long objectId = stream.readLong();
     
   }
@@ -154,6 +155,7 @@ public class FileStore {
   }
 
   private void serializeObject(DataOutput dataStream, Object object) throws Exception {
+    
     Class<?> type = object.getClass();
     MetaClass metaClass = fMetaData.register(type);
     
