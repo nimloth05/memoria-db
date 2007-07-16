@@ -6,7 +6,7 @@ public class FieldTypeTestClass {
   private Boolean fBooleanC;
   
   private char fCharP;
-  private char fCharC;
+  private Character fCharC;
   
   private byte fByteP;
   private byte fByteC;

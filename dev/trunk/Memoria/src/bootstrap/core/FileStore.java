@@ -15,7 +15,7 @@ public class FileStore {
   private List<IndexMarker> fEmptyBlocks = new ArrayList<IndexMarker>();
   
   private MetaData fMetaData = new MetaData();
-  private ObjectRepo fObjectIdRepo = new ObjectRepo();
+  private ObjectRepo fObjectRepo = new ObjectRepo();
   
   private final File fFile;
   
@@ -55,11 +55,8 @@ public class FileStore {
       if (!Arrays.equals(blockTagBuffer, BLOCK_START_TAG)) throw new RuntimeException("Could not read block start");
       
       int blockSize = stream.readInt(); //the block size
-      
       byte[] blockData = new byte[blockSize];
-      
       stream.read(blockData); 
-      
       readTransactionData(blockData);
       
       stream.read(blockTagBuffer);
@@ -85,7 +82,7 @@ public class FileStore {
 
   private void readObjects(byte[] data, int offset, int length) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, length));
-    for(int count = 0; stream.available() > 0; ++count) {
+    while(stream.available() > 0) {
       int size = stream.readInt();
       
       //System.out.println("read " + size);
@@ -126,7 +123,7 @@ public class FileStore {
     }
     
     file.write(BLOCK_START_TAG);
-    int size = data.length+TRANSACTION_END_TAG.length+4+TRANSACTION_END_TAG.length; //the block is as big as the transaction data.
+    int size = data.length+TRANSACTION_START_TAG.length+4+TRANSACTION_END_TAG.length; //the block is as big as the transaction data.
     file.writeInt(size); 
     file.write(TRANSACTION_START_TAG);
     file.writeInt(data.length);
@@ -158,24 +155,20 @@ public class FileStore {
 
   private void serializeObject(DataOutput dataStream, Object object) throws Exception {
     Class<?> type = object.getClass();
-    MetaClass metaInfo = fMetaData.register(type);
+    MetaClass metaClass = fMetaData.register(type);
     
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
     DataOutputStream objectStream = new DataOutputStream(buffer);
     
-    objectStream.writeLong(metaInfo.getTypeId());
-    objectStream.writeLong(fObjectIdRepo.register(object));
+    objectStream.writeLong(metaClass.getTypeId());
+    objectStream.writeLong(fObjectRepo.register(object));
     
-    Field[] fields = type.getDeclaredFields();
-    for(Field field: fields) {
-      if (Modifier.isTransient(field.getModifiers())) continue;
-      metaInfo.writeFieldToStream(objectStream, object, field);
-    }
+    metaClass.writeToStream(objectStream, object);
     
-    if (metaInfo.hasInfoChanged()) {
+    if (metaClass.hasChanged()) {
       //we write the metaInfo to the stream.
-      serializeObject(dataStream, metaInfo);
-      metaInfo.changesWritten();
+      serializeObject(dataStream, metaClass);
+      metaClass.changesWritten();
     }
     
     byte[] objectData = buffer.toByteArray();
