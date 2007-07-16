@@ -86,14 +86,9 @@ public class FileStore {
   private void readObjects(byte[] data, int offset, int length) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, length));
     for(int count = 0; stream.available() > 0; ++count) {
-      if (stream.available() == 4) {
-        byte[] test = new byte[4];
-        stream.read(test);
-        System.out.println(Arrays.toString(test));
-      }
       int size = stream.readInt();
       
-      System.out.println("read " + size);
+      //System.out.println("read " + size);
       
       readObject(data, offset+4, size);
       offset += 4 + size;

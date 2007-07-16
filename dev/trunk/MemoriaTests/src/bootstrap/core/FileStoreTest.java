@@ -19,7 +19,7 @@ public class FileStoreTest extends TestCase {
   
   public void test_write_object() {
     List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 1000; ++i) {
+    for(int i = 0; i < 50000; ++i) {
       objects.add(new TestObj("Hallo Welt "+i, i));
     }
     
