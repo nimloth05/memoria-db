@@ -10,16 +10,19 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeBoolean(field.getBoolean(object));
     }
 
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readBoolean());
+    }
+    
   },
   charPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeChar(field.getChar(object));
     }
 
@@ -28,7 +31,6 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeByte(field.getByte(object));
     }
 
@@ -37,7 +39,6 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeShort(field.getShort(object));
     }
 
@@ -46,7 +47,6 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeInt(field.getInt(object));
     }
 
@@ -55,16 +55,14 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeLong(field.getLong(object));
     }
 
   },
-  flot {
+  floatPrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeFloat(field.getFloat(object));
     }
 
@@ -73,7 +71,6 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       stream.writeDouble(field.getDouble(object));
     }
 
@@ -82,7 +79,6 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      super.writeValue(stream, object, field);
       Object rawValue = field.get(object);
       if (rawValue != null) {
         stream.writeUTF(rawValue.toString());
@@ -133,8 +129,8 @@ public enum FieldType {
     result.put(Long.class, longPrimitive);
     result.put(Long.TYPE, longPrimitive);
 
-    result.put(Float.class, flot);
-    result.put(Float.TYPE, flot);
+    result.put(Float.class, floatPrimitive);
+    result.put(Float.TYPE, floatPrimitive);
 
     result.put(Double.class, doublePrimitive);
     result.put(Double.TYPE, doublePrimitive);
@@ -144,8 +140,9 @@ public enum FieldType {
     return result;
   }
 
-  public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-    field.setAccessible(true);
-  }
+  public abstract void writeValue(DataOutput stream, Object object, Field field) throws Exception;
+  
+
+  public abstract void readValue(DataInput stream, Object object, Field field) throws Exception;
 
 }

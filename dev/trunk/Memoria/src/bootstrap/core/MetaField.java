@@ -1,22 +1,22 @@
 package bootstrap.core;
 
-import java.io.DataOutput;
+import java.io.*;
 import java.lang.reflect.Field;
 
 public final class MetaField {
-  
-  private int fId;
+
+  private int fFieldId;
   private String fName;
-  
-  //TODO: Later, we can directly reference the enum. Memoria should this recognize and serialze the
-  //ordinal value.
+
+  // TODO: Later, we can directly reference the enum. Memoria should this recognize and serialze the
+  // ordinal value.
   private int fType;
-  
+
   // the field used for reflection
   transient private Field fField;
-  
+
   public MetaField(int id, String name, int ordinal) {
-    fId = id;
+    fFieldId = id;
     fType = ordinal;
     fName = name;
   }
@@ -25,36 +25,34 @@ public final class MetaField {
     MetaField result = new MetaField(id, field.getName(), FieldType.getType(field).ordinal());
     return result;
   }
-  
+
   public int getType() {
     return fType;
   }
 
   public int getId() {
-    return fId;
+    return fFieldId;
   }
 
   public String getName() {
     return fName;
   }
 
-  public void writeField(DataOutput stream, Object object, String className) throws Exception {
+  public void writeField(DataOutput stream, Object object) throws Exception {
     stream.writeInt(getId());
-    stream.writeInt(getType());
-    FieldType.values()[getType()].writeValue(stream, object, getField(className));
+    FieldType.values()[getType()].writeValue(stream, object, getField(object));
   }
   
-  
-  private Field getField(String className) throws Exception {
-    if(fField == null){
-      try {
-        fField = Class.forName(className).getDeclaredField(fName);
-        fField.setAccessible(true);
-      }catch(Exception e) {
-        throw new Exception("No field " + fName + " on class " + className);
-      }
+  public void readField(DataInput stream, Object object) throws Exception {
+    FieldType.values()[getType()].readValue(stream, object, getField(object));
+  }
+
+  private Field getField(Object object) throws Exception {
+    if (fField == null) {
+      fField = object.getClass().getDeclaredField(fName);
+      fField.setAccessible(true);
     }
-    
+
     return fField;
   }
 

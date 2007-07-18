@@ -28,8 +28,8 @@ public class FieldTypeTest extends TestCase {
     assertEquals(FieldType.longPrimitive, FieldType.getType(class1.getDeclaredField("fLongC")));
     assertEquals(FieldType.longPrimitive, FieldType.getType(class1.getDeclaredField("fLongC")));
     
-    assertEquals(FieldType.flot, FieldType.getType(class1.getDeclaredField("fFloatC")));
-    assertEquals(FieldType.flot, FieldType.getType(class1.getDeclaredField("fFloatC")));
+    assertEquals(FieldType.floatPrimitive, FieldType.getType(class1.getDeclaredField("fFloatC")));
+    assertEquals(FieldType.floatPrimitive, FieldType.getType(class1.getDeclaredField("fFloatC")));
     
     assertEquals(FieldType.doublePrimitive, FieldType.getType(class1.getDeclaredField("fDoubleC")));
     assertEquals(FieldType.doublePrimitive, FieldType.getType(class1.getDeclaredField("fDoubleC")));

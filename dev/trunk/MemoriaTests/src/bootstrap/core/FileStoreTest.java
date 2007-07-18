@@ -44,7 +44,7 @@ public class FileStoreTest extends TestCase {
   
   public void test_hydration() {
     FileStore store = new FileStore(fFile);
-    store.writeObject(new A(1, "a"), new A(1, "a"));
+    store.writeObject(new A(1, "a1"), new A(2, "a2"));
     
     store = new FileStore(fFile);
     store.open();
