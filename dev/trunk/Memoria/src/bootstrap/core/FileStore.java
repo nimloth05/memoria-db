@@ -114,7 +114,6 @@ public class FileStore implements Context {
     System.out.println("dehydragte typeId: " + typeId);
     if(typeId == 1) {
       
-      // a MetaClass was found! register it
       //Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
       return;
     }
@@ -138,8 +137,6 @@ public class FileStore implements Context {
    */
   public Set<HydratedObject> getHydratedObjects() {
     for(HydratedObject o: fHydratedObjects) {
-      System.out.println(o);
-      System.out.println(fMetaData);
       fMetaData.getMetaClass(o.getTypeId()).getClassName();
     }
     return fHydratedObjects;
@@ -185,12 +182,14 @@ public class FileStore implements Context {
   }
 
   public void serializeObject(DataOutput dataStream, Object object) throws Exception {
-    
     Class<?> type = object.getClass();
     long objectId = fObjectRepo.register(object);
 
     MetaClass metaClass = fMetaData.register(this, dataStream, type);
+    
     metaClass.writeObject(dataStream, object, objectId);
   }
 
+  
+  
 }
