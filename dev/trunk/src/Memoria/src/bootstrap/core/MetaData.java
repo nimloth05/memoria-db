@@ -7,20 +7,16 @@ public class MetaData {
   
   private Map<Class<?>, MetaClass> fTypeToMetaInfo = new HashMap<Class<?>, MetaClass>();
   
-  public MetaData() {
-    MetaClass metaClass = new MetaClass(MetaClass.class);
-    add(MetaClass.class, metaClass);
+  public void bootstrap(IContext context) {
+    MetaClass classObject = new MetaClass(MetaClass.class);
+    putInCaches(context, classObject, MetaClass.METACLASS_OBJECT_ID);
   }
-  
-  /**
-   * Invariant: the highest value of all typeIds.
-   */
-  private long fCurrentTypeId;
 
   public MetaClass register(IContext context, DataOutput dataStream, Class<?> type) throws Exception  {
     MetaClass info = fTypeToMetaInfo.get(type);
+    
     if (info == null) {
-      info = new MetaClass(++fCurrentTypeId, type);
+      info = new MetaClass(type);
       add(type, info);
       context.serializeObject(dataStream, info);
     }
@@ -29,20 +25,22 @@ public class MetaData {
   
   private void add(Class<?> klass, MetaClass metaClass) {
     fTypeToMetaInfo.put(klass, metaClass);
-    fIdToMetaInfo.put(metaClass.getObjectId(), metaClass);
   }
   
-  public MetaClass getMetaClass(long typeId) {
-    return fIdToMetaInfo.get(typeId);
-  }
-  
-  @Override
-  public String toString() {
-    return fIdToMetaInfo.toString();
+  public void readMetaClass(IContext context, DataInputStream stream, long objectId) throws Exception {
+    String className = stream.readUTF();
+    MetaClass classObject = new MetaClass(className);
+    classObject.readMetaFields(stream, classObject);
+    putInCaches(context, classObject, objectId);
   }
 
-  public void readMetaClass(DataInputStream stream, long objectId) {
-    
+  public Collection<MetaClass> getMetaClass() {
+    return Collections.unmodifiableCollection(fTypeToMetaInfo.values());
+  }
+  
+  private void putInCaches(IContext context, MetaClass classObject, long objectId) {
+    context.put(objectId, classObject);
+    fTypeToMetaInfo.put(classObject.getJavaClass(), classObject);
   }
 
 }

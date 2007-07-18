@@ -17,4 +17,6 @@ public interface IContext {
    */
   public long getObjectId(Object obj);
   
+  public void put(long objectId, Object obj);
+  
 }

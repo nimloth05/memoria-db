@@ -22,6 +22,7 @@ public class FileStore implements IContext {
   
   public FileStore(File file) {
     fFile = file;
+    fMetaData.bootstrap(this);
   }
   
   public void writeObject(Object... objects) {
@@ -97,8 +98,6 @@ public class FileStore implements IContext {
     while(stream.available() > 0) {
       int size = stream.readInt();
       
-      //System.out.println("read " + size);
-      
       readObject(data, offset+4, size);
       offset += 4 + size;
       if (stream.skip(size) != size) throw new RuntimeException("could not skip bytes: " + size);
@@ -107,15 +106,12 @@ public class FileStore implements IContext {
 
   private void readObject(byte[] data, int offset, int size) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
+
     long typeId = stream.readLong();
-    
     long objectId = stream.readLong();
     
-    System.out.println("dehydragte typeId: " + typeId);
-    if(typeId == 1) {
-      
-      fMetaData.readMetaClass(stream, objectId);
-      //Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
+    if(typeId == MetaClass.METACLASS_OBJECT_ID) {
+      fMetaData.readMetaClass(this, stream, objectId);
       return;
     }
     fHydratedObjects.add(new HydratedObject(typeId, objectId, stream));
@@ -131,16 +127,6 @@ public class FileStore implements IContext {
     } else {
       append(data);
     }
-  }
-
-  /**
-   * For test-purposes only!
-   */
-  public Set<HydratedObject> getHydratedObjects() {
-    for(HydratedObject o: fHydratedObjects) {
-      fMetaData.getMetaClass(o.getTypeId()).getClassName();
-    }
-    return fHydratedObjects;
   }
 
   private void append(byte[] data) throws IOException {
@@ -185,10 +171,10 @@ public class FileStore implements IContext {
   public void serializeObject(DataOutput dataStream, Object object) throws Exception {
     Class<?> type = object.getClass();
     long objectId = fObjectRepo.register(object);
-
+    
     MetaClass metaClass = fMetaData.register(this, dataStream, type);
     
-    metaClass.writeObject(dataStream, object, objectId);
+    metaClass.writeObject(this, dataStream, object, objectId);
   }
 
   @Override
@@ -196,6 +182,13 @@ public class FileStore implements IContext {
     return fObjectRepo.getObjectId(obj);
   }
 
-  
+  @Override
+  public void put(long objectId, Object obj) {
+    fObjectRepo.put(objectId, obj);
+  }
+
+  public Collection<MetaClass> getMetaClass() {
+    return fMetaData.getMetaClass();
+  }
   
 }

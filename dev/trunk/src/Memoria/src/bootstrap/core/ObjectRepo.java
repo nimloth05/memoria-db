@@ -6,7 +6,7 @@ import bootstrap.exception.MemoriaException;
 
 public class ObjectRepo {
   
-  private long fObjectId;
+  private long fCurrentObjectId;
   
   //Memory address of the object, ObjectId from the DB
   private Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
@@ -20,7 +20,7 @@ public class ObjectRepo {
     Long result = internalGetObjectId(object);
     
     if (result == null) {
-      result = ++fObjectId;
+      result = ++fCurrentObjectId;
       internalPut(object, result);
     }
     return result;
@@ -53,6 +53,7 @@ public class ObjectRepo {
   }
   
   public void put(long id, Object obj) {
+    fCurrentObjectId = Math.max(fCurrentObjectId, id);
     internalPut(obj, id);
   }
   

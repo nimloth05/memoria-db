@@ -8,7 +8,7 @@ import bootstrap.exception.MemoriaException;
 
 public final class MetaClass {
 
-  private static final long METACLASS_OBJECT_ID = 1;
+  public static final long METACLASS_OBJECT_ID = 1;
   
   private String fClassName;
 
@@ -25,7 +25,11 @@ public final class MetaClass {
     
     addFields(klass);
   }
-
+  
+  public MetaClass(String className) {
+    fClassName = className;
+  }
+  
   private void addFields(Class<?> klass) {
     Field[] fields = klass.getDeclaredFields();
     int fieldId = 1;
@@ -46,11 +50,10 @@ public final class MetaClass {
     fFieldNameToInfo.put(metaField.getName(), metaField);
   }
   
-  public void writeObject(DataOutput dataStream, Object object, long objectId) throws Exception {
+  public void writeObject(IContext context, DataOutput dataStream, Object object, long objectId) throws Exception {
     if(!object.getClass().getName().equals(fClassName)) throw new MemoriaException("object of type " + fClassName + " expected but was " + object.getClass());
     
-    long typeId = objectStore.getId(this);
-    System.out.println("metaClass id: " + fId);
+    long typeId = context.getObjectId(this);
     
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
     DataOutputStream objectStream = new DataOutputStream(buffer);
@@ -107,6 +110,24 @@ public final class MetaClass {
    */
   public boolean isMetaClassObject(long typeId) {
     return typeId == METACLASS_OBJECT_ID;
+  }
+
+  public void readMetaFields(DataInputStream stream, MetaClass classObject) throws Exception {
+    while (stream.available() > 0) {
+      int fieldId = stream.readInt();
+      String name = stream.readUTF();
+      int type = stream.readInt();
+      MetaField metaField = new MetaField(fieldId, name, type);
+      addMetaField(metaField);
+    }
+  }
+
+  public Class<?> getJavaClass() { 
+    try {
+      return Class.forName(fClassName);
+    } catch (Exception e) {
+      throw new MemoriaException(e);
+    }
   }
 
 }
