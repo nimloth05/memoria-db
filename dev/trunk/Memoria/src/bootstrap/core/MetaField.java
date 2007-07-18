@@ -12,8 +12,8 @@ public final class MetaField {
   // ordinal value.
   private int fType;
 
-  // the field used for reflection
-  transient private Field fField;
+  // the field used for reflection.
+  private Field fField;
 
   public MetaField(int id, String name, int ordinal) {
     fFieldId = id;

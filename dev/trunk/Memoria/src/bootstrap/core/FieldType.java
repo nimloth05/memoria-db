@@ -10,7 +10,7 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeBoolean(field.getBoolean(object));
+      stream.writeBoolean((Boolean) field.get(object));
     }
 
     @Override
@@ -23,15 +23,26 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeChar(field.getChar(object));
+      stream.writeChar((Character)field.get(object));
     }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readChar());
+    }
+    
 
   },
-  typePrimitive {
+  bytePrimitive {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeByte(field.getByte(object));
+      stream.writeByte((Byte)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readByte());
     }
 
   },
@@ -39,7 +50,12 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeShort(field.getShort(object));
+      stream.writeShort((Short)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readShort());
     }
 
   },
@@ -47,7 +63,12 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeInt(field.getInt(object));
+      stream.writeInt((Integer)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readInt());
     }
 
   },
@@ -55,7 +76,12 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeLong(field.getLong(object));
+      stream.writeLong((Long)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readLong());
     }
 
   },
@@ -63,7 +89,12 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeFloat(field.getFloat(object));
+      stream.writeFloat((Float)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readFloat());
     }
 
   },
@@ -71,7 +102,12 @@ public enum FieldType {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      stream.writeDouble(field.getDouble(object));
+      stream.writeDouble((Double)field.get(object));
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readDouble());
     }
 
   },
@@ -86,13 +122,23 @@ public enum FieldType {
         stream.writeUTF(""); //$NON-NLS-1$
       }
     }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+      field.set(object, stream.readUTF());
+    }
 
   },
   clazz {
 
     @Override
     public void writeValue(DataOutput stream, Object object, Field field) throws Exception {
-      //System.out.println("try to write field: " + field + " of class" + field.getDeclaringClass());
+
+    }
+    
+    @Override
+    public void readValue(DataInput stream, Object object, Field field) throws Exception {
+
     }
 
   };
@@ -117,8 +163,8 @@ public enum FieldType {
     result.put(Character.class, charPrimitive);
     result.put(Character.TYPE, charPrimitive);
 
-    result.put(Byte.class, typePrimitive);
-    result.put(Byte.TYPE, typePrimitive);
+    result.put(Byte.class, bytePrimitive);
+    result.put(Byte.TYPE, bytePrimitive);
 
     result.put(Short.class, shortPrimitive);
     result.put(Short.TYPE, shortPrimitive);

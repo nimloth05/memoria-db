@@ -6,38 +6,26 @@ import java.util.*;
 
 import bootstrap.exception.MemoriaException;
 
-import com.sun.org.apache.bcel.internal.generic.FNEG;
-
 public final class MetaClass {
 
   private static final long METACLASS_OBJECT_ID = 1;
   
-  private final long fId;
   private String fClassName;
 
-  transient private Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
-  // this mapping must no be saved, its just a "helper"
-  transient private Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
+  private Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
+  private Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
 
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
    * object of a given type enters the memoria-reference-space.
    *
    */
-  public MetaClass(long typeId, Class<?> klass) {
-    this(typeId);
+  public MetaClass(Class<?> klass) {
     fClassName = klass.getName();
     
     addFields(klass);
   }
 
-  /**
-   * This constructor should only be used for reconstitution. 
-   */
-  private MetaClass(long typeId) {
-    fId = typeId;
-  }
-  
   private void addFields(Class<?> klass) {
     Field[] fields = klass.getDeclaredFields();
     int fieldId = 1;
@@ -58,24 +46,20 @@ public final class MetaClass {
     fFieldNameToInfo.put(metaField.getName(), metaField);
   }
   
-  public long getTypeId() {
-    return fId;
-  }
-
   public void writeObject(DataOutput dataStream, Object object, long objectId) throws Exception {
     if(!object.getClass().getName().equals(fClassName)) throw new MemoriaException("object of type " + fClassName + " expected but was " + object.getClass());
     
+    long typeId = objectStore.getId(this);
     System.out.println("metaClass id: " + fId);
     
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
     DataOutputStream objectStream = new DataOutputStream(buffer);
-
-    objectStream.writeLong(getTypeId());
+    
+    objectStream.writeLong(typeId);
     objectStream.writeLong(objectId);
     
-    
-    if(isMetaClassObject()) {
-      writeMetaClass(objectStream, object);
+    if(isMetaClassObject(typeId)) {
+      writeMetaClass(objectStream, (MetaClass) object);
     }
     else {
       writeObject(objectStream, object);
@@ -92,12 +76,17 @@ public final class MetaClass {
     }
   }
 
-  private void writeMetaClass(DataOutputStream objectStream, Object object) {
-    
+  private void writeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
+    objectStream.writeUTF(classObject.getClassName());
+    writeFields(objectStream, classObject);
   }
 
-  public static MetaClass create(long typeId) {
-    return new MetaClass(typeId);
+  private void writeFields(DataOutput objectStream, MetaClass classObject) throws IOException {
+    for(MetaField field: fFieldIdToInfo.values()) {
+      objectStream.writeInt(field.getId());
+      objectStream.writeUTF(field.getName());
+      objectStream.writeInt(field.getType());
+    }
   }
 
   public void setClassName(String name) {
@@ -116,8 +105,8 @@ public final class MetaClass {
   /**
    * @return true, if this MetaClass-object represents the type MetaClass
    */
-  public boolean isMetaClassObject() {
-    return fId == METACLASS_OBJECT_ID;
+  public boolean isMetaClassObject(long typeId) {
+    return typeId == METACLASS_OBJECT_ID;
   }
 
 }

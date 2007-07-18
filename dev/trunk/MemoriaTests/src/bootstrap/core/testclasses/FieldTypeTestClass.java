@@ -1,34 +1,111 @@
 package bootstrap.core.testclasses;
 
+import java.lang.reflect.Field;
+
+@SuppressWarnings("nls")
 public class FieldTypeTestClass {
   
-  private boolean fBooleanP;
-  private Boolean fBooleanC;
+  public boolean fBooleanP;
+  public Boolean fBooleanC;
   
-  private char fCharP;
-  private char fCharC;
+  public char fCharP;
+  public Character fCharC;
   
-  private byte fByteP;
-  private byte fByteC;
+  public byte fByteP;
+  public Byte fByteC;
   
-  private short fShortP;
-  private Short fShortC;
+  public short fShortP;
+  public Short fShortC;
   
-  private int fIntP;
-  private Integer fIntC;
+  public int fIntP;
+  public Integer fIntC;
   
-  private long fLongP;
-  private long fLongC;
+  public long fLongP;
+  public Long fLongC;
   
-  private float fFloatP;
-  private float fFloatC;
+  public float fFloatP;
+  public Float fFloatC;
   
-  private double fDoubleP;
-  private double fDoubleC;
+  public double fDoubleP;
+  public Double fDoubleC;
   
-  private String fString;
+  public String fString;
   
-  private Object fObject;
+  public Object fObject;
+
+  
+  public Field getBooleanFieldP() throws Exception {
+    return getField("fBooleanP");
+  }
+
+  public Field getBooleanFieldC() throws Exception {
+    return getField("fBooleanC");
+  }
+  
+  private Field getField(String name) throws Exception {
+    Class<? extends FieldTypeTestClass> class1 = getClass();
+    return class1.getDeclaredField(name);
+  }
+  
+  public Field getCharFieldC() throws Exception {
+    return getField("fCharC");
+  }
+
+  public Field getCharFieldP() throws Exception {
+    return getField("fCharP");
+  }
+
+  public Field getByteFieldP() throws Exception {
+    return getField("fByteP");
+  }
+  
+  public Field getByteFieldC() throws Exception {
+    return getField("fByteC");
+  }
+
+  public Field getShortFieldP() throws Exception {
+    return getField("fShortP");
+  }
+  
+  public Field getShortFieldC() throws Exception {
+    return getField("fShortC");
+  }
+
+  public Field getIntFieldP() throws Exception {
+    return getField("fIntP");
+  }
+
+  public Field getIntFieldC() throws Exception {
+    return getField("fIntC");
+  }
+
+  public Field getLongFieldP() throws Exception {
+    return getField("fLongP");
+  }
+  
+  public Field getLongFieldC() throws Exception {
+    return getField("fLongC");
+  }
+
+  public Field getFloatFieldP() throws Exception {
+    return getField("fFloatP");
+  }
+  
+  public Field getFloatFieldC() throws Exception {
+    return getField("fFloatC");
+  }
+
+  public Field getDoubleFieldP() throws Exception {
+    return getField("fDoubleP");
+  }
+
+  public Field getDoubleFieldC() throws Exception {
+    return getField("fDoubleC");
+  }
+
+  public Field getStringField() throws Exception {
+    return getField("fString");
+  }
   
 
 }

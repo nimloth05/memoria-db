@@ -3,7 +3,7 @@ package bootstrap.core;
 import java.io.*;
 import java.util.*;
 
-public class FileStore implements Context {
+public class FileStore implements IContext {
   
   private static final byte[] BLOCK_START_TAG = new byte[] {1, 2,3, 4};
   private static final byte[] BLOCK_END_TAG = new byte[] {4, 3, 2, 1};
@@ -114,6 +114,7 @@ public class FileStore implements Context {
     System.out.println("dehydragte typeId: " + typeId);
     if(typeId == 1) {
       
+      fMetaData.readMetaClass(stream, objectId);
       //Die gefundene Metaklasse muss deserialisiert und bei fMetaData registriert werden...data msc
       return;
     }
@@ -188,6 +189,11 @@ public class FileStore implements Context {
     MetaClass metaClass = fMetaData.register(this, dataStream, type);
     
     metaClass.writeObject(dataStream, object, objectId);
+  }
+
+  @Override
+  public long getObjectId(Object obj) {
+    return fObjectRepo.getObjectId(obj);
   }
 
   
