@@ -19,4 +19,6 @@ public interface IContext {
   
   public void put(long objectId, Object obj);
   
+  public MetaClass getMetaObject(Class<?> javaType);
+  
 }

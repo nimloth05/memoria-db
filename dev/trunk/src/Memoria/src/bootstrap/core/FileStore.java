@@ -11,8 +11,6 @@ public class FileStore implements IContext {
   private static final byte[] TRANSACTION_START_TAG = new byte[] {5, 6, 7, 8};
   private static final byte[] TRANSACTION_END_TAG = new byte[] {8, 7, 6, 5};
   
-  private List<IndexMarker> fEmptyBlocks = new ArrayList<IndexMarker>();
-  
   private MetaData fMetaData = new MetaData();
   private ObjectRepo fObjectRepo = new ObjectRepo();
   
@@ -119,14 +117,7 @@ public class FileStore implements IContext {
 
   private void internalWriteObject(List<Object> objects) throws Exception {
     byte[] data = serializeObjects(objects);
-    IndexMarker marker = seekFreePosition(data.length);
-
-    //we assume that we can overide a block-junk most of the time.
-    if (marker != null) {
-      overrideBlock(marker, data);
-    } else {
-      append(data);
-    }
+    append(data);
   }
 
   private void append(byte[] data) throws IOException {
@@ -150,13 +141,6 @@ public class FileStore implements IContext {
     
     file.getFD().sync();
     file.close();
-  }
-
-  private void overrideBlock(IndexMarker marker, byte[] data) {
-  }
-
-  private IndexMarker seekFreePosition(int length) {
-    return null;
   }
 
   private byte[] serializeObjects(List<Object> objects) throws Exception {
@@ -188,7 +172,12 @@ public class FileStore implements IContext {
   }
 
   public Collection<MetaClass> getMetaClass() {
-    return fMetaData.getMetaClass();
+    return fObjectRepo.getMetaObejcts();
+  }
+
+  @Override
+  public MetaClass getMetaObject(Class<?> javaType) {
+    return fObjectRepo.getMetaObject(javaType);
   }
   
 }

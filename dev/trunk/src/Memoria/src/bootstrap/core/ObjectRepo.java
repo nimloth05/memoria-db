@@ -11,6 +11,8 @@ public class ObjectRepo {
   //Memory address of the object, ObjectId from the DB
   private Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
   private Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
+  
+  private Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
 
   /**
    * @param object
@@ -29,6 +31,11 @@ public class ObjectRepo {
   private void internalPut(Object object, Long result) {
     fObjectToId.put(System.identityHashCode(object), result);
     fIdToObject.put(result, object);
+    
+    if (object instanceof MetaClass) {
+      MetaClass metaObject = (MetaClass) object;
+      fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
+    }
   }
   
   private Long internalGetObjectId(Object obj) {
@@ -55,6 +62,19 @@ public class ObjectRepo {
   public void put(long id, Object obj) {
     fCurrentObjectId = Math.max(fCurrentObjectId, id);
     internalPut(obj, id);
+  }
+
+  /**
+   * 
+   * @param javaType
+   * @return the metaObject for the given java-Type or null.
+   */
+  public MetaClass getMetaObject(Class<?> javaType) {
+    return fMetaObjects.get(javaType);
+  }
+
+  public Collection<MetaClass> getMetaObejcts() {
+    return Collections.unmodifiableCollection(fMetaObjects.values());
   }
   
 }
