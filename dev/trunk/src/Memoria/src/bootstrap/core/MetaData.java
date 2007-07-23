@@ -22,7 +22,7 @@ public class MetaData {
   public void readMetaClass(IContext context, DataInputStream stream, long objectId) throws Exception {
     String className = stream.readUTF();
     MetaClass classObject = new MetaClass(className);
-    classObject.readMetaFields(stream, classObject);
+    classObject.readMetaFields(stream);
     context.put(objectId, classObject);
   }
 }

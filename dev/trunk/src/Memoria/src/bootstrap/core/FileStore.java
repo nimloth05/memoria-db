@@ -1,6 +1,7 @@
 package bootstrap.core;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class FileStore implements IContext {
@@ -17,6 +18,7 @@ public class FileStore implements IContext {
   private final File fFile;
   
   private Set<HydratedObject> fHydratedObjects = new HashSet<HydratedObject>();
+  private List<ObjectReference> fObjectsToBind = new ArrayList<ObjectReference>();
   
   public FileStore(File file) {
     fFile = file;
@@ -49,10 +51,18 @@ public class FileStore implements IContext {
     }
   }
 
-  private void bindObjects() {
+  private void bindObjects() throws Exception {
+    for(ObjectReference ref: fObjectsToBind) {
+      ref.bind(this);
+    }
+    fObjectsToBind.clear();
   }
 
-  private void dehydrateObjects() {
+  private void dehydrateObjects() throws Exception {
+    for(HydratedObject object: fHydratedObjects) {
+      object.dehydrate(this);
+    }
+    fHydratedObjects.clear();
   }
 
   private void readMetaInfo() throws Exception {
@@ -107,7 +117,7 @@ public class FileStore implements IContext {
 
     long typeId = stream.readLong();
     long objectId = stream.readLong();
-    
+
     if(typeId == MetaClass.METACLASS_OBJECT_ID) {
       fMetaData.readMetaClass(this, stream, objectId);
       return;
@@ -178,6 +188,21 @@ public class FileStore implements IContext {
   @Override
   public MetaClass getMetaObject(Class<?> javaType) {
     return fObjectRepo.getMetaObject(javaType);
+  }
+
+  @Override
+  public Object getObejctById(long objectId) {
+    return fObjectRepo.getObjectById(objectId);
+  }
+
+  @Override
+  public long register(Object object) {
+    return fObjectRepo.register(object);
+  }
+
+  @Override
+  public void objectToBind(Object object, Field field, long targetId) {
+    fObjectsToBind.add(new ObjectReference(object, field, targetId));
   }
   
 }

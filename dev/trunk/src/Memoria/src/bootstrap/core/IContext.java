@@ -1,6 +1,7 @@
 package bootstrap.core;
 
 import java.io.DataOutput;
+import java.lang.reflect.Field;
 
 import bootstrap.exception.MemoriaException;
 
@@ -20,5 +21,12 @@ public interface IContext {
   public void put(long objectId, Object obj);
   
   public MetaClass getMetaObject(Class<?> javaType);
+
+  public Object getObejctById(long objectId);
+
+  public long register(Object object);
+
+
+  public void objectToBind(Object object, Field field, long targetId);
   
 }

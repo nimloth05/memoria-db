@@ -29,17 +29,29 @@ public class FileStoreTest extends TestCase {
     store = new FileStore(fFile);
     store.open();
     
-//    ObjectInStream inStream = new ObjectInStream(file);
-//    List<Object> allObjs = inStream.readAllObejcts();
-//    inStream.close();
-//    
-//    assertEquals(objects.size(), allObjs.size());
-//    for(int i = 0; i < allObjs.size(); ++i) {
-//      TestObj oriObj = (TestObj) allObjs.get(i);
-//      TestObj readObj = (TestObj) allObjs.get(i);
-//      assertEquals(oriObj.getI(), readObj.getI());
-//      assertEquals(oriObj.getString(), readObj.getString());
-//    }
+    TestObj obj = (TestObj) store.getObejctById(2);
+    assertEquals("Hallo Welt 0", obj.getString());
+    assertEquals(0, obj.getI());
+  }
+  
+  @SuppressWarnings("nls")
+  public void test_save_objectref() {
+    List<Object> objects = new ArrayList<Object>();
+    for(int i = 0; i < 10000; ++i) {
+      Composite composite = new Composite();
+      composite.set("1");
+      objects.add(composite.get());
+      objects.add(composite);
+    }
+    
+    FileStore store = new FileStore(fFile);
+    store.writeObject(objects);
+    
+    store = new FileStore(fFile);
+    store.open();
+    Composite composite = (Composite) store.getObejctById(4);
+    TestObj obj = composite.get(); 
+    assertNotNull("1", obj.getString());
   }
   
   public void test_hydration() {
@@ -49,6 +61,4 @@ public class FileStoreTest extends TestCase {
     store = new FileStore(fFile);
     store.open();
   }
-  
-
 }

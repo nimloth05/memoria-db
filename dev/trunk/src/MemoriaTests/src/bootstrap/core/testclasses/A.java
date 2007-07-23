@@ -1,6 +1,7 @@
 package bootstrap.core.testclasses;
 
 public class A {
+  
   public int i;
   public String s;
   
@@ -8,6 +9,8 @@ public class A {
     this.i = i;
     this.s = s;
   }
+  
+  public A() {}
   
   
   

@@ -65,7 +65,7 @@ public final class MetaClass {
       writeMetaClass(objectStream, (MetaClass) object);
     }
     else {
-      writeObject(objectStream, object);
+      writeObject(objectStream, object, context);
     }
     
     byte[] objectData = buffer.toByteArray();
@@ -73,9 +73,9 @@ public final class MetaClass {
     dataStream.write(objectData);    
   }
 
-  private void writeObject(DataOutputStream objectStream, Object object) throws Exception  {
+  private void writeObject(DataOutputStream objectStream, Object object, IContext context) throws Exception  {
     for(MetaField metaField: fFieldIdToInfo.values()) {
-      metaField.writeField(objectStream, object);
+      metaField.writeField(objectStream, object, context);
     }
   }
 
@@ -85,7 +85,7 @@ public final class MetaClass {
   }
 
   private void writeFields(DataOutput objectStream, MetaClass classObject) throws IOException {
-    for(MetaField field: fFieldIdToInfo.values()) {
+    for(MetaField field: classObject.fFieldIdToInfo.values()) {
       objectStream.writeInt(field.getId());
       objectStream.writeUTF(field.getName());
       objectStream.writeInt(field.getType());
@@ -112,7 +112,7 @@ public final class MetaClass {
     return typeId == METACLASS_OBJECT_ID;
   }
 
-  public void readMetaFields(DataInputStream stream, MetaClass classObject) throws Exception {
+  public void readMetaFields(DataInputStream stream) throws Exception {
     while (stream.available() > 0) {
       int fieldId = stream.readInt();
       String name = stream.readUTF();
@@ -128,6 +128,20 @@ public final class MetaClass {
     } catch (Exception e) {
       throw new MemoriaException(e);
     }
+  }
+
+  public Object newInstance()  {
+    try {
+      return getJavaClass().newInstance();
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+
+  public void readFieldValue(DataInputStream input, int fieldId, Object result, IContext context) throws Exception {
+    MetaField metaField = fFieldIdToInfo.get(fieldId);
+    metaField.readField(input, result, context);
   }
 
 }

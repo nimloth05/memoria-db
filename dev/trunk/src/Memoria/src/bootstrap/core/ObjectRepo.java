@@ -6,7 +6,7 @@ import bootstrap.exception.MemoriaException;
 
 public class ObjectRepo {
   
-  private long fCurrentObjectId;
+  private long fCurrentObjectId = 0;
   
   //Memory address of the object, ObjectId from the DB
   private Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
@@ -29,6 +29,7 @@ public class ObjectRepo {
   }
 
   private void internalPut(Object object, Long result) {
+    if (object == null) throw new MemoriaException("Can not register null object, id: " + result);
     fObjectToId.put(System.identityHashCode(object), result);
     fIdToObject.put(result, object);
     
@@ -75,6 +76,14 @@ public class ObjectRepo {
 
   public Collection<MetaClass> getMetaObejcts() {
     return Collections.unmodifiableCollection(fMetaObjects.values());
+  }
+  
+  public boolean contains(Object obj) {
+    return internalGetObjectId(obj) != null;
+  }
+
+  public Collection<Long> getObjects() {
+    return Collections.unmodifiableSet(fIdToObject.keySet());
   }
   
 }

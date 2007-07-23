@@ -33,7 +33,15 @@ public class HydratedObject {
   public long getTypeId() {
     return fTypeId;
   }
-  
-  
+
+  public void dehydrate(IContext context) throws Exception {
+    MetaClass classObject = (MetaClass) context.getObejctById(fTypeId);
+    Object result = classObject.newInstance();
+    while(fInput.available() > 0) {
+      int fieldId = fInput.readInt();
+      classObject.readFieldValue(fInput, fieldId, result, context);
+    }
+    context.put(fObjectId, result);
+  }
   
 }

@@ -38,13 +38,13 @@ public final class MetaField {
     return fName;
   }
 
-  public void writeField(DataOutput stream, Object object) throws Exception {
+  public void writeField(DataOutput stream, Object object, IContext context) throws Exception {
     stream.writeInt(getId());
-    FieldType.values()[getType()].writeValue(stream, object, getField(object));
+    FieldType.values()[getType()].writeValue(stream, object, getField(object), context);
   }
   
-  public void readField(DataInput stream, Object object) throws Exception {
-    FieldType.values()[getType()].readValue(stream, object, getField(object));
+  public void readField(DataInput stream, Object object, IContext context) throws Exception {
+    FieldType.values()[getType()].readValue(stream, object, getField(object), context);
   }
 
   private Field getField(Object object) throws Exception {
@@ -54,6 +54,11 @@ public final class MetaField {
     }
 
     return fField;
+  }
+  
+  @Override
+  public String toString() {
+    return "FieldName: "+fName;
   }
 
 }
