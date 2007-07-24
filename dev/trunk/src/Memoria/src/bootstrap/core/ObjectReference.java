@@ -20,6 +20,7 @@ public class ObjectReference {
   
   public void bind(IContext contex) throws Exception {
     Object target = contex.getObejctById(fTargetObjectId);
+    if (target.getClass().getName().contains("Ref")) System.out.println("Id falsch " + fTargetObjectId);
     if (target == null) throw new MemoriaException("could not bind object: " + fSource + " target: " + fTargetObjectId + " " + fField);
     fField.set(fSource, target);
   }

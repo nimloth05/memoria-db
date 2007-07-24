@@ -1,64 +1,72 @@
 package bootstrap.core;
 
-import java.io.File;
-import java.util.*;
+import java.util.List;
 
-import junit.framework.TestCase;
 import bootstrap.core.testclasses.*;
 
-public class FileStoreTest extends TestCase {
-  
-  
-  private File fFile;
-  
-  @Override
-  protected void setUp() {
-    fFile = new File("fileStore.db");
-    fFile.delete();
-  }
-  
-  public void test_write_object() {
-    List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 1; ++i) {
-      objects.add(new TestObj("Hallo Welt "+i, i));
-    }
-    
-    FileStore store = new FileStore(fFile);
-    store.writeObject(objects);
-    
-    store = new FileStore(fFile);
-    store.open();
-    
-    TestObj obj = (TestObj) store.getObejctById(2);
-    assertEquals("Hallo Welt 0", obj.getString());
-    assertEquals(0, obj.getI());
-  }
-  
-  @SuppressWarnings("nls")
-  public void test_save_objectref() {
-    List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 10000; ++i) {
-      Composite composite = new Composite();
-      composite.set("1");
-      objects.add(composite.get());
-      objects.add(composite);
-    }
-    
-    FileStore store = new FileStore(fFile);
-    store.writeObject(objects);
-    
-    store = new FileStore(fFile);
-    store.open();
-    Composite composite = (Composite) store.getObejctById(4);
-    TestObj obj = composite.get(); 
-    assertNotNull("1", obj.getString());
-  }
+public class FileStoreTest extends AbstractFileStoreTest {
   
   public void test_hydration() {
-    FileStore store = new FileStore(fFile);
-    store.writeObject(new A(1, "a1"), new A(2, "a2"));
+    save(new A(1, "a1"), new A(2, "a2"));
     
-    store = new FileStore(fFile);
-    store.open();
+    reopen();
   }
+  
+  public void test_object_ref() {
+    Referencer referencer = new Referencer();
+    referencer.set("1");
+    save(referencer.get(), referencer);
+    
+    reopen();
+    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    
+    assertEquals(referencer.get().getString(), loadedReferencer.get().getString());
+    
+    TestObj loadedObj = getAll(TestObj.class).get(0);
+    assertSame(loadedReferencer.get(), loadedObj);
+  }
+  
+  public void test_save_referencee_before_referencer_is_saved() {
+    Referencer referencer = new Referencer();
+    referencer.set("1");
+    save(referencer.get());
+    save(referencer);
+    
+    reopen();
+    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    
+    assertEquals(referencer.get().getString(), loadedReferencer.get().getString());
+    
+    TestObj loadedObj = getAll(TestObj.class).get(0);
+    assertSame(loadedReferencer.get(), loadedObj);
+  }
+  
+  public void test_save_two_objects_in_two_transactions() {
+    TestObj obj1 = new TestObj("1", 1);
+    TestObj obj2 = new TestObj("2", 2);
+    
+    save(obj1);
+    save(obj2);
+    
+    reopen();
+    
+    List<TestObj> objs = getAll(TestObj.class);
+    assertEquals(obj1.getString(), objs.get(0).getString());
+    assertEquals(obj2.getString(), objs.get(1).getString());
+  }
+  
+  public void test_svae_object_ref() {
+    Referencer referencer = new Referencer();
+    referencer.set("1");
+    save(referencer);
+    
+    reopen();
+    
+    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    assertEquals(referencer.get().getString(), loadedReferencer.get().getString());
+    
+    TestObj loadedObj = getAll(TestObj.class).get(0);
+    assertSame(loadedReferencer.get(), loadedObj);
+  }
+  
 }

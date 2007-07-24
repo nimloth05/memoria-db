@@ -7,9 +7,13 @@ import bootstrap.exception.MemoriaException;
 
 public interface IContext {
   
-  public void serializeObject(DataOutput dataStream, Object object) throws Exception;
+  public boolean contains(Object referencee);
   
 
+  public MetaClass getMetaObject(Class<?> javaType);
+  
+  public Object getObejctById(long objectId);
+  
   /**
    * 
    * @param obj
@@ -17,16 +21,17 @@ public interface IContext {
    * @return
    */
   public long getObjectId(Object obj);
-  
-  public void put(long objectId, Object obj);
-  
-  public MetaClass getMetaObject(Class<?> javaType);
 
-  public Object getObejctById(long objectId);
+  public void objectToBind(Object object, Field field, long targetId);
+
+  public void put(long objectId, Object obj);
+
 
   public long register(Object object);
 
+  public void serializeIfNotContained(Object referencee) throws Exception;
 
-  public void objectToBind(Object object, Field field, long targetId);
+
+  public void serializeObject(DataOutput dataStream, Object object) throws Exception;
   
 }

@@ -8,42 +8,43 @@ public class ObjectRepo {
   
   private long fCurrentObjectId = 0;
   
+  private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
   //Memory address of the object, ObjectId from the DB
-  private Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
-  private Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
+  private final Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
   
-  private Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
+  private final Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
 
+  public void checkSanity() {
+    for(Long id: fIdToObject.keySet()) {
+      Object object = fIdToObject.get(id);
+      int address = System.identityHashCode(object);
+      
+      long addressObjectId = fObjectToId.get(address);
+      if (id != addressObjectId) throw new MemoriaException("diffrent IDs for object: id in id-Map "+ id + " id in adress map " + addressObjectId);
+    }
+  }
+  
+  public boolean contains(Object obj) {
+    return internalGetObjectId(obj) != null;
+  }
+  
+  public Collection<Object> getAllObjects() {
+    return Collections.<Object>unmodifiableCollection(fIdToObject.values());
+  }
+
+  public Collection<MetaClass> getMetaObejcts() {
+    return Collections.unmodifiableCollection(fMetaObjects.values());
+  }
+  
   /**
-   * @param object
-   * @return the objectId for the given object. The object will be registered if not already registered.
+   * 
+   * @param javaType
+   * @return the metaObject for the given java-Type or null.
    */
-  public long register(Object object) {
-    Long result = internalGetObjectId(object);
-    
-    if (result == null) {
-      result = ++fCurrentObjectId;
-      internalPut(object, result);
-    }
-    return result;
+  public MetaClass getMetaObject(Class<?> javaType) {
+    return fMetaObjects.get(javaType);
   }
 
-  private void internalPut(Object object, Long result) {
-    if (object == null) throw new MemoriaException("Can not register null object, id: " + result);
-    fObjectToId.put(System.identityHashCode(object), result);
-    fIdToObject.put(result, object);
-    
-    if (object instanceof MetaClass) {
-      MetaClass metaObject = (MetaClass) object;
-      fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
-    }
-  }
-  
-  private Long internalGetObjectId(Object obj) {
-    int address = System.identityHashCode(obj);
-    return fObjectToId.get(address);
-  }
-  
   /**
    * 
    * @param objectId
@@ -60,30 +61,54 @@ public class ObjectRepo {
     return result;
   }
   
+  public Collection<Long> getObjects() {
+    return Collections.unmodifiableSet(fIdToObject.keySet());
+  }
+
   public void put(long id, Object obj) {
     fCurrentObjectId = Math.max(fCurrentObjectId, id);
     internalPut(obj, id);
   }
 
+  
   /**
-   * 
-   * @param javaType
-   * @return the metaObject for the given java-Type or null.
+   * @param object
+   * @return the objectId for the given object. The object will be registered if not already registered.
    */
-  public MetaClass getMetaObject(Class<?> javaType) {
-    return fMetaObjects.get(javaType);
-  }
-
-  public Collection<MetaClass> getMetaObejcts() {
-    return Collections.unmodifiableCollection(fMetaObjects.values());
+  public long register(Object object) {
+    Long result = internalGetObjectId(object);
+    
+    if (result == null) {
+      result = ++fCurrentObjectId;
+      internalPut(object, result);
+    }
+    return result;
   }
   
-  public boolean contains(Object obj) {
-    return internalGetObjectId(obj) != null;
+  private Long internalGetObjectId(Object obj) {
+    int address = System.identityHashCode(obj);
+    return fObjectToId.get(address);
   }
+  
+  private void internalPut(Object object, Long result) {
+    if (object == null) throw new MemoriaException("Can not register null object, id: " + result);
 
-  public Collection<Long> getObjects() {
-    return Collections.unmodifiableSet(fIdToObject.keySet());
+    Object previousMapped = fObjectToId.put(System.identityHashCode(object), result); 
+    if (previousMapped != null) throw new RuntimeException("double registration in address-Map id" + result + " object: " + object);
+    
+    previousMapped = fIdToObject.put(result, object);
+    if (previousMapped != null) throw new RuntimeException("double registration in objectId-Map id" + result + " object: " + object);
+    
+    if (object instanceof MetaClass) {
+      MetaClass metaObject = (MetaClass) object;
+      fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
+    }
+    
+    
+    long myId = getObjectId(object);
+    if (myId != result) throw new RuntimeException("Diffrent Id in map then requested: " + result + " but was " + myId);
+    Object myObject = getObjectById(myId);
+    if (myObject != object) throw new RuntimeException("Object not correctly registred: " + object);
   }
   
 }

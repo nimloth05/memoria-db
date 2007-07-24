@@ -1,7 +1,7 @@
 package bootstrap.core.testclasses;
 
 
-public class Composite {
+public class Referencer {
   
   private TestObj fObject;
   

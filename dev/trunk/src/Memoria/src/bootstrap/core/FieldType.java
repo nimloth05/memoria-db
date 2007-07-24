@@ -9,26 +9,26 @@ public enum FieldType {
   booleanPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeBoolean((Boolean) field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readBoolean());
     }
 
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readBoolean());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeBoolean((Boolean) field.get(object));
     }
     
   },
   charPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeChar((Character)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readChar());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readChar());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeChar((Character)field.get(object));
     }
     
 
@@ -36,83 +36,88 @@ public enum FieldType {
   bytePrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeByte((Byte)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readByte());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readByte());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeByte((Byte)field.get(object));
     }
 
   },
   shortPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeShort((Short)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readShort());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readShort());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeShort((Short)field.get(object));
     }
 
   },
   integerPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeInt((Integer)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readInt());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readInt());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeInt((Integer)field.get(object));
     }
 
   },
   longPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeLong((Long)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readLong());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readLong());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeLong((Long)field.get(object));
     }
 
   },
   floatPrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeFloat((Float)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readFloat());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readFloat());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeFloat((Float)field.get(object));
     }
 
   },
   doublePrimitive {
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      stream.writeDouble((Double)field.get(object));
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readDouble());
     }
     
     @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readDouble());
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      stream.writeDouble((Double)field.get(object));
     }
 
   },
   string {
 
+    @Override
+    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
+      field.set(object, stream.readUTF());
+    }
+    
     @Override
     public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
       Object rawValue = field.get(object);
@@ -122,26 +127,27 @@ public enum FieldType {
         stream.writeUTF(""); //$NON-NLS-1$
       }
     }
-    
-    @Override
-    public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
-      field.set(object, stream.readUTF());
-    }
 
   },
   clazz {
-
-    @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
-      Object referencee = field.get(object);
-      long objectId = context.register(referencee);
-      stream.writeLong(objectId);
-    }
     
+    private final Set<Long> ids = new HashSet<Long>();
+
     @Override
     public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
       long targetId = stream.readLong();
+      if (targetId == 9237 && ids.contains(targetId)) System.out.println("id eingelesen");
       context.objectToBind(object, field, targetId);
+    }
+    
+    @Override
+    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+      Object referencee = field.get(object);
+      context.serializeIfNotContained(referencee);
+      long objectId = context.register(referencee);
+      if (objectId == 9237) System.out.println("id für TestObj verwendet");
+      ids.add(objectId);
+      stream.writeLong(objectId);
     }
 
   };
@@ -189,9 +195,9 @@ public enum FieldType {
     return result;
   }
 
-  public abstract void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception;
+  public abstract void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception;
   
 
-  public abstract void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception;
+  public abstract void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception;
 
 }
