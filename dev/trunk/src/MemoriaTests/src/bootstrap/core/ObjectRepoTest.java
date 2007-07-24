@@ -59,7 +59,6 @@ public class ObjectRepoTest extends TestCase {
       assertSame("?",  obj, obj2);
       assertEquals(id, fRepo.getObjectId(obj2));
     }
-    
   }
   
   @Override
