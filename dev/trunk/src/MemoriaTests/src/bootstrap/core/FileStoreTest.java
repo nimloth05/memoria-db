@@ -14,8 +14,10 @@ public class FileStoreTest extends AbstractFileStoreTest {
   
   public void test_object_ref() {
     Referencer referencer = new Referencer();
-    referencer.set("1");
+    referencer.set("object_ref");
     save(referencer.get(), referencer);
+    
+    assertEquals(1, getAll(TestObj.class).size());
     
     reopen();
     Referencer loadedReferencer = getAll(Referencer.class).get(0);

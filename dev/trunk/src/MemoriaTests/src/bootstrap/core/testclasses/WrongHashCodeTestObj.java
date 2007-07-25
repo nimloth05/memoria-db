@@ -1,11 +1,11 @@
 package bootstrap.core.testclasses;
 
-public class WrongHashTestObj {
+public class WrongHashCodeTestObj {
   
   
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof WrongHashTestObj)) return false;
+    if (!(obj instanceof WrongHashCodeTestObj)) return false;
     return hashCode() == obj.hashCode();
   }
   

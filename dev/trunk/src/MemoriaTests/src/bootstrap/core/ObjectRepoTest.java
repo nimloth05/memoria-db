@@ -48,8 +48,8 @@ public class ObjectRepoTest extends TestCase {
 
   public void test_put_a_lot_of_objects() {
     List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 60000; ++i) {
-      Object obj = new WrongHashTestObj();
+    for(int i = 0; i < 100000; ++i) {
+      Object obj = new WrongHashCodeTestObj();
       fRepo.register(obj);
       objects.add(obj);
     }
@@ -60,7 +60,6 @@ public class ObjectRepoTest extends TestCase {
       assertSame(obj, obj2);
       assertEquals(id, fRepo.getObjectId(obj2));
     }
-    
   }
   
   public void test_put_meta_object_in_cache() {

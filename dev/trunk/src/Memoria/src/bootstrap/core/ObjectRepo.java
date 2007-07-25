@@ -9,7 +9,6 @@ public class ObjectRepo {
   private long fCurrentObjectId = 0;
   
   private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
-  //Memory address of the object, ObjectId from the DB
   private final Map<Object, Long> fObjectToId = new IdentityHashMap<Object, Long>();
   
   private final Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
@@ -95,7 +94,7 @@ public class ObjectRepo {
     if (previousMapped != null) throw new RuntimeException("double registration in address-Map id" + result + " object: " + object);
     
     previousMapped = fIdToObject.put(result, object);
-    if (previousMapped != null) throw new RuntimeException("double registration in objectId-Map id" + result + " object: " + object);
+    if (previousMapped != null) throw new RuntimeException("double registration in objectId-Map id " + result + " object: " + object + " previous object " + previousMapped);
     
     if (object instanceof MetaClass) {
       MetaClass metaObject = (MetaClass) object;

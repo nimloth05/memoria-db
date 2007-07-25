@@ -91,6 +91,7 @@ public class FileStore implements IContext {
 
   @Override
   public void serializeIfNotContained(Object referencee) throws Exception {
+    if (fObjectRepo.contains(referencee)) return;
     fObjectsToSerialize.add(referencee);
   }
 
