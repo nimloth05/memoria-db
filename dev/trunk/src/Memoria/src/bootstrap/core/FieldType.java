@@ -131,12 +131,9 @@ public enum FieldType {
   },
   clazz {
     
-    private final Set<Long> ids = new HashSet<Long>();
-
     @Override
     public void readValue(DataInput stream, Object object, Field field, IContext context) throws Exception {
       long targetId = stream.readLong();
-      if (targetId == 9237 && ids.contains(targetId)) System.out.println("id eingelesen");
       context.objectToBind(object, field, targetId);
     }
     
@@ -145,8 +142,6 @@ public enum FieldType {
       Object referencee = field.get(object);
       context.serializeIfNotContained(referencee);
       long objectId = context.register(referencee);
-      if (objectId == 9237) System.out.println("id für TestObj verwendet");
-      ids.add(objectId);
       stream.writeLong(objectId);
     }
 

@@ -2,12 +2,66 @@ package bootstrap.core;
 
 import java.util.*;
 
-import bootstrap.core.testclasses.TestObj;
+import bootstrap.core.testclasses.*;
 import junit.framework.TestCase;
 
 public class ObjectRepoTest extends TestCase {
   
   private ObjectRepo fRepo;
+  
+  /**
+   * Tests, if the identityHashMap mapping survives a GC. Reason: Some people in the internet claim that System.identityHashCode
+   * uses the heap-Address of the object. This can not be, because it would break the general hashCode contract: 
+   * <q><br/><br/> 
+   * Whenever it is invoked on the same object more than once during 
+   * an execution of a Java application, the <tt>hashCode</tt> method 
+   * must consistently return the same integer...</q>
+   * 
+   * This tests tries to "proove" that.
+   */
+  public void test_identityHashCode() {
+    Set<Object> expected = new HashSet<Object>();
+    Map<Object, Integer> objects = new IdentityHashMap<Object, Integer>();
+    int count = 600000;
+    for(int i = 0; i < count; ++i) {
+      Object key = new TestObj("Hallo Welt ", i);
+      objects.put(key, i);
+      expected.add(key);
+    }
+    
+    System.gc();
+    
+    Iterator<Object> keys = objects.keySet().iterator();
+    for(int i = 0; keys.hasNext(); ++i) {
+      Object key = keys.next(); 
+      if ((i % 4) == 0)   continue;
+      keys.remove();
+      expected.remove(key);
+    }
+    
+    System.gc();
+    
+    for(Object key: expected) {
+      assertTrue(objects.containsKey(key));
+    }
+  }
+
+  public void test_put_a_lot_of_objects() {
+    List<Object> objects = new ArrayList<Object>();
+    for(int i = 0; i < 60000; ++i) {
+      Object obj = new WrongHashTestObj();
+      fRepo.register(obj);
+      objects.add(obj);
+    }
+    
+    for(Object obj: objects) {
+      long id = fRepo.getObjectId(obj);
+      Object obj2 = fRepo.getObjectById(id);
+      assertSame(obj, obj2);
+      assertEquals(id, fRepo.getObjectId(obj2));
+    }
+    
+  }
   
   public void test_put_meta_object_in_cache() {
     MetaClass classObject = new MetaClass(TestObj.class);
@@ -16,7 +70,7 @@ public class ObjectRepoTest extends TestCase {
     assertSame(classObject, fRepo.getObjectById(id));
     assertSame(classObject, fRepo.getMetaObject(TestObj.class));
   }
-
+  
   public void test_put_meta_object_with_id_in_cache() {
     MetaClass classObject = new MetaClass(TestObj.class);
     fRepo.put(20, classObject);
@@ -42,23 +96,6 @@ public class ObjectRepoTest extends TestCase {
     
     assertEquals(obj, fRepo.getObjectById(20));
     assertEquals(obj2, fRepo.getObjectById(id));
-  }
-  
-  public void test_stress() {
-    List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 20000; ++i) {
-      TestObj obj = new TestObj();
-      fRepo.register(obj);
-      objects.add(obj);
-    }
-    
-    for(Object obj: objects) {
-      long id = fRepo.getObjectId(obj);
-      Object obj2 = fRepo.getObjectById(id);
-      assertEquals(System.identityHashCode(obj), System.identityHashCode(obj2));
-      assertSame("?",  obj, obj2);
-      assertEquals(id, fRepo.getObjectId(obj2));
-    }
   }
   
   @Override

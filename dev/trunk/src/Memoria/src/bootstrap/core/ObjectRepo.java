@@ -10,16 +10,15 @@ public class ObjectRepo {
   
   private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
   //Memory address of the object, ObjectId from the DB
-  private final Map<Integer, Long> fObjectToId = new HashMap<Integer, Long>();
+  private final Map<Object, Long> fObjectToId = new IdentityHashMap<Object, Long>();
   
   private final Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
 
   public void checkSanity() {
     for(Long id: fIdToObject.keySet()) {
       Object object = fIdToObject.get(id);
-      int address = System.identityHashCode(object);
       
-      long addressObjectId = fObjectToId.get(address);
+      long addressObjectId = internalGetObjectId(object);
       if (id != addressObjectId) throw new MemoriaException("diffrent IDs for object: id in id-Map "+ id + " id in adress map " + addressObjectId);
     }
   }
@@ -86,14 +85,13 @@ public class ObjectRepo {
   }
   
   private Long internalGetObjectId(Object obj) {
-    int address = System.identityHashCode(obj);
-    return fObjectToId.get(address);
+    return fObjectToId.get(obj);
   }
   
   private void internalPut(Object object, Long result) {
     if (object == null) throw new MemoriaException("Can not register null object, id: " + result);
 
-    Object previousMapped = fObjectToId.put(System.identityHashCode(object), result); 
+    Object previousMapped = fObjectToId.put(object, result); 
     if (previousMapped != null) throw new RuntimeException("double registration in address-Map id" + result + " object: " + object);
     
     previousMapped = fIdToObject.put(result, object);
@@ -103,12 +101,6 @@ public class ObjectRepo {
       MetaClass metaObject = (MetaClass) object;
       fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
     }
-    
-    
-    long myId = getObjectId(object);
-    if (myId != result) throw new RuntimeException("Diffrent Id in map then requested: " + result + " but was " + myId);
-    Object myObject = getObjectById(myId);
-    if (myObject != object) throw new RuntimeException("Object not correctly registred: " + object);
   }
   
 }

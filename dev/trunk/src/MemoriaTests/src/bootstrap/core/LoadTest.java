@@ -8,7 +8,7 @@ public class LoadTest extends AbstractFileStoreTest {
   
   
   public void test_() {
-    int count = 1;
+    int count = 10;
     int failed = 0;
     int success = 0;
     
@@ -28,10 +28,10 @@ public class LoadTest extends AbstractFileStoreTest {
   
   
   @SuppressWarnings("nls")
-  public void test_save_objectref() throws InterruptedException {
+  public void test_save_objectref() {
     List<Object> objects = new ArrayList<Object>();
     
-    for(int i = 0; i < 10000; ++i) {
+    for(int i = 0; i < 15000; ++i) {
       Referencer composite = new Referencer();
       composite.set("1");
       objects.add(composite);
