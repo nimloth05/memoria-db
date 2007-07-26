@@ -31,7 +31,7 @@ public class LoadTest extends AbstractFileStoreTest {
   public void test_save_objectref() {
     List<Object> objects = new ArrayList<Object>();
     
-    for(int i = 0; i < 15000; ++i) {
+    for(int i = 0; i < 1500; ++i) {
       Referencer composite = new Referencer();
       composite.set("1");
       objects.add(composite);
