@@ -44,7 +44,7 @@ public class LoadTest extends AbstractFileStoreTest {
     for(Referencer ref: allSavedObjects) {
       Object obj = ref.get();
       long objectId = fStore.getObjectId(obj);
-      assertSame("id collision: "+objectId, obj, fStore.getObejctById(objectId));
+      assertSame("id collision: "+objectId, obj, fStore.getObjectById(objectId));
     }
     
     reopen();
@@ -65,7 +65,7 @@ public class LoadTest extends AbstractFileStoreTest {
     
     reopen();
     
-    TestObj obj = (TestObj) fStore.getObejctById(2);
+    TestObj obj = (TestObj) fStore.getObjectById(2);
     assertEquals("Hallo Welt 0", obj.getString());
     assertEquals(0, obj.getI());
   }

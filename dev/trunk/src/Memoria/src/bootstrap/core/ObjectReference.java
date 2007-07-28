@@ -18,8 +18,8 @@ public class ObjectReference {
   }
   
   
-  public void bind(IContext contex) throws Exception {
-    Object target = contex.getObejctById(fTargetObjectId);
+  public void bind(IReaderContext contex) throws Exception {
+    Object target = contex.getObjectById(fTargetObjectId);
     if (target == null) throw new MemoriaException("could not bind object: " + fSource + " target: " + fTargetObjectId + " " + fField);
     fField.set(fSource, target);
   }

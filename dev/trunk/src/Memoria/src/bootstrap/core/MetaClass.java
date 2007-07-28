@@ -12,8 +12,8 @@ public final class MetaClass {
   
   private String fClassName;
 
-  private Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
-  private Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
+  private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
+  private final Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
 
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
@@ -30,24 +30,50 @@ public final class MetaClass {
     fClassName = className;
   }
   
-  private void addFields(Class<?> klass) {
-    Field[] fields = klass.getDeclaredFields();
-    int fieldId = 1;
-    for(Field field: fields) {
-      if (Modifier.isTransient(field.getModifiers())) continue;
-      if (Modifier.isFinal(field.getModifiers())) continue;
-      
-      MetaField metaField = MetaField.create(++fieldId, field);
-      addMetaField(metaField);
-    }    
-  }
-  
-  /**
-   * Only used for bootstrapping outside this class
-   */
-  private void addMetaField(MetaField metaField) {
+  public void addMetaField(MetaField metaField) {
     fFieldIdToInfo.put(metaField.getId(), metaField);
     fFieldNameToInfo.put(metaField.getName(), metaField);
+  }
+  
+  public String getClassName() {
+    return fClassName;
+  }
+
+  public MetaField getField(int fieldId) {
+    return fFieldIdToInfo.get(fieldId);
+  }
+
+  public Class<?> getJavaClass() { 
+    try {
+      return Class.forName(fClassName);
+    } catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+
+  /**
+   * @return true, if this MetaClass-object represents the type MetaClass
+   */
+  public boolean isMetaClassObject(long typeId) {
+    return typeId == METACLASS_OBJECT_ID;
+  }
+
+  public Object newInstance()  {
+    try {
+      return getJavaClass().newInstance();
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+  
+  public void setClassName(String name) {
+    fClassName = name;
+  }
+
+  @Override
+  public String toString() {
+    return fClassName;
   }
   
   public void writeObject(IContext context, DataOutput dataStream, Object object, long objectId) throws Exception {
@@ -72,16 +98,17 @@ public final class MetaClass {
     dataStream.writeInt(objectData.length);
     dataStream.write(objectData);    
   }
-
-  private void writeObject(DataOutputStream objectStream, Object object, IContext context) throws Exception  {
-    for(MetaField metaField: fFieldIdToInfo.values()) {
-      metaField.writeField(objectStream, object, context);
-    }
-  }
-
-  private void writeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
-    objectStream.writeUTF(classObject.getClassName());
-    writeFields(objectStream, classObject);
+  
+  private void addFields(Class<?> klass) {
+    Field[] fields = klass.getDeclaredFields();
+    int fieldId = 1;
+    for(Field field: fields) {
+      if (Modifier.isTransient(field.getModifiers())) continue;
+      if (Modifier.isFinal(field.getModifiers())) continue;
+      
+      MetaField metaField = MetaField.create(++fieldId, field);
+      addMetaField(metaField);
+    }    
   }
 
   private void writeFields(DataOutput objectStream, MetaClass classObject) throws IOException {
@@ -92,56 +119,16 @@ public final class MetaClass {
     }
   }
 
-  public void setClassName(String name) {
-    fClassName = name;
+  private void writeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
+    objectStream.writeUTF(classObject.getClassName());
+    writeFields(objectStream, classObject);
   }
 
-  public String getClassName() {
-    return fClassName;
-  }
-
-  @Override
-  public String toString() {
-    return fClassName;
-  }
-  
-  /**
-   * @return true, if this MetaClass-object represents the type MetaClass
-   */
-  public boolean isMetaClassObject(long typeId) {
-    return typeId == METACLASS_OBJECT_ID;
-  }
-
-  public void readMetaFields(DataInputStream stream) throws Exception {
-    while (stream.available() > 0) {
-      int fieldId = stream.readInt();
-      String name = stream.readUTF();
-      int type = stream.readInt();
-      MetaField metaField = new MetaField(fieldId, name, type);
-      addMetaField(metaField);
+  private void writeObject(DataOutputStream objectStream, Object object, IContext context) throws Exception  {
+    for(MetaField metaField: fFieldIdToInfo.values()) {
+      metaField.writeField(objectStream, object, context);
     }
   }
 
-  public Class<?> getJavaClass() { 
-    try {
-      return Class.forName(fClassName);
-    } catch (Exception e) {
-      throw new MemoriaException(e);
-    }
-  }
-
-  public Object newInstance()  {
-    try {
-      return getJavaClass().newInstance();
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
-  }
-
-  public void readFieldValue(DataInputStream input, int fieldId, Object result, IContext context) throws Exception {
-    MetaField metaField = fFieldIdToInfo.get(fieldId);
-    metaField.readField(input, result, context);
-  }
 
 }

@@ -5,15 +5,20 @@ import java.lang.reflect.Field;
 
 public final class MetaField {
 
-  private int fFieldId;
-  private String fName;
+  private final int fFieldId;
+  private final String fName;
 
   // TODO: Later, we can directly reference the enum. Memoria should this recognize and serialze the
   // ordinal value.
-  private int fType;
+  private final int fType;
 
   // the field used for reflection.
   private Field fField;
+
+  public static MetaField create(int id, Field field) {
+    MetaField result = new MetaField(id, field.getName(), FieldType.getType(field).ordinal());
+    return result;
+  }
 
   public MetaField(int id, String name, int ordinal) {
     fFieldId = id;
@@ -21,33 +26,7 @@ public final class MetaField {
     fName = name;
   }
 
-  public static MetaField create(int id, Field field) {
-    MetaField result = new MetaField(id, field.getName(), FieldType.getType(field).ordinal());
-    return result;
-  }
-
-  public int getType() {
-    return fType;
-  }
-
-  public int getId() {
-    return fFieldId;
-  }
-
-  public String getName() {
-    return fName;
-  }
-
-  public void writeField(DataOutput stream, Object object, IContext context) throws Exception {
-    stream.writeInt(getId());
-    FieldType.values()[getType()].writeValue(stream, object, getField(object), context);
-  }
-  
-  public void readField(DataInput stream, Object object, IContext context) throws Exception {
-    FieldType.values()[getType()].readValue(stream, object, getField(object), context);
-  }
-
-  private Field getField(Object object) throws Exception {
+  public Field getJavaField(Object object) throws Exception {
     if (fField == null) {
       fField = object.getClass().getDeclaredField(fName);
       fField.setAccessible(true);
@@ -55,10 +34,35 @@ public final class MetaField {
 
     return fField;
   }
+
+  public FieldType getFieldType() {
+    return FieldType.values()[fType];
+  }
+
+  public int getId() {
+    return fFieldId;
+  }
+  
+  public String getName() {
+    return fName;
+  }
+
+  public int getType() {
+    return fType;
+  }
+  
+  public void readField(DataInput stream, Object object, IReaderContext context) throws Exception {
+    FieldType.values()[getType()].readValue(stream, object, getJavaField(object), context);
+  }
   
   @Override
   public String toString() {
     return "FieldName: "+fName;
+  }
+
+  public void writeField(DataOutput stream, Object object, IContext context) throws Exception {
+    stream.writeInt(getId());
+    FieldType.values()[getType()].writeValue(stream, object, getJavaField(object), context);
   }
 
 }

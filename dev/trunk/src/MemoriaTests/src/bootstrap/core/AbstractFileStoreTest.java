@@ -7,12 +7,12 @@ import junit.framework.TestCase;
 
 public abstract class AbstractFileStoreTest extends TestCase {
   
-  protected FileStore fStore;
+  protected IObjectContainer fStore;
   
   private File fFile;
   
   protected final void createStore() {
-    fStore = new FileStore(fFile);
+    fStore = Memoria.open(fFile);
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -25,7 +25,6 @@ public abstract class AbstractFileStoreTest extends TestCase {
   
   protected final void reopen() {
     createStore(); 
-    fStore.open();
   }
 
   protected final void save(Object...objects) {
