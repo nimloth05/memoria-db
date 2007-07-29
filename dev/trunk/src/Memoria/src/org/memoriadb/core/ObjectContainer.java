@@ -53,7 +53,7 @@ public class ObjectContainer implements IContext, IObjectContainer {
   }
 
   public void open() {
-    new FileReader(fFile).read(fObjectRepo);
+    FileReader.readIn(fFile, fObjectRepo);
   }
 
   @Override

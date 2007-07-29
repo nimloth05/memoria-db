@@ -7,16 +7,23 @@ import java.util.*;
 import org.memoriadb.exception.MemoriaException;
 
 
-public class FileReader implements IReaderContext {
+public final class FileReader implements IReaderContext {
   
   private final File fFile;
   private final Set<HydratedObject> fHydratedObjects = new HashSet<HydratedObject>();
   private final Set<ObjectReference> fObjectsToBind = new HashSet<ObjectReference>();
   private ObjectRepo fRepo;
+  private final MemoriaFile fMemoriaFile;
   
 
-  public FileReader(File file) {
+  public static void readIn(File file, ObjectRepo repo) {
+    new FileReader(file).read(repo);
+  }
+  
+  private FileReader(File file) {
+    if (file == null) throw new IllegalArgumentException("File for readIn was null");
     fFile = file;
+    fMemoriaFile = new MemoriaFile();
   }
   
   @Override
@@ -28,13 +35,13 @@ public class FileReader implements IReaderContext {
   public void objectToBind(Object object, Field field, long targetId) {
     fObjectsToBind.add(new ObjectReference(object, field, targetId));
   }
-  
+
   public void read(ObjectRepo repo) {
     if (!fFile.exists()) return;
     
     fRepo = repo;
     try {
-      readAllObjects();
+      readBlockData();
       dehydrateObjects();
       bindObjects();
     }
@@ -58,34 +65,36 @@ public class FileReader implements IReaderContext {
     fHydratedObjects.clear();
   }
 
-  private void readAllObjects() throws Exception {
+  private void readBlockData() throws Exception {
     int bufferSize = (int)Runtime.getRuntime().freeMemory() / 16;
-    DataInputStream stream = new DataInputStream(new BufferedInputStream(new FileInputStream(fFile), bufferSize));
+    FileInputStream fileStream = new FileInputStream(fFile);
+    DataInputStream stream = new DataInputStream(new BufferedInputStream(fileStream, bufferSize));
 
-    byte[] blockTagBuffer = new byte[4];
-    
     while (stream.available() > 0) {
-      stream.read(blockTagBuffer);
-      if (!Arrays.equals(blockTagBuffer, HeaderUtil.BLOCK_START_TAG)) throw new RuntimeException("Could not read block start");
+      long startPosition = fileStream.getChannel().position();
+      
+      HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_START_TAG);
       
       int blockSize = stream.readInt(); //the block size
       byte[] blockData = new byte[blockSize];
       stream.read(blockData); 
       readTransactionData(blockData);
+
+      HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_END_TAG);
       
-      stream.read(blockTagBuffer);
-      if (!Arrays.equals(blockTagBuffer, HeaderUtil.BLOCK_END_TAG)) throw new RuntimeException("Could not read block end Tag");
+      fMemoriaFile.add(new Block(fileStream.getChannel().position()-startPosition, startPosition));
     }
     
     stream.close();
   }
-
+  
   private void readMetaClass(DataInputStream stream, long objectId) throws Exception {
     String className = stream.readUTF();
     MetaClass classObject = new MetaClass(className);
     readMetaFields(stream, classObject);
     fRepo.put(objectId, classObject);
   }
+
   
   private void readMetaFields(DataInputStream stream, MetaClass classObject) throws Exception {
     while (stream.available() > 0) {
@@ -96,7 +105,6 @@ public class FileReader implements IReaderContext {
       classObject.addMetaField(metaField);
     }
   }
-
   
   private void readObject(byte[] data, int offset, int size) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
@@ -110,7 +118,7 @@ public class FileReader implements IReaderContext {
     }
     fHydratedObjects.add(new HydratedObject(typeId, objectId, stream));
   }
-  
+
   private void readObjects(byte[] data, int offset, int length) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, length));
     while(stream.available() > 0) {
@@ -121,7 +129,7 @@ public class FileReader implements IReaderContext {
       if (stream.skip(size) != size) throw new RuntimeException("could not skip bytes: " + size);
     }
   }
-
+  
   private void readTransactionData(byte[] data) throws Exception {
     byte[] fourByteBuffer = new byte[4];
     

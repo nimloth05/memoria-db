@@ -5,18 +5,31 @@ import java.io.*;
 import junit.framework.TestCase;
 
 import org.easymock.*;
-import org.memoriadb.core.*;
-
-import bootstrap.core.FieldTypeTestClass;
+import org.memoriadb.core.testclasses.FieldTypeTestClass;
 
 public class FieldTypeTest extends TestCase {
   
   private IContext fContext;
+  private IReaderContext fReaderContext;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    fContext = EasyMock.createNiceMock(IContext.class);
+  public void test_read_write_field() throws Exception {
+    IMocksControl control = EasyMock.createControl();
+    
+    DataOutput outputMock = control.createMock(DataOutput.class);
+    DataInput inputMock = control.createMock(DataInput.class);
+    
+    FieldTypeTestClass testObj = new FieldTypeTestClass();
+    
+    booleanFieldTest(control, outputMock, inputMock, testObj);
+    charFieldTest(control, outputMock, inputMock, testObj);
+    byteFieldTest(control, outputMock, inputMock, testObj);
+    shortFieldTest(control, outputMock, inputMock, testObj);
+    intFieldTest(control, outputMock, inputMock, testObj);
+    longFieldTest(control, outputMock, inputMock, testObj);
+    floatFieldTest(control, outputMock, inputMock, testObj);
+    doubleFieldTest(control, outputMock, inputMock, testObj);
+    stringFieldTest(control, outputMock, inputMock, testObj);
+    classFieldTest(control, outputMock, inputMock, testObj);
   }
   
   @SuppressWarnings("nls")
@@ -53,175 +66,37 @@ public class FieldTypeTest extends TestCase {
     assertEquals(FieldType.clazz, FieldType.getType(class1.getDeclaredField("fObject")));
   }
   
-  public void test_read_write_field() throws Exception {
-    IMocksControl control = EasyMock.createControl();
-    
-    DataOutput outputMock = control.createMock(DataOutput.class);
-    DataInput inputMock = control.createMock(DataInput.class);
-    
-    FieldTypeTestClass testObj = new FieldTypeTestClass();
-    
-    booleanFieldTest(control, outputMock, inputMock, testObj);
-    charFieldTest(control, outputMock, inputMock, testObj);
-    byteFieldTest(control, outputMock, inputMock, testObj);
-    shortFieldTest(control, outputMock, inputMock, testObj);
-    intFieldTest(control, outputMock, inputMock, testObj);
-    longFieldTest(control, outputMock, inputMock, testObj);
-    floatFieldTest(control, outputMock, inputMock, testObj);
-    doubleFieldTest(control, outputMock, inputMock, testObj);
-    stringFieldTest(control, outputMock, inputMock, testObj);
-    classFieldTest(control, outputMock, inputMock, testObj);
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    fContext = EasyMock.createNiceMock(IContext.class);
+    fReaderContext = EasyMock.createNiceMock(IReaderContext.class);; 
   }
 
-  private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) {}
-
-  private void stringFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fString = "1";
+  private void booleanFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws IOException, Exception {
+    testObj.fBooleanP = true;
+    testObj.fBooleanC = new Boolean(true);
     
-    outputMock.writeUTF("1");
+    outputMock.writeBoolean(true);
+    outputMock.writeBoolean(true);
     
-    EasyMock.expect(inputMock.readUTF()).andReturn("2");
+    EasyMock.expect(inputMock.readBoolean()).andReturn(true);
+    EasyMock.expect(inputMock.readBoolean()).andReturn(true);
     
     control.replay();
     
-    FieldType.string.writeValue(outputMock, testObj, testObj.getStringField(), fContext);
+    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldP(), fContext);
+    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldC(), fContext);
     
-    FieldType.string.internalReadValue(inputMock, testObj, testObj.getStringField(), fContext);
-    
-    control.verify();
-    
-    assertEquals("FieldValue was not set correctly", "2", testObj.fString);
-    control.reset();
-  }
-
-  private void doubleFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fDoubleP = 5;
-    testObj.fDoubleC = new Double(5);
-    
-    outputMock.writeDouble(5d);
-    outputMock.writeDouble(5d);
-    
-    EasyMock.expect(inputMock.readDouble()).andReturn(new Double(6));
-    EasyMock.expect(inputMock.readDouble()).andReturn(new Double(6));
-    
-    control.replay();
-    
-    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldP(), fContext);
-    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldC(), fContext);
-    
-    FieldType.doublePrimitive.internalReadValue(inputMock, testObj, testObj.getDoubleFieldP(), fContext);
-    FieldType.doublePrimitive.internalReadValue(inputMock, testObj, testObj.getDoubleFieldC(), fContext);
+    FieldType.booleanPrimitive.readValue(inputMock, testObj, testObj.getBooleanFieldP(), fReaderContext);
+    FieldType.booleanPrimitive.readValue(inputMock, testObj, testObj.getBooleanFieldC(), fReaderContext);
     
     control.verify();
     
-    assertEquals("FieldValue was not set correctly", 6.0, testObj.fDoubleP);
-    assertEquals("FieldValue was not set correctly", new Double(6.0), testObj.fDoubleC);
+    assertTrue("FieldValue was not set correctly", testObj.fBooleanC);
+    assertTrue("FieldValue was not set correctly", testObj.fBooleanP);
     
     control.reset();
-  }
-
-  private void floatFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fFloatP = 5;
-    testObj.fFloatC = new Float(5);
-    
-    outputMock.writeFloat(5f);
-    outputMock.writeFloat(5);
-    
-    EasyMock.expect(inputMock.readFloat()).andReturn(new Float(6));
-    EasyMock.expect(inputMock.readFloat()).andReturn(new Float(6));
-    
-    control.replay();
-    
-    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldP(), fContext);
-    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldC(), fContext);
-    
-    FieldType.floatPrimitive.internalReadValue(inputMock, testObj, testObj.getFloatFieldP(), fContext);
-    FieldType.floatPrimitive.internalReadValue(inputMock, testObj, testObj.getFloatFieldC(), fContext);
-    
-    control.verify();
-    
-    assertEquals("FieldValue was not set correctly", 6, testObj.fIntP);
-    assertEquals("FieldValue was not set correctly", new Integer(6), testObj.fIntC);
-    
-    control.reset();        
-  }
-
-  private void longFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fLongP = 5;
-    testObj.fLongC = new Long(5);
-    
-    outputMock.writeLong(5);
-    outputMock.writeLong(5);
-    
-    EasyMock.expect(inputMock.readLong()).andReturn(new Long(6));
-    EasyMock.expect(inputMock.readLong()).andReturn(new Long(6));
-    
-    control.replay();
-    
-    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldP(), fContext);
-    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldC(), fContext);
-    
-    FieldType.longPrimitive.internalReadValue(inputMock, testObj, testObj.getLongFieldP(), fContext);
-    FieldType.longPrimitive.internalReadValue(inputMock, testObj, testObj.getLongFieldC(), fContext);
-    
-    control.verify();
-    
-    assertEquals("FieldValue was not set correctly", 6, testObj.fLongP);
-    assertEquals("FieldValue was not set correctly", new Long(6), testObj.fLongC);
-    
-    control.reset();      
-  }
-
-  private void intFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fIntP = 5;
-    testObj.fIntC = new Integer(5);
-    
-    outputMock.writeInt(5);
-    outputMock.writeInt(5);
-    
-    EasyMock.expect(inputMock.readInt()).andReturn(6);
-    EasyMock.expect(inputMock.readInt()).andReturn(6);
-    
-    control.replay();
-    
-    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldP(), fContext);
-    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldC(), fContext);
-    
-    FieldType.integerPrimitive.internalReadValue(inputMock, testObj, testObj.getIntFieldP(), fContext);
-    FieldType.integerPrimitive.internalReadValue(inputMock, testObj, testObj.getIntFieldC(), fContext);
-    
-    control.verify();
-    
-    assertEquals("FieldValue was not set correctly", 6, testObj.fIntP);
-    assertEquals("FieldValue was not set correctly", new Integer(6), testObj.fIntC);
-    
-    control.reset();    
-  }
-
-  private void shortFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
-    testObj.fShortP = 5;
-    testObj.fShortC = new Short((short)5);
-    
-    outputMock.writeShort(5);
-    outputMock.writeShort(5);
-    
-    EasyMock.expect(inputMock.readShort()).andReturn((short)6);
-    EasyMock.expect(inputMock.readShort()).andReturn((short)6);
-    
-    control.replay();
-    
-    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldP(), fContext);
-    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldC(), fContext);
-    
-    FieldType.shortPrimitive.internalReadValue(inputMock, testObj, testObj.getShortFieldP(), fContext);
-    FieldType.shortPrimitive.internalReadValue(inputMock, testObj, testObj.getShortFieldC(), fContext);
-    
-    control.verify();
-    
-    assertEquals("FieldValue was not set correctly", 6, testObj.fShortP);
-    assertEquals("FieldValue was not set correctly", new Short((short)6), testObj.fShortC);
-    
-    control.reset();        
   }
 
   private void byteFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
@@ -239,8 +114,8 @@ public class FieldTypeTest extends TestCase {
     FieldType.bytePrimitive.writeValue(outputMock, testObj, testObj.getByteFieldP(), fContext);
     FieldType.bytePrimitive.writeValue(outputMock, testObj, testObj.getByteFieldC(), fContext);
     
-    FieldType.bytePrimitive.internalReadValue(inputMock, testObj, testObj.getByteFieldP(), fContext);
-    FieldType.bytePrimitive.internalReadValue(inputMock, testObj, testObj.getByteFieldC(), fContext);
+    FieldType.bytePrimitive.readValue(inputMock, testObj, testObj.getByteFieldP(), fReaderContext);
+    FieldType.bytePrimitive.readValue(inputMock, testObj, testObj.getByteFieldC(), fReaderContext);
     
     control.verify();
     
@@ -265,8 +140,8 @@ public class FieldTypeTest extends TestCase {
     FieldType.charPrimitive.writeValue(outputMock, testObj, testObj.getCharFieldP(), fContext);
     FieldType.charPrimitive.writeValue(outputMock, testObj, testObj.getCharFieldC(), fContext);
     
-    FieldType.charPrimitive.internalReadValue(inputMock, testObj, testObj.getCharFieldP(), fContext);
-    FieldType.charPrimitive.internalReadValue(inputMock, testObj, testObj.getCharFieldC(), fContext);
+    FieldType.charPrimitive.readValue(inputMock, testObj, testObj.getCharFieldP(), fReaderContext);
+    FieldType.charPrimitive.readValue(inputMock, testObj, testObj.getCharFieldC(), fReaderContext);
     
     control.verify();
     
@@ -276,29 +151,154 @@ public class FieldTypeTest extends TestCase {
     control.reset();    
   }
 
-  private void booleanFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws IOException, Exception {
-    testObj.fBooleanP = true;
-    testObj.fBooleanC = new Boolean(true);
+  private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) {}
+
+  private void doubleFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fDoubleP = 5;
+    testObj.fDoubleC = new Double(5);
     
-    outputMock.writeBoolean(true);
-    outputMock.writeBoolean(true);
+    outputMock.writeDouble(5d);
+    outputMock.writeDouble(5d);
     
-    EasyMock.expect(inputMock.readBoolean()).andReturn(true);
-    EasyMock.expect(inputMock.readBoolean()).andReturn(true);
+    EasyMock.expect(inputMock.readDouble()).andReturn(new Double(6));
+    EasyMock.expect(inputMock.readDouble()).andReturn(new Double(6));
     
     control.replay();
     
-    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldP(), fContext);
-    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldC(), fContext);
+    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldP(), fContext);
+    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldC(), fContext);
     
-    FieldType.booleanPrimitive.internalReadValue(inputMock, testObj, testObj.getBooleanFieldP(), fContext);
-    FieldType.booleanPrimitive.internalReadValue(inputMock, testObj, testObj.getBooleanFieldC(), fContext);
+    FieldType.doublePrimitive.readValue(inputMock, testObj, testObj.getDoubleFieldP(), fReaderContext);
+    FieldType.doublePrimitive.readValue(inputMock, testObj, testObj.getDoubleFieldC(), fReaderContext);
     
     control.verify();
     
-    assertTrue("FieldValue was not set correctly", testObj.fBooleanC);
-    assertTrue("FieldValue was not set correctly", testObj.fBooleanP);
+    assertEquals("FieldValue was not set correctly", 6.0, testObj.fDoubleP);
+    assertEquals("FieldValue was not set correctly", new Double(6.0), testObj.fDoubleC);
     
+    control.reset();
+  }
+
+  private void floatFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fFloatP = 5;
+    testObj.fFloatC = new Float(5);
+    
+    outputMock.writeFloat(5f);
+    outputMock.writeFloat(5);
+    
+    EasyMock.expect(inputMock.readFloat()).andReturn(new Float(6));
+    EasyMock.expect(inputMock.readFloat()).andReturn(new Float(6));
+    
+    control.replay();
+    
+    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldP(), fContext);
+    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldC(), fContext);
+    
+    FieldType.floatPrimitive.readValue(inputMock, testObj, testObj.getFloatFieldP(), fReaderContext);
+    FieldType.floatPrimitive.readValue(inputMock, testObj, testObj.getFloatFieldC(), fReaderContext);
+    
+    control.verify();
+    
+    assertEquals("FieldValue was not set correctly", 6, testObj.fIntP);
+    assertEquals("FieldValue was not set correctly", new Integer(6), testObj.fIntC);
+    
+    control.reset();        
+  }
+
+  private void intFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fIntP = 5;
+    testObj.fIntC = new Integer(5);
+    
+    outputMock.writeInt(5);
+    outputMock.writeInt(5);
+    
+    EasyMock.expect(inputMock.readInt()).andReturn(6);
+    EasyMock.expect(inputMock.readInt()).andReturn(6);
+    
+    control.replay();
+    
+    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldP(), fContext);
+    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldC(), fContext);
+    
+    FieldType.integerPrimitive.readValue(inputMock, testObj, testObj.getIntFieldP(), fReaderContext);
+    FieldType.integerPrimitive.readValue(inputMock, testObj, testObj.getIntFieldC(), fReaderContext);
+    
+    control.verify();
+    
+    assertEquals("FieldValue was not set correctly", 6, testObj.fIntP);
+    assertEquals("FieldValue was not set correctly", new Integer(6), testObj.fIntC);
+    
+    control.reset();    
+  }
+
+  private void longFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fLongP = 5;
+    testObj.fLongC = new Long(5);
+    
+    outputMock.writeLong(5);
+    outputMock.writeLong(5);
+    
+    EasyMock.expect(inputMock.readLong()).andReturn(new Long(6));
+    EasyMock.expect(inputMock.readLong()).andReturn(new Long(6));
+    
+    control.replay();
+    
+    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldP(), fContext);
+    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldC(), fContext);
+    
+    FieldType.longPrimitive.readValue(inputMock, testObj, testObj.getLongFieldP(), fReaderContext);
+    FieldType.longPrimitive.readValue(inputMock, testObj, testObj.getLongFieldC(), fReaderContext);
+    
+    control.verify();
+    
+    assertEquals("FieldValue was not set correctly", 6, testObj.fLongP);
+    assertEquals("FieldValue was not set correctly", new Long(6), testObj.fLongC);
+    
+    control.reset();      
+  }
+
+  private void shortFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fShortP = 5;
+    testObj.fShortC = new Short((short)5);
+    
+    outputMock.writeShort(5);
+    outputMock.writeShort(5);
+    
+    EasyMock.expect(inputMock.readShort()).andReturn((short)6);
+    EasyMock.expect(inputMock.readShort()).andReturn((short)6);
+    
+    control.replay();
+    
+    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldP(), fContext);
+    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldC(), fContext);
+    
+    FieldType.shortPrimitive.readValue(inputMock, testObj, testObj.getShortFieldP(), fReaderContext);
+    FieldType.shortPrimitive.readValue(inputMock, testObj, testObj.getShortFieldC(), fReaderContext);
+    
+    control.verify();
+    
+    assertEquals("FieldValue was not set correctly", 6, testObj.fShortP);
+    assertEquals("FieldValue was not set correctly", new Short((short)6), testObj.fShortC);
+    
+    control.reset();        
+  }
+
+  private void stringFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fString = "1";
+    
+    outputMock.writeUTF("1");
+    
+    EasyMock.expect(inputMock.readUTF()).andReturn("2");
+    
+    control.replay();
+    
+    FieldType.string.writeValue(outputMock, testObj, testObj.getStringField(), fContext);
+    
+    FieldType.string.readValue(inputMock, testObj, testObj.getStringField(), fReaderContext);
+    
+    control.verify();
+    
+    assertEquals("FieldValue was not set correctly", "2", testObj.fString);
     control.reset();
   }
   
