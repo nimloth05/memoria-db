@@ -131,16 +131,10 @@ public final class FileReader implements IReaderContext {
   }
   
   private void readTransactionData(byte[] data) throws Exception {
-    byte[] fourByteBuffer = new byte[4];
-    
-    System.arraycopy(data, 0, fourByteBuffer, 0, 4);
-    if (!Arrays.equals(fourByteBuffer, HeaderUtil.TRANSACTION_START_TAG));
-    
-    System.arraycopy(data, 4, fourByteBuffer, 0, 4);
-    int transactionSize = Util.convertToInt(fourByteBuffer);
-    
-    System.arraycopy(data, transactionSize+8, fourByteBuffer, 0, 4);
-    if (!Arrays.equals(fourByteBuffer, HeaderUtil.TRANSACTION_END_TAG)) throw new RuntimeException("could not read end transaction tag");
+    HeaderUtil.assertTag(data, 0, HeaderUtil.TRANSACTION_START_TAG);
+    int transactionSize = ByteUtil.readInt(data, 4);
+    final int endTagStart = transactionSize+ByteUtil.INT_SIZE+HeaderUtil.HEADER_SIZE;
+    HeaderUtil.assertTag(data, endTagStart, HeaderUtil.TRANSACTION_END_TAG);
     
     readObjects(data, 8, transactionSize);
   }

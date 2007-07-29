@@ -161,9 +161,6 @@ public enum FieldType {
   private static Map<Class<?>, FieldType> createTypeMap() {
     Map<Class<?>, FieldType> result = new HashMap<Class<?>, FieldType>();
 
-    
-    //TODO Test if this works for non-primitives
-    
     result.put(Boolean.class, booleanPrimitive);
     result.put(Boolean.TYPE, booleanPrimitive);
 

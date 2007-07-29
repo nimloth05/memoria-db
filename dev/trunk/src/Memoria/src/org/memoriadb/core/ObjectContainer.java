@@ -5,7 +5,6 @@ import java.util.*;
 
 public class ObjectContainer implements IContext, IObjectContainer {
   
-  private final MetaData fMetaData = new MetaData();
   private final ObjectRepo fObjectRepo;
   
   private final File fFile;
@@ -66,17 +65,28 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.register(object);
   }
 
+  public MetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
+    MetaClass classObject = fObjectRepo.getMetaObject(type);
+    
+    if (classObject == null) {
+      classObject = new MetaClass(type);
+      serializeObject(dataStream, classObject);
+    }
+    return classObject;
+  }
+
   @Override
   public void serializeIfNotContained(Object referencee) throws Exception {
+    //FIXME This Implementation is bad.
     if (fObjectRepo.contains(referencee)) return;
     fObjectsToSerialize.add(referencee);
   }
-
+  
   public void serializeObject(DataOutput dataStream, Object object) throws Exception {
     Class<?> type = object.getClass();
     long objectId = fObjectRepo.register(object);
     
-    MetaClass metaClass = fMetaData.register(this, dataStream, type);
+    MetaClass metaClass = registerClassObject(dataStream, type);
     
     metaClass.writeObject(this, dataStream, object, objectId);
   }

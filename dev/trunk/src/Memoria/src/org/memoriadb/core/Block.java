@@ -14,4 +14,12 @@ public class Block {
     fPosition = position;
   }
 
+  public long getPosition() {
+    return fPosition;
+  }
+
+  public long getSize() {
+    return fSize;
+  }
+  
 }
