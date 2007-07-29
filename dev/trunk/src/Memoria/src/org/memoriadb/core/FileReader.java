@@ -14,7 +14,6 @@ public final class FileReader implements IReaderContext {
   private final Set<ObjectReference> fObjectsToBind = new HashSet<ObjectReference>();
   private ObjectRepo fRepo;
   private final MemoriaFile fMemoriaFile;
-  
 
   public static void readIn(File file, ObjectRepo repo) {
     new FileReader(file).read(repo);
