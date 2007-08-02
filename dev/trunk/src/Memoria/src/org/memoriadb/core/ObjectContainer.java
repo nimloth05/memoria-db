@@ -3,16 +3,13 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.exception.MemoriaException;
+
 public class ObjectContainer implements IContext, IObjectContainer {
   
   private final ObjectRepo fObjectRepo;
   
   private final File fFile;
-  
-  /**
-   * Additional Objects that must be serialized to complete the aggregate.
-   */
-  private final List<Object> fObjectsToSerialize = new ArrayList<Object>();
   
   ObjectContainer(File file) {
     fFile = file;
@@ -65,39 +62,12 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.register(object);
   }
 
-  public MetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
-    MetaClass classObject = fObjectRepo.getMetaObject(type);
-    
-    if (classObject == null) {
-      classObject = new MetaClass(type);
-      serializeObject(dataStream, classObject);
-    }
-    return classObject;
-  }
-
-  @Override
-  public void serializeIfNotContained(Object referencee) throws Exception {
-    //FIXME This Implementation is bad.
-    if (fObjectRepo.contains(referencee)) return;
-    fObjectsToSerialize.add(referencee);
-  }
-  
-  public void serializeObject(DataOutput dataStream, Object object) throws Exception {
-    Class<?> type = object.getClass();
-    long objectId = fObjectRepo.register(object);
-    
-    MetaClass metaClass = registerClassObject(dataStream, type);
-    
-    metaClass.writeObject(this, dataStream, object, objectId);
-  }
-
   public void writeObject(List<Object> objects) {
     try {
-      internalWriteObject(objects);
+      append(ObjectSerializer.serialize(fObjectRepo, objects));
     }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException("exception occured during write back: " + e);
+    catch (IOException e) {
+      throw new MemoriaException(e);
     }
   }
 
@@ -124,26 +94,4 @@ public class ObjectContainer implements IContext, IObjectContainer {
     file.close();
   }
 
-  private void internalWriteObject(List<Object> objects) throws Exception {
-    byte[] data = serializeObjects(objects);
-    byte[] additionalObjects = serializeObjects(fObjectsToSerialize);
-    
-    byte[] result = new byte[data.length + additionalObjects.length];
-    
-    System.arraycopy(data, 0, result, 0, data.length);
-    System.arraycopy(additionalObjects, 0, result, data.length, additionalObjects.length);
-    
-    append(result);
-  }
-
-
-  private byte[] serializeObjects(List<Object> objects) throws Exception {
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    DataOutput stream = new DataOutputStream(buffer);
-    for(Object object: objects) {
-      serializeObject(stream, object);
-    }
-    return buffer.toByteArray();
-  }
-  
 }

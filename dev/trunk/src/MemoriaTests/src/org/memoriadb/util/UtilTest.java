@@ -1,6 +1,8 @@
-package org.memoriadb.core;
+package org.memoriadb.util;
 
 import java.io.*;
+
+import org.memoriadb.util.ByteUtil;
 
 import junit.framework.TestCase;
 

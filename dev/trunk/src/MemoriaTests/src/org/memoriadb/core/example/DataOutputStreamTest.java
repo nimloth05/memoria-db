@@ -3,6 +3,7 @@ package org.memoriadb.core.example;
 import java.io.File;
 import java.util.*;
 
+import org.java.patched.*;
 import org.memoriadb.examples.Store;
 
 import junit.framework.TestCase;

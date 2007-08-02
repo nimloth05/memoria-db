@@ -1,6 +1,5 @@
 package org.memoriadb.core;
 
-import java.io.*;
 import java.lang.reflect.Field;
 
 import org.memoriadb.exception.MemoriaException;
@@ -53,18 +52,9 @@ public final class MetaField {
     return fType;
   }
 
-  public void readValue(DataInput input, Object result, IReaderContext context) {
-    getFieldType().readValue(input, result, getJavaField(result), context);
-  }
-  
   @Override
   public String toString() {
     return "FieldName: "+fName;
-  }
-
-  public void writeField(DataOutput stream, Object object, IContext context) throws Exception {
-    stream.writeInt(getId());
-    FieldType.values()[getType()].writeValue(stream, object, getJavaField(object), context);
   }
 
   private void internalReadField(Object object)  {

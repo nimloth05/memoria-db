@@ -3,7 +3,7 @@ package org.memoriadb.core;
 import java.io.File;
 import java.util.*;
 
-import org.memoriadb.core.*;
+import org.java.patched.*;
 
 import junit.framework.TestCase;
 
@@ -29,8 +29,10 @@ public abstract class AbstractFileStoreTest extends TestCase {
     createStore(); 
   }
 
-  protected final void save(Object...objects) {
-    fStore.writeObject(Arrays.asList(objects));
+  protected final List<Object> save(Object...objects) {
+    List<Object> list = Arrays.asList(objects);
+    fStore.writeObject(list);
+    return list;
   }
   
   @Override

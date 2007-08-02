@@ -1,11 +1,11 @@
 package org.memoriadb.core.testclasses;
 
-public class WrongHashCodeTestObj {
+public class WrongHashCodeIdentityHashCode {
   
   
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof WrongHashCodeTestObj)) return false;
+    if (!(obj instanceof WrongHashCodeIdentityHashCode)) return false;
     return hashCode() == obj.hashCode();
   }
   

@@ -1,6 +1,5 @@
 package org.memoriadb.core;
 
-import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -16,6 +15,13 @@ public final class MetaClass {
   private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
   private final Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
 
+  /**
+   * @return true, if this MetaClass-object represents the type MetaClass
+   */
+  public static boolean isMetaClassObject(long typeId) {
+    return typeId == METACLASS_OBJECT_ID;
+  }
+  
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
    * object of a given type enters the memoria-reference-space.
@@ -35,13 +41,17 @@ public final class MetaClass {
     fFieldIdToInfo.put(metaField.getId(), metaField);
     fFieldNameToInfo.put(metaField.getName(), metaField);
   }
-  
+
   public String getClassName() {
     return fClassName;
   }
 
   public MetaField getField(int fieldId) {
     return fFieldIdToInfo.get(fieldId);
+  }
+
+  public Iterable<MetaField> getFields() {
+    return fFieldIdToInfo.values();
   }
 
   public Class<?> getJavaClass() { 
@@ -51,14 +61,7 @@ public final class MetaClass {
       throw new MemoriaException(e);
     }
   }
-
-  /**
-   * @return true, if this MetaClass-object represents the type MetaClass
-   */
-  public boolean isMetaClassObject(long typeId) {
-    return typeId == METACLASS_OBJECT_ID;
-  }
-
+  
   public Object newInstance()  {
     try {
       return getJavaClass().newInstance();
@@ -66,11 +69,6 @@ public final class MetaClass {
     catch (Exception e) {
       throw new MemoriaException(e);
     }
-  }
-  
-  public void readFieldValue(DataInput input, int fieldId, Object result, IReaderContext context) {
-    MetaField field = getField(fieldId);
-    field.readValue(input, result, context);
   }
 
   public void setClassName(String name) {
@@ -80,29 +78,6 @@ public final class MetaClass {
   @Override
   public String toString() {
     return fClassName;
-  }
-  
-  public void writeObject(IContext context, DataOutput dataStream, Object object, long objectId) throws Exception {
-    if(!object.getClass().getName().equals(fClassName)) throw new MemoriaException("object of type " + fClassName + " expected but was " + object.getClass());
-    
-    long typeId = context.getObjectId(this);
-    
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
-    DataOutputStream objectStream = new DataOutputStream(buffer);
-    
-    objectStream.writeLong(typeId);
-    objectStream.writeLong(objectId);
-    
-    if(isMetaClassObject(typeId)) {
-      writeMetaClass(objectStream, (MetaClass) object);
-    }
-    else {
-      writeObject(objectStream, object, context);
-    }
-    
-    byte[] objectData = buffer.toByteArray();
-    dataStream.writeInt(objectData.length);
-    dataStream.write(objectData);    
   }
 
   private void addFields(Class<?> klass) {
@@ -116,25 +91,5 @@ public final class MetaClass {
       addMetaField(metaField);
     }    
   }
-
-  private void writeFields(DataOutput objectStream, MetaClass classObject) throws IOException {
-    for(MetaField field: classObject.fFieldIdToInfo.values()) {
-      objectStream.writeInt(field.getId());
-      objectStream.writeUTF(field.getName());
-      objectStream.writeInt(field.getType());
-    }
-  }
-
-  private void writeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
-    objectStream.writeUTF(classObject.getClassName());
-    writeFields(objectStream, classObject);
-  }
-
-  private void writeObject(DataOutputStream objectStream, Object object, IContext context) throws Exception  {
-    for(MetaField metaField: fFieldIdToInfo.values()) {
-      metaField.writeField(objectStream, object, context);
-    }
-  }
-
-
+  
 }

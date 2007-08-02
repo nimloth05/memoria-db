@@ -30,7 +30,8 @@ public class HydratedObject {
     Object result = classObject.newInstance();
     while(fInput.available() > 0) {
       int fieldId = fInput.readInt();
-      classObject.readFieldValue(fInput, fieldId, result, context);
+      MetaField field = classObject.getField(fieldId);
+      field.getFieldType().readValue(fInput, result, field.getJavaField(result), context);
     }
     return result;
   }

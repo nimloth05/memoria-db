@@ -2,6 +2,7 @@ package org.memoriadb.core;
 
 import java.util.*;
 
+import org.java.patched.PIdentityHashMap;
 import org.memoriadb.exception.MemoriaException;
 
 
@@ -10,7 +11,8 @@ public class ObjectRepo {
   private long fCurrentObjectId = 0;
   
   private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
-  private final Map<Object, Long> fObjectToId = new IdentityHashMap<Object, Long>();
+  //We have to use the patched version of the IdentityHashMap.
+  private final Map<Object, Long> fObjectToId = new PIdentityHashMap<Object, Long>();
   
   private final Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
 

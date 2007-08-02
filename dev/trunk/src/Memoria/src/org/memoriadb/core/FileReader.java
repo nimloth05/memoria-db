@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.ByteUtil;
 
 
 public final class FileReader implements IReaderContext {

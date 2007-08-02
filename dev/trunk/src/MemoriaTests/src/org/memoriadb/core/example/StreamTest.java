@@ -3,6 +3,7 @@ package org.memoriadb.core.example;
 import java.io.File;
 import java.util.*;
 
+import org.java.patched.*;
 import org.memoriadb.core.testclasses.TestObj;
 import org.memoriadb.examples.*;
 

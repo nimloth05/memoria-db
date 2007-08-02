@@ -12,6 +12,14 @@ public class TestObj {
 
   public TestObj() {}
   
+  /**
+   * This constructor is used by the generic object ref test.
+   * @param string
+   */
+  public TestObj(String string) {
+    this(string, 1);
+  }
+  
   public TestObj(String string, int i) {
     fString1 = string;
     fI1 = i;
@@ -23,19 +31,19 @@ public class TestObj {
     fI3 = fI1;
   }
 
-  public String getString() {
-    return fString1;
-  }
-
-  public void setString(String string) {
-    fString1 = string;
-  }
-
   public int getI() {
     return fI1;
   }
 
+  public String getString() {
+    return fString1;
+  }
+
   public void setI(int i) {
     fI1 = i;
+  }
+
+  public void setString(String string) {
+    fString1 = string;
   }
 }

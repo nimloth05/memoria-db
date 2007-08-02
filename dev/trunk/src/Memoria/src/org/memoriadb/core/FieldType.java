@@ -17,7 +17,7 @@ public enum FieldType {
     }
 
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeBoolean((Boolean) field.get(object));
     }
     
@@ -30,7 +30,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeChar((Character)field.get(object));
     }
     
@@ -44,7 +44,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeByte((Byte)field.get(object));
     }
 
@@ -57,7 +57,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeShort((Short)field.get(object));
     }
 
@@ -70,7 +70,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeInt((Integer)field.get(object));
     }
 
@@ -83,7 +83,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeLong((Long)field.get(object));
     }
 
@@ -96,7 +96,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeFloat((Float)field.get(object));
     }
 
@@ -109,7 +109,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       stream.writeDouble((Double)field.get(object));
     }
 
@@ -122,7 +122,7 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       Object rawValue = field.get(object);
       if (rawValue != null) {
         stream.writeUTF(rawValue.toString());
@@ -141,10 +141,9 @@ public enum FieldType {
     }
     
     @Override
-    public void writeValue(DataOutput stream, Object object, Field field, IContext context) throws Exception {
+    public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       Object referencee = field.get(object);
-      context.serializeIfNotContained(referencee);
-      long objectId = context.register(referencee);
+      long objectId = context.serializeIfNotContained(referencee);
       stream.writeLong(objectId);
     }
 
@@ -198,7 +197,7 @@ public enum FieldType {
     }
   }
   
-  public abstract void writeValue(DataOutput input, Object object, Field field, IContext context) throws Exception;
+  public abstract void writeValue(DataOutput input, Object object, Field field, ISerializeContext context) throws Exception;
   
 
   protected abstract void internalReadValue(DataInput input, Object object, Field field, IReaderContext context) throws Exception;
