@@ -6,12 +6,6 @@ import org.memoriadb.core.testclasses.*;
 
 public class ObjectContainerTest extends AbstractFileStoreTest {
   
-  public void test_hydration() {
-    save(new A(1, "a1"), new A(2, "a2"));
-    
-    reopen();
-  }
-  
   public void test_incorrect_hash_code_objects() {
     WrongHashCode obj1 = new WrongHashCode("1");
     WrongHashCode obj2 = new WrongHashCode("2");
@@ -72,6 +66,15 @@ public class ObjectContainerTest extends AbstractFileStoreTest {
 //    String actual = getAll(String.class).get(0);
 //    assertEquals(expected, actual);
 //  }
+  
+  public void test_save_same_object_twice() {
+    WrongHashCode obj = new WrongHashCode();
+    save(obj, obj, obj);
+    
+    reopen();
+    List<WrongHashCode> objs = getAll(WrongHashCode.class);
+    assertEquals(1, objs.size());
+  }
   
   public void test_save_two_objects_in_two_transactions() {
     TestObj obj1 = new TestObj("1", 1);

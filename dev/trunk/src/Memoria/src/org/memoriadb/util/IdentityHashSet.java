@@ -46,7 +46,7 @@ public class IdentityHashSet<T> extends AbstractSet<T> {
   
   @Override
   public boolean retainAll(Collection<?> c) {
-    throw new UnsupportedOperationException("This Method is not supported.");
+    return fBackend.keySet().retainAll(c);
   }
 
   @Override

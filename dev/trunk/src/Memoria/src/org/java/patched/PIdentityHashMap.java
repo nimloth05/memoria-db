@@ -424,17 +424,9 @@ public class PIdentityHashMap<K,V>
         
         @Override
         public boolean retainAll(Collection<?> c) {
-          boolean modified = false;
-          Iterator<?> e = iterator();
-          while (e.hasNext()) {
-              if (!c.contains(e.next())) {
-            e.remove();
-            modified = true;
-              }
-          }
-          return modified;
-
+          throw new UnsupportedOperationException();
         }
+        
         @Override
         public int size() {
             return size;
