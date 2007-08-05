@@ -1,4 +1,4 @@
-package org.memoriadb.examples;
+package bootstrap.examples;
 
 import java.io.*;
 import java.lang.reflect.*;

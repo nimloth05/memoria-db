@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.*;
 
 import org.java.patched.*;
-import org.memoriadb.examples.Store;
+
+import bootstrap.examples.Store;
 
 import junit.framework.TestCase;
 

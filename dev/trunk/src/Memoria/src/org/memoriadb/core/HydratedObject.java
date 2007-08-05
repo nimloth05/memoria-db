@@ -1,6 +1,6 @@
 package org.memoriadb.core;
 
-import java.io.DataInputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -27,13 +27,13 @@ public class HydratedObject {
 
   public Object dehydrate(IReaderContext context) throws Exception {
     MetaClass classObject = (MetaClass) context.getObjectById(fTypeId);
-    Object result = classObject.newInstance();
-    while(fInput.available() > 0) {
-      int fieldId = fInput.readInt();
-      MetaField field = classObject.getField(fieldId);
-      field.getFieldType().readValue(fInput, result, field.getJavaField(result), context);
+    
+    if (classObject.isJavaSerialization()) {
+      MemoriaObjectInputStream in = new MemoriaObjectInputStream(fInput);
+      return in.readObject();
     }
-    return result;
+    
+    return instantiate(context, classObject);
   }
 
   public long getObjectId() {
@@ -43,7 +43,7 @@ public class HydratedObject {
   public long getTypeId() {
     return fTypeId;
   }
-  
+
   public void objectToBind(Object object, Field field, long targetId) {
     fObjectsToBind.add(new ObjectReference(object, field, targetId));
   }
@@ -51,6 +51,16 @@ public class HydratedObject {
   @Override
   public String toString() {
     return "typeId:" + fTypeId + " objectId:" + fObjectId;
+  }
+  
+  private Object instantiate(IReaderContext context, MetaClass classObject) throws IOException {
+    Object result = classObject.newInstance();
+    while(fInput.available() > 0) {
+      int fieldId = fInput.readInt();
+      MetaField field = classObject.getField(fieldId);
+      field.getFieldType().readValue(fInput, result, field.getJavaField(result), context);
+    }
+    return result;
   }
   
 }

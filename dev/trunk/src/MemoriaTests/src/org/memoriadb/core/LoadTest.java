@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.core.testclasses.*;
 
-public class LoadTest extends AbstractFileStoreTest {
+public class LoadTest extends AbstractObjectStoreTest {
   
   
   @SuppressWarnings("nls")

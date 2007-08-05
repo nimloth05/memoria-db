@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.core.testclasses.*;
 
-public class ObjectContainerTest extends AbstractFileStoreTest {
+public class ObjectContainerTest extends AbstractObjectStoreTest {
   
   public void test_incorrect_hash_code_objects() {
     WrongHashCode obj1 = new WrongHashCode("1");

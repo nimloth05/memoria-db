@@ -90,7 +90,8 @@ public final class FileReader implements IReaderContext {
   
   private void readMetaClass(DataInputStream stream, long objectId) throws Exception {
     String className = stream.readUTF();
-    MetaClass classObject = new MetaClass(className);
+    boolean isJavaSerialization = stream.readBoolean();
+    MetaClass classObject = new MetaClass(className, isJavaSerialization);
     readMetaFields(stream, classObject);
     fRepo.put(objectId, classObject);
   }

@@ -2,12 +2,9 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.java.patched.*;
-import org.memoriadb.core.*;
-import org.memoriadb.core.testclasses.*;
-
-import bootstrap.core.*;
 import junit.framework.TestCase;
+
+import org.memoriadb.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {
   
@@ -53,7 +50,7 @@ public class ObjectRepoTest extends TestCase {
   public void test_put_a_lot_of_objects() {
     List<Object> objects = new ArrayList<Object>();
     for(int i = 0; i < 100000; ++i) {
-      Object obj = new WrongHashCodeIdentityHashCode();
+      Object obj = new WrongHashCode();
       fRepo.register(obj);
       objects.add(obj);
     }

@@ -5,7 +5,8 @@ import java.util.*;
 
 import org.java.patched.*;
 import org.memoriadb.core.testclasses.TestObj;
-import org.memoriadb.examples.*;
+
+import bootstrap.examples.*;
 
 import junit.framework.TestCase;
 

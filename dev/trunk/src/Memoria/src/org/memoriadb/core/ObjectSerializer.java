@@ -72,6 +72,7 @@ public class ObjectSerializer implements ISerializeContext {
 
   private void serializeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
     objectStream.writeUTF(classObject.getClassName());
+    objectStream.writeBoolean(classObject.isJavaSerialization());
     serializeMetaFields(objectStream, classObject);
   }
   
@@ -84,9 +85,9 @@ public class ObjectSerializer implements ISerializeContext {
   }
   
   private void serializeObject(DataOutput dataStream, Object object) throws Exception {
-    Class<?> type = object.getClass();
     long objectId = fObjectRepo.register(object);
     
+    Class<?> type = object.getClass();
     MetaClass metaClass = registerClassObject(dataStream, type);
     
     serializeObject(metaClass, dataStream, object, objectId);
@@ -114,10 +115,16 @@ public class ObjectSerializer implements ISerializeContext {
   }
   
   private void serializeObjectValues(DataOutputStream stream, MetaClass classObject, Object object) throws Exception  {
+    if (classObject.isJavaSerialization()) {
+      ObjectOutputStream output = new MemoriaObjectOutputStream(stream);
+      output.writeObject(object);
+      return;
+    }
     for(MetaField metaField: classObject.getFields()) {
       stream.writeInt(metaField.getId());
       metaField.getFieldType().writeValue(stream, object, metaField.getJavaField(object), this);
     }
+    
   }
   
 }

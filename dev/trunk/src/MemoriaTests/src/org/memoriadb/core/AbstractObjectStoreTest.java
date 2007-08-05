@@ -7,7 +7,7 @@ import org.java.patched.*;
 
 import junit.framework.TestCase;
 
-public abstract class AbstractFileStoreTest extends TestCase {
+public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected IObjectContainer fStore;
   

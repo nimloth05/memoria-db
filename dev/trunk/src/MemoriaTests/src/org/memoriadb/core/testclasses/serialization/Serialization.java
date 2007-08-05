@@ -1,37 +1,30 @@
-package org.memoriadb.core.testclasses;
+package org.memoriadb.core.testclasses.serialization;
 
-public class SimpleTestObj {
+import java.io.Serializable;
+
+public class Serialization implements Serializable {
   
-  private String fString;
-  private int fInt;
+  public String fString;
+  public int fInt;
   
-  public SimpleTestObj() {}
+  public Serialization() {}
   
-  public SimpleTestObj(String string) {
-    this(string, 1);
-  }
-  
-  public SimpleTestObj(String string, int i) {
+  public Serialization(String string) {
     fString = string;
-    fInt = i;
   }
-  
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    final SimpleTestObj other = (SimpleTestObj) obj;
+    final Serialization other = (Serialization) obj;
     if (fInt != other.fInt) return false;
     if (fString == null) {
       if (other.fString != null) return false;
     }
     else if (!fString.equals(other.fString)) return false;
     return true;
-  }
-
-  public String getString() {
-    return fString;
   }
 
   @Override
@@ -42,4 +35,7 @@ public class SimpleTestObj {
     result = prime * result + ((fString == null) ? 0 : fString.hashCode());
     return result;
   }
+  
+  
+
 }
