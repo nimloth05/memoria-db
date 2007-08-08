@@ -90,6 +90,17 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     assertEquals(obj2.getString(), objs.get(1).getString());
   }
   
+  public void test_serialize_array_object() {
+    ArrayContainer container = new ArrayContainer();
+    container.set();
+    
+    save(container);
+    reopen();
+    
+    ArrayContainer loadedContainer = getAll(ArrayContainer.class).get(0);
+    assertEquals(container.fArray[0], loadedContainer.fArray[0]);
+  }
+  
   public void test_svae_object_ref() throws Exception {
     internalTestSaveObjectRef(TestObj.class);
   }

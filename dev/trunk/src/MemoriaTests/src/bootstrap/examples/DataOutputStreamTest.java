@@ -1,11 +1,10 @@
-package org.memoriadb.core.example;
+package bootstrap.examples;
 
 import java.io.File;
 import java.util.*;
 
 import org.java.patched.*;
 
-import bootstrap.examples.Store;
 
 import junit.framework.TestCase;
 

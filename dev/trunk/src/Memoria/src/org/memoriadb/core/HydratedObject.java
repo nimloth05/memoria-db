@@ -28,11 +28,6 @@ public class HydratedObject {
   public Object dehydrate(IReaderContext context) throws Exception {
     MetaClass classObject = (MetaClass) context.getObjectById(fTypeId);
     
-    if (classObject.isJavaSerialization()) {
-      MemoriaObjectInputStream in = new MemoriaObjectInputStream(fInput);
-      return in.readObject();
-    }
-    
     return instantiate(context, classObject);
   }
 

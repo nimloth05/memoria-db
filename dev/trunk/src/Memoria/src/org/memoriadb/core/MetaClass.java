@@ -1,6 +1,5 @@
 package org.memoriadb.core;
 
-import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -15,8 +14,6 @@ public final class MetaClass {
 
   private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
   private final Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
-
-  private final boolean fIsJavaSerialization;
 
   /**
    * @return true, if this MetaClass-object represents the type MetaClass
@@ -34,13 +31,10 @@ public final class MetaClass {
     fClassName = klass.getName();
     
     addFields(klass);
-    
-    fIsJavaSerialization = Serializable.class.isAssignableFrom(klass);
   }
   
-  public MetaClass(String className, boolean isJavaSerialization) {
+  public MetaClass(String className) {
     fClassName = className;
-    fIsJavaSerialization = isJavaSerialization;
   }
   
   public void addMetaField(MetaField metaField) {
@@ -68,10 +62,6 @@ public final class MetaClass {
     }
   }
   
-  public boolean isJavaSerialization() {
-    return fIsJavaSerialization;
-  }
-
   public Object newInstance()  {
     try {
       return getJavaClass().newInstance();

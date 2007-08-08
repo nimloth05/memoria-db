@@ -1,4 +1,4 @@
-package org.memoriadb.core.example;
+package bootstrap.examples;
 
 import java.io.File;
 import java.util.*;

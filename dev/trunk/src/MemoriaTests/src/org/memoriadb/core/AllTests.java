@@ -9,7 +9,6 @@ public class AllTests {
     //$JUnit-BEGIN$
     suite.addTestSuite(FieldTypeTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
-    suite.addTestSuite(JavaSerializationTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     suite.addTestSuite(LoadTest.class);
     //$JUnit-END$
