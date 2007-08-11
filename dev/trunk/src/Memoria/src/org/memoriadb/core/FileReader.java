@@ -1,7 +1,6 @@
 package org.memoriadb.core;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.exception.MemoriaException;
@@ -12,7 +11,7 @@ public final class FileReader implements IReaderContext {
   
   private final File fFile;
   private final Set<HydratedObject> fHydratedObjects = new HashSet<HydratedObject>();
-  private final Set<ObjectReference> fObjectsToBind = new HashSet<ObjectReference>();
+  private final Set<IBindable> fObjectsToBind = new HashSet<IBindable>();
   private ObjectRepo fRepo;
   private final MemoriaFile fMemoriaFile;
 
@@ -32,8 +31,8 @@ public final class FileReader implements IReaderContext {
   }
   
   @Override
-  public void objectToBind(Object object, Field field, long targetId) {
-    fObjectsToBind.add(new ObjectReference(object, field, targetId));
+  public void objectToBind(IBindable bindable) {
+    fObjectsToBind.add(bindable);
   }
 
   public void read(ObjectRepo repo) {
@@ -52,7 +51,7 @@ public final class FileReader implements IReaderContext {
   }
 
   private void bindObjects() throws Exception {
-    for(ObjectReference ref: fObjectsToBind) {
+    for(IBindable ref: fObjectsToBind) {
       ref.bind(this);
     }
     fObjectsToBind.clear();
@@ -89,30 +88,18 @@ public final class FileReader implements IReaderContext {
   }
   
   private void readMetaClass(DataInputStream stream, long objectId) throws Exception {
-    String className = stream.readUTF();
-    MetaClass classObject = new MetaClass(className);
-    readMetaFields(stream, classObject);
+    HandlerMetaClass metaClassObject = (HandlerMetaClass) fRepo.getObjectById(IMetaClass.METACLASS_OBJECT_ID);
+    MetaClass classObject = (MetaClass) metaClassObject.getHandler().desrialize(stream, this);
     fRepo.put(objectId, classObject);
   }
 
-  
-  private void readMetaFields(DataInputStream stream, MetaClass classObject) throws Exception {
-    while (stream.available() > 0) {
-      int fieldId = stream.readInt();
-      String name = stream.readUTF();
-      int type = stream.readInt();
-      MetaField metaField = new MetaField(fieldId, name, type);
-      classObject.addMetaField(metaField);
-    }
-  }
-  
   private void readObject(byte[] data, int offset, int size) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
     long typeId = stream.readLong();
     long objectId = stream.readLong();
 
-    if(typeId == MetaClass.METACLASS_OBJECT_ID) {
+    if(MetaClass.isMetaClassObject(typeId)) {
       readMetaClass(stream, objectId);
       return;
     }

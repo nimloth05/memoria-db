@@ -29,15 +29,6 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.getAllObjects();
   }
 
-  public Collection<MetaClass> getMetaClass() {
-    return fObjectRepo.getMetaObejcts();
-  }
-
-  @Override
-  public MetaClass getMetaObject(Class<?> javaType) {
-    return fObjectRepo.getMetaObject(javaType);
-  }
-
   @Override
   public Object getObjectById(long objectId) {
     return fObjectRepo.getObjectById(objectId);

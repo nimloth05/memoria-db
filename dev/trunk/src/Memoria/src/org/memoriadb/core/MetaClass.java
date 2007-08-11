@@ -3,12 +3,13 @@ package org.memoriadb.core;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
 
-public final class MetaClass {
+public final class MetaClass implements IMetaClass {
 
-  public static final long METACLASS_OBJECT_ID = 1;
+  
   
   private String fClassName;
 
@@ -54,6 +55,14 @@ public final class MetaClass {
     return fFieldIdToInfo.values();
   }
 
+  @Override
+  public ISerializeHandler getHandler() {
+    return new org.memoriadb.core.handler.def.DefaultHandler(this);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.memoriadb.core.IMetaClass#getJavaClass()
+   */
   public Class<?> getJavaClass() { 
     try {
       return Class.forName(fClassName);
@@ -62,6 +71,9 @@ public final class MetaClass {
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.memoriadb.core.IMetaClass#newInstance()
+   */
   public Object newInstance()  {
     try {
       return getJavaClass().newInstance();
@@ -70,7 +82,7 @@ public final class MetaClass {
       throw new MemoriaException(e);
     }
   }
-  
+
   public void setClassName(String name) {
     fClassName = name;
   }

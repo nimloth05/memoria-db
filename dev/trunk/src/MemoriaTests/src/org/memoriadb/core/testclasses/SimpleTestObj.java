@@ -42,4 +42,9 @@ public class SimpleTestObj {
     result = prime * result + ((fString == null) ? 0 : fString.hashCode());
     return result;
   }
+  
+  @Override
+  public String toString() {
+    return "s: "+fString + "i: " + fInt;
+  }
 }

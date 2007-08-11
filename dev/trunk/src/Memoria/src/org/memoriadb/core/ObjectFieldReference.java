@@ -5,14 +5,13 @@ import java.lang.reflect.Field;
 import org.memoriadb.exception.MemoriaException;
 
 
-public class ObjectReference {
-  
+public class ObjectFieldReference implements IBindable {
   
   private final Field fField;
   private final Object fSource;
   private final long fTargetObjectId;
 
-  public ObjectReference(Object source, Field field, long targetObjectId){
+  public ObjectFieldReference(Object source, Field field, long targetObjectId){
     fSource = source;
     fField = field;
     fTargetObjectId = targetObjectId;

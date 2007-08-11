@@ -137,12 +137,17 @@ public enum FieldType {
     @Override
     public void internalReadValue(DataInput stream, Object object, Field field, IReaderContext context) throws Exception {
       long targetId = stream.readLong();
-      context.objectToBind(object, field, targetId);
+      if (targetId == -1) return;
+      context.objectToBind(new ObjectFieldReference(object, field, targetId));
     }
     
     @Override
     public void writeValue(DataOutput stream, Object object, Field field, ISerializeContext context) throws Exception {
       Object referencee = field.get(object);
+      if (referencee == null) {
+        stream.writeLong(-1);
+        return;
+      }
       long objectId = context.serializeIfNotContained(referencee);
       stream.writeLong(objectId);
     }

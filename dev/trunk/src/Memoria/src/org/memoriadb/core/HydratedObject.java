@@ -1,8 +1,10 @@
 package org.memoriadb.core;
 
-import java.io.*;
+import java.io.DataInputStream;
 import java.lang.reflect.Field;
 import java.util.*;
+
+import org.memoriadb.exception.MemoriaException;
 
 /**
  * Stores all information needed to dehydrate the object. References to other entities are
@@ -17,7 +19,7 @@ public class HydratedObject {
   private final long fObjectId;
   private final DataInputStream fInput;
   
-  private final List<ObjectReference> fObjectsToBind = new ArrayList<ObjectReference>();
+  private final List<ObjectFieldReference> fObjectsToBind = new ArrayList<ObjectFieldReference>();
   
   public HydratedObject(long typeId, long objectId, DataInputStream input) {
     fTypeId = typeId;
@@ -26,7 +28,8 @@ public class HydratedObject {
   }
 
   public Object dehydrate(IReaderContext context) throws Exception {
-    MetaClass classObject = (MetaClass) context.getObjectById(fTypeId);
+    IMetaClass classObject = (IMetaClass) context.getObjectById(fTypeId);
+    if (classObject == null) throw new MemoriaException("ClassObject for typeId not found: " + fTypeId);
     
     return instantiate(context, classObject);
   }
@@ -40,7 +43,7 @@ public class HydratedObject {
   }
 
   public void objectToBind(Object object, Field field, long targetId) {
-    fObjectsToBind.add(new ObjectReference(object, field, targetId));
+    fObjectsToBind.add(new ObjectFieldReference(object, field, targetId));
   }
   
   @Override
@@ -48,14 +51,8 @@ public class HydratedObject {
     return "typeId:" + fTypeId + " objectId:" + fObjectId;
   }
   
-  private Object instantiate(IReaderContext context, MetaClass classObject) throws IOException {
-    Object result = classObject.newInstance();
-    while(fInput.available() > 0) {
-      int fieldId = fInput.readInt();
-      MetaField field = classObject.getField(fieldId);
-      field.getFieldType().readValue(fInput, result, field.getJavaField(result), context);
-    }
-    return result;
+  private Object instantiate(IReaderContext context, IMetaClass classObject) throws Exception {
+    return classObject.getHandler().desrialize(fInput, context);
   }
   
 }

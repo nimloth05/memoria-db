@@ -98,6 +98,9 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     reopen();
     
     ArrayContainer loadedContainer = getAll(ArrayContainer.class).get(0);
+    SimpleTestObj loadedObj = getAll(SimpleTestObj.class).get(0);
+    
+    assertSame(loadedObj, loadedContainer.fArray[0]);
     assertEquals(container.fArray[0], loadedContainer.fArray[0]);
   }
   

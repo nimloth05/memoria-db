@@ -14,7 +14,7 @@ public class ObjectRepo {
   //We have to use the patched version of the IdentityHashMap.
   private final Map<Object, Long> fObjectToId = new PIdentityHashMap<Object, Long>();
   
-  private final Map<Class<?>, MetaClass> fMetaObjects = new HashMap<Class<?>, MetaClass>();
+  private final Map<Class<?>, IMetaClass> fMetaObjects = new HashMap<Class<?>, IMetaClass>();
 
   public void checkSanity() {
     for(Long id: fIdToObject.keySet()) {
@@ -33,16 +33,13 @@ public class ObjectRepo {
     return Collections.<Object>unmodifiableCollection(fIdToObject.values());
   }
 
-  public Collection<MetaClass> getMetaObejcts() {
-    return Collections.unmodifiableCollection(fMetaObjects.values());
-  }
-  
   /**
    * 
    * @param javaType
    * @return the metaObject for the given java-Type or null.
    */
-  public MetaClass getMetaObject(Class<?> javaType) {
+  public IMetaClass getMetaObject(Class<?> javaType) {
+    if (javaType.isArray()) return (IMetaClass) fIdToObject.get(IMetaClass.ARRAY_META_CLASS);
     return fMetaObjects.get(javaType);
   }
 
@@ -99,8 +96,8 @@ public class ObjectRepo {
     previousMapped = fIdToObject.put(result, object);
     if (previousMapped != null) throw new RuntimeException("double registration in objectId-Map id " + result + " object: " + object + " previous object " + previousMapped);
     
-    if (object instanceof MetaClass) {
-      MetaClass metaObject = (MetaClass) object;
+    if (object instanceof IMetaClass) {
+      IMetaClass metaObject = (IMetaClass) object;
       fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
     }
   }

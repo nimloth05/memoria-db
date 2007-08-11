@@ -31,8 +31,8 @@ public class ObjectSerializer implements ISerializeContext {
   }
   
   
-  public MetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
-    MetaClass classObject = fObjectRepo.getMetaObject(type);
+  public IMetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
+    IMetaClass classObject = fObjectRepo.getMetaObject(type);
     
     if (classObject == null) {
       classObject = new MetaClass(type);
@@ -43,13 +43,21 @@ public class ObjectSerializer implements ISerializeContext {
 
   @Override
   public long serializeIfNotContained(Object referencee) {
+    if (referencee instanceof Class) {
+      Class<?> clazz = (Class) referencee;
+      referencee = fObjectRepo.getMetaObject(clazz);
+      if (referencee == null) {
+        referencee = new MetaClass(clazz);
+      } 
+    }
+    
     if (fObjectRepo.contains(referencee)) return fObjectRepo.getObjectId(referencee);
     long result = fObjectRepo.register(referencee);
     if (fObjects.contains(referencee)) return result;
     fObjectsToSerialize.add(referencee);
     return result;
   }
-
+  
   public byte[] serializeObjects() {
     try {
       return internalSerializeObjects();
@@ -57,42 +65,35 @@ public class ObjectSerializer implements ISerializeContext {
       throw new MemoriaException(e);
     }
   }
-  
+
   private byte[] internalSerializeObjects() throws Exception {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     DataOutput stream = new DataOutputStream(buffer);
+    
     for(Object object: fObjects) {
       serializeObject(stream, object);
     }
-    for(Object object: fObjectsToSerialize) {
-      serializeObject(stream, object);
+
+    while(!fObjectsToSerialize.isEmpty()) {
+      Iterator<Object> iterator = fObjectsToSerialize.iterator();
+      Object next = iterator.next();
+      iterator.remove();
+      serializeObject(stream, next);
     }
+    
     return buffer.toByteArray();
   }
 
-  private void serializeMetaClass(DataOutput objectStream, MetaClass classObject) throws IOException {
-    objectStream.writeUTF(classObject.getClassName());
-    serializeMetaFields(objectStream, classObject);
-  }
-  
-  private void serializeMetaFields(DataOutput objectStream, MetaClass classObject) throws IOException {
-    for(MetaField field: classObject.getFields()) {
-      objectStream.writeInt(field.getId());
-      objectStream.writeUTF(field.getName());
-      objectStream.writeInt(field.getType());
-    }
-  }
-  
   private void serializeObject(DataOutput dataStream, Object object) throws Exception {
     long objectId = fObjectRepo.register(object);
     
     Class<?> type = object.getClass();
-    MetaClass metaClass = registerClassObject(dataStream, type);
+    IMetaClass metaClass = registerClassObject(dataStream, type);
     
     serializeObject(metaClass, dataStream, object, objectId);
   }
 
-  private void serializeObject(MetaClass classObject, DataOutput dataStream, Object object, long objectId) throws Exception {
+  private void serializeObject(IMetaClass classObject, DataOutput dataStream, Object object, long objectId) throws Exception {
     long typeId = fObjectRepo.getObjectId(classObject);
     
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
@@ -102,23 +103,16 @@ public class ObjectSerializer implements ISerializeContext {
     objectStream.writeLong(objectId);
     
     if(MetaClass.isMetaClassObject(typeId)) {
-      serializeMetaClass(objectStream, (MetaClass) object);
+      HandlerMetaClass metaClassObject = (HandlerMetaClass) fObjectRepo.getObjectById(typeId);
+      metaClassObject.getHandler().serialize(object, objectStream, this);
     }
     else {
-      serializeObjectValues(objectStream, classObject, object);
+      classObject.getHandler().serialize(object, objectStream, this);
     }
     
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);
     dataStream.write(objectData);    
-  }
-  
-  private void serializeObjectValues(DataOutputStream stream, MetaClass classObject, Object object) throws Exception  {
-    for(MetaField metaField: classObject.getFields()) {
-      stream.writeInt(metaField.getId());
-      metaField.getFieldType().writeValue(stream, object, metaField.getJavaField(object), this);
-    }
-    
   }
   
 }

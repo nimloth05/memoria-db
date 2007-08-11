@@ -8,8 +8,6 @@ public interface IContext {
   public boolean contains(Object referencee);
   
 
-  public MetaClass getMetaObject(Class<?> javaType);
-  
   public Object getObjectById(long objectId);
   
   /**
