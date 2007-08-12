@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.binder.BindArray;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 

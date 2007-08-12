@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.memoriadb.core.binder.ObjectFieldReference;
 import org.memoriadb.exception.MemoriaException;
 
 /**

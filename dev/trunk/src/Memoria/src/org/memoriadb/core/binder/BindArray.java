@@ -1,7 +1,8 @@
-package org.memoriadb.core;
+package org.memoriadb.core.binder;
 
 import java.lang.reflect.Array;
 
+import org.memoriadb.core.IReaderContext;
 import org.memoriadb.exception.MemoriaException;
 
 public class BindArray implements IBindable {

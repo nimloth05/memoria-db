@@ -1,6 +1,6 @@
-package org.memoriadb.core;
+package org.memoriadb.core.binder;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.IReaderContext;
 
 public interface IBindable {
 

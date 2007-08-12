@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.core.binder.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.ByteUtil;
 
@@ -50,11 +51,15 @@ public final class FileReader implements IReaderContext {
     }
   }
 
-  private void bindObjects() throws Exception {
-    for(IBindable ref: fObjectsToBind) {
-      ref.bind(this);
+  private void bindObjects() {
+    try {
+      for(IBindable ref: fObjectsToBind) {
+        ref.bind(this);
+      }
+      fObjectsToBind.clear();
+    } catch (Exception e) {
+      throw new BindingException(e);
     }
-    fObjectsToBind.clear();
   }
 
   private void dehydrateObjects() throws Exception {
