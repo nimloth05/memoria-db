@@ -9,8 +9,6 @@ import org.memoriadb.exception.MemoriaException;
 
 public final class MetaClass implements IMetaClass {
 
-  
-  
   private String fClassName;
 
   private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();

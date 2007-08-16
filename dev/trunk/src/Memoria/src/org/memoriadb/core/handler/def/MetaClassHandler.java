@@ -6,7 +6,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
-public class HandlerMetaClassHandler implements ISerializeHandler {
+public class MetaClassHandler implements ISerializeHandler {
 
   @Override
   public Object desrialize(DataInputStream input, IReaderContext context) throws IOException {

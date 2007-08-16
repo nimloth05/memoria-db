@@ -102,13 +102,7 @@ public class ObjectSerializer implements ISerializeContext {
     objectStream.writeLong(typeId);
     objectStream.writeLong(objectId);
     
-    if(MetaClass.isMetaClassObject(typeId)) {
-      HandlerMetaClass metaClassObject = (HandlerMetaClass) fObjectRepo.getObjectById(typeId);
-      metaClassObject.getHandler().serialize(object, objectStream, this);
-    }
-    else {
-      classObject.getHandler().serialize(object, objectStream, this);
-    }
+    classObject.getHandler().serialize(object, objectStream, this);
     
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);

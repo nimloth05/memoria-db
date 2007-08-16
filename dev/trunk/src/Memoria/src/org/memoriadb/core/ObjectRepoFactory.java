@@ -15,7 +15,7 @@ public final class ObjectRepoFactory {
   
   private static void boostrap(ObjectRepo repo) {
     IMetaClass metaClassClassObject = new HandlerMetaClass(new MetaFieldClassHandler(), MetaClass.class);
-    IMetaClass handlerMetaClassObject = new HandlerMetaClass(new HandlerMetaClassHandler(), HandlerMetaClass.class);
+    IMetaClass handlerMetaClassObject = new HandlerMetaClass(new MetaClassHandler(), HandlerMetaClass.class);
     IMetaClass arrayMetaClass = new HandlerMetaClass(new ArrayHandler(), Array.class); //Stub class. We need another implementation for array metaClass
     
     repo.put(IMetaClass.METACLASS_OBJECT_ID, metaClassClassObject);

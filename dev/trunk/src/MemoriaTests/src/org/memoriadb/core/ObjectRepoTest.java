@@ -18,6 +18,9 @@ public class ObjectRepoTest extends TestCase {
    * an execution of a Java application, the <tt>hashCode</tt> method 
    * must consistently return the same integer...</q>
    * 
+   * Anmerkung: Die Heap-Adresse wird vergeben, die VM merkt sich aber in einem Falg, ob das Objekt verschoben wurde oder nicht. Wenn es verschoben
+   * wurde, wird der Alte hashCode abkopiert (die IBM VM macht es so), msc
+   * 
    * This tests tries to "proove" that.
    */
   public void test_identityHashCode() {
