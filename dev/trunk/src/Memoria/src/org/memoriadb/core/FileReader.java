@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.core.backend.Block;
 import org.memoriadb.core.binder.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.ByteUtil;

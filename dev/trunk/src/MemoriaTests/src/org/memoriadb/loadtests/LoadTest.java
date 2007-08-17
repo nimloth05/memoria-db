@@ -1,8 +1,10 @@
-package org.memoriadb.core;
+package org.memoriadb.loadtests;
 
 import java.util.*;
 
-import org.memoriadb.core.testclasses.*;
+import org.memoriadb.core.*;
+import org.memoriadb.test.core.AbstractObjectStoreTest;
+import org.memoriadb.test.core.testclasses.*;
 
 public class LoadTest extends AbstractObjectStoreTest {
   

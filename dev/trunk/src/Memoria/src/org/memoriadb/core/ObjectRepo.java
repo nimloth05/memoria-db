@@ -11,6 +11,7 @@ public class ObjectRepo {
   private long fCurrentObjectId = 0;
   
   private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
+  
   //We have to use the patched version of the IdentityHashMap.
   private final Map<Object, Long> fObjectToId = new PIdentityHashMap<Object, Long>();
   

@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb.test.core;
 
 import junit.framework.*;
 
@@ -10,7 +10,6 @@ public class AllTests {
     suite.addTestSuite(FieldTypeTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
-    suite.addTestSuite(LoadTest.class);
     //$JUnit-END$
     return suite;
   }

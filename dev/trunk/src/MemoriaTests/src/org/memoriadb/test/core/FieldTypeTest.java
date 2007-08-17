@@ -1,11 +1,12 @@
-package org.memoriadb.core;
+package org.memoriadb.test.core;
 
 import java.io.*;
 
 import junit.framework.TestCase;
 
 import org.easymock.*;
-import org.memoriadb.core.testclasses.FieldTypeTestClass;
+import org.memoriadb.core.*;
+import org.memoriadb.test.core.testclasses.FieldTypeTestClass;
 
 public class FieldTypeTest extends TestCase {
   

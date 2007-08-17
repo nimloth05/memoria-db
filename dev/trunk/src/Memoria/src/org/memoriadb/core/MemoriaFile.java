@@ -2,6 +2,8 @@ package org.memoriadb.core;
 
 import java.util.*;
 
+import org.memoriadb.core.backend.Block;
+
 public class MemoriaFile {
   
   private final List<Block> fBlocks = new ArrayList<Block>();

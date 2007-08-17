@@ -1,9 +1,10 @@
-package org.memoriadb.core;
+package org.memoriadb.test.core;
 
 import java.io.File;
 import java.util.*;
 
 import org.java.patched.*;
+import org.memoriadb.core.*;
 
 import junit.framework.TestCase;
 

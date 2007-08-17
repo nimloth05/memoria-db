@@ -1,4 +1,4 @@
-package org.memoriadb.util;
+package org.memoriadb.test.util;
 
 import java.io.*;
 

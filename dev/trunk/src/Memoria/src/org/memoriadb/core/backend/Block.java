@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb.core.backend;
 
 /**
  * A Block can not change its position. He can no grow or shrink. His data can just be moved to another block, and so

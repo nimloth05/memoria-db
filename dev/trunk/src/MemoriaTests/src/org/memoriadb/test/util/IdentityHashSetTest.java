@@ -1,10 +1,11 @@
-package org.memoriadb.util;
+package org.memoriadb.test.util;
 
 import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.testclasses.WrongHashCode;
+import org.memoriadb.test.core.testclasses.WrongHashCode;
+import org.memoriadb.util.IdentityHashSet;
 
 public class IdentityHashSetTest extends TestCase {
   

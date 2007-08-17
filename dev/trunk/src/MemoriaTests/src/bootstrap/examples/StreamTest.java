@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import org.java.patched.*;
-import org.memoriadb.core.testclasses.TestObj;
+import org.memoriadb.test.core.testclasses.TestObj;
 
 import bootstrap.examples.*;
 

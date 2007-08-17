@@ -1,4 +1,4 @@
-package org.memoriadb.core.testclasses;
+package org.memoriadb.test.core.testclasses;
 
 public class WrongHashCode {
   
