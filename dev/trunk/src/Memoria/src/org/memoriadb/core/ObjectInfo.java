@@ -11,11 +11,6 @@ import org.memoriadb.core.backend.Block;
 public class ObjectInfo {
   
   private Object fObj;
-  
-  /**
-   * During loading the DB file, the HydratedObject is stored in this field.
-   */
-  private HydratedObject fHydratedObject;
 
   private int fVersion;
   private boolean fIsDeleted;
@@ -32,10 +27,6 @@ public class ObjectInfo {
 
   public Block getBlock() {
     return fBlock;
-  }
-
-  public HydratedObject getHydratedObject() {
-    return fHydratedObject;
   }
 
   public Object getObj() {
@@ -64,10 +55,6 @@ public class ObjectInfo {
 
   public void setHasInactiveObjectData(boolean hasInactiveObjectData) {
     fHasInactiveObjectData = hasInactiveObjectData;
-  }
-
-  public void setHydratedObject(HydratedObject hydratedObject) {
-    fHydratedObject = hydratedObject;
   }
 
   public void setObj(Object obj) {
