@@ -1,7 +1,7 @@
 package org.memoriadb.core;
 
 import java.io.*;
-import java.util.*;
+import java.util.Set;
 
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
@@ -17,47 +17,46 @@ public class ObjectSerializer implements ISerializeContext {
   private final Set<Object> fObjectsToSerialize = new IdentityHashSet<Object>();
 
   /**
-   * The objects to write.
+   * The objects to write. 
    */
-  private final Set<Object> fObjects = new IdentityHashSet<Object>();
+  private final Set<Object> fObjects;
   
-  public static byte[] serialize(ObjectRepo objectRepo, List<Object> objects) {
+  public static byte[] serialize(ObjectRepo objectRepo, Set<Object> objects) {
     return new ObjectSerializer(objectRepo, objects).serializeObjects();
   }
   
-  public ObjectSerializer(ObjectRepo repo, List<Object> objects) {
+  /**
+   * @param repo
+   */
+  public ObjectSerializer(ObjectRepo repo, Set<Object> objects) {
+    if(!(objects instanceof IdentityHashSet)) throw new MemoriaException("IdentityHashSet expected but was " + objects.getClass()) ;
+    
     fObjectRepo = repo;
-    fObjects.addAll(objects);
+    fObjects = objects;
   }
   
   
+  @Override
+  public long getMetaClassId(Class<?> klass) {
+    IMetaClass metaClass = fObjectRepo.getMetaClass(klass);
+    return fObjectRepo.getObjectId(metaClass);
+  }
+  
+  @Override
+  public long getObjectId(Object obj) {
+    return fObjectRepo.getObjectId(obj);
+  }
+
   public IMetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
-    IMetaClass classObject = fObjectRepo.getMetaObject(type);
+    IMetaClass classObject = fObjectRepo.getMetaClass(type);
     
     if (classObject == null) {
       classObject = new MetaClass(type);
-      serializeObject(dataStream, classObject);
+      //serializeObject(dataStream, classObject);
     }
     return classObject;
   }
 
-  @Override
-  public long serializeIfNotContained(Object referencee) {
-    if (referencee instanceof Class) {
-      Class<?> clazz = (Class) referencee;
-      referencee = fObjectRepo.getMetaObject(clazz);
-      if (referencee == null) {
-        referencee = new MetaClass(clazz);
-      } 
-    }
-    
-    if (fObjectRepo.contains(referencee)) return fObjectRepo.getObjectId(referencee);
-    long result = fObjectRepo.register(referencee);
-    if (fObjects.contains(referencee)) return result;
-    fObjectsToSerialize.add(referencee);
-    return result;
-  }
-  
   public byte[] serializeObjects() {
     try {
       return internalSerializeObjects();
@@ -71,38 +70,42 @@ public class ObjectSerializer implements ISerializeContext {
     DataOutput stream = new DataOutputStream(buffer);
     
     for(Object object: fObjects) {
-      serializeObject(stream, object);
+      serializeObject(stream, fObjectRepo.getObjectInfo(object));
     }
 
-    while(!fObjectsToSerialize.isEmpty()) {
-      Iterator<Object> iterator = fObjectsToSerialize.iterator();
-      Object next = iterator.next();
-      iterator.remove();
-      serializeObject(stream, next);
-    }
+    // wird in die Transaction verschoben,msc
+    
+//    while(!fObjectsToSerialize.isEmpty()) {
+//      Iterator<Object> iterator = fObjectsToSerialize.iterator();
+//      Object next = iterator.next();
+//      iterator.remove();
+//      serializeObject(stream, next);
+//    }
     
     return buffer.toByteArray();
   }
 
-  private void serializeObject(DataOutput dataStream, Object object) throws Exception {
-    long objectId = fObjectRepo.register(object);
-    
-    Class<?> type = object.getClass();
-    IMetaClass metaClass = registerClassObject(dataStream, type);
-    
-    serializeObject(metaClass, dataStream, object, objectId);
+  private void serializeObject(DataOutput dataStream, ObjectInfo info) throws Exception {
+//    // Im moment wird hier das obj noch zum repo hinzugefügt, entfernen. msc
+//    long objectId = fObjectRepo.register(info.getObj());
+//    
+//    Class<?> type = info.getObj().getClass();
+//    // auch das wird anders gelöst, die Metaclass wird früher erzeugt...
+//    IMetaClass metaClass = registerClassObject(dataStream, type);
+    IMetaClass metaClass = fObjectRepo.getMetaClass(info.getObj().getClass());
+    serializeObject(metaClass, dataStream, info);
   }
 
-  private void serializeObject(IMetaClass classObject, DataOutput dataStream, Object object, long objectId) throws Exception {
+  private void serializeObject(IMetaClass classObject, DataOutput dataStream, ObjectInfo info) throws Exception {
     long typeId = fObjectRepo.getObjectId(classObject);
     
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
     DataOutputStream objectStream = new DataOutputStream(buffer);
     
     objectStream.writeLong(typeId);
-    objectStream.writeLong(objectId);
+    objectStream.writeLong(info.getId());
     
-    classObject.getHandler().serialize(object, objectStream, this);
+    classObject.getHandler().serialize(info.getObj(), objectStream, this);
     
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);

@@ -4,7 +4,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.memoriadb.core.binder.ObjectFieldReference;
+import org.memoriadb.core.load.ObjectFieldReference;
 import org.memoriadb.exception.MemoriaException;
 
 
@@ -149,7 +149,7 @@ public enum FieldType {
         stream.writeLong(-1);
         return;
       }
-      long objectId = context.serializeIfNotContained(referencee);
+      long objectId = context.getObjectId(referencee);
       stream.writeLong(objectId);
     }
 

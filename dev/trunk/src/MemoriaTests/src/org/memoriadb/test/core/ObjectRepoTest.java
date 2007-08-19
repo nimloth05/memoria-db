@@ -11,37 +11,37 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_put_meta_object_in_cache() {
     IMetaClass classObject = new MetaClass(TestObj.class);
-    long id = fRepo.register(classObject);
+    long id = fRepo.add(classObject);
     
-    assertSame(classObject, fRepo.getObjectById(id));
-    assertSame(classObject, fRepo.getMetaObject(TestObj.class));
+    assertSame(classObject, fRepo.getObject(id));
+    assertSame(classObject, fRepo.getMetaClass(TestObj.class));
   }
   
   public void test_put_meta_object_with_id_in_cache() {
     IMetaClass classObject = new MetaClass(TestObj.class);
-    fRepo.put(20, classObject);
+    fRepo.add(20, classObject, 0);
     
-    assertSame(classObject, fRepo.getObjectById(20));
-    assertSame(classObject, fRepo.getMetaObject(TestObj.class));
+    assertSame(classObject, fRepo.getObject(20));
+    assertSame(classObject, fRepo.getMetaClass(TestObj.class));
   }
   
   public void test_put_new_object_in_cache() {
     TestObj obj = new TestObj();
-    long id = fRepo.register(obj);
-    Object obj2 = fRepo.getObjectById(id);
+    long id = fRepo.add(obj);
+    Object obj2 = fRepo.getObject(id);
     assertSame(obj, obj2);
   }
   
   public void test_put_object_with_id_in_cache() {
     TestObj obj = new TestObj();
-    fRepo.put(20, obj);
+    fRepo.add(20, obj, 0);
     
     TestObj obj2 = new TestObj();
-    long id = fRepo.register(obj2);
+    long id = fRepo.add(obj2);
     assertEquals(21, id);
     
-    assertEquals(obj, fRepo.getObjectById(20));
-    assertEquals(obj2, fRepo.getObjectById(id));
+    assertEquals(obj, fRepo.getObject(20));
+    assertEquals(obj2, fRepo.getObject(id));
   }
   
   @Override

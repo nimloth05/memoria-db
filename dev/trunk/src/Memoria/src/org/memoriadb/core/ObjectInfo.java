@@ -1,6 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.backend.Block;
+import org.memoriadb.exception.MemoriaException;
 
 /**
  * Hält alle relevanten Informationen zu einem von Memoria verwalteten Objekt
@@ -11,7 +12,7 @@ import org.memoriadb.core.backend.Block;
 public class ObjectInfo {
   
   private Object fObj;
-
+  private final long fId;
   private int fVersion;
   private boolean fIsDeleted;
   private boolean fHasInactiveObjectData;
@@ -21,12 +22,32 @@ public class ObjectInfo {
    */
   private Block fBlock;
   
-  public ObjectInfo() {
+  /**
+   * Use this ctor only when an object is initially added to the container.
+   */
+  public ObjectInfo(long id, Object obj) {
+    this(id, obj, 0);
+  }
+
+  /**
+   * Use this ctor for ojects after dehydration
+   */
+  public ObjectInfo(long id, Object obj, int version) {
+    if(obj == null) throw new MemoriaException("null can not be stored for id " + id);
     
+    fObj = obj;
+    fId = id;
+    fVersion = version;
+    fIsDeleted = false;
+    fHasInactiveObjectData = false;
   }
 
   public Block getBlock() {
     return fBlock;
+  }
+
+  public long getId(){
+    return fId;
   }
 
   public Object getObj() {
@@ -60,9 +81,15 @@ public class ObjectInfo {
   public void setObj(Object obj) {
     fObj = obj;
   }
-
+  
   public void setVersion(int version) {
     fVersion = version;
+  }
+  
+  @Override
+  public String toString() {
+    return fId + ":" + fObj + " in revision " + fVersion;
+    
   }
   
 }

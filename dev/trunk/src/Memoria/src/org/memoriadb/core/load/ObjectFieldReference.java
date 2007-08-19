@@ -1,4 +1,4 @@
-package org.memoriadb.core.binder;
+package org.memoriadb.core.load;
 
 import java.lang.reflect.Field;
 

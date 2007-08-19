@@ -3,19 +3,18 @@ package org.memoriadb.test.core;
 import java.io.File;
 import java.util.*;
 
-import org.java.patched.*;
-import org.memoriadb.core.*;
-
 import junit.framework.TestCase;
+
+import org.memoriadb.core.facade.*;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
-  protected IObjectContainer fStore;
+  protected IMemoria fStore;
   
   private File fFile;
   
   protected final void createStore() {
-    fStore = Memoria.open(fFile);
+    fStore = MemoriaFactory.open(fFile);
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -30,10 +29,16 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     createStore(); 
   }
 
-  protected final List<Object> save(Object...objects) {
-    List<Object> list = Arrays.asList(objects);
-    fStore.writeObject(list);
-    return list;
+  protected final void save(Object...objects) {
+    for(Object obj: objects) {
+      fStore.save(obj);
+    }
+    fStore.writePendingChanges();
+  }
+  
+  protected final void saveAll(Object obj) {
+    fStore.saveAll(obj);
+    fStore.writePendingChanges();
   }
   
   @Override

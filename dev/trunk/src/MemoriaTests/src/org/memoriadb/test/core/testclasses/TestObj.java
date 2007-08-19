@@ -3,12 +3,8 @@ package org.memoriadb.test.core.testclasses;
 public class TestObj {
 
   private String fString1;
-  private String fString2;
-  private String fString3;
   
   private int fI1;
-  private int fI2;
-  private int fI3;
 
   public TestObj() {}
   
@@ -23,20 +19,34 @@ public class TestObj {
   public TestObj(String string, int i) {
     fString1 = string;
     fI1 = i;
-    
-    fString2 = fString1;
-    fString3 = fString1;
-    
-    fI2 = fI1;
-    fI3 = fI1;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    final TestObj other = (TestObj) obj;
+    if (fI1 != other.fI1) return false;
+    else if (!fString1.equals(other.fString1)) return false;
+    return true;
   }
 
   public int getI() {
     return fI1;
   }
-
+  
   public String getString() {
     return fString1;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + fI1;
+    result = prime * result + ((fString1 == null) ? 0 : fString1.hashCode());
+    return result;
   }
 
   public void setI(int i) {
@@ -46,4 +56,13 @@ public class TestObj {
   public void setString(String string) {
     fString1 = string;
   }
+
+  @Override
+  public String toString() {
+    return getString();
+  }
+  
+  
+  
+  
 }

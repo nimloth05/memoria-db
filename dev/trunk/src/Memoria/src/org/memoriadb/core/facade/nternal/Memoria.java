@@ -1,0 +1,105 @@
+package org.memoriadb.core.facade.nternal;
+
+import java.util.*;
+
+import org.memoriadb.core.*;
+import org.memoriadb.core.facade.IMemoria;
+import org.memoriadb.util.IdentityHashSet;
+
+public class Memoria implements IMemoria {
+
+  private final IObjectContainer fObjectContainer;
+  
+  private final Set<Object> fAdd = new IdentityHashSet<Object>();
+  private final Set<Object> fUpdate = new IdentityHashSet<Object>();
+
+  public Memoria(IObjectContainer objectContainer) {
+    fObjectContainer = objectContainer;
+  }
+
+  @Override
+  public void checkSanity() {
+    fObjectContainer.checkSanity();
+  }
+
+  @Override
+  public boolean contains(long id) {
+    return fObjectContainer.contains(id);
+  }
+
+  @Override
+  public boolean contains(Object obj) {
+    return fObjectContainer.contains(obj);
+  }
+
+  @Override
+  public Collection<Object> getAllObjects() {
+    return fObjectContainer.getAllObjects();
+  }
+
+  @Override
+  public IMetaClass getMetaClass(Object obj) {
+    return fObjectContainer.getMetaClass(obj);
+  }
+
+  @Override
+  public Object getObject(long id) {
+    return fObjectContainer.getObject(id);
+  }
+
+  @Override
+  public long getObjectId(Object obj) {
+    return fObjectContainer.getObjectId(obj);
+  } 
+  
+  /**
+   * @return id of the root-element
+   */
+  public long recursiveSave(Object obj) {
+    long result = save(obj);
+    fObjectContainer.getMetaClass(obj);
+    
+    return result;
+  }
+
+  @Override
+  public long save(Object obj) {
+    if(fAdd.contains(obj)){
+      // added in same transaction
+      return fObjectContainer.getObjectId(obj);
+    }
+    
+    if(fObjectContainer.contains(obj)){
+      // object already in the store, perform update. obj is replaced if several updates occur in same transaction.
+      fUpdate.add(obj);
+      return fObjectContainer.getObjectId(obj);
+    }
+    
+    // object not already in the store, add it
+    fAdd.add(obj);
+    addMetaClassIfNecessary(obj);
+    return fObjectContainer.add(obj);
+  }
+
+  public long saveAll(Object obj) {
+    ObjectTraversal traversal = new ObjectTraversal(this);
+    traversal.visit(obj);
+    return fObjectContainer.getObjectId(obj);
+  } 
+
+  @Override
+  public void writePendingChanges() {
+    Set<Object> save = new IdentityHashSet<Object>();
+    save.addAll(fAdd);
+    save.addAll(fUpdate);
+    
+    fObjectContainer.write(save); 
+  }
+
+  private void addMetaClassIfNecessary(Object obj) {
+    if(fObjectContainer.metaClassExists(obj.getClass())) return;
+    IMetaClass metaClass = fObjectContainer.createMetaClass(obj);
+    fAdd.add(metaClass);
+  }
+
+}

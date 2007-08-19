@@ -3,6 +3,7 @@ package org.memoriadb.core.handler;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.facade.nternal.IObjectTraversal;
 
 public interface ISerializeHandler {
   
@@ -12,7 +13,7 @@ public interface ISerializeHandler {
    * @param context TODO
    * @return the new object
    */
-  public Object desrialize(DataInputStream input, IReaderContext context) throws Exception;
+  public Object deserialize(DataInputStream input, IReaderContext context) throws Exception;
   
   /**
    * 
@@ -22,4 +23,10 @@ public interface ISerializeHandler {
    */
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
 
+  /**
+   * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 
+   * For non-Containers, all referenced objects are visited
+   */
+  public void traverseChildren(Object obj, IObjectTraversal traversal);
+  
 }

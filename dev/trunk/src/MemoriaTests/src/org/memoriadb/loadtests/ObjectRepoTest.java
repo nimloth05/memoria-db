@@ -55,13 +55,15 @@ public class ObjectRepoTest extends TestCase {
     List<Object> objects = new ArrayList<Object>();
     for(int i = 0; i < 100000; ++i) {
       Object obj = new WrongHashCode();
+      
+      // FIXME muss noch angepasst werden..
       fRepo.register(obj);
       objects.add(obj);
     }
     
     for(Object obj: objects) {
       long id = fRepo.getObjectId(obj);
-      Object obj2 = fRepo.getObjectById(id);
+      Object obj2 = fRepo.getObject(id);
       assertSame(obj, obj2);
       assertEquals(id, fRepo.getObjectId(obj2));
     }

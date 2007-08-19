@@ -2,31 +2,33 @@ package org.memoriadb.test.core;
 
 import java.util.*;
 
-import org.memoriadb.core.*;
 import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
   
-  public void test_incorrect_hash_code_objects() {
-    WrongHashCode obj1 = new WrongHashCode("1");
-    WrongHashCode obj2 = new WrongHashCode("2");
-    
-    List<Object> expectedObjs = save(obj1, obj2);
-    reopen();
-    
-    List<WrongHashCode> actualObjs = getAll(WrongHashCode.class);
-    
-    Iterator<Object> expectedIter = expectedObjs.iterator();
-    while(expectedIter.hasNext()) {
-      WrongHashCode savedObj = (WrongHashCode) expectedIter.next();
-      
-      Iterator<WrongHashCode> actualIter = actualObjs.iterator();
-      while(actualIter.hasNext()) {
-        if (savedObj.fValue.equals(actualIter.next().fValue)) actualIter.remove(); 
-      }
-    }
-    assertTrue("Not all objects where loaded/saved: "+ actualObjs, actualObjs.isEmpty());
-  }
+  // was macht dieser Test? msc
+  
+//  public void test_incorrect_hash_code_objects() {
+//    WrongHashCode obj1 = new WrongHashCode("1");
+//    WrongHashCode obj2 = new WrongHashCode("2");
+//    
+//    List<Object> expectedObjs = save(obj1, obj2);
+//    reopen();
+//    
+//    List<WrongHashCode> actualObjs = getAll(WrongHashCode.class);
+//    
+//    Iterator<Object> expectedIter = expectedObjs.iterator();
+//    while(expectedIter.hasNext()) {
+//      WrongHashCode savedObj = (WrongHashCode) expectedIter.next();
+//      
+//      Iterator<WrongHashCode> actualIter = actualObjs.iterator();
+//      while(actualIter.hasNext()) {
+//        if (savedObj.fValue.equals(actualIter.next().fValue)) actualIter.remove(); 
+//      }
+//    }
+//    assertTrue("Not all objects where loaded/saved: "+ actualObjs, actualObjs.isEmpty());
+//  }
   
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
@@ -43,6 +45,10 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     assertEquals("Save/load mismatch: " +loadedObjs, 0, loadedObjs.size());
   }
   
+  public void test_save_object_ref() throws Exception {
+    internalTestSaveObjectRef(TestObj.class);
+  }
+  
   public void test_save_object_ref_first() throws Exception {
     internalTestSaveObjectRefFirst(TestObj.class);
   }
@@ -54,10 +60,6 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   public void test_save_referencee_in_antoher_transaction() throws Exception {
     internalTestReferenceeInAnotherTransaction(TestObj.class);
   }
-  
-  public void test_save_referencee_in_antoher_transaction_with_wrongHashCodeObj() throws Exception {
-    internalTestReferenceeInAnotherTransaction(WrongHashCode.class);
-  }
 
   //We need Java-Serialization first
 //  public void test_save_single_string() {
@@ -67,6 +69,10 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 //    String actual = getAll(String.class).get(0);
 //    assertEquals(expected, actual);
 //  }
+  
+  public void test_save_referencee_in_antoher_transaction_with_wrongHashCodeObj() throws Exception {
+    internalTestReferenceeInAnotherTransaction(WrongHashCode.class);
+  }
   
   public void test_save_same_object_twice() {
     WrongHashCode obj = new WrongHashCode();
@@ -86,16 +92,14 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    List<TestObj> objs = getAll(TestObj.class);
-    assertEquals(obj1.getString(), objs.get(0).getString());
-    assertEquals(obj2.getString(), objs.get(1).getString());
+    Collections.containsAll(getAll(TestObj.class), obj1, obj2);
   }
   
   public void test_serialize_array_object() {
     ArrayContainer container = new ArrayContainer();
     container.set();
     
-    save(container);
+    saveAll(container);
     reopen();
     
     ArrayContainer loadedContainer = getAll(ArrayContainer.class).get(0);
@@ -103,10 +107,6 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     
     assertSame(loadedObj, loadedContainer.fArray[0]);
     assertEquals(container.fArray[0], loadedContainer.fArray[0]);
-  }
-  
-  public void test_svae_object_ref() throws Exception {
-    internalTestSaveObjectRef(TestObj.class);
   }
   
   public void test_svae_object_ref_with_wrong_hashCodeObj() throws Exception {
@@ -131,7 +131,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   private void internalTestSaveObjectRef(Class<?> referenceeType) throws Exception {
     Referencer referencer = new Referencer();
     referencer.set(referenceeType, "1");
-    save(referencer);
+    saveAll(referencer);
     
     reopen();
     

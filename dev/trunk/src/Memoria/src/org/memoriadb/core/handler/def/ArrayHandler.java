@@ -4,14 +4,15 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.binder.BindArray;
+import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.load.BindArray;
 import org.memoriadb.exception.MemoriaException;
 
 public class ArrayHandler implements ISerializeHandler {
 
   @Override
-  public Object desrialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     long compundTypeId = input.readLong();
     int arrayLength = input.readInt();
     IMetaClass metaClass = (IMetaClass) context.getObjectById(compundTypeId);
@@ -32,15 +33,24 @@ public class ArrayHandler implements ISerializeHandler {
    if (!obj.getClass().isArray()) throw new MemoriaException("Object is not an array: " + obj);
    
    Class<?> componentType = obj.getClass().getComponentType();
-   long componentTypeId = context.serializeIfNotContained(componentType);
+   long componentTypeId = context.getMetaClassId(componentType);
    int arrayLength = Array.getLength(obj);
    
    output.writeLong(componentTypeId);
    output.writeInt(arrayLength);
    for(int i = 0; i < arrayLength; ++i) {
      Object componentObject = Array.get(obj, i);
-     output.writeLong(context.serializeIfNotContained(componentObject));
+     output.writeLong(context.getObjectId(componentObject));
    }
+  }
+
+  @Override
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {
+    if(!obj.getClass().isArray()) throw new MemoriaException("array expected but was " + obj);
+    int length = Array.getLength(obj);
+    for(int i = 0; i < length; ++i) {
+      traversal.visit(Array.get(obj, i));
+    }
   }
 
 }

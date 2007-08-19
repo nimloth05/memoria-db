@@ -5,43 +5,85 @@ import java.util.*;
 import org.java.patched.PIdentityHashMap;
 import org.memoriadb.exception.MemoriaException;
 
-
 public class ObjectRepo {
-  
+
   private long fCurrentObjectId = 0;
-  
-  private final Map<Long, Object> fIdToObject = new HashMap<Long, Object>();
-  
-  //We have to use the patched version of the IdentityHashMap.
-  private final Map<Object, Long> fObjectToId = new PIdentityHashMap<Object, Long>();
-  
+
+  private final Map<Long, ObjectInfo> fIdMap = new HashMap<Long, ObjectInfo>();
+
+  // Use patched version of the IdentityHashMap.
+  private final Map<Object, ObjectInfo> fObjectMap = new PIdentityHashMap<Object, ObjectInfo>();
+
   private final Map<Class<?>, IMetaClass> fMetaObjects = new HashMap<Class<?>, IMetaClass>();
 
+  /**
+   * Adds an object after dehydration
+   */
+  public void add(long id, Object obj, int version) {
+    internalPut(new ObjectInfo(id, obj, version)); 
+  }
+  
+  /**
+   * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
+   * @return The new id
+   */ 
+  public long add(Object obj) {
+    long result = generateId();
+    internalPut(new ObjectInfo(result,obj));
+    
+    return result;
+  }
+
+  public void addBootstrapped(long id, IMetaClass object) {
+    internalPut(new ObjectInfo(id, object));
+  }
+
   public void checkSanity() {
-    for(Long id: fIdToObject.keySet()) {
-      Object object = fIdToObject.get(id);
-      
-      long addressObjectId = internalGetObjectId(object);
-      if (id != addressObjectId) throw new MemoriaException("diffrent IDs for object: id in id-Map "+ id + " id in adress map " + addressObjectId);
+    for (Long id : fIdMap.keySet()) {
+      Object object = fIdMap.get(id).getObj();
+
+      long addressObjectId = fObjectMap.get(object).getId();
+      if (id != addressObjectId) throw new MemoriaException("diffrent IDs for object: id in id-Map " + id + " id in adress map "
+          + addressObjectId);
     }
   }
-  
-  public boolean contains(Object obj) {
-    return internalGetObjectId(obj) != null;
+
+  public boolean contains(long id) {
+    return fIdMap.containsKey(id);
   }
-  
-  public Collection<Object> getAllObjects() {
-    return Collections.<Object>unmodifiableCollection(fIdToObject.values());
+
+  public boolean contains(Object obj) {
+    return fObjectMap.containsKey(obj);
   }
 
   /**
-   * 
-   * @param javaType
-   * @return the metaObject for the given java-Type or null.
+   * Creates a new MetaClass for the given <tt>obj</tt>. 
+   * If the given obj is an Array, a new MetaClass for it's componentType is created.
    */
-  public IMetaClass getMetaObject(Class<?> javaType) {
-    if (javaType.isArray()) return (IMetaClass) fIdToObject.get(IMetaClass.ARRAY_META_CLASS);
-    return fMetaObjects.get(javaType);
+  public IMetaClass createMetaClass(Object obj) {
+    Class<?> klass = obj.getClass();
+    if(klass.isArray()) klass = klass.getComponentType();
+    if(fMetaObjects.containsKey(klass)) throw new MemoriaException("MetaClass exists for " + klass);
+    
+    IMetaClass result= new MetaClass(klass);
+    add(result);
+    return result;
+  }
+  
+  public Collection<Object> getAllObjects() {
+    List<Object> result = new ArrayList<Object>(fObjectMap.size());
+    for(ObjectInfo info: fObjectMap.values()){
+      result.add(info.getObj());
+    }
+    return result;
+  }
+  
+  /**
+   * @return the metaObject for the given object or null, if the metaClass does not exists
+   */
+  public IMetaClass getMetaClass(Class<?> klass) {
+    if (klass.isArray()) return getGenericArrayMetaClass();
+    return fMetaObjects.get(klass);
   }
 
   /**
@@ -49,58 +91,57 @@ public class ObjectRepo {
    * @param objectId
    * @return the object for the given id or null.
    */
-  public Object getObjectById(long objectId) {
-    Object result = fIdToObject.get(objectId);
-    return result;
+  public Object getObject(long objectId) {
+    ObjectInfo objectInfo = fIdMap.get(objectId);
+    if (objectInfo == null) return null;
+    return objectInfo.getObj();
   }
 
-  public long getObjectId(Object obj) {
-    Long result = internalGetObjectId(obj);
-    if (result == null) throw new MemoriaException("Unknown object: " + obj);
-    return result;
-  }
-  
-  public Collection<Long> getObjects() {
-    return Collections.unmodifiableSet(fIdToObject.keySet());
-  }
-
-  public void put(long id, Object obj) {
-    fCurrentObjectId = Math.max(fCurrentObjectId, id);
-    internalPut(obj, id);
-  }
-
-  
   /**
-   * @param object
-   * @return the objectId for the given object. The object will be registered if not already registered.
+   * @param obj
+   * @return
+   * @throws MemoriaException if object can not be found
    */
-  public long register(Object object) {
-    Long result = internalGetObjectId(object);
-    
-    if (result == null) {
-      result = ++fCurrentObjectId;
-      internalPut(object, result);
-    }
-    return result;
+  public long getObjectId(Object obj) {
+    ObjectInfo result = fObjectMap.get(obj);
+    if (result == null) throw new MemoriaException("Unknown object: " + obj);
+    return result.getId();
   }
-  
-  private Long internalGetObjectId(Object obj) {
-    return fObjectToId.get(obj);
-  }
-  
-  private void internalPut(Object object, Long result) {
-    if (object == null) throw new MemoriaException("Can not register null object, id: " + result);
 
-    Object previousMapped = fObjectToId.put(object, result); 
-    if (previousMapped != null) throw new RuntimeException("double registration in address-Map id" + result + " object: " + object);
+  public ObjectInfo getObjectInfo(Object obj) {
+    return fObjectMap.get(obj);
+  }
+
+  /**
+   * @return true, if a MetaClass object exists for the given type. 
+   *         If the given klass is an Array-type, true is returned if a MetaClass for the ComponentType exists.
+   */
+  public boolean metaClassExists(Class<?> klass) {
+    if(!klass.isArray()) return fMetaObjects.containsKey(klass);
+    return fMetaObjects.containsKey(klass.getComponentType());
+  }
+
+  private long generateId() {
+   return ++fCurrentObjectId; 
+  }
+
+  private IMetaClass getGenericArrayMetaClass() {
+    return (IMetaClass) fIdMap.get(IMetaClass.ARRAY_META_CLASS).getObj();
+  }
+
+  private void internalPut(ObjectInfo info) {
+    fCurrentObjectId = Math.max(fCurrentObjectId, info.getId());
     
-    previousMapped = fIdToObject.put(result, object);
-    if (previousMapped != null) throw new RuntimeException("double registration in objectId-Map id " + result + " object: " + object + " previous object " + previousMapped);
-    
-    if (object instanceof IMetaClass) {
-      IMetaClass metaObject = (IMetaClass) object;
-      fMetaObjects.put(metaObject.getJavaClass(), metaObject); 
+    Object previousMapped = fObjectMap.put(info.getObj(), info); 
+    if (previousMapped != null) throw new RuntimeException("double registration in object-map" + info);
+
+    previousMapped = fIdMap.put(info.getId(), info);  
+    if (previousMapped != null) throw new RuntimeException("double registration in id-Map" + info);
+
+    if (info.getObj() instanceof IMetaClass) {
+      IMetaClass metaObject = (IMetaClass) info.getObj();
+      fMetaObjects.put(metaObject.getJavaClass(), metaObject);
     }
   }
-  
+
 }

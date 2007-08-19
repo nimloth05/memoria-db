@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.core.load.FileReader;
 import org.memoriadb.exception.MemoriaException;
 
 public class ObjectContainer implements IContext, IObjectContainer {
@@ -11,13 +12,24 @@ public class ObjectContainer implements IContext, IObjectContainer {
   
   private final File fFile;
   
-  ObjectContainer(File file) {
+  public ObjectContainer(File file) {
     fFile = file;
     fObjectRepo = ObjectRepoFactory.create();
+    FileReader.readIn(fFile, fObjectRepo);
   }
   
+  @Override
+  public long add(Object obj) {
+    return fObjectRepo.add(obj);
+  } 
+
   public void checkSanity() {
     fObjectRepo.checkSanity();
+  }
+
+  @Override
+  public boolean contains(long id) {
+    return fObjectRepo.contains(id);
   }
 
   @Override
@@ -25,13 +37,23 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.contains(obj);
   }
 
+  @Override
+  public IMetaClass createMetaClass(Object obj) {
+    return fObjectRepo.createMetaClass(obj);
+  }
+
   public Collection<Object> getAllObjects() {
     return fObjectRepo.getAllObjects();
   }
 
   @Override
-  public Object getObjectById(long objectId) {
-    return fObjectRepo.getObjectById(objectId);
+  public IMetaClass getMetaClass(Object obj) {
+    return fObjectRepo.getMetaClass(obj.getClass());
+  }
+
+  @Override
+  public Object getObject(long id) {
+    return fObjectRepo.getObject(id);
   }
 
   @Override
@@ -39,21 +61,13 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.getObjectId(obj);
   }
 
-  public void open() {
-    FileReader.readIn(fFile, fObjectRepo);
-  }
 
   @Override
-  public void put(long objectId, Object obj) {
-    fObjectRepo.put(objectId, obj);
+  public boolean metaClassExists(Class<?> klass) {
+    return fObjectRepo.metaClassExists(klass);
   }
 
-  @Override
-  public long register(Object object) {
-    return fObjectRepo.register(object);
-  }
-
-  public void writeObject(List<Object> objects) {
+  public void write(Set<Object> objects) {
     try {
       append(ObjectSerializer.serialize(fObjectRepo, objects));
     }

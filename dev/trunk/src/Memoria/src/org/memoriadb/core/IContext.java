@@ -8,7 +8,10 @@ public interface IContext {
   public boolean contains(Object referencee);
   
 
-  public Object getObjectById(long objectId);
+  /**
+   * @return The object or null
+   */
+  public Object getObject(long objectId);
   
   /**
    * 
@@ -17,9 +20,5 @@ public interface IContext {
    * @return
    */
   public long getObjectId(Object obj);
-
-  public void put(long objectId, Object obj);
-
-  public long register(Object object);
   
 }

@@ -9,6 +9,13 @@ public class IdentityHashSet<T> extends AbstractSet<T> {
   private static final Object sMarkerValue = new Object();
   private final PIdentityHashMap<T, Object> fBackend = new PIdentityHashMap<T, Object>();
 
+  public IdentityHashSet() {
+  } 
+  
+  public IdentityHashSet(Collection<T> collection) {
+    addAll(collection);
+  }
+
   @Override
   public boolean add(T e) {
     return fBackend.put(e, sMarkerValue) == null;

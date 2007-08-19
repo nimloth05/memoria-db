@@ -3,13 +3,14 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
 public class MetaClassHandler implements ISerializeHandler {
 
   @Override
-  public Object desrialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     String className = input.readUTF();
     String handlerName = input.readUTF();
     try {
@@ -26,6 +27,11 @@ public class MetaClassHandler implements ISerializeHandler {
     
     output.writeUTF(classObejct.getJavaClassName());
     output.writeUTF(classObejct.getHandlerName());
+  }
+
+  @Override
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {
+    throw new MemoriaException("has no children");
   }
 
 

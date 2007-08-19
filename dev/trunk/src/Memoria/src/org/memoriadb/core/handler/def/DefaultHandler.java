@@ -3,7 +3,9 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.exception.MemoriaException;
 
 public class DefaultHandler implements ISerializeHandler {
 
@@ -14,7 +16,7 @@ public class DefaultHandler implements ISerializeHandler {
   }
 
   @Override
-  public Object desrialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     Object result = fClassObject.newInstance();
     while(input.available() > 0) {
       int fieldId = input.readInt();
@@ -29,6 +31,21 @@ public class DefaultHandler implements ISerializeHandler {
     for(MetaField metaField: fClassObject.getFields()) {
       output.writeInt(metaField.getId());
       metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(obj), context);
+    }
+  }
+
+  @Override
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {
+    for(MetaField field: fClassObject.getFields()) {
+      if(field.getFieldType() != FieldType.clazz) continue;
+      
+      try {
+        // access the field via refelcion
+        traversal.visit(field.getJavaField(obj).get(obj));
+      }
+      catch (Exception e) {
+        throw new MemoriaException(e);
+      }
     }
   }
 

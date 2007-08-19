@@ -1,10 +1,10 @@
-package org.memoriadb.core;
+package org.memoriadb.core.load;
 
 import java.io.*;
 import java.util.*;
 
-import org.memoriadb.core.backend.Block;
-import org.memoriadb.core.binder.*;
+import org.memoriadb.core.*;
+import org.memoriadb.core.backend.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.ByteUtil;
 
@@ -12,8 +12,12 @@ import org.memoriadb.util.ByteUtil;
 public final class FileReader implements IReaderContext {
   
   private final File fFile;
-  private final Set<HydratedObject> fHydratedObjects = new HashSet<HydratedObject>();
+  
+  private Map<Long, HydratedInfo> fHydratedObjects = new HashMap<Long, HydratedInfo>();
+  private Map<Long, HydratedInfo> fHydratedMetaClasses = new HashMap<Long, HydratedInfo>();
+  
   private final Set<IBindable> fObjectsToBind = new HashSet<IBindable>();
+  
   private ObjectRepo fRepo;
   private final MemoriaFile fMemoriaFile;
 
@@ -29,7 +33,7 @@ public final class FileReader implements IReaderContext {
   
   @Override
   public Object getObjectById(long objectId) {
-    return fRepo.getObjectById(objectId);
+    return fRepo.getObject(objectId);
   }
   
   @Override
@@ -43,6 +47,7 @@ public final class FileReader implements IReaderContext {
     fRepo = repo;
     try {
       readBlockData();
+      dehydrateMetaClasses();
       dehydrateObjects();
       bindObjects();
     }
@@ -63,13 +68,24 @@ public final class FileReader implements IReaderContext {
     }
   }
 
-  private void dehydrateObjects() throws Exception {
-    for(HydratedObject object: fHydratedObjects) {
-      fRepo.put(object.getObjectId(), object.dehydrate(this));
+  private void dehydrateMetaClasses() throws Exception {
+    for(HydratedInfo info: fHydratedMetaClasses.values()){
+      dehydrateObject(info);
     }
-    fHydratedObjects.clear();
+    fHydratedMetaClasses = null;
+  }
+  
+  private void dehydrateObject(HydratedInfo info) throws Exception {
+    fRepo.add(info.getObjectId(), info.getHydratedObject().dehydrate(this), info.getVersion());
   }
 
+  private void dehydrateObjects() throws Exception {
+    for(HydratedInfo info: fHydratedObjects.values()) {
+      dehydrateObject(info);
+    }
+    fHydratedObjects = null;
+  }
+  
   private void readBlockData() throws Exception {
     int bufferSize = (int)Runtime.getRuntime().freeMemory() / 16;
     FileInputStream fileStream = new FileInputStream(fFile);
@@ -92,12 +108,6 @@ public final class FileReader implements IReaderContext {
     
     stream.close();
   }
-  
-  private void readMetaClass(DataInputStream stream, long objectId) throws Exception {
-    HandlerMetaClass metaClassObject = (HandlerMetaClass) fRepo.getObjectById(IMetaClass.METACLASS_OBJECT_ID);
-    MetaClass classObject = (MetaClass) metaClassObject.getHandler().desrialize(stream, this);
-    fRepo.put(objectId, classObject);
-  }
 
   private void readObject(byte[] data, int offset, int size) throws Exception {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
@@ -106,10 +116,13 @@ public final class FileReader implements IReaderContext {
     long objectId = stream.readLong();
 
     if(MetaClass.isMetaClassObject(typeId)) {
-      readMetaClass(stream, objectId);
+      // FIXMEfix version
+      fHydratedMetaClasses.put(objectId, new HydratedInfo(objectId, new HydratedObject(typeId, stream), 0));
       return;
     }
-    fHydratedObjects.add(new HydratedObject(typeId, objectId, stream));
+    
+    // FIXME fix version
+    fHydratedObjects.put(objectId, new HydratedInfo(objectId, new HydratedObject(typeId, stream), 0));
   }
 
   private void readObjects(byte[] data, int offset, int length) throws Exception {

@@ -1,8 +1,7 @@
-package org.memoriadb.core;
+package org.memoriadb.core.backend;
 
 import java.util.*;
 
-import org.memoriadb.core.backend.Block;
 
 public class MemoriaFile {
   

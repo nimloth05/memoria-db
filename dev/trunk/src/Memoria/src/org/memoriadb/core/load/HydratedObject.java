@@ -1,10 +1,10 @@
-package org.memoriadb.core;
+package org.memoriadb.core.load;
 
 import java.io.DataInputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.memoriadb.core.binder.ObjectFieldReference;
+import org.memoriadb.core.*;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -17,14 +17,12 @@ import org.memoriadb.exception.MemoriaException;
 public class HydratedObject {
   
   private final long fTypeId;
-  private final long fObjectId;
   private final DataInputStream fInput;
   
   private final List<ObjectFieldReference> fObjectsToBind = new ArrayList<ObjectFieldReference>();
   
-  public HydratedObject(long typeId, long objectId, DataInputStream input) {
+  public HydratedObject(long typeId, DataInputStream input) {
     fTypeId = typeId;
-    fObjectId = objectId;
     fInput = input;
   }
 
@@ -33,10 +31,6 @@ public class HydratedObject {
     if (classObject == null) throw new MemoriaException("ClassObject for typeId not found: " + fTypeId);
     
     return instantiate(context, classObject);
-  }
-
-  public long getObjectId() {
-    return fObjectId;
   }
 
   public long getTypeId() {
@@ -49,11 +43,11 @@ public class HydratedObject {
   
   @Override
   public String toString() {
-    return "typeId:" + fTypeId + " objectId:" + fObjectId;
+    return "hydrated for type " + fTypeId ;
   }
   
   private Object instantiate(IReaderContext context, IMetaClass classObject) throws Exception {
-    return classObject.getHandler().desrialize(fInput, context);
+    return classObject.getHandler().deserialize(fInput, context);
   }
   
 }
