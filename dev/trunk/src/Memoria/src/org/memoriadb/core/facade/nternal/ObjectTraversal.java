@@ -15,7 +15,7 @@ public class ObjectTraversal implements IObjectTraversal {
   }
 
   @Override
-  public void visit(Object obj) {
+  public void handle(Object obj) {
     if(fVisited.contains(obj)) return;
     
     fVisited.add(obj);

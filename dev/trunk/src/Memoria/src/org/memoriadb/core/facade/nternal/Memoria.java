@@ -51,16 +51,6 @@ public class Memoria implements IMemoria {
   public long getObjectId(Object obj) {
     return fObjectContainer.getObjectId(obj);
   } 
-  
-  /**
-   * @return id of the root-element
-   */
-  public long recursiveSave(Object obj) {
-    long result = save(obj);
-    fObjectContainer.getMetaClass(obj);
-    
-    return result;
-  }
 
   @Override
   public long save(Object obj) {
@@ -81,15 +71,15 @@ public class Memoria implements IMemoria {
     return fObjectContainer.add(obj);
   }
 
-  public long saveAll(Object obj) {
+  public long saveAll(Object root) {
     ObjectTraversal traversal = new ObjectTraversal(this);
-    traversal.visit(obj);
-    return fObjectContainer.getObjectId(obj);
+    traversal.handle(root);
+    return fObjectContainer.getObjectId(root);
   } 
 
   @Override
   public void writePendingChanges() {
-    Set<Object> save = new IdentityHashSet<Object>();
+    IdentityHashSet<Object> save = new IdentityHashSet<Object>();
     save.addAll(fAdd);
     save.addAll(fUpdate);
     
@@ -97,9 +87,17 @@ public class Memoria implements IMemoria {
   }
 
   private void addMetaClassIfNecessary(Object obj) {
-    if(fObjectContainer.metaClassExists(obj.getClass())) return;
-    IMetaClass metaClass = fObjectContainer.createMetaClass(obj);
-    fAdd.add(metaClass);
+    Class<?> klass = obj.getClass();
+    
+    // if obj is an array, the metaClass of the componentType is added. 
+    // The MetaClass for the array is generic and bootstrapped
+    if(klass.isArray()){
+      klass = klass.getComponentType();
+    }
+    
+    if(fObjectContainer.metaClassExists(klass)) return;
+    IMetaClass metaClass = fObjectContainer.createMetaClass(klass);
+    save(metaClass);
   }
 
 }

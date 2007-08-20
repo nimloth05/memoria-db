@@ -8,29 +8,21 @@ import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectSerializer implements ISerializeContext {
   
-  
   private final ObjectRepo fObjectRepo;
   
-  /**
-   * Additional Objects that must be serialized to complete the aggregate.
-   */
-  private final Set<Object> fObjectsToSerialize = new IdentityHashSet<Object>();
-
   /**
    * The objects to write. 
    */
   private final Set<Object> fObjects;
   
-  public static byte[] serialize(ObjectRepo objectRepo, Set<Object> objects) {
+  public static byte[] serialize(ObjectRepo objectRepo, IdentityHashSet<Object> objects) {
     return new ObjectSerializer(objectRepo, objects).serializeObjects();
   }
   
   /**
    * @param repo
    */
-  public ObjectSerializer(ObjectRepo repo, Set<Object> objects) {
-    if(!(objects instanceof IdentityHashSet)) throw new MemoriaException("IdentityHashSet expected but was " + objects.getClass()) ;
-    
+  public ObjectSerializer(ObjectRepo repo, IdentityHashSet<Object> objects) {
     fObjectRepo = repo;
     fObjects = objects;
   }

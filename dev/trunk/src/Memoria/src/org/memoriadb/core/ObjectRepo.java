@@ -60,14 +60,11 @@ public class ObjectRepo {
    * Creates a new MetaClass for the given <tt>obj</tt>. 
    * If the given obj is an Array, a new MetaClass for it's componentType is created.
    */
-  public IMetaClass createMetaClass(Object obj) {
-    Class<?> klass = obj.getClass();
-    if(klass.isArray()) klass = klass.getComponentType();
+  public IMetaClass createMetaClass(Class<?> klass) {
+    if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
     if(fMetaObjects.containsKey(klass)) throw new MemoriaException("MetaClass exists for " + klass);
     
-    IMetaClass result= new MetaClass(klass);
-    add(result);
-    return result;
+    return new MetaClass(klass);
   }
   
   public Collection<Object> getAllObjects() {
@@ -117,8 +114,8 @@ public class ObjectRepo {
    *         If the given klass is an Array-type, true is returned if a MetaClass for the ComponentType exists.
    */
   public boolean metaClassExists(Class<?> klass) {
-    if(!klass.isArray()) return fMetaObjects.containsKey(klass);
-    return fMetaObjects.containsKey(klass.getComponentType());
+    if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
+    return fMetaObjects.containsKey(klass);
   }
 
   private long generateId() {

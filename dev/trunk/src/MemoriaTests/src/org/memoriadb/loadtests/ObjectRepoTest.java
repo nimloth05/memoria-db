@@ -56,8 +56,7 @@ public class ObjectRepoTest extends TestCase {
     for(int i = 0; i < 100000; ++i) {
       Object obj = new WrongHashCode();
       
-      // FIXME muss noch angepasst werden..
-      fRepo.register(obj);
+      fRepo.add(obj);
       objects.add(obj);
     }
     

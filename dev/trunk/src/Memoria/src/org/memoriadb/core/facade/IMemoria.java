@@ -54,7 +54,7 @@ public interface IMemoria {
    * Saves the given <tt>obj</tt> and all referenced objects.
    * @return objectId of the given <tt>obj</tt>
    */
-  public long saveAll(Object obj);
+  public long saveAll(Object root);
 
   /**
    * Writes all pending changes since the last call to <tt>writePendingChanges()</tt>

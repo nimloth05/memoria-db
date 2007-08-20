@@ -1,12 +1,13 @@
 package org.memoriadb.core;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collection;
 
 import org.memoriadb.core.load.FileReader;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.IdentityHashSet;
 
-public class ObjectContainer implements IContext, IObjectContainer {
+public class ObjectContainer implements IContext, IObjectContainer { 
   
   private final ObjectRepo fObjectRepo;
   
@@ -38,8 +39,8 @@ public class ObjectContainer implements IContext, IObjectContainer {
   }
 
   @Override
-  public IMetaClass createMetaClass(Object obj) {
-    return fObjectRepo.createMetaClass(obj);
+  public IMetaClass createMetaClass(Class<?> klass) {
+    return fObjectRepo.createMetaClass(klass);
   }
 
   public Collection<Object> getAllObjects() {
@@ -61,13 +62,12 @@ public class ObjectContainer implements IContext, IObjectContainer {
     return fObjectRepo.getObjectId(obj);
   }
 
-
   @Override
   public boolean metaClassExists(Class<?> klass) {
     return fObjectRepo.metaClassExists(klass);
   }
 
-  public void write(Set<Object> objects) {
+  public void write(IdentityHashSet<Object> objects) {
     try {
       append(ObjectSerializer.serialize(fObjectRepo, objects));
     }

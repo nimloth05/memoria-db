@@ -41,7 +41,7 @@ public class DefaultHandler implements ISerializeHandler {
       
       try {
         // access the field via refelcion
-        traversal.visit(field.getJavaField(obj).get(obj));
+        traversal.handle(field.getJavaField(obj).get(obj));
       }
       catch (Exception e) {
         throw new MemoriaException(e);

@@ -1,5 +1,5 @@
 package org.memoriadb.core.facade.nternal;
 
 public interface IObjectTraversal {
-  public void visit(Object obj);
+  public void handle(Object obj);
 }

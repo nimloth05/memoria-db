@@ -1,8 +1,9 @@
 package org.memoriadb.core;
 
-import java.util.*;
+import java.util.Collection;
 
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.IdentityHashSet;
 
 public interface IObjectContainer {
 
@@ -22,7 +23,7 @@ public interface IObjectContainer {
   /**
    * @return creates the metaclass for the given <tt>obj</tt>
    */
-  public IMetaClass createMetaClass(Object obj);
+  public IMetaClass createMetaClass(Class<?> klass);
   
   public Collection<Object> getAllObjects();
   
@@ -53,7 +54,7 @@ public interface IObjectContainer {
    * Saves the given changes to the persistent store.
    * @param add added or updated objects. MetaClasses are also contained in this list.
    */
-  public void write(Set<Object> save);
+  public void write(IdentityHashSet<Object> save);
 
 
 }

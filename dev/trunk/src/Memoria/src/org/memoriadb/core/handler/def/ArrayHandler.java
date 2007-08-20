@@ -49,7 +49,7 @@ public class ArrayHandler implements ISerializeHandler {
     if(!obj.getClass().isArray()) throw new MemoriaException("array expected but was " + obj);
     int length = Array.getLength(obj);
     for(int i = 0; i < length; ++i) {
-      traversal.visit(Array.get(obj, i));
+      traversal.handle(Array.get(obj, i));
     }
   }
 
