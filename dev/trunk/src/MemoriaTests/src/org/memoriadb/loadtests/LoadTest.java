@@ -12,7 +12,7 @@ public class LoadTest extends AbstractObjectStoreTest {
   public void test_save_objectref() throws Exception {
     List<Object> objects = new ArrayList<Object>();
     
-    for(int i = 0; i < 15000; ++i) {
+    for(int i = 0; i < 150; ++i) {
       Referencer composite = new Referencer();
       composite.set(TestObj.class, "1");
       objects.add(composite);

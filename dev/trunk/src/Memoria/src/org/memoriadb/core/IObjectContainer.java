@@ -2,6 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
+import org.memoriadb.core.backend.IMemoriaFile;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
@@ -27,12 +28,14 @@ public interface IObjectContainer {
   
   public Collection<Object> getAllObjects();
   
+  public IMemoriaFile getFile();
+  
   /**
    * @return The MetaClass for the given obj
    * @throws MemoriaException if no MetaClass can be found
    */
   public IMetaClass getMetaClass(Object obj);
-  
+
   /**
    * @return The object or null, if no Object exists for the given id. 
    *         It is not considered if the object is persistent or not.

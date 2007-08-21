@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.Collection;
 
+import org.memoriadb.core.backend.IMemoriaFile;
 import org.memoriadb.core.load.FileReader;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
@@ -11,9 +12,9 @@ public class ObjectContainer implements IContext, IObjectContainer {
   
   private final ObjectRepo fObjectRepo;
   
-  private final File fFile;
+  private final IMemoriaFile fFile;
   
-  public ObjectContainer(File file) {
+  public ObjectContainer(IMemoriaFile file) {
     fFile = file;
     fObjectRepo = ObjectRepoFactory.create();
     FileReader.readIn(fFile, fObjectRepo);
@@ -48,6 +49,11 @@ public class ObjectContainer implements IContext, IObjectContainer {
   }
 
   @Override
+  public IMemoriaFile getFile() {
+    return fFile;
+  }
+
+  @Override
   public IMetaClass getMetaClass(Object obj) {
     return fObjectRepo.getMetaClass(obj.getClass());
   }
@@ -77,12 +83,8 @@ public class ObjectContainer implements IContext, IObjectContainer {
   }
 
   private void append(byte[] data) throws IOException {
-    RandomAccessFile file = new RandomAccessFile(fFile, "rw");
-    
-    long length = file.length();
-    if (length > 0) {
-      file.seek(file.length());
-    }
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    DataOutputStream file = new DataOutputStream(byteArrayOutputStream);
     
     file.write(HeaderUtil.BLOCK_START_TAG);
     int size = data.length+HeaderUtil.TRANSACTION_START_TAG.length+4+HeaderUtil.TRANSACTION_END_TAG.length; //the block is as big as the transaction data.
@@ -95,8 +97,8 @@ public class ObjectContainer implements IContext, IObjectContainer {
     file.write(HeaderUtil.TRANSACTION_END_TAG);
     file.write(HeaderUtil.BLOCK_END_TAG);
     
-    file.getFD().sync();
-    file.close();
+    fFile.append(byteArrayOutputStream.toByteArray());
+    
   }
 
 }

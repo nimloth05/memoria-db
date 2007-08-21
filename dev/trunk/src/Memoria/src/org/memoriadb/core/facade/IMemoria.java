@@ -3,6 +3,7 @@ package org.memoriadb.core.facade;
 import java.util.Collection;
 
 import org.memoriadb.core.IMetaClass;
+import org.memoriadb.core.backend.IMemoriaFile;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -23,6 +24,8 @@ public interface IMemoria {
 
   // wird später ersetzt durch die typenasierte Queries, msc...
   public Collection<Object> getAllObjects();
+
+  public IMemoriaFile getFile();
 
   /**
    * @return The MetaClass for the given <tt>obj</tt>.

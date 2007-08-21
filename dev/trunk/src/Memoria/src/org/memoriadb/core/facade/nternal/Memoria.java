@@ -3,6 +3,7 @@ package org.memoriadb.core.facade.nternal;
 import java.util.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.backend.IMemoriaFile;
 import org.memoriadb.core.facade.IMemoria;
 import org.memoriadb.util.IdentityHashSet;
 
@@ -38,6 +39,11 @@ public class Memoria implements IMemoria {
   }
 
   @Override
+  public IMemoriaFile getFile() {
+    return fObjectContainer.getFile();
+  }
+
+  @Override
   public IMetaClass getMetaClass(Object obj) {
     return fObjectContainer.getMetaClass(obj);
   }
@@ -45,12 +51,12 @@ public class Memoria implements IMemoria {
   @Override
   public Object getObject(long id) {
     return fObjectContainer.getObject(id);
-  }
+  } 
 
   @Override
   public long getObjectId(Object obj) {
     return fObjectContainer.getObjectId(obj);
-  } 
+  }
 
   @Override
   public long save(Object obj) {
@@ -69,13 +75,13 @@ public class Memoria implements IMemoria {
     fAdd.add(obj);
     addMetaClassIfNecessary(obj);
     return fObjectContainer.add(obj);
-  }
+  } 
 
   public long saveAll(Object root) {
     ObjectTraversal traversal = new ObjectTraversal(this);
     traversal.handle(root);
     return fObjectContainer.getObjectId(root);
-  } 
+  }
 
   @Override
   public void writePendingChanges() {

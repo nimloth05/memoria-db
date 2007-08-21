@@ -1,6 +1,5 @@
 package org.memoriadb.test.core;
 
-import java.io.File;
 import java.util.*;
 
 import junit.framework.TestCase;
@@ -11,10 +10,8 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected IMemoria fStore;
   
-  private File fFile;
-  
   protected final void createStore() {
-    fStore = MemoriaFactory.open(fFile);
+    fStore = MemoriaFactory.open();
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -25,8 +22,12 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return result;
   }
   
+  protected final void recreateStore() {
+    fStore = MemoriaFactory.open(fStore.getFile());
+  }
+  
   protected final void reopen() {
-    createStore(); 
+    recreateStore(); 
   }
 
   protected final void save(Object...objects) {
@@ -43,8 +44,8 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   @Override
   protected void setUp() {
-    fFile = new File("fileStore.db");
-    fFile.delete(); 
+   // fFile = new File("fileStore.db");
+   // fFile.delete(); 
     createStore();
   }
 

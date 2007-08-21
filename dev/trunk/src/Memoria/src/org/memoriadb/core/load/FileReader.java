@@ -11,7 +11,6 @@ import org.memoriadb.util.ByteUtil;
 
 public final class FileReader implements IReaderContext {
   
-  private final File fFile;
   
   private Map<Long, HydratedInfo> fHydratedObjects = new HashMap<Long, HydratedInfo>();
   private Map<Long, HydratedInfo> fHydratedMetaClasses = new HashMap<Long, HydratedInfo>();
@@ -20,12 +19,14 @@ public final class FileReader implements IReaderContext {
   
   private ObjectRepo fRepo;
   private final MemoriaFile fMemoriaFile;
+  private final IMemoriaFile fFile;
 
-  public static void readIn(File file, ObjectRepo repo) {
+
+  public static void readIn(IMemoriaFile file, ObjectRepo repo) {
     new FileReader(file).read(repo);
   }
   
-  private FileReader(File file) {
+  private FileReader(IMemoriaFile file) {
     if (file == null) throw new IllegalArgumentException("File for readIn was null");
     fFile = file;
     fMemoriaFile = new MemoriaFile();
@@ -42,8 +43,6 @@ public final class FileReader implements IReaderContext {
   }
 
   public void read(ObjectRepo repo) {
-    if (!fFile.exists()) return;
-    
     fRepo = repo;
     try {
       readBlockData();
@@ -87,23 +86,26 @@ public final class FileReader implements IReaderContext {
   }
   
   private void readBlockData() throws Exception {
-    int bufferSize = (int)Runtime.getRuntime().freeMemory() / 16;
-    FileInputStream fileStream = new FileInputStream(fFile);
-    DataInputStream stream = new DataInputStream(new BufferedInputStream(fileStream, bufferSize));
+    DataInputStream stream = new DataInputStream(fFile.getInputStream());
 
+    int position = 0;
+    
     while (stream.available() > 0) {
-      long startPosition = fileStream.getChannel().position();
       
       HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_START_TAG);
       
       int blockSize = stream.readInt(); //the block size
+      position += 4;
+      
       byte[] blockData = new byte[blockSize];
       stream.read(blockData); 
+      position += blockSize;
+      
       readTransactionData(blockData);
 
       HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_END_TAG);
       
-      fMemoriaFile.add(new Block(fileStream.getChannel().position()-startPosition, startPosition));
+      fMemoriaFile.add(new Block(blockSize, position));
     }
     
     stream.close();

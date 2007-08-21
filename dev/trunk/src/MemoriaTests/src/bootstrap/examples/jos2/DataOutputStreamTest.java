@@ -1,4 +1,4 @@
-package bootstrap.examples;
+package bootstrap.examples.jos2;
 
 import java.io.File;
 import java.util.*;

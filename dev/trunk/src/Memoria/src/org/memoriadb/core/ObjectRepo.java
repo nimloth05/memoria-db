@@ -58,7 +58,6 @@ public class ObjectRepo {
 
   /**
    * Creates a new MetaClass for the given <tt>obj</tt>. 
-   * If the given obj is an Array, a new MetaClass for it's componentType is created.
    */
   public IMetaClass createMetaClass(Class<?> klass) {
     if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
@@ -111,7 +110,6 @@ public class ObjectRepo {
 
   /**
    * @return true, if a MetaClass object exists for the given type. 
-   *         If the given klass is an Array-type, true is returned if a MetaClass for the ComponentType exists.
    */
   public boolean metaClassExists(Class<?> klass) {
     if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
