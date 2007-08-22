@@ -17,6 +17,8 @@ public interface IObjectContainer {
 
   public void checkSanity();
 
+  public void close();
+  
   public boolean contains(long id);
   
   public boolean contains(Object obj);
@@ -29,7 +31,7 @@ public interface IObjectContainer {
   public Collection<Object> getAllObjects();
   
   public IMemoriaFile getFile();
-  
+
   /**
    * @return The MetaClass for the given obj
    * @throws MemoriaException if no MetaClass can be found
@@ -47,6 +49,8 @@ public interface IObjectContainer {
    * @throws MemoriaException If the given object can not be found.
    */
   public long getObjectId(Object obj);
+
+  public int getSize();
 
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.

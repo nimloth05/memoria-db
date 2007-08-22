@@ -17,6 +17,8 @@ public interface IMemoria {
   // wird später entfernt, msc...
   public void checkSanity();
 
+  public void close();
+
   // query
   public boolean contains(long id);
 
@@ -45,6 +47,8 @@ public interface IMemoria {
    *           If the given object can not be found.
    */
   public long getObjectId(Object obj);
+
+  public int getSize();
 
   /**
    * Adds an object to the store or performs an update if the object is already contained.

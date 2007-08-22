@@ -1,18 +1,19 @@
 package org.memoriadb.test.core;
 
+import java.io.File;
 import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.memoriadb.core.backend.*;
 import org.memoriadb.core.facade.*;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
+  private static final String PATH = "file.mia";
+  
   protected IMemoria fStore;
   
-  protected final void createStore() {
-    fStore = MemoriaFactory.open();
-  }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
     List<T> result = new ArrayList<T>();
@@ -23,7 +24,9 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected final void recreateStore() {
-    fStore = MemoriaFactory.open(fStore.getFile());
+    fStore.close(); 
+    //fStore = openFile(new PhysicalFile(PATH));
+    fStore = openFile(fStore.getFile());
   }
   
   protected final void reopen() {
@@ -44,9 +47,19 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   @Override
   protected void setUp() {
-   // fFile = new File("fileStore.db");
-   // fFile.delete(); 
-    createStore();
+   File file = new File(PATH);
+   file.delete(); 
+   //fStore = openFile(new PhysicalFile(PATH));
+   fStore = openFile(new InMemoryFile());
+  }
+
+  @Override
+  protected void tearDown() {
+    fStore.close();
+  }
+  
+  private IMemoria openFile(IMemoriaFile file) {
+    return MemoriaFactory.open(file);
   }
 
 }

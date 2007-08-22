@@ -30,6 +30,11 @@ public class ObjectContainer implements IContext, IObjectContainer {
   }
 
   @Override
+  public void close() {
+    fFile.close();
+  }
+
+  @Override
   public boolean contains(long id) {
     return fObjectRepo.contains(id);
   }
@@ -66,6 +71,11 @@ public class ObjectContainer implements IContext, IObjectContainer {
   @Override
   public long getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
+  }
+
+  @Override
+  public int getSize() {
+    return fFile.getSize();
   }
 
   @Override

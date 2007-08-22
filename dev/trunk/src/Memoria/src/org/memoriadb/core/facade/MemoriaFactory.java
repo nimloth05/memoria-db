@@ -15,5 +15,10 @@ public class MemoriaFactory {
     ObjectContainer container = new ObjectContainer(file);
     return new Memoria(container);
   }
+  
+  public static IMemoria open(String path) {
+    IMemoriaFile file = new PhysicalFile(path);
+    return open(file);
+  }
 
 }

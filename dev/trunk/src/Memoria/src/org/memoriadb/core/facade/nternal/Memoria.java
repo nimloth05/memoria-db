@@ -24,6 +24,12 @@ public class Memoria implements IMemoria {
   }
 
   @Override
+  public void close() {
+    fObjectContainer.close();
+    
+  }
+
+  @Override
   public boolean contains(long id) {
     return fObjectContainer.contains(id);
   }
@@ -46,16 +52,21 @@ public class Memoria implements IMemoria {
   @Override
   public IMetaClass getMetaClass(Object obj) {
     return fObjectContainer.getMetaClass(obj);
-  }
+  } 
 
   @Override
   public Object getObject(long id) {
     return fObjectContainer.getObject(id);
-  } 
+  }
 
   @Override
   public long getObjectId(Object obj) {
     return fObjectContainer.getObjectId(obj);
+  } 
+
+  @Override
+  public int getSize() {
+    return fObjectContainer.getSize();
   }
 
   @Override
@@ -75,7 +86,7 @@ public class Memoria implements IMemoria {
     fAdd.add(obj);
     addMetaClassIfNecessary(obj);
     return fObjectContainer.add(obj);
-  } 
+  }
 
   public long saveAll(Object root) {
     ObjectTraversal traversal = new ObjectTraversal(this);

@@ -88,27 +88,22 @@ public final class FileReader implements IReaderContext {
   private void readBlockData() throws Exception {
     DataInputStream stream = new DataInputStream(fFile.getInputStream());
 
-    int position = 0;
-    
     while (stream.available() > 0) {
       
       HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_START_TAG);
       
       int blockSize = stream.readInt(); //the block size
-      position += 4;
       
       byte[] blockData = new byte[blockSize];
       stream.read(blockData); 
-      position += blockSize;
       
       readTransactionData(blockData);
 
       HeaderUtil.assertTag(stream, HeaderUtil.BLOCK_END_TAG);
       
-      fMemoriaFile.add(new Block(blockSize, position));
+      //fMemoriaFile.add(new Block(blockSize, position));
     }
     
-    stream.close();
   }
 
   private void readObject(byte[] data, int offset, int size) throws Exception {

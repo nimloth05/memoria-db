@@ -24,10 +24,23 @@ public class InMemoryFileTest extends TestCase {
     assertEquals(2, fFile.get(1));
     
     InputStream stream = fFile.getInputStream();
+    assertEquals(2, stream.available());
     assertEquals(1, stream.read());
+    assertEquals(1, stream.available());
     assertEquals(2, stream.read());
+    assertEquals(0, stream.available());
     assertEquals(-1, stream.read());
 
+  }
+  
+  public void test_negative_numbers() {
+    fFile = new InMemoryFile();
+    
+    append((byte)255);
+    append((byte)128);
+    
+    assertEquals(255, fFile.get(0));
+    assertEquals(128, fFile.get(1));
   }
   
   private void append(byte... bytes){
