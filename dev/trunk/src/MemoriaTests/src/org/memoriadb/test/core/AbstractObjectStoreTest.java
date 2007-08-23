@@ -5,6 +5,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.memoriadb.core.*;
 import org.memoriadb.core.facade.*;
 import org.memoriadb.core.file.*;
 
@@ -61,7 +62,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   private IObjectContainer openFile(IMemoriaFile file) {
-    return MemoriaFactory.open(file);
+    return Memoria.open(file);
   }
 
 }
