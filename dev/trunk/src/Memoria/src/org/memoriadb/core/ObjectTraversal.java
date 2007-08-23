@@ -2,15 +2,14 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
-import org.memoriadb.IObjectContainer;
 import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
-  private final IObjectContainer fMemoria;
+  private final ObjectStore fMemoria;
   
-  public ObjectTraversal(IObjectContainer memoria) {
+  public ObjectTraversal(ObjectStore memoria) {
     fMemoria = memoria;
   }
 
@@ -19,7 +18,7 @@ public class ObjectTraversal implements IObjectTraversal {
     if(fVisited.contains(obj)) return;
     
     fVisited.add(obj);
-    fMemoria.save(obj);
+    fMemoria.internalSave(obj);
     
     fMemoria.getMetaClass(obj).getHandler().traverseChildren(obj, this);
   }

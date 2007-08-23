@@ -13,20 +13,20 @@ import org.memoriadb.core.load.ObjectLoader;
 public class Memoria {
   
   /**
-   * @return An ObjectContainer backed with an in-memory file
+   * @return An ObjectStore backed with an in-memory file
    */
-  public static IObjectContainer open() {
+  public static IObjectStore open() {
     IMemoriaFile file = new InMemoryFile();
     return open(file);
   }
   
-  public static IObjectContainer open(IMemoriaFile file) {
+  public static IObjectStore open(IMemoriaFile file) {
     ObjectRepo repo = ObjectRepoFactory.create();
     ObjectLoader.readIn(file, repo);
-    return new ObjectContainer(repo, file);
+    return new ObjectStore(repo, file);
   }
   
-  public static IObjectContainer open(String path) {
+  public static IObjectStore open(String path) {
     IMemoriaFile file = new PhysicalFile(path);
     return open(file);
   }

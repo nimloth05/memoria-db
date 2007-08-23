@@ -9,37 +9,29 @@ public class PhysicalFile extends AbstractMemoriaFile {
 
   private final RandomAccessFile fRandomAccessFile;
   private FileLock fLock;
-  private final String fPath;
 
   public PhysicalFile(String path) {
-    fPath = path;
     try {
       fRandomAccessFile = new RandomAccessFile(path, "rws");
       fLock = fRandomAccessFile.getChannel().tryLock();
     }
-    catch(Exception e){
+    catch (Exception e) {
       throw new MemoriaException(e);
     }
-    
-    if(fLock == null) throw new MemoriaException("File is locked: " + path);
+
+    if (fLock == null) throw new MemoriaException("File is locked: " + path);
   }
-  
+
   @Override
   public void doAppend(byte[] data) {
     internalWrite(data, getSize());
   }
-  
+
   @Override
   public void doClose() {
-    if(fLock != null) try {
-      fLock.release();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-   
-    if(fRandomAccessFile != null) try {
-      fRandomAccessFile.close();
+    try {
+      if (fLock != null) fLock.release();
+      if (fRandomAccessFile != null) fRandomAccessFile.close();
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -50,12 +42,12 @@ public class PhysicalFile extends AbstractMemoriaFile {
   public InputStream doGetInputStream() {
     try {
       fRandomAccessFile.seek(0);
-      
+
       InputStream stream = new InputStream() {
 
         @Override
         public int available() throws IOException {
-          return (int)(fRandomAccessFile.length() - fRandomAccessFile.getFilePointer());
+          return (int) (fRandomAccessFile.length() - fRandomAccessFile.getFilePointer());
         }
 
         @Override
@@ -78,11 +70,11 @@ public class PhysicalFile extends AbstractMemoriaFile {
         public int read(byte[] b, int off, int len) throws IOException {
           return fRandomAccessFile.read(b, off, len);
         }
-        
+
       };
-      
+
       // ein 16tel des maximal verfügbaren Speichers wird al grösse angegeben.
-      return new BufferedInputStream(stream, (int)Runtime.getRuntime().freeMemory() / 128);
+      return new BufferedInputStream(stream, (int) Runtime.getRuntime().freeMemory() / 128);
     }
     catch (IOException e) {
       throw new MemoriaException(e);
@@ -92,7 +84,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
   @Override
   public long doGetSize() {
     try {
-      return (int)fRandomAccessFile.length();
+      return (int) fRandomAccessFile.length();
     }
     catch (IOException e) {
       throw new MemoriaException(e);
@@ -111,7 +103,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
     }
     catch (IOException e) {
       throw new MemoriaException(e);
-    }     
+    }
   }
 
 }

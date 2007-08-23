@@ -6,15 +6,14 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.memoriadb.*;
-import org.memoriadb.core.*;
-import org.memoriadb.core.facade.*;
+import org.memoriadb.core.ObjectStore;
 import org.memoriadb.core.file.*;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
   private static final String PATH = "file.mia";
   
-  protected IObjectContainer fStore;
+  protected IObjectStore fStore;
   
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -28,7 +27,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final void recreateStore() {
     fStore.close(); 
     //fStore = openFile(new PhysicalFile(PATH));
-    InMemoryFile file = (InMemoryFile) fStore.getFile();
+    InMemoryFile file = (InMemoryFile) ((ObjectStore)fStore).getFile();
     file.reset();
     fStore = openFile(file);
   }
@@ -41,12 +40,10 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     for(Object obj: objects) {
       fStore.save(obj);
     }
-    fStore.writePendingChanges();
   }
   
   protected final void saveAll(Object obj) {
     fStore.saveAll(obj);
-    fStore.writePendingChanges();
   }
   
   @Override
@@ -62,7 +59,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.close();
   }
   
-  private IObjectContainer openFile(IMemoriaFile file) {
+  private IObjectStore openFile(IMemoriaFile file) {
     return Memoria.open(file);
   }
 

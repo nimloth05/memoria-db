@@ -2,7 +2,6 @@ package org.memoriadb;
 
 import java.util.Collection;
 
-import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.exception.MemoriaException;
 
@@ -12,7 +11,13 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  * 
  */
-public interface IObjectContainer {
+public interface IObjectStore {
+
+  /**
+   * Starts an update. Changes are immediately refelcted in memory, but not written back to the
+   * persistent store until <tt>endUpdate()</tt> is called.
+   */
+  public void beginUpdate();
 
   // wird später entfernt, msc...
   public void checkSanity();
@@ -24,10 +29,15 @@ public interface IObjectContainer {
 
   public boolean contains(Object obj);
 
+  /**
+   * Commits the changes since the last call to <tt>beginUpdate</tt>. 
+   * Updates can be nested, what increases the update-counter. Changes are only written to the
+   * persistent store if the update-counter is 0. 
+   */
+  public void endUpdate();
+
   // wird später ersetzt durch die typenbasierte Queries, msc...
   public Collection<Object> getAllObjects();
-
-  public IMemoriaFile getFile();
 
   /**
    * @return The MetaClass for the given <tt>obj</tt>.
@@ -49,21 +59,29 @@ public interface IObjectContainer {
   public long getObjectId(Object obj);
 
   /**
+   * @return true, if the update-counter is bigger than 0.  
+   */
+  public boolean isInUpdateMode();
+  
+  /**
    * Adds an object to the store or performs an update if the object is already contained.
+   * 
+   * Changes are immediately written to the persistent store, except this ObjectStore is in 
+   * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
    * 
    * @return The objectId
    */
   public long save(Object obj);
-
+  
   /**
    * Saves the given <tt>obj</tt> and all referenced objects.
+   * 
+   * Changes are immediately written to the persistent store, except this ObjectStore is in 
+   * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
+
+   * 
    * @return objectId of the given <tt>obj</tt>
    */
   public long saveAll(Object root);
-
-  /**
-   * Writes all pending changes since the last call to <tt>writePendingChanges()</tt>
-   */
-  public void writePendingChanges();
-
+  
 }

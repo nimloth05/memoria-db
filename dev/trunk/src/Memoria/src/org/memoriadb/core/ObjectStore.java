@@ -2,12 +2,13 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.IObjectContainer;
+import org.memoriadb.IObjectStore;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
-public class ObjectContainer implements IObjectContainer {
+public class ObjectStore implements IObjectStore {
 
   private final IObjectRepo fObjectContainer;
   private final IFileWriter fFileWriter;
@@ -15,12 +16,19 @@ public class ObjectContainer implements IObjectContainer {
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
   private final IMemoriaFile fFile;
+  
+  private int fUpdateCounter = 0;
 
-  public ObjectContainer(IObjectRepo objectContainer, IMemoriaFile file) {
+  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file) {
     fObjectContainer = objectContainer;
     fFile = file; 
     FileWriter fileWriter = new FileWriter(objectContainer, file);
     fFileWriter = fileWriter;
+  }
+
+  @Override
+  public void beginUpdate() {
+    ++fUpdateCounter;
   }
 
   @Override
@@ -44,11 +52,19 @@ public class ObjectContainer implements IObjectContainer {
   }
 
   @Override
-  public Collection<Object> getAllObjects() {
-    return fObjectContainer.getAllObjects();
+  public void endUpdate() {
+    if(fUpdateCounter==0) throw new MemoriaException("ObjectStore is not in update-mode");
+    --fUpdateCounter;
+    if(fUpdateCounter != 0) return;
+    
+    writePendingChanges();
   }
 
   @Override
+  public Collection<Object> getAllObjects() {
+    return fObjectContainer.getAllObjects();
+  } 
+
   public IMemoriaFile getFile() {
     return fFile;
   }
@@ -66,14 +82,43 @@ public class ObjectContainer implements IObjectContainer {
   @Override
   public long getObjectId(Object obj) {
     return fObjectContainer.getObjectId(obj);
-  } 
+  }
 
   public long getSize() {
     return fFile.getSize();
   }
 
   @Override
+  public boolean isInUpdateMode() {
+    return fUpdateCounter > 0;
+  }
+
+  @Override
   public long save(Object obj) {
+    long result = internalSave(obj);
+    if(!isInUpdateMode()) writePendingChanges();
+    return result;
+  }
+  
+  public long saveAll(Object root) {
+    ObjectTraversal traversal = new ObjectTraversal(this);
+    traversal.handle(root);
+    if(!isInUpdateMode()) writePendingChanges();
+    return fObjectContainer.getObjectId(root);
+  }
+
+  public void writePendingChanges() {
+    IdentityHashSet<Object> save = new IdentityHashSet<Object>();
+    save.addAll(fAdd);
+    save.addAll(fUpdate);
+    
+    fFileWriter.write(save); 
+  }
+
+  /**
+   * Saves the obj without considering if this ObjectStore is in update-mode or not.
+   */
+  long internalSave(Object obj) {
     if(fAdd.contains(obj)){
       // added in same transaction
       return fObjectContainer.getObjectId(obj);
@@ -92,21 +137,6 @@ public class ObjectContainer implements IObjectContainer {
     return fObjectContainer.add(obj);
   }
 
-  public long saveAll(Object root) {
-    ObjectTraversal traversal = new ObjectTraversal(this);
-    traversal.handle(root);
-    return fObjectContainer.getObjectId(root);
-  }
-
-  @Override
-  public void writePendingChanges() {
-    IdentityHashSet<Object> save = new IdentityHashSet<Object>();
-    save.addAll(fAdd);
-    save.addAll(fUpdate);
-    
-    fFileWriter.write(save); 
-  }
-
   private void addMetaClassIfNecessary(Object obj) {
     Class<?> klass = obj.getClass();
     
@@ -118,7 +148,7 @@ public class ObjectContainer implements IObjectContainer {
     
     if(fObjectContainer.metaClassExists(klass)) return;
     IMetaClass metaClass = fObjectContainer.createMetaClass(klass);
-    save(metaClass);
+    internalSave(metaClass);
   }
 
 }

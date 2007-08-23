@@ -28,7 +28,7 @@ public class FileWriter implements IFileWriter {
     }
   }
 
-  void append(byte[] data) throws IOException {
+  private void append(byte[] data) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream file = new DataOutputStream(byteArrayOutputStream);
 
