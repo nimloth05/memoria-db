@@ -1,6 +1,5 @@
 package org.memoriadb.core.load;
 
-import org.memoriadb.core.IReaderContext;
 
 public interface IBindable {
 

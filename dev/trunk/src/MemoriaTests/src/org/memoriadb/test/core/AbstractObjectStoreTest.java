@@ -12,7 +12,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   private static final String PATH = "file.mia";
   
-  protected IMemoria fStore;
+  protected IObjectContainer fStore;
   
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -60,7 +60,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.close();
   }
   
-  private IMemoria openFile(IMemoriaFile file) {
+  private IObjectContainer openFile(IMemoriaFile file) {
     return MemoriaFactory.open(file);
   }
 

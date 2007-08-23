@@ -2,7 +2,6 @@ package org.memoriadb.core.load;
 
 import java.lang.reflect.Array;
 
-import org.memoriadb.core.IReaderContext;
 import org.memoriadb.exception.MemoriaException;
 
 public class BindArray implements IBindable {

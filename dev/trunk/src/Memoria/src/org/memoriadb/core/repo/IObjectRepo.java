@@ -1,9 +1,8 @@
-package org.memoriadb.core;
+package org.memoriadb.core.repo;
 
 import java.util.Collection;
 
 import org.memoriadb.core.meta.IMetaClass;
-import org.memoriadb.core.repo.ObjectInfo;
 import org.memoriadb.exception.MemoriaException;
 
 public interface IObjectRepo {

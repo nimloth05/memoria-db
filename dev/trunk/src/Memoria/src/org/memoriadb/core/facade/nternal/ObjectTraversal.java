@@ -2,15 +2,15 @@ package org.memoriadb.core.facade.nternal;
 
 import java.util.Set;
 
-import org.memoriadb.core.facade.IMemoria;
+import org.memoriadb.core.facade.IObjectContainer;
 import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
-  private final IMemoria fMemoria;
+  private final IObjectContainer fMemoria;
   
-  public ObjectTraversal(IMemoria memoria) {
+  public ObjectTraversal(IObjectContainer memoria) {
     fMemoria = memoria;
   }
 

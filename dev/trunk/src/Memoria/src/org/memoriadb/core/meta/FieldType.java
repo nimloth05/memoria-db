@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.load.ObjectFieldReference;
+import org.memoriadb.core.load.*;
 import org.memoriadb.exception.MemoriaException;
 
 

@@ -12,7 +12,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  * 
  */
-public interface IMemoria {
+public interface IObjectContainer {
 
   // wird später entfernt, msc...
   public void checkSanity();

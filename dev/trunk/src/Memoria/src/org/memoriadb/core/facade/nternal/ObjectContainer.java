@@ -2,13 +2,13 @@ package org.memoriadb.core.facade.nternal;
 
 import java.util.*;
 
-import org.memoriadb.core.IObjectRepo;
-import org.memoriadb.core.facade.IMemoria;
+import org.memoriadb.core.facade.IObjectContainer;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.repo.IObjectRepo;
 import org.memoriadb.util.IdentityHashSet;
 
-public class Memoria implements IMemoria {
+public class ObjectContainer implements IObjectContainer {
 
   private final IObjectRepo fObjectContainer;
   private final IFileWriter fFileWriter;
@@ -17,7 +17,7 @@ public class Memoria implements IMemoria {
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
   private final IMemoriaFile fFile;
 
-  public Memoria(IObjectRepo objectContainer, IMemoriaFile file) {
+  public ObjectContainer(IObjectRepo objectContainer, IMemoriaFile file) {
     fObjectContainer = objectContainer;
     fFile = file; 
     FileWriter fileWriter = new FileWriter(objectContainer, file);

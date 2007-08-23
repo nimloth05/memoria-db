@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Set;
 
 import org.memoriadb.core.meta.IMetaClass;
-import org.memoriadb.core.repo.ObjectInfo;
+import org.memoriadb.core.repo.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 

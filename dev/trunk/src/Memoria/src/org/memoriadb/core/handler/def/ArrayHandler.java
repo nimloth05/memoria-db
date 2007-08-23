@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 import org.memoriadb.core.*;
 import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.load.BindArray;
+import org.memoriadb.core.load.*;
 import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.exception.MemoriaException;
 
