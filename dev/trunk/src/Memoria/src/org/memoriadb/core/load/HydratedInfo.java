@@ -4,9 +4,9 @@ public class HydratedInfo {
   
   private final long fId;
   private final HydratedObject fHydratedObject;
-  private final int fVersion;
+  private final long fVersion;
   
-  public HydratedInfo(long id, HydratedObject hydratedObject, int version) {
+  public HydratedInfo(long id, HydratedObject hydratedObject, long version) {
     fId = id;
     fHydratedObject = hydratedObject;
     fVersion = version;
@@ -20,7 +20,7 @@ public class HydratedInfo {
     return fId;
   }
 
-  public int getVersion() {
+  public long getVersion() {
     return fVersion;
   }
   

@@ -19,9 +19,9 @@ public class ObjectRepo {
   /**
    * Adds an object after dehydration
    */
-  public void add(long id, Object obj, int version) {
+  public void add(long id, Object obj, long version) {
     internalPut(new ObjectInfo(id, obj, version)); 
-  }
+  } 
   
   /**
    * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
@@ -114,6 +114,12 @@ public class ObjectRepo {
   public boolean metaClassExists(Class<?> klass) {
     if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
     return fMetaObjects.containsKey(klass);
+  }
+
+  public void update(Object obj) {
+    ObjectInfo info = getObjectInfo(obj);
+    if(info == null) throw new MemoriaException("Object not found: " + obj);
+    info.incrementVersion();
   }
 
   private long generateId() {

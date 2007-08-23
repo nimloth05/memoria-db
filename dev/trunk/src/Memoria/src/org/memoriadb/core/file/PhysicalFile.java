@@ -1,11 +1,11 @@
-package org.memoriadb.core.backend;
+package org.memoriadb.core.file;
 
 import java.io.*;
 import java.nio.channels.FileLock;
 
 import org.memoriadb.exception.MemoriaException;
 
-public class PhysicalFile implements IMemoriaFile {
+public class PhysicalFile extends AbstractMemoriaFile {
 
   private final RandomAccessFile fRandomAccessFile;
   private FileLock fLock;
@@ -25,12 +25,12 @@ public class PhysicalFile implements IMemoriaFile {
   }
   
   @Override
-  public void append(byte[] data) {
+  public void doAppend(byte[] data) {
     internalWrite(data, getSize());
   }
   
   @Override
-  public void close() {
+  public void doClose() {
     if(fLock != null) try {
       fLock.release();
     }
@@ -47,7 +47,7 @@ public class PhysicalFile implements IMemoriaFile {
   }
 
   @Override
-  public InputStream getInputStream() {
+  public InputStream doGetInputStream() {
     try {
       fRandomAccessFile.seek(0);
       
@@ -56,6 +56,12 @@ public class PhysicalFile implements IMemoriaFile {
         @Override
         public int available() throws IOException {
           return (int)(fRandomAccessFile.length() - fRandomAccessFile.getFilePointer());
+        }
+
+        @Override
+        public void close() throws IOException {
+          streamClosed();
+          super.close();
         }
 
         @Override
@@ -83,7 +89,8 @@ public class PhysicalFile implements IMemoriaFile {
     }
   }
 
-  public int getSize() {
+  @Override
+  public long doGetSize() {
     try {
       return (int)fRandomAccessFile.length();
     }
@@ -93,11 +100,11 @@ public class PhysicalFile implements IMemoriaFile {
   }
 
   @Override
-  public void write(byte[] data, int offset) {
+  public void doWrite(byte[] data, int offset) {
     internalWrite(data, offset);
   }
 
-  private void internalWrite(byte[] data, int offset) {
+  private void internalWrite(byte[] data, long offset) {
     try {
       fRandomAccessFile.seek(offset);
       fRandomAccessFile.write(data, 0, data.length);

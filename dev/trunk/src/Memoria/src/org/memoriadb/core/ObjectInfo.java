@@ -1,6 +1,6 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.backend.Block;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -13,7 +13,7 @@ public class ObjectInfo {
   
   private Object fObj;
   private final long fId;
-  private int fVersion;
+  private long fVersion;
   private boolean fIsDeleted;
   private boolean fHasInactiveObjectData;
   
@@ -32,7 +32,7 @@ public class ObjectInfo {
   /**
    * Use this ctor for ojects after dehydration
    */
-  public ObjectInfo(long id, Object obj, int version) {
+  public ObjectInfo(long id, Object obj, long version) {
     if(obj == null) throw new MemoriaException("null can not be stored for id " + id);
     
     fObj = obj;
@@ -54,8 +54,12 @@ public class ObjectInfo {
     return fObj;
   }
 
-  public int getVersion() {
+  public long getVersion() {
     return fVersion;
+  }
+
+  public void incrementVersion() {
+    ++fVersion;
   }
 
   public boolean isDeleted() {
@@ -77,7 +81,7 @@ public class ObjectInfo {
   public void setHasInactiveObjectData(boolean hasInactiveObjectData) {
     fHasInactiveObjectData = hasInactiveObjectData;
   }
-
+  
   public void setObj(Object obj) {
     fObj = obj;
   }
@@ -85,7 +89,7 @@ public class ObjectInfo {
   public void setVersion(int version) {
     fVersion = version;
   }
-  
+
   @Override
   public String toString() {
     return fId + ":" + fObj + " in revision " + fVersion;

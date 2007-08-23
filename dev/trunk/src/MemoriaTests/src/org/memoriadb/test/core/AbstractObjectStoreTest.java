@@ -5,8 +5,8 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.backend.*;
 import org.memoriadb.core.facade.*;
+import org.memoriadb.core.file.*;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
@@ -26,7 +26,9 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final void recreateStore() {
     fStore.close(); 
     //fStore = openFile(new PhysicalFile(PATH));
-    fStore = openFile(fStore.getFile());
+    InMemoryFile file = (InMemoryFile) fStore.getFile();
+    file.reset();
+    fStore = openFile(file);
   }
   
   protected final void reopen() {

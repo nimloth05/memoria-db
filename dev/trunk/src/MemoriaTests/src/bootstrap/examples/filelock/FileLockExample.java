@@ -37,7 +37,6 @@ public class FileLockExample {
 
   class OpenAction extends AbstractAction {
 
-
     public OpenAction() {
       super("open");
     }
@@ -70,7 +69,7 @@ public class FileLockExample {
   }
 
   private FileLock fLock;
-  private final String WRITE = "rws";
+  private final String WRITE = "rw";
   private final String READ = "r";
   private JTextField fPath;
   private JRadioButton fRead;

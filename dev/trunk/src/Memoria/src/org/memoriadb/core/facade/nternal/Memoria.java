@@ -3,19 +3,21 @@ package org.memoriadb.core.facade.nternal;
 import java.util.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.backend.IMemoriaFile;
 import org.memoriadb.core.facade.IMemoria;
+import org.memoriadb.core.file.*;
 import org.memoriadb.util.IdentityHashSet;
 
 public class Memoria implements IMemoria {
 
   private final IObjectContainer fObjectContainer;
+  private final IFileWriter fFileWriter;
   
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
 
-  public Memoria(IObjectContainer objectContainer) {
+  public Memoria(IObjectContainer objectContainer, IFileWriter writer) {
     fObjectContainer = objectContainer;
+    fFileWriter = writer;
   }
 
   @Override
@@ -65,7 +67,7 @@ public class Memoria implements IMemoria {
   } 
 
   @Override
-  public int getSize() {
+  public long getSize() {
     return fObjectContainer.getSize();
   }
 
@@ -79,6 +81,7 @@ public class Memoria implements IMemoria {
     if(fObjectContainer.contains(obj)){
       // object already in the store, perform update. obj is replaced if several updates occur in same transaction.
       fUpdate.add(obj);
+      fObjectContainer.update(obj);
       return fObjectContainer.getObjectId(obj);
     }
     
@@ -100,7 +103,7 @@ public class Memoria implements IMemoria {
     save.addAll(fAdd);
     save.addAll(fUpdate);
     
-    fObjectContainer.write(save); 
+    fFileWriter.write(save); 
   }
 
   private void addMetaClassIfNecessary(Object obj) {

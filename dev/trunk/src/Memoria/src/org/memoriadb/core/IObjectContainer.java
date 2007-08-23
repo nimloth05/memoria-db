@@ -2,9 +2,8 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
-import org.memoriadb.core.backend.IMemoriaFile;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IdentityHashSet;
 
 public interface IObjectContainer {
 
@@ -50,7 +49,7 @@ public interface IObjectContainer {
    */
   public long getObjectId(Object obj);
 
-  public int getSize();
+  public long getSize();
 
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.
@@ -58,10 +57,10 @@ public interface IObjectContainer {
   public boolean metaClassExists(Class<?> klass);
 
   /**
-   * Saves the given changes to the persistent store.
-   * @param add added or updated objects. MetaClasses are also contained in this list.
+   * Tells the ObjectContainer that an existing object has been updated.
+   * @param obj
    */
-  public void write(IdentityHashSet<Object> save);
+  public void update(Object obj);
 
 
 }

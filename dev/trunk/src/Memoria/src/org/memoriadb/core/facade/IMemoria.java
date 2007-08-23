@@ -3,7 +3,7 @@ package org.memoriadb.core.facade;
 import java.util.Collection;
 
 import org.memoriadb.core.IMetaClass;
-import org.memoriadb.core.backend.IMemoriaFile;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -24,7 +24,7 @@ public interface IMemoria {
 
   public boolean contains(Object obj);
 
-  // wird später ersetzt durch die typenasierte Queries, msc...
+  // wird später ersetzt durch die typenbasierte Queries, msc...
   public Collection<Object> getAllObjects();
 
   public IMemoriaFile getFile();
@@ -48,7 +48,7 @@ public interface IMemoria {
    */
   public long getObjectId(Object obj);
 
-  public int getSize();
+  public long getSize();
 
   /**
    * Adds an object to the store or performs an update if the object is already contained.

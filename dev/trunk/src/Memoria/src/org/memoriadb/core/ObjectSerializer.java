@@ -65,25 +65,10 @@ public class ObjectSerializer implements ISerializeContext {
       serializeObject(stream, fObjectRepo.getObjectInfo(object));
     }
 
-    // wird in die Transaction verschoben,msc
-    
-//    while(!fObjectsToSerialize.isEmpty()) {
-//      Iterator<Object> iterator = fObjectsToSerialize.iterator();
-//      Object next = iterator.next();
-//      iterator.remove();
-//      serializeObject(stream, next);
-//    }
-    
     return buffer.toByteArray();
   }
 
   private void serializeObject(DataOutput dataStream, ObjectInfo info) throws Exception {
-//    // Im moment wird hier das obj noch zum repo hinzugefügt, entfernen. msc
-//    long objectId = fObjectRepo.register(info.getObj());
-//    
-//    Class<?> type = info.getObj().getClass();
-//    // auch das wird anders gelöst, die Metaclass wird früher erzeugt...
-//    IMetaClass metaClass = registerClassObject(dataStream, type);
     IMetaClass metaClass = fObjectRepo.getMetaClass(info.getObj().getClass());
     serializeObject(metaClass, dataStream, info);
   }
@@ -96,6 +81,7 @@ public class ObjectSerializer implements ISerializeContext {
     
     objectStream.writeLong(typeId);
     objectStream.writeLong(info.getId());
+    objectStream.writeLong(info.getVersion());
     
     classObject.getHandler().serialize(info.getObj(), objectStream, this);
     
