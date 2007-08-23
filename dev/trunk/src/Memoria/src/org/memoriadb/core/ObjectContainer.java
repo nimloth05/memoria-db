@@ -68,7 +68,6 @@ public class ObjectContainer implements IObjectContainer {
     return fObjectContainer.getObjectId(obj);
   } 
 
-  @Override
   public long getSize() {
     return fFile.getSize();
   }

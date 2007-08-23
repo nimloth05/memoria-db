@@ -48,8 +48,6 @@ public interface IObjectContainer {
    */
   public long getObjectId(Object obj);
 
-  public long getSize();
-
   /**
    * Adds an object to the store or performs an update if the object is already contained.
    * 

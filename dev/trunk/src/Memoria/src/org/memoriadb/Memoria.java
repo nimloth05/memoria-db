@@ -3,7 +3,6 @@ package org.memoriadb;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.ObjectLoader;
-import org.memoriadb.core.repo.*;
 
 /**
  * Facade to a Memoria db
