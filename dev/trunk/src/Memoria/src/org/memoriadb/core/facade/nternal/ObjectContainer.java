@@ -2,7 +2,7 @@ package org.memoriadb.core.facade.nternal;
 
 import java.util.*;
 
-import org.memoriadb.core.facade.IObjectContainer;
+import org.memoriadb.core.IObjectContainer;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.core.repo.IObjectRepo;

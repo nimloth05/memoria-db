@@ -2,7 +2,7 @@ package org.memoriadb.core.facade.nternal;
 
 import java.util.Set;
 
-import org.memoriadb.core.facade.IObjectContainer;
+import org.memoriadb.core.IObjectContainer;
 import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectTraversal implements IObjectTraversal {

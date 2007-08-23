@@ -1,4 +1,4 @@
-package org.memoriadb.core.facade;
+package org.memoriadb.core;
 
 import org.memoriadb.core.facade.nternal.ObjectContainer;
 import org.memoriadb.core.file.*;
