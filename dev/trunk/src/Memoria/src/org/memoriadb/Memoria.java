@@ -1,6 +1,6 @@
-package org.memoriadb.core;
+package org.memoriadb;
 
-import org.memoriadb.core.facade.nternal.ObjectContainer;
+import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.repo.*;

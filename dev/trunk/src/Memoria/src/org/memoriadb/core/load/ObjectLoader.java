@@ -6,7 +6,6 @@ import java.util.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.repo.ObjectRepo;
 import org.memoriadb.exception.MemoriaException;
 
 

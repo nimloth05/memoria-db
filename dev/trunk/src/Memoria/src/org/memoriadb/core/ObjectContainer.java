@@ -1,11 +1,10 @@
-package org.memoriadb.core.facade.nternal;
+package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.core.IObjectContainer;
+import org.memoriadb.IObjectContainer;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMetaClass;
-import org.memoriadb.core.repo.IObjectRepo;
 import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectContainer implements IObjectContainer {

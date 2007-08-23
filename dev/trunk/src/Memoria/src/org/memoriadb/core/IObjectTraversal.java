@@ -1,4 +1,4 @@
-package org.memoriadb.core.facade.nternal;
+package org.memoriadb.core;
 
 public interface IObjectTraversal {
   public void handle(Object obj);

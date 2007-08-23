@@ -5,6 +5,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.facade.*;
 import org.memoriadb.core.file.*;

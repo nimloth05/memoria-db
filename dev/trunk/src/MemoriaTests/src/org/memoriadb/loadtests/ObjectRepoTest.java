@@ -4,7 +4,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.repo.ObjectRepo;
+import org.memoriadb.core.ObjectRepo;
 import org.memoriadb.test.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {

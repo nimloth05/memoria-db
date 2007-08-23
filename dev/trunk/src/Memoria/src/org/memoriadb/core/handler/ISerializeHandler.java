@@ -3,7 +3,6 @@ package org.memoriadb.core.handler;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.load.IReaderContext;
 
 public interface ISerializeHandler {

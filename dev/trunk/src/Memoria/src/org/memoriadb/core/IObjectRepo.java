@@ -1,4 +1,4 @@
-package org.memoriadb.core.repo;
+package org.memoriadb.core;
 
 import java.util.Collection;
 
