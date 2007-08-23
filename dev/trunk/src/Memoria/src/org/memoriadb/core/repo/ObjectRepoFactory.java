@@ -1,8 +1,9 @@
-package org.memoriadb.core;
+package org.memoriadb.core.repo;
 
 import java.lang.reflect.Array;
 
 import org.memoriadb.core.handler.def.*;
+import org.memoriadb.core.meta.*;
 
 public final class ObjectRepoFactory {
   

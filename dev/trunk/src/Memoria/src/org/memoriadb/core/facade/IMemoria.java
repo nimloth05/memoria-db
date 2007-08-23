@@ -2,8 +2,8 @@ package org.memoriadb.core.facade;
 
 import java.util.Collection;
 
-import org.memoriadb.core.IMetaClass;
 import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.exception.MemoriaException;
 
 /**

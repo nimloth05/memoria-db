@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb.core.repo;
 
 import org.memoriadb.core.block.Block;
 import org.memoriadb.exception.MemoriaException;

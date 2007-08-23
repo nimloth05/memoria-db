@@ -1,8 +1,10 @@
 package org.memoriadb.core.facade;
 
-import org.memoriadb.core.ObjectContainer;
+import org.memoriadb.core.*;
 import org.memoriadb.core.facade.nternal.Memoria;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.load.ObjectLoader;
+import org.memoriadb.core.repo.*;
 
 public class MemoriaFactory {
   
@@ -12,9 +14,10 @@ public class MemoriaFactory {
   }
   
   public static IMemoria open(IMemoriaFile file) {
-    ObjectContainer container = new ObjectContainer(file);
-    FileWriter fileWriter = new FileWriter(container.getObjecRepo(), file);
-    return new Memoria(container, fileWriter);
+    ObjectRepo repo = ObjectRepoFactory.create();
+    ObjectLoader.readIn(file, repo);
+    
+    return new Memoria(repo, file);
   }
   
   public static IMemoria open(String path) {

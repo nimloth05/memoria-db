@@ -5,6 +5,7 @@ import java.io.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.facade.nternal.IObjectTraversal;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.meta.HandlerMetaClass;
 import org.memoriadb.exception.MemoriaException;
 
 public class MetaClassHandler implements ISerializeHandler {

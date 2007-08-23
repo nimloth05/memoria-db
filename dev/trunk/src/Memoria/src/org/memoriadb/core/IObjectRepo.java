@@ -2,10 +2,11 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
-import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.repo.ObjectInfo;
 import org.memoriadb.exception.MemoriaException;
 
-public interface IObjectContainer {
+public interface IObjectRepo {
 
   /**
    * Adds an object to the container. A new objectId is generated.
@@ -15,8 +16,6 @@ public interface IObjectContainer {
   public long add(Object obj);
 
   public void checkSanity();
-
-  public void close();
   
   public boolean contains(long id);
   
@@ -29,13 +28,12 @@ public interface IObjectContainer {
   
   public Collection<Object> getAllObjects();
   
-  public IMemoriaFile getFile();
-
   /**
-   * @return The MetaClass for the given obj
+   * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
+   * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
-  public IMetaClass getMetaClass(Object obj);
+  public IMetaClass getMetaClass(Class<?> klass);
 
   /**
    * @return The object or null, if no Object exists for the given id. 
@@ -49,7 +47,10 @@ public interface IObjectContainer {
    */
   public long getObjectId(Object obj);
 
-  public long getSize();
+  /**
+   * @return The stored ObjectInfo for the given object or null, if the given <tt>obj</tt> is unknown.
+   */
+  public ObjectInfo getObjectInfo(Object obj);
 
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.

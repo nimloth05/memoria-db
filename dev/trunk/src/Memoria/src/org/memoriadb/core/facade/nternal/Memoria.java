@@ -2,22 +2,26 @@ package org.memoriadb.core.facade.nternal;
 
 import java.util.*;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectRepo;
 import org.memoriadb.core.facade.IMemoria;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.util.IdentityHashSet;
 
 public class Memoria implements IMemoria {
 
-  private final IObjectContainer fObjectContainer;
+  private final IObjectRepo fObjectContainer;
   private final IFileWriter fFileWriter;
   
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
+  private final IMemoriaFile fFile;
 
-  public Memoria(IObjectContainer objectContainer, IFileWriter writer) {
+  public Memoria(IObjectRepo objectContainer, IMemoriaFile file) {
     fObjectContainer = objectContainer;
-    fFileWriter = writer;
+    fFile = file; 
+    FileWriter fileWriter = new FileWriter(objectContainer, file);
+    fFileWriter = fileWriter;
   }
 
   @Override
@@ -27,8 +31,7 @@ public class Memoria implements IMemoria {
 
   @Override
   public void close() {
-    fObjectContainer.close();
-    
+    fFile.close();
   }
 
   @Override
@@ -48,12 +51,12 @@ public class Memoria implements IMemoria {
 
   @Override
   public IMemoriaFile getFile() {
-    return fObjectContainer.getFile();
+    return fFile;
   }
 
   @Override
   public IMetaClass getMetaClass(Object obj) {
-    return fObjectContainer.getMetaClass(obj);
+    return fObjectContainer.getMetaClass(obj.getClass());
   } 
 
   @Override
@@ -68,7 +71,7 @@ public class Memoria implements IMemoria {
 
   @Override
   public long getSize() {
-    return fObjectContainer.getSize();
+    return fFile.getSize();
   }
 
   @Override

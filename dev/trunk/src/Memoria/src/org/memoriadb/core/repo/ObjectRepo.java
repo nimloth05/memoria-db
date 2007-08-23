@@ -1,11 +1,13 @@
-package org.memoriadb.core;
+package org.memoriadb.core.repo;
 
 import java.util.*;
 
 import org.java.patched.PIdentityHashMap;
+import org.memoriadb.core.IObjectRepo;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 
-public class ObjectRepo {
+public class ObjectRepo implements IObjectRepo {
 
   private long fCurrentObjectId = 0;
 

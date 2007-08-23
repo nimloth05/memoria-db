@@ -3,26 +3,28 @@ package org.memoriadb.core;
 import java.io.*;
 import java.util.Set;
 
+import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.repo.ObjectInfo;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
 public class ObjectSerializer implements ISerializeContext {
   
-  private final ObjectRepo fObjectRepo;
+  private final IObjectRepo fObjectRepo;
   
   /**
    * The objects to write. 
    */
   private final Set<Object> fObjects;
   
-  public static byte[] serialize(ObjectRepo objectRepo, IdentityHashSet<Object> objects) {
+  public static byte[] serialize(IObjectRepo objectRepo, IdentityHashSet<Object> objects) {
     return new ObjectSerializer(objectRepo, objects).serializeObjects();
   }
   
   /**
    * @param repo
    */
-  public ObjectSerializer(ObjectRepo repo, IdentityHashSet<Object> objects) {
+  public ObjectSerializer(IObjectRepo repo, IdentityHashSet<Object> objects) {
     fObjectRepo = repo;
     fObjects = objects;
   }
@@ -37,24 +39,6 @@ public class ObjectSerializer implements ISerializeContext {
   @Override
   public long getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
-  }
-
-  public IMetaClass registerClassObject(DataOutput dataStream, Class<?> type) throws Exception  {
-    IMetaClass classObject = fObjectRepo.getMetaClass(type);
-    
-    if (classObject == null) {
-      classObject = new MetaClass(type);
-      //serializeObject(dataStream, classObject);
-    }
-    return classObject;
-  }
-
-  public byte[] serializeObjects() {
-    try {
-      return internalSerializeObjects();
-    } catch (Exception e) {
-      throw new MemoriaException(e);
-    }
   }
 
   private byte[] internalSerializeObjects() throws Exception {
@@ -88,6 +72,14 @@ public class ObjectSerializer implements ISerializeContext {
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);
     dataStream.write(objectData);    
+  }
+
+  private byte[] serializeObjects() {
+    try {
+      return internalSerializeObjects();
+    } catch (Exception e) {
+      throw new MemoriaException(e);
+    }
   }
   
 }

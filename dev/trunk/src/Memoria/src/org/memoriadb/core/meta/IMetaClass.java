@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb.core.meta;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 

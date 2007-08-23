@@ -3,15 +3,16 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.BlockTagUtil;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
 
 public class FileWriter implements IFileWriter {
 
-  private final ObjectRepo fObjectRepo;
+  private final IObjectRepo fObjectRepo;
   private final IMemoriaFile fFile;
   
-  public FileWriter(ObjectRepo objectRepo, IMemoriaFile file) {
+  public FileWriter(IObjectRepo objectRepo, IMemoriaFile file) {
     super();
     fObjectRepo = objectRepo;
     fFile = file;

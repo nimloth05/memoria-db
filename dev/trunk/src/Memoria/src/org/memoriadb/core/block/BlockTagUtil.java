@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb.core.block;
 
 import java.io.*;
 import java.util.Arrays;

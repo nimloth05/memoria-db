@@ -3,8 +3,9 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.Block;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.meta.MetaClass;
 import org.memoriadb.util.CRC32Util;
 
 public class FileReader {

@@ -1,9 +1,10 @@
-package org.memoriadb.core;
+package org.memoriadb.core.meta;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.memoriadb.core.*;
 import org.memoriadb.core.load.ObjectFieldReference;
 import org.memoriadb.exception.MemoriaException;
 
