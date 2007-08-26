@@ -14,7 +14,7 @@ public final class ObjectLoader implements IReaderContext {
   private Map<Long, HydratedInfo> fHydratedObjects = new HashMap<Long, HydratedInfo>();
   private Map<Long, HydratedInfo> fHydratedMetaClasses = new HashMap<Long, HydratedInfo>();
   
-  private final Set<IBindable> fObjectsToBind = new HashSet<IBindable>();
+  private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
   
   private ObjectRepo fRepo;
   private final IMemoriaFile fFile;
@@ -56,8 +56,8 @@ public final class ObjectLoader implements IReaderContext {
 
   private void bindObjects() {
     try {
-      for(IBindable ref: fObjectsToBind) {
-        ref.bind(this);
+      for(IBindable bindable: fObjectsToBind) {
+        bindable.bind(this);
       }
       fObjectsToBind.clear();
     } catch (Exception e) {

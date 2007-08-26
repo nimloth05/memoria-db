@@ -47,6 +47,7 @@ public class ArrayHandler implements ISerializeHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     if(!obj.getClass().isArray()) throw new MemoriaException("array expected but was " + obj);
+    
     int length = Array.getLength(obj);
     for(int i = 0; i < length; ++i) {
       traversal.handle(Array.get(obj, i));

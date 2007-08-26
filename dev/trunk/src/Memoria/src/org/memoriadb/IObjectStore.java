@@ -1,6 +1,6 @@
 package org.memoriadb;
 
-import java.util.Collection;
+import java.util.*;
 
 import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.exception.MemoriaException;
@@ -36,6 +36,10 @@ public interface IObjectStore {
    */
   public void endUpdate();
 
+  public <T> List<T> getAll(Class<T> clazz);
+
+  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
+
   // wird später ersetzt durch die typenbasierte Queries, msc...
   public Collection<Object> getAllObjects();
 
@@ -50,14 +54,14 @@ public interface IObjectStore {
    *         or not.
    */
   public Object getObject(long id);
-
+  
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
    *           If the given object can not be found.
    */
   public long getObjectId(Object obj);
-
+  
   /**
    * @return true, if the update-counter is bigger than 0.  
    */

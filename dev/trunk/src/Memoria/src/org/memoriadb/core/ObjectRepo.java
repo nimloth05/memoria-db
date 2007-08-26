@@ -80,9 +80,6 @@ public class ObjectRepo implements IObjectRepo {
    */
   public Object getObject(long objectId) {
     ObjectInfo objectInfo = fIdMap.get(objectId);
-    //Diese Assertion ist eine der besten im ganzen System: Wenn der Zugriff über eine ID erfolgt, es ist immer die Erwartung da, dass dieses
-    //Objekt existiert. (Das gilt für Clients von Memoria wie auch für Memoria selbst: Wenn eine MetaClass die ID für ihre SuperClass speichert,
-    //erwartet sie, dass diese nun auch da ist).
     if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);    
     return objectInfo.getObj();
   }

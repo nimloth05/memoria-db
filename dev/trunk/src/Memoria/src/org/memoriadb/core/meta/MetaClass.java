@@ -112,7 +112,6 @@ public final class MetaClass implements IMetaClassConfig {
     int fieldId = 0;
     for(Field field: fields) {
       if (Modifier.isTransient(field.getModifiers())) continue;
-      if (Modifier.isFinal(field.getModifiers())) continue;
       
       MetaField metaField = MetaField.create(++fieldId, field);
       addMetaField(metaField);

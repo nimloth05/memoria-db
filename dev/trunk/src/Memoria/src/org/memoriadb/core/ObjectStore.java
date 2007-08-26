@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.IObjectStore;
+import org.memoriadb.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
@@ -61,6 +61,27 @@ public class ObjectStore implements IObjectStore {
   }
 
   @Override
+  public <T> List<T> getAll(Class<T> clazz) {
+    List<T> result = new ArrayList<T>();
+    for(Object object: getAllObjects()) {
+      if (clazz.isInstance(object)) result.add(clazz.cast(object));
+    }
+    return result;
+  } 
+
+  @Override
+  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
+    List<T> result = new ArrayList<T>();
+    for(Object object: getAllObjects()) {
+      if (clazz.isInstance(object)) {
+        T t = clazz.cast(object);
+        if (filter.accept(t)) result.add(t);
+      }
+    }
+    return result;
+  }
+
+  @Override
   public Collection<Object> getAllObjects() {
     return fObjectContainer.getAllObjects();
   } 
@@ -72,7 +93,7 @@ public class ObjectStore implements IObjectStore {
   @Override
   public IMetaClass getMetaClass(Object obj) {
     return fObjectContainer.getMetaClass(obj.getClass());
-  } 
+  }
 
   @Override
   public Object getObject(long id) {
@@ -87,7 +108,7 @@ public class ObjectStore implements IObjectStore {
   public long getSize() {
     return fFile.getSize();
   }
-
+  
   @Override
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
@@ -99,7 +120,7 @@ public class ObjectStore implements IObjectStore {
     if(!isInUpdateMode()) writePendingChanges();
     return result;
   }
-  
+
   public long saveAll(Object root) {
     ObjectTraversal traversal = new ObjectTraversal(this);
     traversal.handle(root);

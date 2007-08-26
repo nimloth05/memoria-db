@@ -51,6 +51,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
+    //FIXME: Vererbung berücksichtigen
     for(MetaField field: fClassObject.getFields()) {
       if(field.getFieldType() != FieldType.clazz) continue;
       
