@@ -24,10 +24,10 @@ public class MetaClassHandler implements ISerializeHandler {
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
-    HandlerMetaClass classObejct = (HandlerMetaClass) obj;
+    HandlerMetaClass classObject = (HandlerMetaClass) obj;
     
-    output.writeUTF(classObejct.getJavaClassName());
-    output.writeUTF(classObejct.getHandlerName());
+    output.writeUTF(classObject.getJavaClassName());
+    output.writeUTF(classObject.getHandlerName());
   }
 
   @Override

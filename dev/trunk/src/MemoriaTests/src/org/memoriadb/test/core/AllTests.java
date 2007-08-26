@@ -11,8 +11,8 @@ public class AllTests {
 
     //$JUnit-BEGIN$
     suite.addTestSuite(FieldTypeTest.class);
-    suite.addTest(AllLoadTests.suite());
     suite.addTestSuite(ObjectContainerTest.class);
+    suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     //$JUnit-END$
     return suite;

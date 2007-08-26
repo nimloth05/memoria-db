@@ -18,8 +18,8 @@ public class ObjectFieldReference implements IBindable {
   }
   
   
-  public void bind(IReaderContext contex) throws Exception {
-    Object target = contex.getObjectById(fTargetObjectId);
+  public void bind(IReaderContext context) throws Exception {
+    Object target = context.getObjectById(fTargetObjectId);
     if (target == null) throw new MemoriaException("could not bind object: " + fSource + " target: " + fTargetObjectId + " " + fField);
     fField.set(fSource, target);
   }

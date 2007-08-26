@@ -15,7 +15,7 @@ public class ObjectRepo implements IObjectRepo {
   // Use patched version of the IdentityHashMap.
   private final Map<Object, ObjectInfo> fObjectMap = new PIdentityHashMap<Object, ObjectInfo>();
 
-  private final Map<Class<?>, IMetaClass> fMetaObjects = new HashMap<Class<?>, IMetaClass>();
+  private final Map<Class<?>, IMetaClassConfig> fMetaObjects = new HashMap<Class<?>, IMetaClassConfig>();
 
   /**
    * Adds an object after dehydration
@@ -57,16 +57,6 @@ public class ObjectRepo implements IObjectRepo {
     return fObjectMap.containsKey(obj);
   }
 
-  /**
-   * Creates a new MetaClass for the given <tt>obj</tt>. 
-   */
-  public IMetaClass createMetaClass(Class<?> klass) {
-    if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
-    if(fMetaObjects.containsKey(klass)) throw new MemoriaException("MetaClass exists for " + klass);
-    
-    return new MetaClass(klass);
-  }
-  
   public Collection<Object> getAllObjects() {
     List<Object> result = new ArrayList<Object>(fObjectMap.size());
     for(ObjectInfo info: fObjectMap.values()){
@@ -78,7 +68,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
-  public IMetaClass getMetaClass(Class<?> klass) {
+  public IMetaClassConfig getMetaClass(Class<?> klass) {
     if (klass.isArray()) return getGenericArrayMetaClass();
     return fMetaObjects.get(klass);
   }
@@ -90,7 +80,10 @@ public class ObjectRepo implements IObjectRepo {
    */
   public Object getObject(long objectId) {
     ObjectInfo objectInfo = fIdMap.get(objectId);
-    if (objectInfo == null) return null;
+    //Diese Assertion ist eine der besten im ganzen System: Wenn der Zugriff über eine ID erfolgt, es ist immer die Erwartung da, dass dieses
+    //Objekt existiert. (Das gilt für Clients von Memoria wie auch für Memoria selbst: Wenn eine MetaClass die ID für ihre SuperClass speichert,
+    //erwartet sie, dass diese nun auch da ist).
+    if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);    
     return objectInfo.getObj();
   }
 
@@ -127,22 +120,24 @@ public class ObjectRepo implements IObjectRepo {
    return ++fCurrentObjectId; 
   }
 
-  private IMetaClass getGenericArrayMetaClass() {
-    return (IMetaClass) fIdMap.get(IMetaClass.ARRAY_META_CLASS).getObj();
+  private IMetaClassConfig getGenericArrayMetaClass() {
+    return (IMetaClassConfig) fIdMap.get(IMetaClass.ARRAY_META_CLASS).getObj();
   }
 
+  //TODO: Test for this assertions! 
   private void internalPut(ObjectInfo info) {
     fCurrentObjectId = Math.max(fCurrentObjectId, info.getId());
     
     Object previousMapped = fObjectMap.put(info.getObj(), info); 
-    if (previousMapped != null) throw new RuntimeException("double registration in object-map" + info);
+    if (previousMapped != null) throw new MemoriaException("double registration in object-map" + info);
 
     previousMapped = fIdMap.put(info.getId(), info);  
-    if (previousMapped != null) throw new RuntimeException("double registration in id-Map" + info);
+    if (previousMapped != null) throw new MemoriaException("double registration in id-Map" + info);
 
     if (info.getObj() instanceof IMetaClass) {
-      IMetaClass metaObject = (IMetaClass) info.getObj();
-      fMetaObjects.put(metaObject.getJavaClass(), metaObject);
+      IMetaClassConfig metaObject = (IMetaClassConfig) info.getObj();
+      previousMapped = fMetaObjects.put(metaObject.getJavaClass(), metaObject);
+      if (previousMapped != null) throw new MemoriaException("double registration of metaObject: " + metaObject);
     }
   }
 

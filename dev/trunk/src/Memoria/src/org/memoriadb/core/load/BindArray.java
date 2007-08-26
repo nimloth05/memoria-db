@@ -17,9 +17,9 @@ public class BindArray implements IBindable {
   }
 
   @Override
-  public void bind(IReaderContext contex) throws Exception {
+  public void bind(IReaderContext context) throws Exception {
     for(int index  = 0; index < fIds.length; ++index) {
-      Object obj = contex.getObjectById(fIds[index]);
+      Object obj = context.getObjectById(fIds[index]);
       Array.set(fArray, index, obj);
     }
   }

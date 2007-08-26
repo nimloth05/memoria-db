@@ -19,19 +19,33 @@ public class DefaultHandler implements ISerializeHandler {
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     Object result = fClassObject.newInstance();
+    
+    MetaClass metaObject = fClassObject;
     while(input.available() > 0) {
-      int fieldId = input.readInt();
-      MetaField field = fClassObject.getField(fieldId);
-      field.getFieldType().readValue(input, result, field.getJavaField(result), context);
+      
+      for(int i = 0; i < metaObject.getFieldCount(); ++i) {
+        int fieldId = input.readInt();
+        MetaField field = metaObject.getField(fieldId);
+        field.getFieldType().readValue(input, result, field.getJavaField(), context);
+      }
+      
+      metaObject = (MetaClass) metaObject.getSuperClass();
     }
+    
     return result;
   }
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    for(MetaField metaField: fClassObject.getFields()) {
-      output.writeInt(metaField.getId());
-      metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(obj), context);
+    MetaClass metaObject = fClassObject;
+    while (metaObject != null) {
+      
+      for(MetaField metaField: metaObject.getFields()) {
+        output.writeInt(metaField.getId());
+        metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(), context);
+      }
+      
+      metaObject = (MetaClass) metaObject.getSuperClass();
     }
   }
 
@@ -42,7 +56,7 @@ public class DefaultHandler implements ISerializeHandler {
       
       try {
         // access the field via refelcion
-        traversal.handle(field.getJavaField(obj).get(obj));
+        traversal.handle(field.getJavaField().get(obj));
       }
       catch (Exception e) {
         throw new MemoriaException(e);

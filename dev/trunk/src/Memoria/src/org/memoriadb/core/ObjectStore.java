@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.IObjectStore;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
@@ -146,9 +146,26 @@ public class ObjectStore implements IObjectStore {
       klass = klass.getComponentType();
     }
     
-    if(fObjectContainer.metaClassExists(klass)) return;
-    IMetaClass metaClass = fObjectContainer.createMetaClass(klass);
-    internalSave(metaClass);
+    new InheritanceTraverser(klass) {
+      
+      private IMetaClassConfig fChildClass = null;
+      
+      @Override
+      public void handle(Class<?> clazz) {
+        IMetaClassConfig classObject = fObjectContainer.getMetaClass(clazz);
+        
+        if(classObject != null) {
+          if (fChildClass != null) fChildClass.setSuperClass(classObject);
+          abort();
+          return;
+        }
+        
+        classObject = MetaObjectFactory.createMetaClass(clazz);
+        if (fChildClass != null) fChildClass.setSuperClass(classObject);
+        fChildClass = classObject;
+        internalSave(classObject);
+      }
+    };
   }
 
 }

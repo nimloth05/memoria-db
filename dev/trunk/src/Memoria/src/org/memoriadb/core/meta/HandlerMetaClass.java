@@ -3,11 +3,12 @@ package org.memoriadb.core.meta;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
-public class HandlerMetaClass implements IMetaClass {
+public class HandlerMetaClass implements IMetaClassConfig {
   
   
   private final ISerializeHandler fSerializeHandler;
   private final Class<?> fClazz;
+  private IMetaClass fSuperClass;
 
   public HandlerMetaClass(ISerializeHandler handler, Class<?> clazz) {
     fSerializeHandler = handler;
@@ -37,6 +38,11 @@ public class HandlerMetaClass implements IMetaClass {
   }
 
   @Override
+  public IMetaClass getSuperClass() {
+    return fSuperClass;
+  }
+
+  @Override
   public Object newInstance() {
     try {
       return fClazz.newInstance();
@@ -44,6 +50,11 @@ public class HandlerMetaClass implements IMetaClass {
     catch (Exception e) {
       throw new MemoriaException(e);
     }
+  }
+
+  @Override
+  public void setSuperClass(IMetaClass metaClass) {
+    fSuperClass = metaClass;
   }
 
 }

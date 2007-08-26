@@ -2,13 +2,17 @@ package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.ObjectRepo;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.test.core.testclasses.TestObj;
 
 public class ObjectRepoTest extends TestCase {
   
   private ObjectRepo fRepo;
+  
+  public void test_put_inheritence_object() {
+    
+  }
   
   public void test_put_meta_object_in_cache() {
     IMetaClass classObject = new MetaClass(TestObj.class);

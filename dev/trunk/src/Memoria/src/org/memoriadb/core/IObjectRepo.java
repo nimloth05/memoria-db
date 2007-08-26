@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.IMetaClassConfig;
 import org.memoriadb.exception.MemoriaException;
 
 public interface IObjectRepo {
@@ -20,11 +20,6 @@ public interface IObjectRepo {
   
   public boolean contains(Object obj);
   
-  /**
-   * @return creates the metaclass for the given <tt>obj</tt>
-   */
-  public IMetaClass createMetaClass(Class<?> klass);
-  
   public Collection<Object> getAllObjects();
   
   /**
@@ -32,7 +27,7 @@ public interface IObjectRepo {
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
-  public IMetaClass getMetaClass(Class<?> klass);
+  public IMetaClassConfig getMetaClass(Class<?> klass);
 
   /**
    * @return The object or null, if no Object exists for the given id. 

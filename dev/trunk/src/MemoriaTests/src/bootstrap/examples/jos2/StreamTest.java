@@ -3,12 +3,9 @@ package bootstrap.examples.jos2;
 import java.io.File;
 import java.util.*;
 
-import org.java.patched.*;
-import org.memoriadb.test.core.testclasses.TestObj;
-
-import bootstrap.examples.*;
-
 import junit.framework.TestCase;
+
+import org.memoriadb.test.core.testclasses.TestObj;
 
 public class StreamTest extends TestCase {
   

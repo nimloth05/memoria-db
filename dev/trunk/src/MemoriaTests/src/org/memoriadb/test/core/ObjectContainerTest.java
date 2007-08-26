@@ -62,15 +62,6 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     internalTestReferenceeInAnotherTransaction(TestObj.class);
   }
 
-  // We need Java-Serialization first
-  // public void test_save_single_string() {
-  // String expected = "A";
-  // save(expected);
-  // reopen();
-  // String actual = getAll(String.class).get(0);
-  // assertEquals(expected, actual);
-  // }
-
   public void test_save_referencee_in_antoher_transaction_with_wrongHashCodeObj() throws Exception {
     internalTestReferenceeInAnotherTransaction(WrongHashCode.class);
   }

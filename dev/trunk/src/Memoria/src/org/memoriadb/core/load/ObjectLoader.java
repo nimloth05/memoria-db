@@ -3,7 +3,7 @@ package org.memoriadb.core.load;
 import java.io.IOException;
 import java.util.*;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.ObjectRepo;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
 import org.memoriadb.exception.MemoriaException;
@@ -44,6 +44,7 @@ public final class ObjectLoader implements IReaderContext {
     try {
       readBlockData();
       dehydrateMetaClasses();
+      bindObjects();
       dehydrateObjects();
       bindObjects();
     }

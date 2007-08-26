@@ -7,12 +7,14 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
 
-public final class MetaClass implements IMetaClass {
+public final class MetaClass implements IMetaClassConfig {
 
   private String fClassName;
 
   private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
   private final Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
+
+  private IMetaClass fSuperClass;
 
   /**
    * @return true, if this MetaClass-object represents the type MetaClass
@@ -49,10 +51,14 @@ public final class MetaClass implements IMetaClass {
     return fFieldIdToInfo.get(fieldId);
   }
 
+  public int getFieldCount() {
+    return fFieldIdToInfo.values().size();
+  }
+
   public Iterable<MetaField> getFields() {
     return fFieldIdToInfo.values();
   }
-
+  
   @Override
   public ISerializeHandler getHandler() {
     return new org.memoriadb.core.handler.def.DefaultHandler(this);
@@ -69,6 +75,13 @@ public final class MetaClass implements IMetaClass {
     }
   }
   
+  @Override
+  public IMetaClass getSuperClass() {
+    //FIXME: Ich weiss das es komisch ist, dass ein getter eine Assertion hat, aber diese scheint irgendwie genau an der richtigen Stelle und tut genaa das richtige... Oder nicht (-:
+    if (fSuperClass == null && !getJavaClass().equals(Object.class)) throw new MemoriaException("Class Hierachy is not corretly build. Only the java Object MetaClass can have no super class. " + this);
+    return fSuperClass;
+  }
+
   /* (non-Javadoc)
    * @see org.memoriadb.core.IMetaClass#newInstance()
    */
@@ -85,6 +98,10 @@ public final class MetaClass implements IMetaClass {
     fClassName = name;
   }
 
+  public void setSuperClass(IMetaClass superClass) {
+    fSuperClass = superClass;
+  }
+
   @Override
   public String toString() {
     return fClassName;
@@ -92,7 +109,7 @@ public final class MetaClass implements IMetaClass {
 
   private void addFields(Class<?> klass) {
     Field[] fields = klass.getDeclaredFields();
-    int fieldId = 1;
+    int fieldId = 0;
     for(Field field: fields) {
       if (Modifier.isTransient(field.getModifiers())) continue;
       if (Modifier.isFinal(field.getModifiers())) continue;
