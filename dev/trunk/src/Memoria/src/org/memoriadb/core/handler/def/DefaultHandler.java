@@ -17,52 +17,60 @@ public class DefaultHandler implements ISerializeHandler {
   }
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
-    Object result = fClassObject.newInstance();
+  public Object deserialize(final DataInputStream input, final IReaderContext context) throws IOException {
+    final Object result = fClassObject.newInstance();
     
-    MetaClass metaObject = fClassObject;
     while(input.available() > 0) {
-      
-      for(int i = 0; i < metaObject.getFieldCount(); ++i) {
-        int fieldId = input.readInt();
-        MetaField field = metaObject.getField(fieldId);
-        field.getFieldType().readValue(input, result, field.getJavaField(), context);
-      }
-      
-      metaObject = (MetaClass) metaObject.getSuperClass();
+      new MetaClassInheritanceTraverser(fClassObject) {
+
+        @Override
+        protected void handle(IMetaClass metaObject) throws Exception {
+          for(int i = 0; i < ((MetaClass) metaObject).getFieldCount(); ++i) {
+            int fieldId = input.readInt();
+            MetaField field = ((MetaClass) metaObject).getField(fieldId);
+            field.getFieldType().readValue(input, result, field.getJavaField(), context);
+          }
+        }
+      };
     }
     
     return result;
   }
 
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    MetaClass metaObject = fClassObject;
-    while (metaObject != null) {
-      
-      for(MetaField metaField: metaObject.getFields()) {
-        output.writeInt(metaField.getId());
-        metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(), context);
+  public void serialize(final Object obj, final DataOutputStream output, final ISerializeContext context) throws Exception {
+    new MetaClassInheritanceTraverser(fClassObject) {
+
+      @Override
+      protected void handle(IMetaClass metaObject) throws Exception {
+        for(MetaField metaField: ((MetaClass) metaObject).getFields()) {
+          output.writeInt(metaField.getId());
+          metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(), context);
+        }
       }
       
-      metaObject = (MetaClass) metaObject.getSuperClass();
-    }
+    };
   }
 
   @Override
-  public void traverseChildren(Object obj, IObjectTraversal traversal) {
-    //FIXME: Vererbung berücksichtigen
-    for(MetaField field: fClassObject.getFields()) {
-      if(field.getFieldType() != FieldType.clazz) continue;
-      
-      try {
-        // access the field via refelcion
-        traversal.handle(field.getJavaField().get(obj));
+  public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
+    new MetaClassInheritanceTraverser(fClassObject) {
+
+      @Override
+      protected void handle(IMetaClass metaObject) {
+        for(MetaField field: ((MetaClass) metaObject).getFields()) {
+          if(field.getFieldType() != FieldType.clazz) continue;
+          
+          try {
+            // access the field via refelcion
+            traversal.handle(field.getJavaField().get(obj));
+          }
+          catch (Exception e) {
+            throw new MemoriaException(e);
+          }
+        }
       }
-      catch (Exception e) {
-        throw new MemoriaException(e);
-      }
-    }
+    };
   }
 
 }

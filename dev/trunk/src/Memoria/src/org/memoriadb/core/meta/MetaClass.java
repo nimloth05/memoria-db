@@ -77,8 +77,6 @@ public final class MetaClass implements IMetaClassConfig {
   
   @Override
   public IMetaClass getSuperClass() {
-    //FIXME: Ich weiss das es komisch ist, dass ein getter eine Assertion hat, aber diese scheint irgendwie genau an der richtigen Stelle und tut genaa das richtige... Oder nicht (-:
-    if (fSuperClass == null && !getJavaClass().equals(Object.class)) throw new MemoriaException("Class Hierachy is not corretly build. Only the java Object MetaClass can have no super class. " + this);
     return fSuperClass;
   }
 

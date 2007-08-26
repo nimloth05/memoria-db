@@ -1,6 +1,7 @@
 package org.memoriadb.test.core;
 
 import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
 
 
@@ -22,6 +23,18 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     assertB(b, loadedB);
   }
 
+  public void test_save_object_which_super_class_has_a_object_ref() {
+    C c = new C();
+    c.fTestObj = new SimpleTestObj("1");
+    c.setLong(1L);
+    saveAll(c);
+    
+    reopen();
+    
+    C loadedC = getAll(C.class).get(0);
+    assertEquals(c.fTestObj, loadedC.fTestObj);
+  }
+  
   public void test_save_super_type_first() {
     A a = new A();
     a.setInt(1);
