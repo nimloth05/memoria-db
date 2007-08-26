@@ -5,6 +5,7 @@ import java.io.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.*;
+import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 

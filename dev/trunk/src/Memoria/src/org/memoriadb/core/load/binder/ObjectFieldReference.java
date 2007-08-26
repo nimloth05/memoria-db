@@ -1,7 +1,8 @@
-package org.memoriadb.core.load;
+package org.memoriadb.core.load.binder;
 
 import java.lang.reflect.Field;
 
+import org.memoriadb.core.load.*;
 import org.memoriadb.exception.MemoriaException;
 
 

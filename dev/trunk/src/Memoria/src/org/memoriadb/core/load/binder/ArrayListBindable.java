@@ -1,6 +1,8 @@
-package org.memoriadb.core.load;
+package org.memoriadb.core.load.binder;
 
 import java.util.ArrayList;
+
+import org.memoriadb.core.load.*;
 
 
 public class ArrayListBindable implements IBindable {
