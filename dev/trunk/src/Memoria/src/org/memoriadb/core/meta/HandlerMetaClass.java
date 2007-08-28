@@ -3,7 +3,7 @@ package org.memoriadb.core.meta;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
-public class HandlerMetaClass implements IMetaClassConfig {
+public final class HandlerMetaClass implements IMetaClassConfig {
   
   
   private final ISerializeHandler fSerializeHandler;
