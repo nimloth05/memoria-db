@@ -31,6 +31,16 @@ public class MetaClassHandler implements ISerializeHandler {
   }
 
   @Override
+  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException {
+    throw new UnsupportedOperationException("This method is not supported on this handler");
+  }
+
+  @Override
+  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+    throw new UnsupportedOperationException("This method is not supported on this handler");    
+  }
+
+  @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     throw new MemoriaException("has no children");
   }

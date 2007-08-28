@@ -20,36 +20,37 @@ public class DefaultHandler implements ISerializeHandler {
   public Object deserialize(final DataInputStream input, final IReaderContext context) throws IOException {
     final Object result = fClassObject.newInstance();
     
-    while(input.available() > 0) {
-      new MetaClassInheritanceTraverser(fClassObject) {
-
-        @Override
-        protected void handle(IMetaClass metaObject) throws Exception {
-          for(int i = 0; i < ((MetaClass) metaObject).getFieldCount(); ++i) {
-            int fieldId = input.readInt();
-            MetaField field = ((MetaClass) metaObject).getField(fieldId);
-            field.getFieldType().readValue(input, result, field.getJavaField(), context);
-          }
-        }
-      };
-    }
+    superDeserialize(result, input, context);
+    if (input.available() > 0) throw new MemoriaException("Object not fully deserialized: " + result);
     
     return result;
   }
 
   @Override
   public void serialize(final Object obj, final DataOutputStream output, final ISerializeContext context) throws Exception {
-    new MetaClassInheritanceTraverser(fClassObject) {
+    superSerialize(obj, output, context);
+  }
 
-      @Override
-      protected void handle(IMetaClass metaObject) throws Exception {
-        for(MetaField metaField: ((MetaClass) metaObject).getFields()) {
-          output.writeInt(metaField.getId());
-          metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(), context);
-        }
-      }
-      
-    };
+  @Override
+  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException {
+    for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
+      int fieldId = input.readInt();
+      MetaField field = (fClassObject).getField(fieldId);
+      field.getFieldType().readValue(input, result, field.getJavaField(), context);
+    }
+    
+    if (fClassObject.getSuperClass() == null) return;
+    fClassObject.getSuperClass().getHandler().superDeserialize(result, input, context);
+  }
+
+  @Override
+  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+    for(MetaField metaField: (fClassObject).getFields()) {
+      output.writeInt(metaField.getId());
+      metaField.getFieldType().writeValue(output, obj, metaField.getJavaField(), context);
+    }
+    if (fClassObject.getSuperClass() == null) return;
+    fClassObject.getSuperClass().getHandler().superSerialize(obj, output, context);
   }
 
   @Override

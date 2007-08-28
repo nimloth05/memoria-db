@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.load.*;
+import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;
 
 public class ArrayListHandler implements ISerializeHandler {
@@ -26,6 +26,16 @@ public class ArrayListHandler implements ISerializeHandler {
     for(Object listEntry: list) {
       output.writeLong(context.getObjectId(listEntry));
     }
+  }
+
+  @Override
+  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) {
+    throw new UnsupportedOperationException("To be implemented! Write Test-first");
+  }
+
+  @Override
+  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+    throw new UnsupportedOperationException("To be implemented! Write Test-first");    
   }
 
   @Override

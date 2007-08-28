@@ -5,7 +5,7 @@ import java.lang.reflect.Array;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.load.*;
+import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.BindArray;
 import org.memoriadb.core.meta.IMetaClass;
 import org.memoriadb.exception.MemoriaException;
@@ -43,6 +43,16 @@ public class ArrayHandler implements ISerializeHandler {
      Object componentObject = Array.get(obj, i);
      output.writeLong(context.getObjectId(componentObject));
    }
+  }
+
+  @Override
+  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) {
+    throw new UnsupportedOperationException("To be implemented! Write Test-first");
+  }
+
+  @Override
+  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+    throw new UnsupportedOperationException("To be implemented! Write Test-first");
   }
 
   @Override

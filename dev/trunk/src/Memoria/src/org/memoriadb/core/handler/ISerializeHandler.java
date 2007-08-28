@@ -23,6 +23,10 @@ public interface ISerializeHandler {
    */
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
 
+  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException;
+
+  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
+
   /**
    * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 
    * For non-Containers, all referenced objects are visited

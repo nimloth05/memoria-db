@@ -1,5 +1,6 @@
 package org.memoriadb.test.core.testclasses;
 
+//Is used by the spyke stuff.
 public class TestObj {
 
   private String fString1;
