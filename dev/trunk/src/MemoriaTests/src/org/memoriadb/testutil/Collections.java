@@ -12,8 +12,7 @@ public class Collections {
   public static void containsAll(Collection<?> actual, Object... expected) {
     Set<Object> set = new HashSet<Object>(actual);
     for(Object obj: expected) {
-      boolean rem = set.remove(obj);
-      Assert.assertTrue("Missing: " + obj, rem);
+      Assert.assertTrue("Missing: " + obj, set.remove(obj));
     }
     
     Assert.assertTrue("Unexpected objects: " + set, set.isEmpty());

@@ -39,6 +39,7 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_put_object_with_id_in_cache() {
     TestObj obj = new TestObj();
+    //Wir starten hier absichtlich mit 20.
     fRepo.add(20, obj, 0);
     
     TestObj obj2 = new TestObj();

@@ -17,6 +17,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     B b = createB();
     save(b);
     reopen();
+    
     assertkMetaObjectHierarchy(b);
     
     B loadedB = getAll(B.class).get(0);

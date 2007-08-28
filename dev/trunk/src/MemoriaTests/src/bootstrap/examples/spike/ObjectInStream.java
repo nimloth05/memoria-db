@@ -1,4 +1,4 @@
-package bootstrap.examples.jos2;
+package bootstrap.examples.spike;
 
 import java.io.*;
 import java.lang.reflect.Field;

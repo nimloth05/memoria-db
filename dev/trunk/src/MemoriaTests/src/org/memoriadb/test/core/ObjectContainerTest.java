@@ -7,8 +7,6 @@ import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
 
-  // was macht dieser Test? msc
-
   public void test_incorrect_hash_code_objects() {
     WrongHashCode obj1 = new WrongHashCode("1");
     WrongHashCode obj2 = new WrongHashCode("2");
@@ -47,19 +45,23 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
 
   public void test_save_object_ref() throws Exception {
-    internalTestSaveObjectRef(TestObj.class);
+    internalTestSaveObjectRef(SimpleTestObj.class);
   }
 
   public void test_save_object_ref_first() throws Exception {
-    internalTestSaveObjectRefFirst(TestObj.class);
+    internalTestSaveObjectRefFirst(SimpleTestObj.class);
   }
 
   public void test_save_object_ref_first_with_wrongHashCodeObj() throws Exception {
     internalTestSaveObjectRefFirst(WrongHashCode.class);
   }
 
+  public void test_save_object_ref_with_wrong_hashCodeObj() throws Exception {
+    internalTestSaveObjectRef(WrongHashCode.class);
+  }
+
   public void test_save_referencee_in_antoher_transaction() throws Exception {
-    internalTestReferenceeInAnotherTransaction(TestObj.class);
+    internalTestReferenceeInAnotherTransaction(SimpleTestObj.class);
   }
 
   public void test_save_referencee_in_antoher_transaction_with_wrongHashCodeObj() throws Exception {
@@ -68,7 +70,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
   public void test_save_same_object_twice() {
     WrongHashCode obj = new WrongHashCode();
-    save(obj, obj, obj);
+    save(obj, obj);
 
     reopen();
     List<WrongHashCode> objs = getAll(WrongHashCode.class);
@@ -76,15 +78,15 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
 
   public void test_save_two_objects_in_two_transactions() {
-    TestObj obj1 = new TestObj("1", 1);
-    TestObj obj2 = new TestObj("2", 2);
+    SimpleTestObj obj1 = new SimpleTestObj("1", 1);
+    SimpleTestObj obj2 = new SimpleTestObj("2", 2);
 
     save(obj1);
     save(obj2);
 
     reopen();
 
-    Collections.containsAll(getAll(TestObj.class), obj1, obj2);
+    Collections.containsAll(getAll(SimpleTestObj.class), obj1, obj2);
   }
 
   public void test_serialize_array_object() {
@@ -99,10 +101,6 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
     assertSame(loadedObj, loadedContainer.fArray[0]);
     assertEquals(container.fArray[0], loadedContainer.fArray[0]);
-  }
-
-  public void test_svae_object_ref_with_wrong_hashCodeObj() throws Exception {
-    internalTestSaveObjectRef(WrongHashCode.class);
   }
 
   private void internalTestReferenceeInAnotherTransaction(Class<?> referenceeType) throws Exception {
