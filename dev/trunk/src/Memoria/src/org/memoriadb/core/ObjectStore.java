@@ -15,6 +15,8 @@ public class ObjectStore implements IObjectStore {
   
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
+  private final Set<Object> fDelete = new IdentityHashSet<Object>();
+  
   private final IMemoriaFile fFile;
   
   private int fUpdateCounter = 0;
@@ -115,8 +117,11 @@ public class ObjectStore implements IObjectStore {
   }
 
   @Override
-  public long save(Object obj) {
-    long result = internalSave(obj);
+  public long save(Object... objs) {
+    long result = -1;
+    for(Object obj: objs){
+      result = internalSave(obj);
+    }
     if(!isInUpdateMode()) writePendingChanges();
     return result;
   }
@@ -134,6 +139,10 @@ public class ObjectStore implements IObjectStore {
     save.addAll(fUpdate);
     
     fFileWriter.write(save); 
+    
+    fAdd.clear();
+    fUpdate.clear();
+    fDelete.clear();
   }
 
   /**

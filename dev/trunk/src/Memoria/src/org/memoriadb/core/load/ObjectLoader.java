@@ -54,6 +54,18 @@ public final class ObjectLoader implements IReaderContext {
     }
   }
 
+  private void addHydratedObject(Map<Long, HydratedInfo> container, HydratedObject object, long id, long version) {
+    HydratedInfo info = container.get(id);
+    if(info == null) {
+      container.put(id, new HydratedInfo(id, object, version));
+      return;
+    }
+    
+    // object already loaded in other version, newer version survives
+    info.update(object, version);
+    
+  }
+
   private void bindObjects() {
     try {
       for(IBindable bindable: fObjectsToBind) {
@@ -71,18 +83,18 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedMetaClasses = null;
   }
-
+  
   private void dehydrateObject(HydratedInfo info) throws Exception {
     fRepo.add(info.getObjectId(), info.getHydratedObject().dehydrate(this), info.getVersion());
   }
-  
+
   private void dehydrateObjects() throws Exception {
     for(HydratedInfo info: fHydratedObjects.values()) {
       dehydrateObject(info);
     }
     fHydratedObjects = null;
   }
-
+  
   private void readBlockData() throws IOException {
     FileReader reader = new FileReader(fFile, new IFileReaderHandler() {
 
@@ -96,12 +108,12 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void metaClass(HydratedObject metaClass, long id, long version) {
-        fHydratedMetaClasses.put(id, new HydratedInfo(id, metaClass, version));
+        addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
       }
 
       @Override
       public void object(HydratedObject object, long id, long version) {
-        fHydratedObjects.put(id, new HydratedInfo(id, object, version));
+        addHydratedObject(fHydratedObjects, object, id, version);
       }
       
     });

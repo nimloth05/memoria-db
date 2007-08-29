@@ -8,6 +8,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.core");
 
     suite.addTest(org.memoriadb.test.core.backend.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
 
     //$JUnit-BEGIN$
     suite.addTestSuite(FieldTypeTest.class);

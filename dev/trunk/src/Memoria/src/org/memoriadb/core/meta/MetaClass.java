@@ -88,7 +88,7 @@ public final class MetaClass implements IMetaClassConfig {
       return getJavaClass().newInstance();
     }
     catch (Exception e) {
-      throw new MemoriaException(e);
+      throw new MemoriaException("Unable to instantiate " + fClassName + " (default-ctor missing?)");
     }
   }
 

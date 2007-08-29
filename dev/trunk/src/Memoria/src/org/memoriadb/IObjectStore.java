@@ -68,14 +68,14 @@ public interface IObjectStore {
   public boolean isInUpdateMode();
   
   /**
-   * Adds an object to the store or performs an update if the object is already contained.
+   * Adds the given objects to the store or performs an update if the given objects are already contained.
    * 
    * Changes are immediately written to the persistent store, except this ObjectStore is in 
    * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
    * 
-   * @return The objectId
+   * @return The objectId of the last object in the given array or -1, if the arry is empty.
    */
-  public long save(Object obj);
+  public long save(Object... objs);
   
   /**
    * Saves the given <tt>obj</tt> and all referenced objects.
