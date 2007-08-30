@@ -2,10 +2,10 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
-import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.core.meta.MetaClass;
+import org.memoriadb.exception.FileCorruptException;
 import org.memoriadb.util.CRC32Util;
 
 public class FileReader {
@@ -34,28 +34,25 @@ public class FileReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  private int readBlock(DataInputStream stream, long position) throws IOException {
-    BlockTagUtil.assertTag(stream, BlockTagUtil.BLOCK_START_TAG);
-    int blockSize = stream.readInt(); // the block size
-    int transactionSize = stream.readInt(); // transactionsize
+  private long readBlock(DataInputStream stream, long position) throws IOException {
+    BlockLayout.assertBlockTag(stream);
+    long blockSize = stream.readLong(); // the block size
+    long transactionSize = stream.readLong(); // transactionsize
 
-    byte[] transactionData = new byte[transactionSize];
+    byte[] transactionData = new byte[(int)transactionSize];
     stream.read(transactionData);
     long crc32 = stream.readLong();
     
     // block may be bigger then the transaction-data -> skip 
-    skip(stream, blockSize - transactionSize - (4 + 8)); // (transactionSize + crc32)
+    skip(stream, blockSize - transactionSize - (8 + 8)); // (transactionSize + crc32)
 
-    boolean corrupt = true;
-    if (CRC32Util.getChecksum(transactionData) == crc32) {
-      readObjects(transactionData);
-      corrupt = false;
-    }
+    if (CRC32Util.getChecksum(transactionData) != crc32) throw new FileCorruptException("wrong checksum for block at position " + position);
 
-    fHandler.block(new Block(blockSize, position, corrupt));
+    readObjects(transactionData);
+    fHandler.block(new Block(blockSize, position));
 
-    // startTag + size + data.length
-    return BlockTagUtil.TAG_SIZE + 4 + blockSize;
+    // startTag + blockSize dataSize + data.length
+    return  BlockLayout.TAG_SIZE + 8 + 8 + blockSize;
   }
 
   private void readObject(byte[] data, int offset, int size) throws IOException {
@@ -85,7 +82,7 @@ public class FileReader {
     }
   }
 
-  private void skip(DataInputStream stream, int size) throws IOException {
+  private void skip(DataInputStream stream, long size) throws IOException {
     if (stream.skip(size) != size) throw new RuntimeException("could not skip bytes: " + size);
   }
 

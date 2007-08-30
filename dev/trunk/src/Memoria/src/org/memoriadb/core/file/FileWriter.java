@@ -3,7 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.BlockTagUtil;
+import org.memoriadb.core.block.BlockLayout;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
 
@@ -30,19 +30,20 @@ public class FileWriter implements IFileWriter {
 
   private void append(byte[] data) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream file = new DataOutputStream(byteArrayOutputStream);
+    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
-    file.write(BlockTagUtil.BLOCK_START_TAG);
+    stream.write(BlockLayout.BLOCK_START_TAG);
     
-    // blockSize + data.length + crc32
-    int blockSize = 4 + data.length  + 8; 
-    file.writeInt(blockSize);
+    //  data.length + data + crc32
+    long blockSize = 8 + data.length  + 8; 
+    stream.writeLong(blockSize);
 
     // transaction
-    file.writeInt(data.length);
-    file.write(data);
-    file.writeLong(CRC32Util.getChecksum(data));
+    stream.writeLong(data.length);
+    stream.write(data);
+    stream.writeLong(CRC32Util.getChecksum(data));
 
     fFile.append(byteArrayOutputStream.toByteArray());
+   
   }
 }

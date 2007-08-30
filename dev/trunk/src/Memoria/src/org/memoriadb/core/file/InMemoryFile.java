@@ -62,10 +62,9 @@ public class InMemoryFile extends AbstractMemoriaFile {
     return fSize;
   }
   
-  @Override
-  public void doWrite(byte[] data, int offset) {
+  public void doWrite(byte[] data, long offset) {
     if(data.length+offset > getSize()) throw new MemoriaException("invalid offset: " + offset);
-    System.arraycopy(data, 0, fData, offset, data.length);
+    System.arraycopy(data, 0, fData, (int)offset, data.length);
   }
 
   public int get(long index) {

@@ -32,5 +32,5 @@ public interface IMemoriaFile {
   /**
    * The given offset plus the size of the given byte-array must not exceed the file-site.
    */
-  public void write(byte[] data, int offset);
+  public void write(byte[] data, long offset); 
 }

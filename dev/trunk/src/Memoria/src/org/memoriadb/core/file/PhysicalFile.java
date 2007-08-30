@@ -92,7 +92,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
   }
 
   @Override
-  public void doWrite(byte[] data, int offset) {
+  public void doWrite(byte[] data, long offset) {
     internalWrite(data, offset);
   }
 

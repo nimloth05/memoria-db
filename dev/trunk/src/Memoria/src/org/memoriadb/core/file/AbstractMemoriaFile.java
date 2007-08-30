@@ -44,7 +44,7 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
   }
 
   @Override
-  public final void write(byte[] data, int offset) {
+  public final void write(byte[] data, long offset) {
     check();
     doWrite(data, offset);
   }
@@ -57,7 +57,7 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
 
   protected abstract long doGetSize();
 
-  protected abstract void doWrite(byte[] data, int offset);
+  protected abstract void doWrite(byte[] data, long offset);
 
   /**
    * Tells this implementation that the inputstream has been closed -> unlocks the interface.

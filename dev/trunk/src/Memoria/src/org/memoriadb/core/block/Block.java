@@ -11,15 +11,13 @@ public class Block {
    * 
    * Limited to int because arrays can't be bigger than INT_MAX
    */
-  private final int fSize;
+  private final long fSize;
   private final long fPosition;
-  private final boolean fCorrupt;
   
-  public Block(int size, long position, boolean corrupt) {
+  public Block(long size, long position) {
     super();
     fSize = size;
     fPosition = position;
-    fCorrupt = corrupt;
   }
 
   public long getPosition() {
