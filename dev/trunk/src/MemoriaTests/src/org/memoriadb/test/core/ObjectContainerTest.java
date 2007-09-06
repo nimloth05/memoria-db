@@ -3,7 +3,6 @@ package org.memoriadb.test.core;
 import java.util.*;
 
 import org.memoriadb.test.core.testclasses.*;
-import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
@@ -88,20 +87,6 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     reopen();
 
     Collections.containsAll(getAll(SimpleTestObj.class), obj1, obj2);
-  }
-
-  public void test_serialize_array_object() {
-    ArrayContainer container = new ArrayContainer();
-    container.set();
-
-    saveAll(container);
-    reopen();
-
-    ArrayContainer loadedContainer = getAll(ArrayContainer.class).get(0);
-    SimpleTestObj loadedObj = getAll(SimpleTestObj.class).get(0);
-
-    assertSame(loadedObj, loadedContainer.fArray[0]);
-    assertEquals(container.fArray[0], loadedContainer.fArray[0]);
   }
 
   private void internalTestReferenceeInAnotherTransaction(Class<?> referenceeType) throws Exception {

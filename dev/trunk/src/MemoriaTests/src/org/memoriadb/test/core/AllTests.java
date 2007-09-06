@@ -15,6 +15,7 @@ public class AllTests {
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
+    suite.addTestSuite(ArrayTest.class);
     //$JUnit-END$
     return suite;
   }
