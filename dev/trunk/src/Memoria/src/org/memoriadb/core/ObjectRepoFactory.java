@@ -10,12 +10,12 @@ public final class ObjectRepoFactory {
   
   public static ObjectRepo create() {
     ObjectRepo repo = new ObjectRepo();
-    boostrap(repo);
+    registerMetaClasses(repo);
     return repo;
   }
   
   
-  private static void boostrap(ObjectRepo repo) {
+  private static void registerMetaClasses(ObjectRepo repo) {
     IMetaClass metaClassClassObject = new HandlerMetaClass(new MetaFieldClassHandler(), MetaClass.class);
     IMetaClass handlerMetaClassObject = new HandlerMetaClass(new MetaClassHandler(), HandlerMetaClass.class);
     IMetaClass arrayMetaClass = new HandlerMetaClass(new ArrayHandler(), Array.class); //Stub class. We need another implementation for array metaClass
@@ -23,11 +23,11 @@ public final class ObjectRepoFactory {
     
     IMetaClass arrayListMetaClass = new HandlerMetaClass(new ArrayListHandler(), ArrayList.class);
     
-    repo.addBootstrapped(IMetaClass.METACLASS_OBJECT_ID, metaClassClassObject);
-    repo.addBootstrapped(IMetaClass.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
-    repo.addBootstrapped(IMetaClass.ARRAY_META_CLASS, arrayMetaClass);
-    repo.addBootstrapped(IMetaClass.JAVA_OBJECT_META_OBJECT_ID, javaObjectMetaObject);
-    repo.addBootstrapped(IMetaClass.JAVA_OBJECT_META_OBJECT_ID+1, arrayListMetaClass);
+    repo.add(IMetaClass.METACLASS_OBJECT_ID, metaClassClassObject);
+    repo.add(IMetaClass.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
+    repo.add(IMetaClass.ARRAY_META_CLASS, arrayMetaClass);
+    repo.add(IMetaClass.JAVA_OBJECT_META_OBJECT_ID, javaObjectMetaObject);
+    repo.add(IMetaClass.JAVA_OBJECT_META_OBJECT_ID+1, arrayListMetaClass);
   }
 
   private ObjectRepoFactory() {}

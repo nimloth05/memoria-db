@@ -35,7 +35,7 @@ public class ObjectRepo implements IObjectRepo {
     return result;
   }
 
-  public void addBootstrapped(long id, IMetaClass object) {
+  public void add(long id, IMetaClass object) {
     internalPut(new ObjectInfo(id, object));
   }
 
