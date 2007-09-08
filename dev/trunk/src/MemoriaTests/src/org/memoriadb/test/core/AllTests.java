@@ -1,5 +1,7 @@
 package org.memoriadb.test.core;
 
+import org.memoriadb.test.core.array.ArrayTest;
+
 import junit.framework.*;
 
 public class AllTests {

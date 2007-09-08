@@ -14,7 +14,7 @@ public class LoadTest extends AbstractObjectStoreTest {
     
     for(int i = 0; i < 150; ++i) {
       Referencer composite = new Referencer();
-      composite.set(TestObj.class, "1");
+      composite.set(SimpleTestObj.class, "1");
       objects.add(composite);
     }
     

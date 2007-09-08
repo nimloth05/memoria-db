@@ -22,7 +22,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     Leaf leaf1 = new Leaf();
     leaf1.setData("leaf for comp1");
-    leaf1.setTestObj(new SimpleTestObj("Leaf1 TestData", 1));
+    leaf1.setTestObj(new SimpleTestObj("Leaf1 TestData"));
     
     comp1.addChild(leaf1);
     

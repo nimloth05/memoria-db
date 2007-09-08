@@ -32,7 +32,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
     for (int i = 0; i < 5; ++i) {
-      objects.add(new SimpleTestObj("Hallo Welt " + i, i));
+      objects.add(new SimpleTestObj("Hallo Welt " + i));
     }
 
     save(objects.toArray());
@@ -78,8 +78,8 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
 
   public void test_save_two_objects_in_two_transactions() {
-    SimpleTestObj obj1 = new SimpleTestObj("1", 1);
-    SimpleTestObj obj2 = new SimpleTestObj("2", 2);
+    SimpleTestObj obj1 = new SimpleTestObj("1");
+    SimpleTestObj obj2 = new SimpleTestObj("2");
 
     save(obj1);
     save(obj2);

@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.core.ObjectRepo;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.test.core.testclasses.TestObj;
+import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public class ObjectRepoTest extends TestCase {
   
@@ -15,34 +15,34 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMetaClass classObject = new MetaClass(TestObj.class);
+    IMetaClass classObject = new MetaClass(SimpleTestObj.class);
     long id = fRepo.add(classObject);
     
     assertSame(classObject, fRepo.getObject(id));
-    assertSame(classObject, fRepo.getMetaClass(TestObj.class));
+    assertSame(classObject, fRepo.getMetaClass(SimpleTestObj.class));
   }
   
   public void test_put_meta_object_with_id_in_cache() {
-    IMetaClass classObject = new MetaClass(TestObj.class);
+    IMetaClass classObject = new MetaClass(SimpleTestObj.class);
     fRepo.add(20, classObject, 0);
     
     assertSame(classObject, fRepo.getObject(20));
-    assertSame(classObject, fRepo.getMetaClass(TestObj.class));
+    assertSame(classObject, fRepo.getMetaClass(SimpleTestObj.class));
   }
   
   public void test_put_new_object_in_cache() {
-    TestObj obj = new TestObj();
+    SimpleTestObj obj = new SimpleTestObj();
     long id = fRepo.add(obj);
     Object obj2 = fRepo.getObject(id);
     assertSame(obj, obj2);
   }
   
   public void test_put_object_with_id_in_cache() {
-    TestObj obj = new TestObj();
+    SimpleTestObj obj = new SimpleTestObj();
     //Wir starten hier absichtlich mit 20.
     fRepo.add(20, obj, 0);
     
-    TestObj obj2 = new TestObj();
+    SimpleTestObj obj2 = new SimpleTestObj();
     long id = fRepo.add(obj2);
     assertEquals(21, id);
     
