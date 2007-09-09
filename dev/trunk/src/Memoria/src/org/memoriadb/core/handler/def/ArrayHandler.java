@@ -39,6 +39,7 @@ public class ArrayHandler implements ISerializeHandler {
    
    output.writeLong(componentTypeId);
    output.writeInt(arrayLength);
+   
    for(int i = 0; i < arrayLength; ++i) {
      Object componentObject = Array.get(obj, i);
      output.writeLong(context.getObjectId(componentObject));

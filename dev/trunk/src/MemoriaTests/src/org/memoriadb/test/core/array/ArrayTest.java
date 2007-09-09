@@ -15,6 +15,10 @@ public class ArrayTest extends AbstractObjectStoreTest {
     internal_test_array_object_container(new ArrayContainer());
   }
   
+  public void test_serialize_mixed_array_object() {
+    internal_test_array_object_container(new MixedArrayContainer());
+  }
+  
   private void internal_test_array_object_container(IArrayContainer container) {
     container.set();
 
