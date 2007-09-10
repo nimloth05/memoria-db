@@ -6,14 +6,14 @@ package org.memoriadb.test.core.crud.testclass;
  * @author msc
  * 
  */
-public class C1 {
+public class Cyclic1 {
   
-  private C2 fC2;
+  private Cyclic2 fC2;
   private String fName;
 
-  public C1() {}
+  public Cyclic1() {}
   
-  public C1(String name) {
+  public Cyclic1(String name) {
     super();
     fName = name;
   }
@@ -23,7 +23,7 @@ public class C1 {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    final C1 other = (C1) obj;
+    final Cyclic1 other = (Cyclic1) obj;
     if (fName == null) {
       if (other.fName != null) return false;
     }
@@ -31,7 +31,7 @@ public class C1 {
     return true;
   }
 
-  public C2 getC2() {
+  public Cyclic2 getC2() {
     return fC2;
   }
 
@@ -47,7 +47,7 @@ public class C1 {
     return result;
   }
 
-  public void setC2(C2 c2) {
+  public void setC2(Cyclic2 c2) {
     this.fC2 = c2;
   }
   

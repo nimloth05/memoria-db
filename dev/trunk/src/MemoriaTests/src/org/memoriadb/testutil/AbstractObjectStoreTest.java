@@ -16,6 +16,22 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected IObjectStore fStore;
   
   
+  protected void beginUpdate() {
+    fStore.beginUpdate();
+  }
+  
+  protected void delete(Object obj) {
+    fStore.delete(obj);
+  }
+  
+  protected void deleteAll(Object obj) {
+    fStore.deleteAll(obj);
+  }
+
+  protected void endUpdate() {
+    fStore.endUpdate();
+  }
+  
   protected final <T> List<T> getAll(Class<T> clazz) {
     List<T> result = new ArrayList<T>();
     for(Object object: fStore.getAllObjects()) {
@@ -36,12 +52,16 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     recreateStore(); 
   }
 
-  protected final long save(Object...objects) {
+  protected final long save(Object obj) {
+    return fStore.save(obj);
+  }
+  
+  protected final long[] save(Object...objects) {
     return fStore.save(objects);
   }
   
-  protected final void saveAll(Object obj) {
-    fStore.saveAll(obj);
+  protected final long saveAll(Object obj) {
+    return fStore.saveAll(obj);
   }
   
   @Override
@@ -51,7 +71,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
    //fStore = openFile(new PhysicalFile(PATH));
    fStore = openFile(new InMemoryFile());
   }
-
+  
   @Override
   protected void tearDown() {
     fStore.close();
@@ -60,5 +80,4 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   private IObjectStore openFile(IMemoriaFile file) {
     return Memoria.open(file);
   }
-
 }

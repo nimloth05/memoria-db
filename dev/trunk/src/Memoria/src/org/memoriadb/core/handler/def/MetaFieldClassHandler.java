@@ -3,6 +3,7 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ClassInheritanceBinder;
@@ -47,7 +48,6 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     }
   }
   
-
   @Override
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException {
     throw new MemoriaException("has no children");
@@ -62,6 +62,5 @@ public class MetaFieldClassHandler implements ISerializeHandler {
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     throw new MemoriaException("has no children");
   }
-
 
 }

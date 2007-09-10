@@ -4,12 +4,19 @@ import java.util.Set;
 
 import org.memoriadb.util.IdentityHashSet;
 
-public class ObjectTraversal implements IObjectTraversal {
+/**
+ * 
+ * Traverses a given object graph and saves all visited objects
+ * 
+ * @author msc
+ *
+ */
+public class SaveTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
   private final ObjectStore fMemoria;
   
-  public ObjectTraversal(ObjectStore memoria) {
+  public SaveTraversal(ObjectStore memoria) {
     fMemoria = memoria;
   }
 

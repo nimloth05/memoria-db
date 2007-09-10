@@ -3,6 +3,7 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;

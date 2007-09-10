@@ -6,37 +6,69 @@ import org.java.patched.PIdentityHashMap;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 
+/**
+ * Holds the main-indexes. 
+ * 
+ * Objects can be added with no regard to ongoing transactions. The appropriate indexes are updated.
+ * 
+ * @author msc
+ *
+ */
 public class ObjectRepo implements IObjectRepo {
 
   private long fCurrentObjectId = 0;
+  
+  /**
+   * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null. 
+   */
+  private final Map<Long, ObjectInfo> fDeletedMap = new HashMap<Long, ObjectInfo>();
 
+  /**
+   * Main-index
+   */
   private final Map<Long, ObjectInfo> fIdMap = new HashMap<Long, ObjectInfo>();
 
-  // Use patched version of the IdentityHashMap.
+  /**
+   * Main-index
+   */
   private final Map<Object, ObjectInfo> fObjectMap = new PIdentityHashMap<Object, ObjectInfo>();
-
+  
+  /**
+   * MataClass index
+   */
   private final Map<Class<?>, IMetaClassConfig> fMetaObjects = new HashMap<Class<?>, IMetaClassConfig>();
+
+  /**
+   * This method is only used for bootstrapping
+   */
+  public void add(long id, IMetaClass object) {
+    internalPut(new ObjectInfo(id, object));
+  }
 
   /**
    * Adds an object after dehydration
    */
-  public void add(long id, Object obj, long version) {
-    internalPut(new ObjectInfo(id, obj, version)); 
-  } 
-  
-  /**
-   * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
-   * @return The new id
-   */ 
-  public long add(Object obj) {
-    long result = generateId();
-    internalPut(new ObjectInfo(result,obj));
+  public void add(long id, Object obj, long version, int oldGenerationCount) {
+    ObjectInfo info = new ObjectInfo(id, obj, version, oldGenerationCount);
+
+    if(obj==null){
+      fDeletedMap.put(info.getId(), info);
+    }
+    else {
+      internalPut(info);
+    }
     
-    return result;
   }
 
-  public void add(long id, IMetaClass object) {
-    internalPut(new ObjectInfo(id, object));
+  /**
+   * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
+   * 
+   * @return The new id
+   */
+  public long add(Object obj) {
+    long result = generateId();
+    internalPut(new ObjectInfo(result, obj));
+    return result;
   }
 
   public void checkSanity() {
@@ -57,14 +89,24 @@ public class ObjectRepo implements IObjectRepo {
     return fObjectMap.containsKey(obj);
   }
 
+  @Override
+  public long delete(Object obj) {
+    ObjectInfo info = fObjectMap.remove(obj);
+    if (info == null) throw new MemoriaException("object not found: " + obj);
+    if (fIdMap.remove(info.getId()) == null) throw new MemoriaException("object not found: " + obj);
+    fDeletedMap.put(info.getId(), info);
+    info.setDeleted();
+    return info.getId();
+  }
+
   public Collection<Object> getAllObjects() {
     List<Object> result = new ArrayList<Object>(fObjectMap.size());
-    for(ObjectInfo info: fObjectMap.values()){
+    for (IObjectInfo info : fObjectMap.values()) {
       result.add(info.getObj());
     }
     return result;
   }
-  
+
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
@@ -79,56 +121,73 @@ public class ObjectRepo implements IObjectRepo {
    * @return the object for the given id or null.
    */
   public Object getObject(long objectId) {
-    ObjectInfo objectInfo = fIdMap.get(objectId);
-    if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);    
+    IObjectInfo objectInfo = fIdMap.get(objectId);
+    if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
     return objectInfo.getObj();
   }
 
   /**
    * @param obj
    * @return
-   * @throws MemoriaException if object can not be found
+   * @throws MemoriaException
+   *           if object can not be found
    */
   public long getObjectId(Object obj) {
-    ObjectInfo result = fObjectMap.get(obj);
+    IObjectInfo result = fObjectMap.get(obj);
     if (result == null) throw new MemoriaException("Unknown object: " + obj);
     return result.getId();
+  }
+
+  public ObjectInfo getObjectInfo(long id) {
+    ObjectInfo result = fIdMap.get(id);
+    if(result == null) result = fDeletedMap.get(id);
+    return result;
   }
 
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }
 
+  @Override
+  public boolean isMetaClass(Object obj) {
+    return obj instanceof IMetaClass;
+  }
+
   /**
-   * @return true, if a MetaClass object exists for the given type. 
+   * @return true, if a MetaClass object exists for the given type.
    */
   public boolean metaClassExists(Class<?> klass) {
-    if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
+    if (klass.isArray()) throw new IllegalArgumentException("Array not expected");
     return fMetaObjects.containsKey(klass);
   }
 
-  public void update(Object obj) {
-    ObjectInfo info = getObjectInfo(obj);
-    if(info == null) throw new MemoriaException("Object not found: " + obj);
-    info.incrementVersion();
+  @Override
+  public void objectDeleted(long id) {
+    ObjectInfo info = fDeletedMap.get(id);
+    internalUpdate(info);
+  }
+  
+  public void objectUpdated(Object obj) {
+    ObjectInfo info = fObjectMap.get(obj);
+    internalUpdate(info);
   }
 
   private long generateId() {
-   return ++fCurrentObjectId; 
+    return ++fCurrentObjectId;
   }
 
   private IMetaClassConfig getGenericArrayMetaClass() {
     return (IMetaClassConfig) fIdMap.get(IMetaClass.ARRAY_META_CLASS).getObj();
   }
 
-  //TODO: Test for this assertions! 
+  // TODO: Test for this assertions!
   private void internalPut(ObjectInfo info) {
     fCurrentObjectId = Math.max(fCurrentObjectId, info.getId());
-    
-    Object previousMapped = fObjectMap.put(info.getObj(), info); 
+
+    Object previousMapped = fObjectMap.put(info.getObj(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map" + info);
 
-    previousMapped = fIdMap.put(info.getId(), info);  
+    previousMapped = fIdMap.put(info.getId(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in id-Map" + info);
 
     if (info.getObj() instanceof IMetaClass) {
@@ -136,6 +195,12 @@ public class ObjectRepo implements IObjectRepo {
       previousMapped = fMetaObjects.put(metaObject.getJavaClass(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of metaObject: " + metaObject);
     }
+  }
+
+  private void internalUpdate(ObjectInfo info) {
+    if (info == null) throw new MemoriaException("Object not found: " + info);
+    info.incrementVersion();
+    info.incrememntOldGenerationCount();
   }
 
 }

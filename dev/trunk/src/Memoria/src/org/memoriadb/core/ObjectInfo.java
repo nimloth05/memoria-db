@@ -1,21 +1,21 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.block.Block;
-import org.memoriadb.exception.MemoriaException;
 
 /**
- * Hält alle relevanten Informationen zu einem von Memoria verwalteten Objekt
+ * Holds all data to an object necessary for internal housekeeping
+ * 
+ * fObj == null means, that this object has been deleted
  * 
  * @author msc
  * 
  */
-public class ObjectInfo {
+public class ObjectInfo implements IObjectInfo {
   
   private Object fObj;
   private final long fId;
   private long fVersion;
-  private boolean fIsDeleted;
-  private boolean fHasInactiveObjectData;
+  private int fOldGenerationCount;
   
   /**
    * From this block the active HydratedObject comes from
@@ -26,20 +26,17 @@ public class ObjectInfo {
    * Use this ctor only when an object is initially added to the container.
    */
   public ObjectInfo(long id, Object obj) {
-    this(id, obj, 0);
+    this(id, obj, 0, 0);
   }
 
   /**
    * Use this ctor for ojects after dehydration
    */
-  public ObjectInfo(long id, Object obj, long version) {
-    if(obj == null) throw new MemoriaException("null can not be stored for id " + id);
-    
+  public ObjectInfo(long id, Object obj, long version, int oldGenerationCount) {
     fObj = obj;
     fId = id;
     fVersion = version;
-    fIsDeleted = false;
-    fHasInactiveObjectData = false;
+    fOldGenerationCount = oldGenerationCount;
   }
 
   public Block getBlock() {
@@ -54,8 +51,16 @@ public class ObjectInfo {
     return fObj;
   }
 
+  public int getOldGenerationCount() {
+    return fOldGenerationCount;
+  }
+
   public long getVersion() {
     return fVersion;
+  }
+
+  public void incrememntOldGenerationCount() {
+    ++fOldGenerationCount;
   }
 
   public void incrementVersion() {
@@ -63,29 +68,21 @@ public class ObjectInfo {
   }
 
   public boolean isDeleted() {
-    return fIsDeleted;
-  }
-
-  public boolean isHasInactiveObjectData() {
-    return fHasInactiveObjectData;
+    return fObj == null;
   }
 
   public void setBlock(Block block) {
     fBlock = block;
   }
-
-  public void setDeleted(boolean isDeleted) {
-    fIsDeleted = isDeleted;
-  }
-
-  public void setHasInactiveObjectData(boolean hasInactiveObjectData) {
-    fHasInactiveObjectData = hasInactiveObjectData;
+  
+  public void setDeleted() {
+    fObj = null;
   }
   
   public void setObj(Object obj) {
     fObj = obj;
   }
-  
+
   public void setVersion(int version) {
     fVersion = version;
   }
@@ -93,7 +90,6 @@ public class ObjectInfo {
   @Override
   public String toString() {
     return fId + ":" + fObj + " in revision " + fVersion;
-    
   }
   
 }

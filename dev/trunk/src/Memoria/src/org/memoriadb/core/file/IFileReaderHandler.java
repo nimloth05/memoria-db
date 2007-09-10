@@ -12,6 +12,11 @@ import org.memoriadb.core.load.HydratedObject;
 public interface IFileReaderHandler {
   public void block(Block block);
   public void header(FileHeader header);
+  
   public void metaClass(HydratedObject metaClass, long id, long version);
+  public void metaClassDeleted(long id, long version);
+  
   public void object(HydratedObject object, long id, long version);
+  public void objectDeleted(long id, long version);
+  
 }

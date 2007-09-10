@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.core.meta.MetaClass;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.FileCorruptException;
 import org.memoriadb.util.CRC32Util;
 
@@ -13,7 +13,7 @@ public class FileReader {
   private final IMemoriaFile fFile;
 
   public FileReader(IMemoriaFile file, IFileReaderHandler handler) {
-    
+
     fHandler = handler;
     fFile = file;
   }
@@ -26,7 +26,7 @@ public class FileReader {
     while (stream.available() > 0) {
       position += readBlock(stream, position);
     }
-    
+
     stream.close();
   }
 
@@ -39,11 +39,11 @@ public class FileReader {
     long blockSize = stream.readLong(); // the block size
     long transactionSize = stream.readLong(); // transactionsize
 
-    byte[] transactionData = new byte[(int)transactionSize];
+    byte[] transactionData = new byte[(int) transactionSize];
     stream.read(transactionData);
     long crc32 = stream.readLong();
-    
-    // block may be bigger then the transaction-data -> skip 
+
+    // block may be bigger then the transaction-data -> skip
     skip(stream, blockSize - transactionSize - (8 + 8)); // (transactionSize + crc32)
 
     if (CRC32Util.getChecksum(transactionData) != crc32) throw new FileCorruptException("wrong checksum for block at position " + position);
@@ -52,7 +52,7 @@ public class FileReader {
     fHandler.block(new Block(blockSize, position));
 
     // startTag + blockSize dataSize + data.length
-    return  BlockLayout.TAG_SIZE + 8 + 8 + blockSize;
+    return BlockLayout.TAG_SIZE + 8 + 8 + blockSize;
   }
 
   private void readObject(byte[] data, int offset, int size) throws IOException {
@@ -61,7 +61,17 @@ public class FileReader {
     long typeId = stream.readLong();
     long objectId = stream.readLong();
     long version = stream.readLong();
+    
+    if(typeId == IMetaClass.OBJECT_DELETED){
+      fHandler.objectDeleted(objectId, version);
+      return;
+    }
+    else if (typeId == IMetaClass.METACLASS_DELETED) {
+      fHandler.metaClassDeleted(objectId, version);
+      return;
+    }
 
+    // no deleteMarker encountered
     if (MetaClass.isMetaClassObject(typeId)) {
       fHandler.metaClass(new HydratedObject(typeId, stream), objectId, version);
     }

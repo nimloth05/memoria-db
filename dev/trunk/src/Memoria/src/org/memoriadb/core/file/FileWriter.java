@@ -2,33 +2,19 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
-import org.memoriadb.core.*;
 import org.memoriadb.core.block.BlockLayout;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.util.CRC32Util;
 
 public class FileWriter implements IFileWriter {
 
-  private final IObjectRepo fObjectRepo;
   private final IMemoriaFile fFile;
   
-  public FileWriter(IObjectRepo objectRepo, IMemoriaFile file) {
-    super();
-    fObjectRepo = objectRepo;
+  public FileWriter(IMemoriaFile file) {
     fFile = file;
   }
 
-  public void write(IdentityHashSet<Object> objects) {
-    byte[] data = ObjectSerializer.serialize(fObjectRepo, objects);
-    try {
-      append(data);
-    }
-    catch (IOException e) {
-      throw new MemoriaException(e);
-    }
-  }
-
-  private void append(byte[] data) throws IOException {
+  public void append(byte[] data) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
@@ -45,5 +31,14 @@ public class FileWriter implements IFileWriter {
 
     fFile.append(byteArrayOutputStream.toByteArray());
    
+  }
+  
+  public void write(byte[] data) {
+    try {
+      append(data);
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
   }
 }

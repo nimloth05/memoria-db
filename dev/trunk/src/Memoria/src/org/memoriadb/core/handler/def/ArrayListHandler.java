@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;

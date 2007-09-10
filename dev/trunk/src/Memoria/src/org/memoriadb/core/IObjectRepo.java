@@ -5,6 +5,13 @@ import java.util.Collection;
 import org.memoriadb.core.meta.IMetaClassConfig;
 import org.memoriadb.exception.MemoriaException;
 
+/**
+ * This interfaces encapsulates the indexes to the ObjectInfos. The methods are only intended 
+ * for normal use, i.e. after bootstrapping and loading from file.
+ * 
+ * @author msc
+ *
+ */
 public interface IObjectRepo {
 
   /**
@@ -20,8 +27,14 @@ public interface IObjectRepo {
   
   public boolean contains(Object obj);
   
-  public Collection<Object> getAllObjects();
+  /**
+   * Called when an object is deleted in the same transaction as it was added.
+   * @param id
+   */
+  public long delete(Object id);
   
+  public Collection<Object> getAllObjects();
+
   /**
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
@@ -42,9 +55,20 @@ public interface IObjectRepo {
   public long getObjectId(Object obj);
 
   /**
-   * @return The stored ObjectInfo for the given object or null, if the given <tt>obj</tt> is unknown.
+   * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
+   * even for deleted objects, if the delete-marker is still present.
    */
-  public ObjectInfo getObjectInfo(Object obj);
+  public IObjectInfo getObjectInfo(long id);
+
+  /**
+   * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
+   */
+  public IObjectInfo getObjectInfo(Object obj);
+  
+  /**
+   * @return true, if the given obj is a metaclass
+   */
+  public boolean isMetaClass(Object obj);
 
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.
@@ -52,10 +76,17 @@ public interface IObjectRepo {
   public boolean metaClassExists(Class<?> klass);
 
   /**
-   * Tells the ObjectContainer that an existing object has been updated.
+   * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
    * @param obj
    */
-  public void update(Object obj);
+  public void objectDeleted(long id);
+
+  /**
+   * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
+   * written to the persistent store.
+   * @param obj
+   */
+  public void objectUpdated(Object obj);
 
 
 }

@@ -10,6 +10,17 @@ public class ObjectRepoTest extends TestCase {
   
   private ObjectRepo fRepo;
   
+  public void test_deleted_object_is_not_contained() {
+    SimpleTestObj obj = new SimpleTestObj();
+    long id = fRepo.add(obj);
+    
+    fRepo.delete(obj);
+    
+    assertFalse(fRepo.contains(obj));
+    assertFalse(fRepo.contains(id));
+    
+  }
+  
   public void test_put_inheritence_object() {
     
   }
@@ -24,7 +35,7 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_put_meta_object_with_id_in_cache() {
     IMetaClass classObject = new MetaClass(SimpleTestObj.class);
-    fRepo.add(20, classObject, 0);
+    fRepo.add(20, classObject, 0, 0);
     
     assertSame(classObject, fRepo.getObject(20));
     assertSame(classObject, fRepo.getMetaClass(SimpleTestObj.class));
@@ -40,7 +51,7 @@ public class ObjectRepoTest extends TestCase {
   public void test_put_object_with_id_in_cache() {
     SimpleTestObj obj = new SimpleTestObj();
     //Wir starten hier absichtlich mit 20.
-    fRepo.add(20, obj, 0);
+    fRepo.add(20, obj, 0, 0);
     
     SimpleTestObj obj2 = new SimpleTestObj();
     long id = fRepo.add(obj2);
