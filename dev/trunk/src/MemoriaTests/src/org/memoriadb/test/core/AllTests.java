@@ -13,7 +13,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
 
     //$JUnit-BEGIN$
-    suite.addTestSuite(FieldTypeTest.class);
+    suite.addTestSuite(TypeTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(ObjectRepoTest.class);

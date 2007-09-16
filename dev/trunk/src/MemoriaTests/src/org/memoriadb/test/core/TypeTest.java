@@ -5,13 +5,12 @@ import java.io.*;
 import junit.framework.TestCase;
 
 import org.easymock.*;
-import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.core.meta.FieldType;
-import org.memoriadb.test.core.testclasses.FieldTypeTestClass;
+import org.memoriadb.core.load.*;
+import org.memoriadb.core.meta.Type;
+import org.memoriadb.test.core.testclasses.*;
 
-public class FieldTypeTest extends TestCase {
+public class TypeTest extends TestCase {
   
   private IReaderContext fReaderContext;
   private ISerializeContext fSerializeContext;
@@ -41,33 +40,33 @@ public class FieldTypeTest extends TestCase {
     FieldTypeTestClass obj = new FieldTypeTestClass();
     
     Class<? extends FieldTypeTestClass> class1 = obj.getClass();
-    assertEquals(FieldType.booleanPrimitive, FieldType.getType(obj.getBooleanFieldP()));
-    assertEquals(FieldType.booleanPrimitive, FieldType.getType(obj.getBooleanFieldC()));
+    assertEquals(Type.typeBoolean, Type.getType(obj.getBooleanFieldP()));
+    assertEquals(Type.typeBoolean, Type.getType(obj.getBooleanFieldC()));
     
-    assertEquals(FieldType.charPrimitive, FieldType.getType(obj.getCharFieldP()));
-    assertEquals(FieldType.charPrimitive, FieldType.getType(obj.getCharFieldC()));
+    assertEquals(Type.typeChar, Type.getType(obj.getCharFieldP()));
+    assertEquals(Type.typeChar, Type.getType(obj.getCharFieldC()));
     
-    assertEquals(FieldType.bytePrimitive, FieldType.getType(obj.getByteFieldP()));
-    assertEquals(FieldType.bytePrimitive, FieldType.getType(obj.getByteFieldC()));
+    assertEquals(Type.typeByte, Type.getType(obj.getByteFieldP()));
+    assertEquals(Type.typeByte, Type.getType(obj.getByteFieldC()));
     
-    assertEquals(FieldType.shortPrimitive, FieldType.getType(obj.getShortFieldP()));
-    assertEquals(FieldType.shortPrimitive, FieldType.getType(obj.getShortFieldC()));
+    assertEquals(Type.typeShort, Type.getType(obj.getShortFieldP()));
+    assertEquals(Type.typeShort, Type.getType(obj.getShortFieldC()));
     
-    assertEquals(FieldType.integerPrimitive, FieldType.getType(obj.getIntFieldP()));
-    assertEquals(FieldType.integerPrimitive, FieldType.getType(obj.getIntFieldC()));
+    assertEquals(Type.typeInteger, Type.getType(obj.getIntFieldP()));
+    assertEquals(Type.typeInteger, Type.getType(obj.getIntFieldC()));
     
-    assertEquals(FieldType.longPrimitive, FieldType.getType(obj.getLongFieldP()));
-    assertEquals(FieldType.longPrimitive, FieldType.getType(obj.getLongFieldC()));
+    assertEquals(Type.typeLong, Type.getType(obj.getLongFieldP()));
+    assertEquals(Type.typeLong, Type.getType(obj.getLongFieldC()));
     
-    assertEquals(FieldType.floatPrimitive, FieldType.getType(obj.getFloatFieldP()));
-    assertEquals(FieldType.floatPrimitive, FieldType.getType(obj.getFloatFieldC()));
+    assertEquals(Type.typeFloat, Type.getType(obj.getFloatFieldP()));
+    assertEquals(Type.typeFloat, Type.getType(obj.getFloatFieldC()));
     
-    assertEquals(FieldType.doublePrimitive, FieldType.getType(obj.getDoubleFieldP()));
-    assertEquals(FieldType.doublePrimitive, FieldType.getType(obj.getDoubleFieldC()));
+    assertEquals(Type.typeDouble, Type.getType(obj.getDoubleFieldP()));
+    assertEquals(Type.typeDouble, Type.getType(obj.getDoubleFieldC()));
     
-    assertEquals(FieldType.string, FieldType.getType(class1.getDeclaredField("fString")));
+    assertEquals(Type.typeString, Type.getType(class1.getDeclaredField("fString")));
     
-    assertEquals(FieldType.clazz, FieldType.getType(class1.getDeclaredField("fObject")));
+    assertEquals(Type.typeClass, Type.getType(class1.getDeclaredField("fObject")));
   }
   
   @Override
@@ -89,11 +88,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldP(), fSerializeContext);
-    FieldType.booleanPrimitive.writeValue(outputMock, testObj, testObj.getBooleanFieldC(), fSerializeContext);
+    Type.typeBoolean.writeFieldValue(outputMock, testObj, testObj.getBooleanFieldP(), fSerializeContext);
+    Type.typeBoolean.writeFieldValue(outputMock, testObj, testObj.getBooleanFieldC(), fSerializeContext);
     
-    FieldType.booleanPrimitive.readValue(inputMock, testObj, testObj.getBooleanFieldP(), fReaderContext);
-    FieldType.booleanPrimitive.readValue(inputMock, testObj, testObj.getBooleanFieldC(), fReaderContext);
+    Type.typeBoolean.readFieldValue(inputMock, testObj, testObj.getBooleanFieldP(), fReaderContext);
+    Type.typeBoolean.readFieldValue(inputMock, testObj, testObj.getBooleanFieldC(), fReaderContext);
     
     control.verify();
     
@@ -115,11 +114,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.bytePrimitive.writeValue(outputMock, testObj, testObj.getByteFieldP(), fSerializeContext);
-    FieldType.bytePrimitive.writeValue(outputMock, testObj, testObj.getByteFieldC(), fSerializeContext);
+    Type.typeByte.writeFieldValue(outputMock, testObj, testObj.getByteFieldP(), fSerializeContext);
+    Type.typeByte.writeFieldValue(outputMock, testObj, testObj.getByteFieldC(), fSerializeContext);
     
-    FieldType.bytePrimitive.readValue(inputMock, testObj, testObj.getByteFieldP(), fReaderContext);
-    FieldType.bytePrimitive.readValue(inputMock, testObj, testObj.getByteFieldC(), fReaderContext);
+    Type.typeByte.readFieldValue(inputMock, testObj, testObj.getByteFieldP(), fReaderContext);
+    Type.typeByte.readFieldValue(inputMock, testObj, testObj.getByteFieldC(), fReaderContext);
     
     control.verify();
     
@@ -141,11 +140,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.charPrimitive.writeValue(outputMock, testObj, testObj.getCharFieldP(), fSerializeContext);
-    FieldType.charPrimitive.writeValue(outputMock, testObj, testObj.getCharFieldC(), fSerializeContext);
+    Type.typeChar.writeFieldValue(outputMock, testObj, testObj.getCharFieldP(), fSerializeContext);
+    Type.typeChar.writeFieldValue(outputMock, testObj, testObj.getCharFieldC(), fSerializeContext);
     
-    FieldType.charPrimitive.readValue(inputMock, testObj, testObj.getCharFieldP(), fReaderContext);
-    FieldType.charPrimitive.readValue(inputMock, testObj, testObj.getCharFieldC(), fReaderContext);
+    Type.typeChar.readFieldValue(inputMock, testObj, testObj.getCharFieldP(), fReaderContext);
+    Type.typeChar.readFieldValue(inputMock, testObj, testObj.getCharFieldC(), fReaderContext);
     
     control.verify();
     
@@ -155,7 +154,25 @@ public class FieldTypeTest extends TestCase {
     control.reset();    
   }
 
-  private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) {}
+  private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
+    testObj.fObject = new SimpleTestObj("1");
+    
+    EasyMock.expect(fSerializeContext.getObjectId(testObj.fObject)).andStubReturn(new Long(1));
+    outputMock.writeLong(1);
+    
+    EasyMock.expect(inputMock.readLong()).andReturn(new Long(1));
+    fReaderContext.objectToBind((IBindable) EasyMock.anyObject());
+    
+    control.replay();
+    EasyMock.replay(fSerializeContext, fReaderContext);
+    
+    Type.typeClass.writeFieldValue(outputMock, testObj, testObj.getObjectField(), fSerializeContext);
+    
+    Type.typeClass.readFieldValue(inputMock, testObj, testObj.getObjectField(), fReaderContext);
+    
+    control.verify();
+    EasyMock.verify(fSerializeContext, fReaderContext);
+  }
 
   private void doubleFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock, FieldTypeTestClass testObj) throws Exception {
     testObj.fDoubleP = 5;
@@ -169,11 +186,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldP(), fSerializeContext);
-    FieldType.doublePrimitive.writeValue(outputMock, testObj, testObj.getDoubleFieldC(), fSerializeContext);
+    Type.typeDouble.writeFieldValue(outputMock, testObj, testObj.getDoubleFieldP(), fSerializeContext);
+    Type.typeDouble.writeFieldValue(outputMock, testObj, testObj.getDoubleFieldC(), fSerializeContext);
     
-    FieldType.doublePrimitive.readValue(inputMock, testObj, testObj.getDoubleFieldP(), fReaderContext);
-    FieldType.doublePrimitive.readValue(inputMock, testObj, testObj.getDoubleFieldC(), fReaderContext);
+    Type.typeDouble.readFieldValue(inputMock, testObj, testObj.getDoubleFieldP(), fReaderContext);
+    Type.typeDouble.readFieldValue(inputMock, testObj, testObj.getDoubleFieldC(), fReaderContext);
     
     control.verify();
     
@@ -195,11 +212,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldP(), fSerializeContext);
-    FieldType.floatPrimitive.writeValue(outputMock, testObj, testObj.getFloatFieldC(), fSerializeContext);
+    Type.typeFloat.writeFieldValue(outputMock, testObj, testObj.getFloatFieldP(), fSerializeContext);
+    Type.typeFloat.writeFieldValue(outputMock, testObj, testObj.getFloatFieldC(), fSerializeContext);
     
-    FieldType.floatPrimitive.readValue(inputMock, testObj, testObj.getFloatFieldP(), fReaderContext);
-    FieldType.floatPrimitive.readValue(inputMock, testObj, testObj.getFloatFieldC(), fReaderContext);
+    Type.typeFloat.readFieldValue(inputMock, testObj, testObj.getFloatFieldP(), fReaderContext);
+    Type.typeFloat.readFieldValue(inputMock, testObj, testObj.getFloatFieldC(), fReaderContext);
     
     control.verify();
     
@@ -221,11 +238,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldP(), fSerializeContext);
-    FieldType.integerPrimitive.writeValue(outputMock, testObj, testObj.getIntFieldC(), fSerializeContext);
+    Type.typeInteger.writeFieldValue(outputMock, testObj, testObj.getIntFieldP(), fSerializeContext);
+    Type.typeInteger.writeFieldValue(outputMock, testObj, testObj.getIntFieldC(), fSerializeContext);
     
-    FieldType.integerPrimitive.readValue(inputMock, testObj, testObj.getIntFieldP(), fReaderContext);
-    FieldType.integerPrimitive.readValue(inputMock, testObj, testObj.getIntFieldC(), fReaderContext);
+    Type.typeInteger.readFieldValue(inputMock, testObj, testObj.getIntFieldP(), fReaderContext);
+    Type.typeInteger.readFieldValue(inputMock, testObj, testObj.getIntFieldC(), fReaderContext);
     
     control.verify();
     
@@ -247,11 +264,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldP(), fSerializeContext);
-    FieldType.longPrimitive.writeValue(outputMock, testObj, testObj.getLongFieldC(), fSerializeContext);
+    Type.typeLong.writeFieldValue(outputMock, testObj, testObj.getLongFieldP(), fSerializeContext);
+    Type.typeLong.writeFieldValue(outputMock, testObj, testObj.getLongFieldC(), fSerializeContext);
     
-    FieldType.longPrimitive.readValue(inputMock, testObj, testObj.getLongFieldP(), fReaderContext);
-    FieldType.longPrimitive.readValue(inputMock, testObj, testObj.getLongFieldC(), fReaderContext);
+    Type.typeLong.readFieldValue(inputMock, testObj, testObj.getLongFieldP(), fReaderContext);
+    Type.typeLong.readFieldValue(inputMock, testObj, testObj.getLongFieldC(), fReaderContext);
     
     control.verify();
     
@@ -273,11 +290,11 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldP(), fSerializeContext);
-    FieldType.shortPrimitive.writeValue(outputMock, testObj, testObj.getShortFieldC(), fSerializeContext);
+    Type.typeShort.writeFieldValue(outputMock, testObj, testObj.getShortFieldP(), fSerializeContext);
+    Type.typeShort.writeFieldValue(outputMock, testObj, testObj.getShortFieldC(), fSerializeContext);
     
-    FieldType.shortPrimitive.readValue(inputMock, testObj, testObj.getShortFieldP(), fReaderContext);
-    FieldType.shortPrimitive.readValue(inputMock, testObj, testObj.getShortFieldC(), fReaderContext);
+    Type.typeShort.readFieldValue(inputMock, testObj, testObj.getShortFieldP(), fReaderContext);
+    Type.typeShort.readFieldValue(inputMock, testObj, testObj.getShortFieldC(), fReaderContext);
     
     control.verify();
     
@@ -296,9 +313,9 @@ public class FieldTypeTest extends TestCase {
     
     control.replay();
     
-    FieldType.string.writeValue(outputMock, testObj, testObj.getStringField(), fSerializeContext);
+    Type.typeString.writeFieldValue(outputMock, testObj, testObj.getStringField(), fSerializeContext);
     
-    FieldType.string.readValue(inputMock, testObj, testObj.getStringField(), fReaderContext);
+    Type.typeString.readFieldValue(inputMock, testObj, testObj.getStringField(), fReaderContext);
     
     control.verify();
     

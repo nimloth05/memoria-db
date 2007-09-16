@@ -3,11 +3,12 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 import java.util.ArrayList;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;
+import org.memoriadb.core.meta.Type;
 
 public class ArrayListHandler implements ISerializeHandler {
 
@@ -15,8 +16,15 @@ public class ArrayListHandler implements ISerializeHandler {
   public Object deserialize(DataInputStream input, IReaderContext context) throws Exception {
     ArrayList<Object> result = new ArrayList<Object>();
     while (input.available() > 0) {
-      long objectId = input.readLong();
-      context.objectToBind(new ArrayListBindable(result, objectId));
+      Type type = Type.readType(input, context);
+      
+      Object readValue = type.readValue(input);
+      if (type == Type.typeClass) {
+        context.objectToBind(new ArrayListBindable(result, (Long) readValue));
+        continue;
+      }
+      
+      result.add(readValue);
     }
     return result;
   }
@@ -25,7 +33,7 @@ public class ArrayListHandler implements ISerializeHandler {
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     ArrayList<?> list = (ArrayList<?>) obj;
     for(Object listEntry: list) {
-      output.writeLong(context.getObjectId(listEntry));
+      Type.writeValueWithType(output, listEntry, context);
     }
   }
 
@@ -44,7 +52,7 @@ public class ArrayListHandler implements ISerializeHandler {
     ArrayList<?> list = (ArrayList<?>) obj;
     
     for(Object listEntry: list) {
-      traversal.handle(listEntry);
+      if (Type.getType(listEntry) == Type.typeClass) traversal.handle(listEntry);
     }
   }
 

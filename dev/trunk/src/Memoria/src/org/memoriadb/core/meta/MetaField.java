@@ -19,7 +19,7 @@ public final class MetaField {
   private final Class<?> fClazz;
 
   public static MetaField create(int id, Field field) {
-    MetaField result = new MetaField(id, field.getName(), FieldType.getType(field).ordinal(), field.getDeclaringClass());
+    MetaField result = new MetaField(id, field.getName(), Type.getType(field).ordinal(), field.getDeclaringClass());
     return result;
   }
 
@@ -37,8 +37,8 @@ public final class MetaField {
     fClazz = clazz;
   }
 
-  public FieldType getFieldType() {
-    return FieldType.values()[fType];
+  public Type getFieldType() {
+    return Type.values()[fType];
   }
 
   public int getId() {

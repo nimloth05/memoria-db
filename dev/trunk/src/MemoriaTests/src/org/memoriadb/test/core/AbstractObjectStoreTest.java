@@ -42,8 +42,8 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     }
   }
   
-  protected final void saveAll(Object obj) {
-    fStore.saveAll(obj);
+  protected final long saveAll(Object obj) {
+    return fStore.saveAll(obj);
   }
   
   @Override

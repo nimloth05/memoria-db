@@ -17,7 +17,6 @@ public class StreamTest {
     ObjectInputStream ois = new LogObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
     A ab = (A) ois.readObject();
    // System.out.println(ab.getB());
-    
 	}
 
 }
