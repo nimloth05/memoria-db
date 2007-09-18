@@ -8,25 +8,30 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
 
 public class ArrayListHandler implements ISerializeHandler {
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context) throws Exception {
-    ArrayList<Object> result = new ArrayList<Object>();
+  public Object deserialize(DataInputStream input, final IReaderContext context) throws Exception {
+    ArrayList<Object> list = new ArrayList<Object>();
     while (input.available() > 0) {
-      Type type = Type.readType(input, context);
       
-      Object readValue = type.readValue(input);
-      if (type == Type.typeClass) {
-        context.objectToBind(new ArrayListBindable(result, (Long) readValue));
-        continue;
-      }
-      
-      result.add(readValue);
+      Type.readValueWithType(input, context, new TypeVisitorHelper<Void, ArrayList<Object>>(list, context) {
+
+        @Override
+        public void visitClass(Type type, long objectId) {
+          fContext.objectToBind(new ArrayListBindable(fMember, objectId));
+        }
+
+        @Override
+        public void visitPrimitive(Type type, Object value) {
+          fMember.add(value);
+        }
+        
+      });
     }
-    return result;
+    return list;
   }
 
   @Override

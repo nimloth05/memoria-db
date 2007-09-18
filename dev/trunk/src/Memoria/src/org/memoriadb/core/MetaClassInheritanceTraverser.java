@@ -17,7 +17,7 @@ public abstract class MetaClassInheritanceTraverser {
       handle(classObject);
     }
     catch (Exception e) {
-      throw new MemoriaException(e);
+      throw new MemoriaException("Exception during object traversal. classObject for JavaClass "+classObject.getJavaClass(), e);
     }
   }
 

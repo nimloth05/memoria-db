@@ -15,7 +15,8 @@ public class InheritanceTest extends AbstractObjectStoreTest {
 
   public void test_save_inheritance_obj() {
     B b = createB();
-    save(b);
+    b.fTestObj = new SimpleTestObj();
+    saveAll(b);
     reopen();
     
     assertkMetaObjectHierarchy(b);
@@ -42,9 +43,10 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     a.setLong(1l);
     
     B b  = createB();
+    b.fTestObj = new SimpleTestObj();
     
     save(a);
-    save(b);
+    saveAll(b);
     reopen();
     
     assertkMetaObjectHierarchy(b);
