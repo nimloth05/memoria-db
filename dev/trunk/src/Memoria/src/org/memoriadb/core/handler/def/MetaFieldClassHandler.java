@@ -19,7 +19,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     MetaClass classObject = new MetaClass(className);
     
     long superClassId = input.readLong();
-    if (superClassId != IMetaClass.NO_SUPER_CLASS_ID) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
+    if (superClassId != IdConstants.NO_SUPER_CLASS) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
     
     while (input.available() > 0) {
       int fieldId = input.readInt();
@@ -37,7 +37,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     
     output.writeUTF(classObject.getClassName());
     
-    long superClassId = IMetaClass.NO_SUPER_CLASS_ID;
+    long superClassId = IdConstants.NO_SUPER_CLASS;
     if (classObject.getSuperClass() != null) superClassId = context.getObjectId(classObject.getSuperClass());
     output.writeLong(superClassId);
     

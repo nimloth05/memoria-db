@@ -3,6 +3,7 @@ package org.memoriadb.core.meta;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.memoriadb.core.IdConstants;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
@@ -20,7 +21,7 @@ public final class MetaClass implements IMetaClassConfig {
    * @return true, if this MetaClass-object represents the type MetaClass
    */
   public static boolean isMetaClassObject(long typeId) {
-    return typeId == METACLASS_OBJECT_ID;
+    return typeId == IdConstants.METACLASS_OBJECT_ID;
   }
   
   /**

@@ -17,17 +17,16 @@ public final class ObjectRepoFactory {
   private static void registerMetaClasses(ObjectRepo repo) {
     IMetaClass metaClassClassObject = new HandlerMetaClass(new MetaFieldClassHandler(), MetaClass.class);
     IMetaClass handlerMetaClassObject = new HandlerMetaClass(new MetaClassHandler(), HandlerMetaClass.class);
-    IMetaClass arrayMetaClass = new HandlerMetaClass(new ArrayHandler(), Array.class); // Stub class. We need another
-                                                                                        // implementation for array
-                                                                                        // metaClass
-    IMetaClass javaObjectMetaObject = new MetaClass(Object.class);
-
-    repo.add(IMetaClass.METACLASS_OBJECT_ID, metaClassClassObject);
-    repo.add(IMetaClass.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
-    repo.add(IMetaClass.ARRAY_META_CLASS, arrayMetaClass);
-    repo.add(IMetaClass.JAVA_OBJECT_META_OBJECT_ID, javaObjectMetaObject);
-
+    
+    repo.add(IdConstants.METACLASS_OBJECT_ID, metaClassClassObject);
+    repo.add(IdConstants.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
+    
     // handlers for specific library-classes
+    
+    repo.add(IdConstants.ARRAY_META_CLASS, new HandlerMetaClass(new ArrayHandler(), Array.class));
+
+    //These classObjects don't need a fix known ID.
+    repo.add(new MetaClass(Object.class));
     repo.add(new HandlerMetaClass(new ArrayListHandler(), ArrayList.class));
   }
 

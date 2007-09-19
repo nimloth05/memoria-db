@@ -2,6 +2,7 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
+import org.memoriadb.core.IdConstants;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.core.meta.*;
@@ -62,11 +63,11 @@ public class FileReader {
     long objectId = stream.readLong();
     long version = stream.readLong();
     
-    if(typeId == IMetaClass.OBJECT_DELETED){
+    if(typeId == IdConstants.OBJECT_DELETED){
       fHandler.objectDeleted(objectId, version);
       return;
     }
-    else if (typeId == IMetaClass.METACLASS_DELETED) {
+    else if (typeId == IdConstants.METACLASS_DELETED) {
       fHandler.metaClassDeleted(objectId, version);
       return;
     }

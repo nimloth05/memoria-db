@@ -63,8 +63,8 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
-    fStream.writeInt(3*8);
-    fStream.writeLong(fObjectRepo.isMetaClass(info.getObj())? IMetaClass.METACLASS_DELETED : IMetaClass.OBJECT_DELETED);
+    fStream.writeInt(3*Constants.LONG_SIZE);
+    fStream.writeLong(fObjectRepo.isMetaClass(info.getObj())? IdConstants.METACLASS_DELETED : IdConstants.OBJECT_DELETED);
     fStream.writeLong(info.getId());
     fStream.writeLong(info.getVersion());
   }

@@ -10,7 +10,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
   public void test_create_metaObjects() {
     B b = createB();
     save(b);
-    assertkMetaObjectHierarchy(b);
+    assertMetaObjectHierarchy(b);
   }
 
   public void test_save_inheritance_obj() {
@@ -19,7 +19,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     saveAll(b);
     reopen();
     
-    assertkMetaObjectHierarchy(b);
+    assertMetaObjectHierarchy(b);
     
     B loadedB = getAll(B.class).get(0);
     assertB(b, loadedB);
@@ -49,7 +49,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     saveAll(b);
     reopen();
     
-    assertkMetaObjectHierarchy(b);
+    assertMetaObjectHierarchy(b);
     
     B loadedB = getAll(B.class).get(0);
     assertB(b, loadedB);
@@ -62,8 +62,9 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     assertEquals(b.getLong(), loadedB.getLong());
   }
   
-  private void assertkMetaObjectHierarchy(B b) {
+  private void assertMetaObjectHierarchy(B b) {
     IMetaClass metaClass = fStore.getMetaClass(b);
+    IMetaClass objectClass = fStore.getMetaClass(Object.class);
     
     assertEquals(metaClass.getJavaClass(), B.class);
     assertEquals(metaClass.getSuperClass().getJavaClass(), A.class);
@@ -71,7 +72,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     IMetaClass javaObjectMetaObject = metaClass.getSuperClass().getSuperClass();
     long id = fStore.getObjectId(javaObjectMetaObject);
     
-    assertEquals(IMetaClass.JAVA_OBJECT_META_OBJECT_ID, id);
+    assertEquals(fStore.getObjectId(objectClass), id);
     assertEquals(javaObjectMetaObject.getJavaClass(), Object.class);
   }
 

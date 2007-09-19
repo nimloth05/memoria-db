@@ -105,8 +105,13 @@ public class ObjectStore implements IObjectStore {
   }
 
   @Override
+  public IMetaClass getMetaClass(Class<?> clazz) {
+    return fObjectRepo.getMetaClass(clazz);
+  }
+  
+  @Override
   public IMetaClass getMetaClass(Object obj) {
-    return fObjectRepo.getMetaClass(obj.getClass());
+    return getMetaClass(obj.getClass());
   }
 
   @SuppressWarnings("unchecked")
@@ -241,7 +246,7 @@ public class ObjectStore implements IObjectStore {
     addMetaClassIfNecessary(obj);
     return fObjectRepo.add(obj);
   }
-
+  
   private void addMetaClassIfNecessary(Object obj) {
     Class<?> klass = obj.getClass();
 
@@ -272,7 +277,7 @@ public class ObjectStore implements IObjectStore {
       }
     };
   }
-  
+
   private void internalDeleteAll(Object root) {
     DeleteTraversal traversal = new DeleteTraversal(this);
     traversal.handle(root);

@@ -69,8 +69,12 @@ public interface IObjectStore {
   public Collection<Object> getAllObjects();
 
   /**
-   * @return The MetaClass for the given <tt>obj</tt>.
-   * @throws MemoriaException if no MetaClas can be found for the given <tt>obj</tt>.
+   * @return The MetaClass for the given <tt>obj</tt> or null.
+   */
+  public IMetaClass getMetaClass(Class<?> clazz);
+  
+  /**
+   * @return The MetaClass for the given <tt>obj</tt> or null.
    */
   public IMetaClass getMetaClass(Object obj);
 

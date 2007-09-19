@@ -177,7 +177,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   private IMetaClassConfig getGenericArrayMetaClass() {
-    return (IMetaClassConfig) fIdMap.get(IMetaClass.ARRAY_META_CLASS).getObj();
+    return (IMetaClassConfig) fIdMap.get(IdConstants.ARRAY_META_CLASS).getObj();
   }
 
   // TODO: Test for this assertions!

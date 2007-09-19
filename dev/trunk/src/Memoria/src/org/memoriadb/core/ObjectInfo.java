@@ -26,7 +26,7 @@ public class ObjectInfo implements IObjectInfo {
    * Use this ctor only when an object is initially added to the container.
    */
   public ObjectInfo(long id, Object obj) {
-    this(id, obj, 0, 0);
+    this(id, obj, Constants.INITIAL_VERSION, 0);
   }
 
   /**

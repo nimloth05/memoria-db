@@ -1,6 +1,6 @@
 package org.memoriadb.test.core.crud;
 
-import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.*;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
@@ -33,7 +33,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertFalse(fStore.contains(a_id));
     IObjectInfo info = fStore.getObjectInfo(a_id);
     assertTrue(info.isDeleted());
-    assertEquals(1, info.getVersion());
+    assertEquals(Constants.INITIAL_VERSION+1, info.getVersion());
     assertEquals(1, info.getOldGenerationCount());
     
     reopen();
@@ -41,7 +41,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertFalse(fStore.contains(a_id));
     
     info = fStore.getObjectInfo(a_id);
-    assertEquals(1, info.getVersion());
+    assertEquals(Constants.INITIAL_VERSION+1, info.getVersion());
     assertEquals(1, info.getOldGenerationCount());
     
   }
@@ -63,12 +63,12 @@ public class DeleteTest extends AbstractObjectStoreTest {
     
     IObjectInfo a_info = fStore.getObjectInfo(a_id);
     assertTrue(a_info.isDeleted());
-    assertEquals(1, a_info.getVersion());
+    assertEquals(Constants.INITIAL_VERSION+1, a_info.getVersion());
     assertEquals(1, a_info.getOldGenerationCount());
 
     IObjectInfo b_info = fStore.getObjectInfo(b_id);
     assertTrue(b_info.isDeleted());
-    assertEquals(1, b_info.getVersion());
+    assertEquals(Constants.INITIAL_VERSION+1, b_info.getVersion());
     assertEquals(1, b_info.getOldGenerationCount());
 
   }
@@ -101,7 +101,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     endUpdate();
     
     IObjectInfo info = fStore.getObjectInfo(a_id);
-    assertEquals(1, info.getVersion());
+    assertEquals(Constants.INITIAL_VERSION+1, info.getVersion());
     assertEquals(1, info.getOldGenerationCount());
     assertTrue(info.isDeleted());
     
