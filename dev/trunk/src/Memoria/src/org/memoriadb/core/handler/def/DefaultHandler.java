@@ -68,7 +68,7 @@ public class DefaultHandler implements ISerializeHandler {
             traversal.handle(field.getJavaField().get(obj));
           }
           catch (Exception e) {
-            throw new MemoriaException(e);
+            throw new MemoriaException("Exception during object traversel. Java Class: '"+metaObject.getJavaClass()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
           }
         }
       }

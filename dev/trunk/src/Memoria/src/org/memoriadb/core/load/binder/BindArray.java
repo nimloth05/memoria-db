@@ -7,22 +7,21 @@ import org.memoriadb.exception.MemoriaException;
 
 public class BindArray implements IBindable {
   
-  private final long[] fIds;
+  private final long fId;
   private final Object fArray;
+  private final int fIndex;
 
-  public BindArray(Object array, long[] ids) {
+  public BindArray(Object array, int index, long objectId) {
+    fIndex = index;
     if (!array.getClass().isArray()) throw new MemoriaException("Object is not an array");
-    if (Array.getLength(array) != ids.length) throw new MemoriaException("id-array and target array has not the same length.");
     fArray = array;
-    fIds = ids;
+    fId = objectId;
   }
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    for(int index  = 0; index < fIds.length; ++index) {
-      Object obj = context.getObjectById(fIds[index]);
-      Array.set(fArray, index, obj);
-    }
+      Object obj = context.getObjectById(fId);
+      Array.set(fArray, fIndex, obj);
   }
 
 }

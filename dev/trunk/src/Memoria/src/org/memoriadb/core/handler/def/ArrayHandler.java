@@ -3,12 +3,12 @@ package org.memoriadb.core.handler.def;
 import java.io.*;
 import java.lang.reflect.Array;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.BindArray;
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 
 public class ArrayHandler implements ISerializeHandler {
@@ -20,12 +20,26 @@ public class ArrayHandler implements ISerializeHandler {
     IMetaClass metaClass = (IMetaClass) context.getObjectById(compundTypeId);
     Object array = java.lang.reflect.Array.newInstance(metaClass.getJavaClass(), arrayLength);
     
-    long[] objectIds = new long[arrayLength]; 
-    for(int index = 0; input.available() > 0; ++index) {
-      objectIds[index] = input.readLong();
-    }
     
-    context.objectToBind(new BindArray(array, objectIds));
+    TypeVisitorHelper<Object, Integer> visitor = new TypeVisitorHelper<Object, Integer>(context) {
+
+      @Override
+      public void visitClass(Type type, long objectId) {
+        fContext.objectToBind(new BindArray(fResult, fMember, objectId));
+      }
+
+      @Override
+      public void visitPrimitive(Type type, Object value) {
+        Array.set(fResult, fMember, value);
+      }
+    };
+    
+    visitor.setResult(array);
+    
+    for(int index = 0; input.available() > 0; ++index) {
+      visitor.setMember(index);
+      Type.readValueWithType(input, context, visitor);
+    }
     
     return array;
   }
@@ -35,6 +49,7 @@ public class ArrayHandler implements ISerializeHandler {
    if (!obj.getClass().isArray()) throw new MemoriaException("Object is not an array: " + obj);
    
    Class<?> componentType = obj.getClass().getComponentType();
+   
    long componentTypeId = context.getMetaClassId(componentType);
    int arrayLength = Array.getLength(obj);
    
@@ -43,7 +58,7 @@ public class ArrayHandler implements ISerializeHandler {
    
    for(int i = 0; i < arrayLength; ++i) {
      Object componentObject = Array.get(obj, i);
-     output.writeLong(context.getObjectId(componentObject));
+     Type.writeValueWithType(output, componentObject, context);
    }
   }
 
@@ -63,7 +78,9 @@ public class ArrayHandler implements ISerializeHandler {
     
     int length = Array.getLength(obj);
     for(int i = 0; i < length; ++i) {
-      traversal.handle(Array.get(obj, i));
+      Object object = Array.get(obj, i);
+      if (Type.typeClass != Type.getType(object)) continue; 
+        traversal.handle(object);
     }
   }
 
