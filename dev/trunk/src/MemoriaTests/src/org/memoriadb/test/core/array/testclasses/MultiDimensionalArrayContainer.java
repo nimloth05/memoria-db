@@ -22,7 +22,7 @@ public class MultiDimensionalArrayContainer implements IArrayContainer {
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
       final MultiDimensionalArrayContainer other = (MultiDimensionalArrayContainer) obj;
-      if (!Arrays.equals(fArray, other.fArray)) return false;
+      if (!Arrays.deepEquals(fArray, other.fArray)) return false;
       return true;
     }
 

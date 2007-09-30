@@ -16,11 +16,13 @@ public class ArrayHandler implements ISerializeHandler {
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     long compundTypeId = input.readLong();
-    int arrayLength = input.readInt();
-    IMetaClass metaClass = (IMetaClass) context.getObjectById(compundTypeId);
-    Object array = java.lang.reflect.Array.newInstance(metaClass.getJavaClass(), arrayLength);
+    int dimensions = input.readInt();
     
-    
+    Class<?> componentType = getClassFromTypeInfo(compundTypeId, context);
+    int[] dimensionsArray = (int[]) Array.newInstance(int.class, dimensions);
+    dimensionsArray[0] = input.readInt();
+    Object array = java.lang.reflect.Array.newInstance(componentType, dimensionsArray);
+
     TypeVisitorHelper<Object, Integer> visitor = new TypeVisitorHelper<Object, Integer>(context) {
 
       @Override
@@ -38,38 +40,55 @@ public class ArrayHandler implements ISerializeHandler {
     
     for(int index = 0; input.available() > 0; ++index) {
       visitor.setMember(index);
-      Type.readValueWithType(input, context, visitor);
+      byte typeByte = input.readByte();
+      if (typeByte == Byte.MIN_VALUE) {
+        Array.set(array, index, deserialize(input, context));
+        continue;
+      }
+      Type.values()[typeByte].readValue(input, visitor);
     }
     
     return array;
   }
 
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
-   if (!obj.getClass().isArray()) throw new MemoriaException("Object is not an array: " + obj);
+  public void serialize(Object array, DataOutputStream output, ISerializeContext context) throws IOException {
+   if (!array.getClass().isArray()) throw new MemoriaException("Object is not an array: " + array);
    
-   Class<?> componentType = obj.getClass().getComponentType();
+   int dimension = 1;
+   Class<?> componentType = array.getClass().getComponentType();
+   while(componentType.isArray()) {
+     componentType = componentType.getComponentType();
+     ++dimension;
+   }
    
-   long componentTypeId = context.getMetaClassId(componentType);
-   int arrayLength = Array.getLength(obj);
+   long componentTypeId = componentTypeToId(context, componentType);
+   int arrayLength = Array.getLength(array);
    
    output.writeLong(componentTypeId);
+   output.writeInt(dimension);
    output.writeInt(arrayLength);
    
    for(int i = 0; i < arrayLength; ++i) {
-     Object componentObject = Array.get(obj, i);
-     Type.writeValueWithType(output, componentObject, context);
+     Object componentObject = Array.get(array, i);
+     if (componentObject.getClass().isArray()) {
+       output.write(Byte.MIN_VALUE);
+       serialize(componentObject, output, context);
+     } 
+     else {
+       Type.writeValueWithType(output, componentObject, context);
+     }
    }
   }
 
   @Override
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) {
-    throw new UnsupportedOperationException("To be implemented! Write Test-first");
+    throw new UnsupportedOperationException("To be implemented! Don't forget: Write Test-first! (-:");
   }
 
   @Override
   public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    throw new UnsupportedOperationException("To be implemented! Write Test-first");
+    throw new UnsupportedOperationException("To be implemented! Don't forget: Write Test-first! (-:");
   }
 
   @Override
@@ -82,6 +101,22 @@ public class ArrayHandler implements ISerializeHandler {
       if (Type.typeClass != Type.getType(object)) continue; 
         traversal.handle(object);
     }
+  }
+
+  private long componentTypeToId(ISerializeContext context, Class<?> componentType) {
+    ArrayComponentType internalType = ArrayComponentType.get(componentType);
+    if (internalType == null) return context.getMetaClassId(componentType);  
+    
+    long result = ((-1 * internalType.ordinal()));
+    return  result;
+  }
+  
+  private Class<?> getClassFromTypeInfo(long typeInfo, IReaderContext context) {
+    if (typeInfo < 0) {
+      int realType = (int) Math.abs(typeInfo);
+      return ArrayComponentType.values()[realType].getJavaClass();
+    }
+    return ((IMetaClass)context.getObjectById(typeInfo)).getJavaClass();
   }
 
 }
