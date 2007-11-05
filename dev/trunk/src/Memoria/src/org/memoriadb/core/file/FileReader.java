@@ -73,7 +73,7 @@ public class FileReader {
     }
 
     // no deleteMarker encountered
-    if (MetaClass.isMetaClassObject(typeId)) {
+    if (MemoriaFieldClass.isMetaClassObject(typeId)) {
       fHandler.metaClass(new HydratedObject(typeId, stream), objectId, version);
     }
     else {

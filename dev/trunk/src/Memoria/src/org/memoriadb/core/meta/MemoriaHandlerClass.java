@@ -3,19 +3,19 @@ package org.memoriadb.core.meta;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
-public final class HandlerMetaClass implements IMetaClassConfig {
+public final class MemoriaHandlerClass implements IMetaClassConfig {
   
   
   private final ISerializeHandler fSerializeHandler;
   private final Class<?> fClazz;
   private IMetaClass fSuperClass;
 
-  public HandlerMetaClass(ISerializeHandler handler, Class<?> clazz) {
+  public MemoriaHandlerClass(ISerializeHandler handler, Class<?> clazz) {
     fSerializeHandler = handler;
     fClazz = clazz;
   }
   
-  public HandlerMetaClass(String handlerName, String className) throws Exception {
+  public MemoriaHandlerClass(String handlerName, String className) throws Exception {
     this((ISerializeHandler) Class.forName(handlerName).newInstance(), Class.forName(className));
   }
 

@@ -26,7 +26,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMetaClass classObject = new MetaClass(SimpleTestObj.class);
+    IMetaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
     long id = fRepo.add(classObject);
     
     assertSame(classObject, fRepo.getObject(id));
@@ -34,7 +34,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_with_id_in_cache() {
-    IMetaClass classObject = new MetaClass(SimpleTestObj.class);
+    IMetaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
     fRepo.add(20, classObject, 0, 0);
     
     assertSame(classObject, fRepo.getObject(20));

@@ -6,7 +6,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.core.meta.HandlerMetaClass;
+import org.memoriadb.core.meta.MemoriaHandlerClass;
 import org.memoriadb.exception.MemoriaException;
 
 public class MetaClassHandler implements ISerializeHandler {
@@ -16,7 +16,7 @@ public class MetaClassHandler implements ISerializeHandler {
     String className = input.readUTF();
     String handlerName = input.readUTF();
     try {
-      return new HandlerMetaClass(handlerName, className);
+      return new MemoriaHandlerClass(handlerName, className);
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -25,7 +25,7 @@ public class MetaClassHandler implements ISerializeHandler {
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
-    HandlerMetaClass classObject = (HandlerMetaClass) obj;
+    MemoriaHandlerClass classObject = (MemoriaHandlerClass) obj;
     
     output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());

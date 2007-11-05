@@ -15,19 +15,19 @@ public final class ObjectRepoFactory {
   }
 
   private static void registerMetaClasses(ObjectRepo repo) {
-    IMetaClass metaClassClassObject = new HandlerMetaClass(new MetaFieldClassHandler(), MetaClass.class);
-    IMetaClass handlerMetaClassObject = new HandlerMetaClass(new MetaClassHandler(), HandlerMetaClass.class);
+    IMetaClass metaClassClassObject = new MemoriaHandlerClass(new MetaFieldClassHandler(), MemoriaFieldClass.class);
+    IMetaClass handlerMetaClassObject = new MemoriaHandlerClass(new MetaClassHandler(), MemoriaHandlerClass.class);
     
     repo.add(IdConstants.METACLASS_OBJECT_ID, metaClassClassObject);
     repo.add(IdConstants.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
     
     // handlers for specific library-classes
     
-    repo.add(IdConstants.ARRAY_META_CLASS, new HandlerMetaClass(new ArrayHandler(), Array.class));
+    repo.add(IdConstants.ARRAY_META_CLASS, new MemoriaHandlerClass(new ArrayHandler(), Array.class));
 
     //These classObjects don't need a fix known ID.
-    repo.add(new MetaClass(Object.class));
-    repo.add(new HandlerMetaClass(new ArrayListHandler(), ArrayList.class));
+    repo.add(new MemoriaFieldClass(Object.class));
+    repo.add(new MemoriaHandlerClass(new ArrayListHandler(), ArrayList.class));
   }
 
   private ObjectRepoFactory() {}

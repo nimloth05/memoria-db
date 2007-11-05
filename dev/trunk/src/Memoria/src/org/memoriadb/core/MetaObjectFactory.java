@@ -10,7 +10,7 @@ public final class MetaObjectFactory {
   public static IMetaClassConfig createMetaClass(Class<?> klass) {
     if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
     
-    return new MetaClass(klass);
+    return new MemoriaFieldClass(klass);
   }
   
   

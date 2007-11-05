@@ -16,7 +16,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
     String className = input.readUTF();
     
-    MetaClass classObject = new MetaClass(className);
+    MemoriaFieldClass classObject = new MemoriaFieldClass(className);
     
     long superClassId = input.readLong();
     if (superClassId != IdConstants.NO_SUPER_CLASS) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
@@ -25,7 +25,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
       int fieldId = input.readInt();
       String name = input.readUTF();
       int type = input.readInt();
-      MetaField metaField = new MetaField(fieldId, name, type, classObject.getJavaClass());
+      MemoriaField metaField = new MemoriaField(fieldId, name, type, classObject.getJavaClass());
       classObject.addMetaField(metaField);
     }
     return classObject;
@@ -33,7 +33,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
-    MetaClass classObject = (MetaClass) obj;
+    MemoriaFieldClass classObject = (MemoriaFieldClass) obj;
     
     output.writeUTF(classObject.getClassName());
     
@@ -41,7 +41,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     if (classObject.getSuperClass() != null) superClassId = context.getObjectId(classObject.getSuperClass());
     output.writeLong(superClassId);
     
-    for(MetaField field: classObject.getFields()) {
+    for(MemoriaField field: classObject.getFields()) {
       output.writeInt(field.getId());
       output.writeUTF(field.getName());
       output.writeInt(field.getType());

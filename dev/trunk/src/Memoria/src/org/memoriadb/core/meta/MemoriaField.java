@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import org.memoriadb.exception.MemoriaException;
 
 
-public final class MetaField {
+public final class MemoriaField {
 
   private final int fFieldId;
   private final String fName;
@@ -18,8 +18,8 @@ public final class MetaField {
   private Field fField;
   private final Class<?> fClazz;
 
-  public static MetaField create(int id, Field field) {
-    MetaField result = new MetaField(id, field.getName(), Type.getType(field).ordinal(), field.getDeclaringClass());
+  public static MemoriaField create(int id, Field field) {
+    MemoriaField result = new MemoriaField(id, field.getName(), Type.getType(field).ordinal(), field.getDeclaringClass());
     return result;
   }
 
@@ -30,7 +30,7 @@ public final class MetaField {
    * @param ordinal
    * @param clazz - the java class where this field has been declared.
    */
-  public MetaField(int id, String name, int ordinal, Class<?> clazz) {
+  public MemoriaField(int id, String name, int ordinal, Class<?> clazz) {
     fFieldId = id;
     fType = ordinal;
     fName = name;

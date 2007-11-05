@@ -11,9 +11,9 @@ import org.memoriadb.exception.MemoriaException;
 
 public class DefaultHandler implements ISerializeHandler {
 
-  private final MetaClass fClassObject;
+  private final MemoriaFieldClass fClassObject;
 
-  public DefaultHandler(MetaClass classObject) {
+  public DefaultHandler(MemoriaFieldClass classObject) {
     fClassObject = classObject;
   }
 
@@ -36,7 +36,7 @@ public class DefaultHandler implements ISerializeHandler {
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException {
     for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
       int fieldId = input.readInt();
-      MetaField field = (fClassObject).getField(fieldId);
+      MemoriaField field = (fClassObject).getField(fieldId);
       field.getFieldType().readFieldValue(input, result, field.getJavaField(), context);
     }
     
@@ -46,7 +46,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    for(MetaField metaField: (fClassObject).getFields()) {
+    for(MemoriaField metaField: (fClassObject).getFields()) {
       output.writeInt(metaField.getId());
       metaField.getFieldType().writeFieldValue(output, obj, metaField.getJavaField(), context);
     }
@@ -60,7 +60,7 @@ public class DefaultHandler implements ISerializeHandler {
 
       @Override
       protected void handle(IMetaClass metaObject) {
-        for(MetaField field: ((MetaClass) metaObject).getFields()) {
+        for(MemoriaField field: ((MemoriaFieldClass) metaObject).getFields()) {
           if(field.getFieldType() != Type.typeClass) continue;
           
           try {

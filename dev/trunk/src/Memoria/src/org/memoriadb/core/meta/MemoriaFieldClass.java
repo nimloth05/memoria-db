@@ -8,12 +8,12 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
 
 
-public final class MetaClass implements IMetaClassConfig {
+public final class MemoriaFieldClass implements IMetaClassConfig {
 
   private String fClassName;
 
-  private final Map<Integer, MetaField> fFieldIdToInfo = new HashMap<Integer, MetaField>();
-  private final Map<String, MetaField> fFieldNameToInfo = new HashMap<String, MetaField>();
+  private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
+  private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
 
   private IMetaClass fSuperClass;
 
@@ -29,17 +29,17 @@ public final class MetaClass implements IMetaClassConfig {
    * object of a given type enters the memoria-reference-space.
    *
    */
-  public MetaClass(Class<?> klass) {
+  public MemoriaFieldClass(Class<?> klass) {
     fClassName = klass.getName();
     
     addFields(klass);
   }
   
-  public MetaClass(String className) {
+  public MemoriaFieldClass(String className) {
     fClassName = className;
   }
   
-  public void addMetaField(MetaField metaField) {
+  public void addMetaField(MemoriaField metaField) {
     fFieldIdToInfo.put(metaField.getId(), metaField);
     fFieldNameToInfo.put(metaField.getName(), metaField);
   }
@@ -48,7 +48,7 @@ public final class MetaClass implements IMetaClassConfig {
     return fClassName;
   }
 
-  public MetaField getField(int fieldId) {
+  public MemoriaField getField(int fieldId) {
     return fFieldIdToInfo.get(fieldId);
   }
 
@@ -56,7 +56,7 @@ public final class MetaClass implements IMetaClassConfig {
     return fFieldIdToInfo.values().size();
   }
 
-  public Iterable<MetaField> getFields() {
+  public Iterable<MemoriaField> getFields() {
     return fFieldIdToInfo.values();
   }
   
@@ -112,7 +112,7 @@ public final class MetaClass implements IMetaClassConfig {
     for(Field field: fields) {
       if (Modifier.isTransient(field.getModifiers())) continue;
       
-      MetaField metaField = MetaField.create(++fieldId, field);
+      MemoriaField metaField = MemoriaField.create(++fieldId, field);
       addMetaField(metaField);
     }    
   }
