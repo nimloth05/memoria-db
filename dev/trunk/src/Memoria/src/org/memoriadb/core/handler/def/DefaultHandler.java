@@ -59,7 +59,7 @@ public class DefaultHandler implements ISerializeHandler {
     new MetaClassInheritanceTraverser(fClassObject) {
 
       @Override
-      protected void handle(IMetaClass metaObject) {
+      protected void handle(IMemoriaClass metaObject) {
         for(MemoriaField field: ((MemoriaFieldClass) metaObject).getFields()) {
           if(field.getFieldType() != Type.typeClass) continue;
           

@@ -116,7 +116,7 @@ public class ArrayHandler implements ISerializeHandler {
       int realType = (int) Math.abs(typeInfo);
       return ArrayComponentType.values()[realType].getJavaClass();
     }
-    return ((IMetaClass)context.getObjectById(typeInfo)).getJavaClass();
+    return ((IMemoriaClass)context.getObjectById(typeInfo)).getJavaClass();
   }
 
 }

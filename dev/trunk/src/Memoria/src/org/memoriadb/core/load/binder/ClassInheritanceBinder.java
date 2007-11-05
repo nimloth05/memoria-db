@@ -15,7 +15,7 @@ public class ClassInheritanceBinder implements IBindable {
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    fSubClass.setSuperClass((IMetaClass) context.getObjectById(fSuperClassId));
+    fSubClass.setSuperClass((IMemoriaClass) context.getObjectById(fSuperClassId));
   }
 
 }

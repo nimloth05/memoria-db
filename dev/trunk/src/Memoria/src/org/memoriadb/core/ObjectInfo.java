@@ -1,6 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.block.Block;
+import org.memoriadb.util.Constants;
 
 /**
  * Holds all data to an object necessary for internal housekeeping

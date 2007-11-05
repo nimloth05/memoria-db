@@ -3,6 +3,7 @@ package org.memoriadb.test.core.crud;
 import org.memoriadb.core.*;
 import org.memoriadb.test.core.crud.testclass.OneInt;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.util.Constants;
 
 public class UpdateTest extends AbstractObjectStoreTest {
   

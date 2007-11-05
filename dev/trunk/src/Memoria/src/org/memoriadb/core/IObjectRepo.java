@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
-import org.memoriadb.core.meta.IMetaClassConfig;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -40,7 +40,7 @@ public interface IObjectRepo {
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
-  public IMetaClassConfig getMetaClass(Class<?> klass);
+  public IMemoriaClassConfig getMemoriaClass(Class<?> klass);
 
   /**
    * @return The object or null, if no Object exists for the given id. 

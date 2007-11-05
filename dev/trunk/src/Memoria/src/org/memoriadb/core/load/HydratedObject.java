@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.load.binder.ObjectFieldReference;
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -28,7 +28,7 @@ public class HydratedObject {
   }
 
   public Object dehydrate(IReaderContext context) throws Exception {
-    IMetaClass classObject = (IMetaClass) context.getObjectById(fTypeId);
+    IMemoriaClass classObject = (IMemoriaClass) context.getObjectById(fTypeId);
     if (classObject == null) throw new MemoriaException("ClassObject for typeId not found: " + fTypeId);
     
     return instantiate(context, classObject);
@@ -47,7 +47,7 @@ public class HydratedObject {
     return "hydrated for type " + fTypeId ;
   }
   
-  private Object instantiate(IReaderContext context, IMetaClass classObject) throws Exception {
+  private Object instantiate(IReaderContext context, IMemoriaClass classObject) throws Exception {
     return classObject.getHandler().deserialize(fInput, context);
   }
   

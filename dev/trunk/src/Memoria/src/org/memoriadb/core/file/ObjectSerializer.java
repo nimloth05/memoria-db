@@ -3,8 +3,9 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.*;
 
 /**
  * Call serialize(Object) for each object, then call getBytes(). After this, the ObjectSerializer is gone.
@@ -35,8 +36,8 @@ public class ObjectSerializer implements ISerializeContext {
 
   @Override
   public long getMetaClassId(Class<?> klass) {
-    IMetaClass metaClass = fObjectRepo.getMetaClass(klass);
-    return fObjectRepo.getObjectId(metaClass);
+    IMemoriaClass memoriaClass = fObjectRepo.getMemoriaClass(klass);
+    return fObjectRepo.getObjectId(memoriaClass);
   }
 
   @Override
@@ -70,11 +71,11 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   private void serializeObject(DataOutput dataStream, IObjectInfo info) throws Exception {
-    IMetaClass metaClass = fObjectRepo.getMetaClass(info.getObj().getClass());
+    IMemoriaClass metaClass = fObjectRepo.getMemoriaClass(info.getObj().getClass());
     serializeObject(metaClass, dataStream, info);
   }
 
-  private void serializeObject(IMetaClass classObject, DataOutput dataStream, IObjectInfo info) throws Exception {
+  private void serializeObject(IMemoriaClass classObject, DataOutput dataStream, IObjectInfo info) throws Exception {
     long typeId = fObjectRepo.getObjectId(classObject);
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);

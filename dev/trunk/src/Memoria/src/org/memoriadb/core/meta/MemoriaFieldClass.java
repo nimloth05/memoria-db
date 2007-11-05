@@ -3,19 +3,19 @@ package org.memoriadb.core.meta;
 import java.lang.reflect.*;
 import java.util.*;
 
-import org.memoriadb.core.IdConstants;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.IdConstants;
 
 
-public final class MemoriaFieldClass implements IMetaClassConfig {
+public final class MemoriaFieldClass implements IMemoriaClassConfig {
 
   private String fClassName;
 
   private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
   private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
 
-  private IMetaClass fSuperClass;
+  private IMemoriaClass fSuperClass;
 
   /**
    * @return true, if this MetaClass-object represents the type MetaClass
@@ -77,7 +77,7 @@ public final class MemoriaFieldClass implements IMetaClassConfig {
   }
   
   @Override
-  public IMetaClass getSuperClass() {
+  public IMemoriaClass getSuperClass() {
     return fSuperClass;
   }
 
@@ -97,7 +97,7 @@ public final class MemoriaFieldClass implements IMetaClassConfig {
     fClassName = name;
   }
 
-  public void setSuperClass(IMetaClass superClass) {
+  public void setSuperClass(IMemoriaClass superClass) {
     fSuperClass = superClass;
   }
 

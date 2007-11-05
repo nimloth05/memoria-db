@@ -5,6 +5,7 @@ import java.util.*;
 import org.java.patched.PIdentityHashMap;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.IdConstants;
 
 /**
  * Holds the main-indexes. 
@@ -36,12 +37,12 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * MataClass index
    */
-  private final Map<Class<?>, IMetaClassConfig> fMetaObjects = new HashMap<Class<?>, IMetaClassConfig>();
+  private final Map<Class<?>, IMemoriaClassConfig> fMetaObjects = new HashMap<Class<?>, IMemoriaClassConfig>();
 
   /**
    * This method is only used for bootstrapping
    */
-  public void add(long id, IMetaClass object) {
+  public void add(long id, IMemoriaClass object) {
     internalPut(new ObjectInfo(id, object));
   }
 
@@ -57,7 +58,6 @@ public class ObjectRepo implements IObjectRepo {
     else {
       internalPut(info);
     }
-    
   }
 
   /**
@@ -110,7 +110,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
-  public IMetaClassConfig getMetaClass(Class<?> klass) {
+  public IMemoriaClassConfig getMemoriaClass(Class<?> klass) {
     if (klass.isArray()) return getGenericArrayMetaClass();
     return fMetaObjects.get(klass);
   }
@@ -150,7 +150,7 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public boolean isMetaClass(Object obj) {
-    return obj instanceof IMetaClass;
+    return obj instanceof IMemoriaClass;
   }
 
   /**
@@ -176,8 +176,8 @@ public class ObjectRepo implements IObjectRepo {
     return ++fCurrentObjectId;
   }
 
-  private IMetaClassConfig getGenericArrayMetaClass() {
-    return (IMetaClassConfig) fIdMap.get(IdConstants.ARRAY_META_CLASS).getObj();
+  private IMemoriaClassConfig getGenericArrayMetaClass() {
+    return (IMemoriaClassConfig) fIdMap.get(IdConstants.ARRAY_META_CLASS).getObj();
   }
 
   // TODO: Test for this assertions!
@@ -190,8 +190,8 @@ public class ObjectRepo implements IObjectRepo {
     previousMapped = fIdMap.put(info.getId(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in id-Map" + info);
 
-    if (info.getObj() instanceof IMetaClass) {
-      IMetaClassConfig metaObject = (IMetaClassConfig) info.getObj();
+    if (info.getObj() instanceof IMemoriaClass) {
+      IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObj();
       previousMapped = fMetaObjects.put(metaObject.getJavaClass(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of metaObject: " + metaObject);
     }

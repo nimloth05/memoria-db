@@ -9,6 +9,7 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.IdConstants;
 
 public class MetaFieldClassHandler implements ISerializeHandler {
 

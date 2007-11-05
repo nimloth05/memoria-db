@@ -2,13 +2,13 @@ package org.memoriadb.core.meta;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 
-public interface IMetaClass {
+public interface IMemoriaClass {
 
   public ISerializeHandler getHandler();
 
   public Class<?> getJavaClass();
   
-  public IMetaClass getSuperClass();
+  public IMemoriaClass getSuperClass();
 
   public Object newInstance();
   

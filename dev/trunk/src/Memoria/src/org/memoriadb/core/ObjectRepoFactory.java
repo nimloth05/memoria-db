@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.memoriadb.core.handler.def.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.util.IdConstants;
 
 public final class ObjectRepoFactory {
 
@@ -15,8 +16,8 @@ public final class ObjectRepoFactory {
   }
 
   private static void registerMetaClasses(ObjectRepo repo) {
-    IMetaClass metaClassClassObject = new MemoriaHandlerClass(new MetaFieldClassHandler(), MemoriaFieldClass.class);
-    IMetaClass handlerMetaClassObject = new MemoriaHandlerClass(new MetaClassHandler(), MemoriaHandlerClass.class);
+    IMemoriaClass metaClassClassObject = new MemoriaHandlerClass(new MetaFieldClassHandler(), MemoriaFieldClass.class);
+    IMemoriaClass handlerMetaClassObject = new MemoriaHandlerClass(new MetaClassHandler(), MemoriaHandlerClass.class);
     
     repo.add(IdConstants.METACLASS_OBJECT_ID, metaClassClassObject);
     repo.add(IdConstants.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);

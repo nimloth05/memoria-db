@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.memoriadb.core;
+package org.memoriadb.util;
 
 public class IdConstants {
   

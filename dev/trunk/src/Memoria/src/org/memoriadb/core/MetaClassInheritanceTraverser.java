@@ -1,18 +1,18 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 
 public abstract class MetaClassInheritanceTraverser {
   
-  public MetaClassInheritanceTraverser(IMetaClass startClass) {
+  public MetaClassInheritanceTraverser(IMemoriaClass startClass) {
     if (startClass == null) throw new IllegalArgumentException("startClass can not be null");
     traverse(startClass);
   }
   
-  protected abstract void handle(IMetaClass metaObject) throws Exception;
+  protected abstract void handle(IMemoriaClass metaObject) throws Exception;
 
-  private void internalHandle(IMetaClass classObject) {
+  private void internalHandle(IMemoriaClass classObject) {
     try {
       handle(classObject);
     }
@@ -21,8 +21,8 @@ public abstract class MetaClassInheritanceTraverser {
     }
   }
 
-  private void traverse(IMetaClass startClass) {
-    IMetaClass classObject = startClass;
+  private void traverse(IMemoriaClass startClass) {
+    IMemoriaClass classObject = startClass;
     while (true) {
       internalHandle(classObject);
       

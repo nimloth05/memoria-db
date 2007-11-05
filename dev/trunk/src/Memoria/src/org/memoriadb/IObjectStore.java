@@ -3,7 +3,7 @@ package org.memoriadb;
 import java.util.*;
 
 import org.memoriadb.core.IObjectInfo;
-import org.memoriadb.core.meta.IMetaClass;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -71,12 +71,12 @@ public interface IObjectStore {
   /**
    * @return The MetaClass for the given <tt>obj</tt> or null.
    */
-  public IMetaClass getMetaClass(Class<?> clazz);
+  public IMemoriaClass getMetaClass(Class<?> clazz);
   
   /**
    * @return The MetaClass for the given <tt>obj</tt> or null.
    */
-  public IMetaClass getMetaClass(Object obj);
+  public IMemoriaClass getMetaClass(Object obj);
 
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent

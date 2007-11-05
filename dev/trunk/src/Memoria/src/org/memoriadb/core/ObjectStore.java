@@ -105,12 +105,12 @@ public class ObjectStore implements IObjectStore {
   }
 
   @Override
-  public IMetaClass getMetaClass(Class<?> clazz) {
-    return fObjectRepo.getMetaClass(clazz);
+  public IMemoriaClass getMetaClass(Class<?> clazz) {
+    return fObjectRepo.getMemoriaClass(clazz);
   }
   
   @Override
-  public IMetaClass getMetaClass(Object obj) {
+  public IMemoriaClass getMetaClass(Object obj) {
     return getMetaClass(obj.getClass());
   }
 
@@ -258,11 +258,11 @@ public class ObjectStore implements IObjectStore {
 
     new InheritanceTraverser(klass) {
 
-      private IMetaClassConfig fChildClass = null;
+      private IMemoriaClassConfig fChildClass = null;
 
       @Override
       public void handle(Class<?> clazz) {
-        IMetaClassConfig classObject = fObjectRepo.getMetaClass(clazz);
+        IMemoriaClassConfig classObject = fObjectRepo.getMemoriaClass(clazz);
 
         if (classObject != null) {
           if (fChildClass != null) fChildClass.setSuperClass(classObject);
