@@ -3,7 +3,7 @@ package org.memoriadb.core.load;
 import java.io.IOException;
 import java.util.*;
 
-import org.memoriadb.core.ObjectRepo;
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
 import org.memoriadb.exception.MemoriaException;
@@ -86,8 +86,14 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
-    Object obj = info.isDeleted()? null : info.getHydratedObject().dehydrate(this);
-    fRepo.add(info.getObjectId(), obj, info.getVersion(), info.getOldGenerationCount());
+    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    if(info.isDeleted()){
+      fRepo.handleDelete(objectInfo);
+    }
+    else {
+      fRepo.handleAdd(objectInfo);
+    }
+    
   }
 
   private void dehydrateObjects() throws Exception {

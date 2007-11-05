@@ -21,9 +21,14 @@ public class HydratedInfo {
     fVersion = version;
     fOldGenerationCount = 0;
   }
-  
-  public HydratedObject getHydratedObject() {
-    return fHydratedObject;
+
+  /**
+   * @return the dehydrated object or null, if the object has been deleted.
+   * @throws Exception 
+   */
+  public Object getObject(IReaderContext context) throws Exception {
+    if(fHydratedObject==null) return null;
+    return fHydratedObject.dehydrate(context);
   }
 
   public long getObjectId() {
@@ -37,11 +42,11 @@ public class HydratedInfo {
   public long getVersion() {
     return fVersion;
   }
-
+  
   public boolean isDeleted() {
     return fHydratedObject == null;
   }
-  
+
   public void setDeleted() {
     fHydratedObject = null;
   }
