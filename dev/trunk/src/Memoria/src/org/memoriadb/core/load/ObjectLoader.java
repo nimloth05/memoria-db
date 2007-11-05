@@ -87,6 +87,7 @@ public final class ObjectLoader implements IReaderContext {
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    
     if(info.isDeleted()){
       fRepo.handleDelete(objectInfo);
     }

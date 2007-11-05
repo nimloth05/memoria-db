@@ -47,20 +47,6 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   /**
-   * Adds an object after dehydration
-   */
-  public void add(long id, Object obj, long version, int oldGenerationCount) {
-    ObjectInfo info = new ObjectInfo(id, obj, version, oldGenerationCount);
-
-    if(obj==null){
-      fDeletedMap.put(info.getId(), info);
-    }
-    else {
-      internalPut(info);
-    }
-  }
-
-  /**
    * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
    * 
    * @return The new id
@@ -146,6 +132,21 @@ public class ObjectRepo implements IObjectRepo {
 
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
+  }
+
+  /**
+   * Adds an object after dehydration
+   */
+  public void handleAdd(ObjectInfo objectInfo) {
+    internalPut(objectInfo);
+  }
+  
+  /**
+   * marks an object as deleted after dehydrating the delete-marker
+   * @param objectInfo
+   */
+  public void handleDelete(ObjectInfo objectInfo){
+    fDeletedMap.put(objectInfo.getId(), objectInfo);
   }
 
   @Override
