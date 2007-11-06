@@ -10,26 +10,29 @@ public class TransactionWriter implements IFileWriter {
 
   private final IMemoriaFile fFile;
   private final MaintenanceFreeBlockManager fBlockManager;
+  private long fHeadRevision;
   
-  public TransactionWriter(IMemoriaFile file, MaintenanceFreeBlockManager blockManager) {
+  public TransactionWriter(IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
     fFile = file;
     fBlockManager = blockManager;
+    fHeadRevision = headRevision;
   }
 
-  public void append(byte[] data) throws IOException {
+  public void append(byte[] trxData) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
     stream.write(BlockLayout.BLOCK_START_TAG);
     
-    //  data.length + data + crc32
-    long blockSize = 8 + data.length  + 8; 
+    // revision + data.length + data + crc32
+    long blockSize = 8 + 8 + trxData.length  + 8; 
     stream.writeLong(blockSize);
 
     // transaction
-    stream.writeLong(data.length);
-    stream.write(data);
-    stream.writeLong(CRC32Util.getChecksum(data));
+    stream.writeLong(++fHeadRevision);
+    stream.writeLong(trxData.length);
+    stream.write(trxData);
+    stream.writeLong(CRC32Util.getChecksum(trxData));
 
     fFile.append(byteArrayOutputStream.toByteArray());
    

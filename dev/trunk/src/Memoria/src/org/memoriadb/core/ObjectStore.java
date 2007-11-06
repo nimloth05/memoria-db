@@ -13,7 +13,7 @@ import org.memoriadb.util.IdentityHashSet;
 public class ObjectStore implements IObjectStore {
 
   private final IObjectRepo fObjectRepo;
-  private final IFileWriter fFileWriter;
+  private final IFileWriter fTransactionWriter;
 
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
@@ -21,10 +21,9 @@ public class ObjectStore implements IObjectStore {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, MaintenanceFreeBlockManager blockManager) {
+  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
     fObjectRepo = objectContainer;
-    TransactionWriter fileWriter = new TransactionWriter(file, blockManager);
-    fFileWriter = fileWriter;
+    fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
   }
 
   @Override
@@ -39,7 +38,7 @@ public class ObjectStore implements IObjectStore {
 
   @Override
   public void close() {
-    fFileWriter.close();
+    fTransactionWriter.close();
   }
 
   @Override
@@ -100,7 +99,7 @@ public class ObjectStore implements IObjectStore {
   }
 
   public IMemoriaFile getFile() {
-    return fFileWriter.getFile();
+    return fTransactionWriter.getFile();
   }
 
   @Override
@@ -190,7 +189,7 @@ public class ObjectStore implements IObjectStore {
       serializer.markAsDeleted(id);
     }
     
-    fFileWriter.write(serializer.getBytes());
+    fTransactionWriter.write(serializer.getBytes());
     
     fAdd.clear();
     fUpdate.clear();

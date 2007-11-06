@@ -47,18 +47,19 @@ public final class ObjectLoader implements IReaderContext {
     fObjectsToBind.add(bindable);
   }
   
-  public void read(ObjectRepo repo, IBlockManager blockManager) {
+  public long read(ObjectRepo repo, IBlockManager blockManager) {
     if (blockManager == null) throw new IllegalArgumentException("blockManager null");
     
     fRepo = repo;
     fBlockManager = blockManager;
     
     try {
-      readBlockData();
+      long headRevision = readBlockData();
       dehydrateMetaClasses();
       bindObjects();
       dehydrateObjects();
       bindObjects();
+      return headRevision;
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -126,8 +127,8 @@ public final class ObjectLoader implements IReaderContext {
     fHydratedObjects = null;
   }
 
-  private void readBlockData() throws IOException {
-    fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
+  private long readBlockData() throws IOException {
+    return fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
 
       @Override
       public void block(Block block) {

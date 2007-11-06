@@ -31,6 +31,7 @@ public class FileReader {
   
   // the current position in the file
   private long fPosition = 0;
+  private long fHeadRevision;
 
   public FileReader(IMemoriaFile file) {
     fFile = file;
@@ -54,7 +55,7 @@ public class FileReader {
   /**
    * Reads all blocks and closes the file
    */
-  public void readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
+  public long readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
     checkState(State.headerRead, State.blockRead);
     
     // read file header
@@ -63,6 +64,8 @@ public class FileReader {
     }
     
     fStream.close();
+    
+    return fHeadRevision;
   }
 
   public FileHeader readHeader() throws IOException {
@@ -88,6 +91,10 @@ public class FileReader {
   private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
     BlockLayout.assertBlockTag(stream);
     long blockSize = stream.readLong(); // the block size
+    
+    long revision = stream.readLong(); // transaction-revision
+    fHeadRevision = Math.max(fHeadRevision, revision);
+    
     long transactionSize = stream.readLong(); // transactionsize
 
     byte[] transactionData = new byte[(int) transactionSize];
@@ -95,49 +102,48 @@ public class FileReader {
     long crc32 = stream.readLong();
 
     // block may be bigger then the transaction-data -> skip
-    skip(stream, blockSize - transactionSize - (8 + 8)); // (transactionSize + crc32)
+    skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
     if (CRC32Util.getChecksum(transactionData) != crc32) throw new FileCorruptException("wrong checksum for block at position " + position);
 
-    readObjects(idFactory, handler, transactionData);
+    readObjects(idFactory, handler, revision,  transactionData);
     handler.block(new Block(blockSize, position));
 
-    // startTag + blockSize dataSize + data.length
-    return BlockLayout.TAG_SIZE + 8 + 8 + blockSize;
+    // revision + startTag + blockSize dataSize + data.length
+    return BlockLayout.TAG_SIZE + 8 + 8 + 8 + blockSize;
   }
 
-  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
+  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
-    long version = stream.readLong();
     
     if(idFactory.isObjectDeletionMarker(typeId)) {
-      handler.objectDeleted(objectId, version);
+      handler.objectDeleted(objectId, revision);
       return;
     }
     else if (idFactory.isMemoriaClassDeletionMarker(typeId)) {
-      handler.memoriaClassDeleted(objectId, version);
+      handler.memoriaClassDeleted(objectId, revision);
       return;
     }
 
     // no deleteMarker encountered
     if (idFactory.isMemoriaMetaClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, version);
+      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision);
     }
     else {
-      handler.object(new HydratedObject(typeId, stream), objectId, version);
+      handler.object(new HydratedObject(typeId, stream), objectId, revision);
     }
   }
 
-  private void readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data) throws IOException {
+  private void readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
     int offset = 0;
 
     while (stream.available() > 0) {
       int size = stream.readInt();
-      readObject(idFactory, handler, data, offset + 4, size);
+      readObject(idFactory, handler, revision, data, offset + 4, size);
       offset += 4 + size;
       skip(stream, size);
     }

@@ -60,8 +60,8 @@ public final class Memoria {
     FileHeader header = objectLoader.readHeader();
     
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    objectLoader.read(repo, header.loadBlockManager()); 
-    return new ObjectStore(repo, file, blockManager);
+    long headRevision = objectLoader.read(repo, header.loadBlockManager()); 
+    return new ObjectStore(repo, file, blockManager, headRevision);
   }
 
   public static IObjectStore open(String path) {
