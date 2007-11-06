@@ -1,6 +1,7 @@
 package org.memoriadb.test.core.crud;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 import org.memoriadb.util.Constants;
@@ -15,7 +16,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     
     OneInt a = new OneInt(0);
     beginUpdate();
-      long a_id = save(a);
+      IObjectId a_id = save(a);
       delete(a);
     endUpdate();
     
@@ -28,7 +29,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_basic_delete() {
     OneInt a = new OneInt(0);
-    long a_id = save(a);
+    IObjectId a_id = save(a);
     delete(a);
     
     assertFalse(fStore.contains(a_id));
@@ -49,8 +50,8 @@ public class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_delete_aggregate() {
     A a = new A(new B("b"));
-    long a_id = saveAll(a);
-    long b_id = fStore.getObjectId(a.getB());
+    IObjectId a_id = saveAll(a);
+    IObjectId b_id = fStore.getObjectId(a.getB());
     
     deleteAll(a);
     
@@ -89,7 +90,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_update_and_delete_in_same_transaction() {
     OneInt a = new OneInt(0);
-    long a_id = save(a);
+    IObjectId a_id = save(a);
     
     reopen();
     

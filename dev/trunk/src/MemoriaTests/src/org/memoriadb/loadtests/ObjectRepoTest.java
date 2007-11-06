@@ -5,6 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.memoriadb.core.ObjectRepo;
+import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.id.def.LongIdFactory;
 import org.memoriadb.test.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {
@@ -61,7 +63,7 @@ public class ObjectRepoTest extends TestCase {
     }
     
     for(Object obj: objects) {
-      long id = fRepo.getObjectId(obj);
+      IObjectId id = fRepo.getObjectId(obj);
       Object obj2 = fRepo.getObject(id);
       assertSame(obj, obj2);
       assertEquals(id, fRepo.getObjectId(obj2));
@@ -70,7 +72,7 @@ public class ObjectRepoTest extends TestCase {
   
   @Override
   protected void setUp() {
-    fRepo = new ObjectRepo();
+    fRepo = new ObjectRepo(new LongIdFactory());
   }
   
 }

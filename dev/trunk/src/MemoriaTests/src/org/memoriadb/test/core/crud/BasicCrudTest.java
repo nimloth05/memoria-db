@@ -1,5 +1,6 @@
 package org.memoriadb.test.core.crud;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
@@ -12,7 +13,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     c1.setC2(c2);
     c2.setC1(c1);
     
-    long idc1 = save(c2, c1)[1];
+    IObjectId idc1 = save(c2, c1)[1];
     
     reopen();
     
@@ -46,7 +47,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
   
   public void test_save_attribute() {
     B b = new B("b");
-    long id = fStore.save(b);
+    IObjectId id = fStore.save(b);
     
     reopen();
     
@@ -80,7 +81,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
   public void test_save_reference() {
     B b = new B("b");
     A a = new A(b);
-    long id = fStore.save(b,a)[1];
+    IObjectId id = fStore.save(b,a)[1];
     
     reopen();
     
@@ -90,7 +91,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
   
   public void test_save_same_object_twice() {
     B b = new B("b");
-    long id = fStore.save(b,b)[1];
+    IObjectId id = fStore.save(b,b)[1];
     
     reopen();
     
@@ -111,9 +112,9 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
   
   public void test_update_attribute() {
     B b = new B("b");
-    long idb = fStore.save(b);
+    IObjectId idb = fStore.save(b);
     b.setName("bb");
-    long idbb = fStore.save(b);
+    IObjectId idbb = fStore.save(b);
     assertEquals(idb, idbb);
     
     reopen();

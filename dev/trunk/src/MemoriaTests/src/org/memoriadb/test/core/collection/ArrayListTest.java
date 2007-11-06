@@ -1,5 +1,6 @@
 package org.memoriadb.test.core.collection;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.AbstractObjectStoreTest;
 import org.memoriadb.test.core.collection.testclassses.*;
 
@@ -19,7 +20,7 @@ public class ArrayListTest extends AbstractObjectStoreTest {
     
     container.fill(count);
     
-    long objId = saveAll(container);
+    IObjectId objId = saveAll(container);
     
     reopen();
     IArrayListContainer container_l1 = fStore.getObject(objId);

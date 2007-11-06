@@ -35,7 +35,7 @@ public class FileHeaderHelper {
   }
   
   public static void writeHeader(IMemoriaFile file, String idFactoryClassName) throws IOException {
-    if(file.getSize() != 0) throw new MemoriaException("file is no empty");
+    if(file.getSize() != 0) throw new MemoriaException("file is not empty");
     
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);

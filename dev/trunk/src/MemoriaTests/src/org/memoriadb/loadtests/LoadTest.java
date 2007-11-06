@@ -2,6 +2,7 @@ package org.memoriadb.loadtests;
 
 import java.util.*;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
@@ -24,7 +25,7 @@ public class LoadTest extends AbstractObjectStoreTest {
     List<Referencer> allSavedObjects = getAll(Referencer.class);
     for(Referencer ref: allSavedObjects) {
       Object obj = ref.get();
-      long objectId = fStore.getObjectId(obj);
+      IObjectId objectId = fStore.getObjectId(obj);
       assertSame("id collision: "+objectId, obj, fStore.getObject(objectId));
     }
     

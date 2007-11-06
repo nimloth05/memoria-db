@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.memoriadb.*;
 import org.memoriadb.core.ObjectStore;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.id.IObjectId;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
@@ -42,7 +43,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     }
   }
   
-  protected final long saveAll(Object obj) {
+  protected final IObjectId saveAll(Object obj) {
     return fStore.saveAll(obj);
   }
   

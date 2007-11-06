@@ -1,6 +1,7 @@
 package org.memoriadb.test.core.crud;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.crud.testclass.OneInt;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 import org.memoriadb.util.Constants;
@@ -9,7 +10,7 @@ public class UpdateTest extends AbstractObjectStoreTest {
   
   public void test_version_for_change_on_original_and_on_l1() {
     OneInt a = new OneInt(0);
-    long a_id = save(a);
+    IObjectId a_id = save(a);
     IObjectInfo info = fStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_VERSION, info.getVersion());
     assertEquals(0, info.getOldGenerationCount());
@@ -45,7 +46,7 @@ public class UpdateTest extends AbstractObjectStoreTest {
   
   public void test_version_for_many_changes_in_one_transaction_on_original() {
     OneInt a = new OneInt(0);
-    long a_id = save(a);
+    IObjectId a_id = save(a);
     IObjectInfo info = fStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_VERSION, info.getVersion());
     assertEquals(0, info.getOldGenerationCount());
@@ -76,7 +77,7 @@ public class UpdateTest extends AbstractObjectStoreTest {
   
   public void test_version_for_no_change() {
     OneInt a = new OneInt(0);
-    long a_id = save(a);
+    IObjectId a_id = save(a);
     a=null;
     
     reopen();

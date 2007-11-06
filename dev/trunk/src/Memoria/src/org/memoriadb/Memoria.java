@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.BlockManager;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.id.def.LongIdFactory;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.Version;
@@ -52,7 +53,7 @@ public final class Memoria {
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
     if(file.isEmpty()){
       try {
-        FileHeaderHelper.writeHeader(file, "class");
+        FileHeaderHelper.writeHeader(file, LongIdFactory.class.getName());
       }
       catch (IOException e) {
         throw new MemoriaException(e);

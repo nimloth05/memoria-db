@@ -1,5 +1,6 @@
 package org.memoriadb.test.core;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
@@ -70,7 +71,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     assertEquals(metaClass.getSuperClass().getJavaClass(), A.class);
     
     IMemoriaClass javaObjectMetaObject = metaClass.getSuperClass().getSuperClass();
-    long id = fStore.getObjectId(javaObjectMetaObject);
+    IObjectId id = fStore.getObjectId(javaObjectMetaObject);
     
     assertEquals(fStore.getObjectId(objectClass), id);
     assertEquals(javaObjectMetaObject.getJavaClass(), Object.class);
