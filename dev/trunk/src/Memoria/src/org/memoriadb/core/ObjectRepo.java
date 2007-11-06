@@ -37,7 +37,7 @@ public class ObjectRepo implements IObjectRepo {
    */
   private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
   
-  private IObjectIdFactory fFactory;
+  private IObjectIdFactory fIdFactory;
 
   /**
    * This method is only used for bootstrapping
@@ -95,12 +95,12 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public IObjectId getArrayMemoriaClass() {
-    return fFactory.getArrayMemoriaClass();    
+    return fIdFactory.getArrayMemoriaClass();    
   }
 
   @Override
   public IObjectId getHandlerMetaClass() {
-    return fFactory.getHandlerMetaClass();
+    return fIdFactory.getHandlerMetaClass();
   }
 
   /**
@@ -113,12 +113,12 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public IObjectId getMemoriaClassDeletionMarker() {
-    return fFactory.getMemoriaClassDeletionMarker();
+    return fIdFactory.getMemoriaClassDeletionMarker();
   }
 
   @Override
   public IObjectId getMemoriaMetaClass() {
-    return fFactory.getMemoriaMetaClass();
+    return fIdFactory.getMemoriaMetaClass();
   }
 
   /**
@@ -134,7 +134,7 @@ public class ObjectRepo implements IObjectRepo {
   
   @Override
   public IObjectId getObjectDeletionMarker() {
-    return fFactory.getMemoriaClassDeletionMarker();
+    return fIdFactory.getMemoriaClassDeletionMarker();
   }
 
   /**
@@ -161,7 +161,7 @@ public class ObjectRepo implements IObjectRepo {
   
   @Override
   public IObjectId getRootClassId() {
-    return fFactory.getRootClassId();
+    return fIdFactory.getRootClassId();
   }
 
   /**
@@ -181,12 +181,12 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return fFactory.isMemoriaClassDeletionMarker(typeId);
+    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
   }
 
   @Override
   public boolean isMemoriaMetaClass(IObjectId typeId) {
-    return fFactory.isMemoriaMetaClass(typeId);
+    return fIdFactory.isMemoriaMetaClass(typeId);
   }
 
   @Override
@@ -196,7 +196,12 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public boolean isObjectDeletionMarker(IObjectId typeId) {
-    return fFactory.isObjectDeletionMarker(typeId);
+    return fIdFactory.isObjectDeletionMarker(typeId);
+  }
+
+  @Override
+  public boolean isRootClassId(IObjectId superClassId) {
+    return fIdFactory.isRootClassId(superClassId);
   }
 
   /**
@@ -219,11 +224,11 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   private IObjectId generateId() {
-    return fFactory.createNextId();
+    return fIdFactory.createNextId();
   }
 
   private IMemoriaClassConfig getGenericArrayMetaClass() {
-    return (IMemoriaClassConfig) fIdMap.get(fFactory.getArrayMemoriaClass()).getObj();
+    return (IMemoriaClassConfig) fIdMap.get(fIdFactory.getArrayMemoriaClass()).getObj();
   }
 
   // TODO: Test for this assertions!

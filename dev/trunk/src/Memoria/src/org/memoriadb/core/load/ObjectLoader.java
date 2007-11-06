@@ -1,17 +1,18 @@
 package org.memoriadb.core.load;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.id.*;
 import org.memoriadb.exception.MemoriaException;
 
 public final class ObjectLoader implements IReaderContext {
 
-  private Map<Long, HydratedInfo> fHydratedObjects = new HashMap<Long, HydratedInfo>();
-  private Map<Long, HydratedInfo> fHydratedMetaClasses = new HashMap<Long, HydratedInfo>();
+  private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
+  private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
 
@@ -19,6 +20,7 @@ public final class ObjectLoader implements IReaderContext {
   private FileWriter fFileWriter;
   
   private final FileReader fFileReader;
+  private IObjectIdFactory fIdFactory;
 
   public static void readIn(IMemoriaFile file, ObjectRepo repo) {
     new ObjectLoader(file).read(repo);
@@ -30,8 +32,19 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
-  public Object getObjectById(long objectId) {
+  public IObjectId createFrom(DataInput input) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object getObjectById(IObjectId objectId) {
     return fRepo.getObject(objectId);
+  }
+
+  @Override
+  public boolean isRootClassId(IObjectId superClassId) {
+    return fIdFactory.isRootClassId(superClassId);
   }
 
   @Override
@@ -59,7 +72,7 @@ public final class ObjectLoader implements IReaderContext {
   /**
    * @param object null if deleteMarker was encountered
    */
-  private void addHydratedObject(Map<Long, HydratedInfo> container, HydratedObject object, long id, long version) {
+  private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
       container.put(id, new HydratedInfo(id, object, version));
@@ -88,7 +101,7 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedMetaClasses = null;
   }
-
+  
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
     
@@ -107,31 +120,31 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedObjects = null;
   }
-  
+
   private void readBlockData() throws IOException {
-    fFileReader.readBlocks(new IFileReaderHandler() {
+    fFileReader.readBlocks(fIdFactory, new IFileReaderHandler() {
 
       @Override
       public void block(Block block) {
       }
 
       @Override
-      public void memoriaClass(HydratedObject metaClass, long id, long version) {
+      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version) {
         addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
       }
 
       @Override
-      public void memoriaClassDeleted(long id, long version) {
+      public void memoriaClassDeleted(IObjectId id, long version) {
         addHydratedObject(fHydratedMetaClasses, null, id, version);
       }
 
       @Override
-      public void object(HydratedObject object, long id, long version) {
+      public void object(HydratedObject object, IObjectId id, long version) {
         addHydratedObject(fHydratedObjects, object, id, version);
       }
 
       @Override
-      public void objectDeleted(long id, long version) {
+      public void objectDeleted(IObjectId id, long version) {
         addHydratedObject(fHydratedObjects, null, id, version);
       }
 

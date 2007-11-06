@@ -10,7 +10,7 @@ public class LongIdFactory implements IObjectIdFactory {
   private static final IObjectId HANDLER_MEMORIA_CLASS_OBJECT_ID = new LongObjectId(2);
   private static final IObjectId ARRAY_MEMORIA_CLASS =             new LongObjectId(3);
   
-  private static final IObjectId NO_SUPER_CLASS =    new LongObjectId(-1);
+  private static final IObjectId ROOT_CLASS_ID =    new LongObjectId(-1);
   private static final IObjectId MEMORIA_CLASS_DELETED = new LongObjectId(-2);
   private static final IObjectId OBJECT_DELETED =    new LongObjectId(-3);
   
@@ -55,7 +55,7 @@ public class LongIdFactory implements IObjectIdFactory {
 
   @Override
   public IObjectId getRootClassId() {
-    return NO_SUPER_CLASS;
+    return ROOT_CLASS_ID;
   }
 
   @Override
@@ -71,6 +71,11 @@ public class LongIdFactory implements IObjectIdFactory {
   @Override
   public boolean isObjectDeletionMarker(IObjectId typeId) {
     return OBJECT_DELETED.equals(typeId);
+  }
+
+  @Override
+  public boolean isRootClassId(IObjectId superClassId) {
+    return ROOT_CLASS_ID.equals(superClassId);
   }
 
 }

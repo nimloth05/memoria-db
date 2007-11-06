@@ -22,5 +22,7 @@ public interface IDefaultObjectIdProvider {
   public boolean isMemoriaMetaClass(IObjectId typeId);
 
   public boolean isObjectDeletionMarker(IObjectId typeId);
+  
+  public boolean isRootClassId(IObjectId superClassId);
 
 }
