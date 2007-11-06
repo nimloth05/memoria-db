@@ -6,12 +6,12 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.CRC32Util;
 
-public class FileWriter implements IFileWriter {
+public class TransactionWriter implements IFileWriter {
 
   private final IMemoriaFile fFile;
   private final BlockManager fBlockManager;
   
-  public FileWriter(IMemoriaFile file, BlockManager blockManager) {
+  public TransactionWriter(IMemoriaFile file, BlockManager blockManager) {
     fFile = file;
     fBlockManager = blockManager;
   }

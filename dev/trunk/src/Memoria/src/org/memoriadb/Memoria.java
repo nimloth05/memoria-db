@@ -13,29 +13,29 @@ import org.memoriadb.util.Version;
 /**
  * 
  * Facade to a Memoria db
- *  
+ * 
  * @author msc
- *
+ * 
  */
 public final class Memoria {
-  
-  private static Version fVersion = new Version(0,0,0);
+
+  private static Version fVersion = new Version(0, 0, 0);
   private static int fFileLayoutVersion = 0;
-  
+
   /**
    * @return The Version of the file-layout. Stays stable as long as possible.
    */
   public static int getFileLayoutVersion() {
     return fFileLayoutVersion;
   }
-  
+
   /**
    * @return Memoria-Version.
    */
   public static Version getMemoriaVersion() {
     return fVersion;
   }
-  
+
   /**
    * @return An ObjectStore backed with an in-memory file
    */
@@ -43,15 +43,10 @@ public final class Memoria {
     IMemoriaFile file = new InMemoryFile();
     return open(file);
   }
-  
+
   public static IObjectStore open(IMemoriaFile file) {
-    BlockManager blockManager = new BlockManager();
-    ObjectLoader objectLoader = new ObjectLoader(file, blockManager);
-    
-    FileHeader header = objectLoader.readHeader();
-    
-    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    if(file.isEmpty()){
+
+    if (file.isEmpty()) {
       try {
         FileHeaderHelper.writeHeader(file, LongIdFactory.class.getName());
       }
@@ -59,19 +54,20 @@ public final class Memoria {
         throw new MemoriaException(e);
       }
     }
-    else {
-      
-      objectLoader.read(repo);
-    }
+
+    BlockManager blockManager = new BlockManager();
+    ObjectLoader objectLoader = new ObjectLoader(file, blockManager);
+    FileHeader header = objectLoader.readHeader();
+    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
+    objectLoader.read(repo);
     return new ObjectStore(repo, file, blockManager);
   }
-  
+
   public static IObjectStore open(String path) {
     IMemoriaFile file = new PhysicalFile(path);
     return open(file);
   }
-  
+
   private Memoria() {}
-  
-   
+
 }

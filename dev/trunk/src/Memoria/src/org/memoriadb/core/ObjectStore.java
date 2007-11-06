@@ -23,7 +23,7 @@ public class ObjectStore implements IObjectStore {
 
   public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, BlockManager blockManager) {
     fObjectRepo = objectContainer;
-    FileWriter fileWriter = new FileWriter(file, blockManager);
+    TransactionWriter fileWriter = new TransactionWriter(file, blockManager);
     fFileWriter = fileWriter;
   }
 

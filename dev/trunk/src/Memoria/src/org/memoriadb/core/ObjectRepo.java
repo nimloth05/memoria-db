@@ -239,10 +239,10 @@ public class ObjectRepo implements IObjectRepo {
   // TODO: Test for this assertions!
   private void internalPut(ObjectInfo info) {
     Object previousMapped = fObjectMap.put(info.getObj(), info);
-    if (previousMapped != null) throw new MemoriaException("double registration in object-map" + info);
+    if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
 
     previousMapped = fIdMap.put(info.getId(), info);
-    if (previousMapped != null) throw new MemoriaException("double registration in id-Map" + info);
+    if (previousMapped != null) throw new MemoriaException("double registration in id-Map " + info);
 
     if (info.getObj() instanceof IMemoriaClass) {
       IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObj();
