@@ -32,4 +32,9 @@ public class Block {
     return fSize;
   }
   
+  @Override
+  public String toString() {
+    return "Block @ " + getPosition() + " size " + getSize();
+  }
+  
 }

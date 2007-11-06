@@ -117,7 +117,6 @@ public final class ObjectLoader implements IReaderContext {
     else {
       fRepo.handleAdd(objectInfo);
     }
-    
   }
 
   private void dehydrateObjects() throws Exception {

@@ -144,7 +144,7 @@ public class ObjectRepo implements IObjectRepo {
 
   @Override
   public IObjectId getObjectDeletionMarker() {
-    return fIdFactory.getMemoriaClassDeletionMarker();
+    return fIdFactory.getObjectDeletionMarker();
   }
 
   /**
