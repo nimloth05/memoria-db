@@ -59,7 +59,7 @@ public class ObjectRepoTest extends TestCase {
     
     SimpleTestObj obj2 = new SimpleTestObj();
     IObjectId id = fRepo.add(obj2);
-    assertEquals(21, id);
+    assertEquals(new LongObjectId(21), id);
     
     assertEquals(obj, fRepo.getObject(objectId));
     assertEquals(obj2, fRepo.getObject(id));
