@@ -2,6 +2,7 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
+import org.memoriadb.core.block.IBlockManager;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.util.*;
 
@@ -58,7 +59,7 @@ public class FileHeader {
     return fVersion;
   }
 
-  public Object loadBlockManager() {
+  public IBlockManager loadBlockManager() {
     return ReflectionUtil.createInstance(getBlockManagerClassName());
   }
 

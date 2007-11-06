@@ -56,11 +56,11 @@ public final class Memoria {
     }
 
     MaintenanceFreeBlockManager blockManager = new MaintenanceFreeBlockManager();
-    ObjectLoader objectLoader = new ObjectLoader(file, blockManager);
+    ObjectLoader objectLoader = new ObjectLoader(file);
     FileHeader header = objectLoader.readHeader();
     
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    objectLoader.read(repo, header.loadBlockManager());
+    objectLoader.read(repo, header.loadBlockManager()); 
     return new ObjectStore(repo, file, blockManager);
   }
 
