@@ -4,14 +4,14 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.memoriadb.core.handler.def.*;
-import org.memoriadb.core.id.IDefaultObjectIdProvider;
+import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 
 public final class ObjectRepoFactory {
 
-  public static ObjectRepo create(IDefaultObjectIdProvider factory) {
-    ObjectRepo repo = new ObjectRepo();
-    registerMetaClasses(repo, factory);
+  public static ObjectRepo create(IObjectIdFactory idFactory) {
+    ObjectRepo repo = new ObjectRepo(idFactory);
+    registerMetaClasses(repo, idFactory);
     return repo;
   }
 

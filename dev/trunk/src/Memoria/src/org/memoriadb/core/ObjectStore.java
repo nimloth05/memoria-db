@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.util.*;
 
 import org.memoriadb.*;
+import org.memoriadb.core.block.BlockManager;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
@@ -20,9 +21,9 @@ public class ObjectStore implements IObjectStore {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file) {
+  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, BlockManager blockManager) {
     fObjectRepo = objectContainer;
-    FileWriter fileWriter = new FileWriter(file);
+    FileWriter fileWriter = new FileWriter(file, blockManager);
     fFileWriter = fileWriter;
   }
 

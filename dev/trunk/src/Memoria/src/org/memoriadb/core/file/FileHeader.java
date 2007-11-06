@@ -2,6 +2,8 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
+import org.memoriadb.core.id.IObjectIdFactory;
+import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.Version;
 
 /**
@@ -48,6 +50,16 @@ public class FileHeader {
 
   public Version getVersion() {
     return fVersion;
+  }
+
+  public IObjectIdFactory loadIdFactory() {
+    // FIXME auslagern...
+    try {
+      return (IObjectIdFactory)Class.forName(getIdFactoryClassName()).newInstance();
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
   }
   
   

@@ -4,8 +4,9 @@ import java.io.*;
 import java.util.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.Block;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.id.*;
 import org.memoriadb.exception.MemoriaException;
 
@@ -17,18 +18,15 @@ public final class ObjectLoader implements IReaderContext {
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
 
   private ObjectRepo fRepo;
-  private FileWriter fFileWriter;
   
   private final FileReader fFileReader;
   private IObjectIdFactory fIdFactory;
+  private final BlockManager fBlockManager;
 
-  public static void readIn(IMemoriaFile file, ObjectRepo repo) {
-    new ObjectLoader(file).read(repo);
-  }
-
-  private ObjectLoader(IMemoriaFile file) {
+  public ObjectLoader(IMemoriaFile file, BlockManager blockManager) {
     if (file == null) throw new IllegalArgumentException("File was null");
     fFileReader = new FileReader(file);
+    fBlockManager = blockManager;
   }
 
   @Override
@@ -51,13 +49,10 @@ public final class ObjectLoader implements IReaderContext {
   public void objectToBind(IBindable bindable) {
     fObjectsToBind.add(bindable);
   }
-
+  
   public void read(ObjectRepo repo) {
     fRepo = repo;
     try {
-      // must be the first call to the fFileReader
-      readHeader();
-      
       readBlockData();
       dehydrateMetaClasses();
       bindObjects();
@@ -65,6 +60,15 @@ public final class ObjectLoader implements IReaderContext {
       bindObjects();
     }
     catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+
+  public FileHeader readHeader() {
+    try {
+      return fFileReader.readHeader();
+    }
+    catch (IOException e) {
       throw new MemoriaException(e);
     }
   }
@@ -94,14 +98,14 @@ public final class ObjectLoader implements IReaderContext {
       throw new BindingException(e);
     }
   }
-
+  
   private void dehydrateMetaClasses() throws Exception {
     for (HydratedInfo info : fHydratedMetaClasses.values()) {
       dehydrateObject(info);
     }
     fHydratedMetaClasses = null;
   }
-  
+
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
     
@@ -126,6 +130,7 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void block(Block block) {
+        fBlockManager.add(block);
       }
 
       @Override
@@ -150,10 +155,6 @@ public final class ObjectLoader implements IReaderContext {
 
     });
 
-  }
-
-  private FileHeader readHeader() throws IOException {
-    return fFileReader.readHeader();
   }
 
 }

@@ -37,7 +37,12 @@ public class ObjectRepo implements IObjectRepo {
    */
   private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
   
-  private IObjectIdFactory fIdFactory;
+  private final IObjectIdFactory fIdFactory;
+  
+
+  public ObjectRepo(IObjectIdFactory idFactory) {
+    fIdFactory = idFactory;
+  }
 
   /**
    * This method is only used for bootstrapping
