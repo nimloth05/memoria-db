@@ -21,8 +21,6 @@ public interface IMemoriaFile {
   public void close();
   
   /**
-   * ATTENTION: Never close this stream!
-   * 
    * @return Stream for reading the whole content of the file.
    */
   public InputStream getInputStream();

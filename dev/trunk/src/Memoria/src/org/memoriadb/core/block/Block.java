@@ -12,6 +12,10 @@ public class Block {
    * Limited to int because arrays can't be bigger than INT_MAX
    */
   private final long fSize;
+  
+  /**
+   * Position in the file
+   */
   private final long fPosition;
   
   public Block(long size, long position) {

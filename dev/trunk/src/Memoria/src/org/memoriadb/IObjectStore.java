@@ -135,7 +135,7 @@ public interface IObjectStore {
    * Changes are immediately written to the persistent store, except this ObjectStore is in 
    * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
    * 
-   * @return objectId of the given <tt>root</tt> object.
+   * @return objectIds of the given <tt>root</tt> objects.
    */
   public long[] saveAll(Object... roots);
 

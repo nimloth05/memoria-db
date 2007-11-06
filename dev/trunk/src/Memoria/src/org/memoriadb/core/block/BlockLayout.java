@@ -10,13 +10,12 @@ public final class BlockLayout {
   
   public static final int TAG_SIZE = BLOCK_START_TAG.length;
   
-  
-  //we resuse this buffer to read the header-tags
-  private static final byte[] TAG_BUFFER = new byte[TAG_SIZE];
-
   public static void assertBlockTag(DataInputStream stream) throws IOException {
-    stream.read(TAG_BUFFER);
-    if (!Arrays.equals(TAG_BUFFER, BLOCK_START_TAG)) throw new FileCorruptException("Could not read block start : " + Arrays.toString(TAG_BUFFER));
+    
+    byte[] tagBuffer = new byte[TAG_SIZE];
+    
+    stream.read(tagBuffer);
+    if (!Arrays.equals(tagBuffer, BLOCK_START_TAG)) throw new FileCorruptException("Could not read block start-tag : " + Arrays.toString(tagBuffer));
   }
 
   private BlockLayout() {}

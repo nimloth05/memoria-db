@@ -67,13 +67,13 @@ public class FileReader {
       return;
     }
     else if (typeId == IdConstants.METACLASS_DELETED) {
-      fHandler.metaClassDeleted(objectId, version);
+      fHandler.memoriaClassDeleted(objectId, version);
       return;
     }
 
     // no deleteMarker encountered
     if (MemoriaFieldClass.isMetaClassObject(typeId)) {
-      fHandler.metaClass(new HydratedObject(typeId, stream), objectId, version);
+      fHandler.memoriaClass(new HydratedObject(typeId, stream), objectId, version);
     }
     else {
       fHandler.object(new HydratedObject(typeId, stream), objectId, version);
