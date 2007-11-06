@@ -1,6 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.block.Block;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.Constants;
 
 /**
@@ -14,7 +15,7 @@ import org.memoriadb.util.Constants;
 public class ObjectInfo implements IObjectInfo {
   
   private Object fObj;
-  private final long fId;
+  private final IObjectId fId;
   private long fVersion;
   private int fOldGenerationCount;
   
@@ -26,14 +27,14 @@ public class ObjectInfo implements IObjectInfo {
   /**
    * Use this ctor only when an object is initially added to the container.
    */
-  public ObjectInfo(long id, Object obj) {
+  public ObjectInfo(IObjectId id, Object obj) {
     this(id, obj, Constants.INITIAL_VERSION, 0);
   }
 
   /**
    * Use this ctor for ojects after dehydration
    */
-  public ObjectInfo(long id, Object obj, long version, int oldGenerationCount) {
+  public ObjectInfo(IObjectId id, Object obj, long version, int oldGenerationCount) {
     fObj = obj;
     fId = id;
     fVersion = version;
@@ -44,7 +45,7 @@ public class ObjectInfo implements IObjectInfo {
     return fBlock;
   }
 
-  public long getId(){
+  public IObjectId getId(){
     return fId;
   }
 

@@ -2,14 +2,14 @@ package org.memoriadb.core.handler.def;
 
 import java.io.*;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IdConstants;
 
 public class MetaFieldClassHandler implements ISerializeHandler {
 
@@ -19,8 +19,8 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     
     MemoriaFieldClass classObject = new MemoriaFieldClass(className);
     
-    long superClassId = input.readLong();
-    if (superClassId != IdConstants.NO_SUPER_CLASS) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
+    IObjectId superClassId = context.createFrom(input);
+    if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
     
     while (input.available() > 0) {
       int fieldId = input.readInt();
@@ -38,9 +38,9 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     
     output.writeUTF(classObject.getClassName());
     
-    long superClassId = IdConstants.NO_SUPER_CLASS;
+    IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) superClassId = context.getObjectId(classObject.getSuperClass());
-    output.writeLong(superClassId);
+    context.writeObjectId(superClassId, output);
     
     for(MemoriaField field: classObject.getFields()) {
       output.writeInt(field.getId());

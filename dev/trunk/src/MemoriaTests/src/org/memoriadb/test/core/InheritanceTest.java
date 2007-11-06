@@ -63,8 +63,8 @@ public class InheritanceTest extends AbstractObjectStoreTest {
   }
   
   private void assertMetaObjectHierarchy(B b) {
-    IMemoriaClass metaClass = fStore.getMetaClass(b);
-    IMemoriaClass objectClass = fStore.getMetaClass(Object.class);
+    IMemoriaClass metaClass = fStore.getMemoriaClass(b);
+    IMemoriaClass objectClass = fStore.getMemoriaClass(Object.class);
     
     assertEquals(metaClass.getJavaClass(), B.class);
     assertEquals(metaClass.getSuperClass().getJavaClass(), A.class);

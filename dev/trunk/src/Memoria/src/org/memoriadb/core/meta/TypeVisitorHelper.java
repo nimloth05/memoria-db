@@ -3,6 +3,7 @@
  */
 package org.memoriadb.core.meta;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 
 public abstract class TypeVisitorHelper<R, M> implements ITypeVisitor {
@@ -29,7 +30,7 @@ public abstract class TypeVisitorHelper<R, M> implements ITypeVisitor {
   }
 
   @Override
-  public void visitClass(Type type, long objectId) {}
+  public void visitClass(Type type, IObjectId objectId) {}
   
   @Override
   public void visitPrimitive(Type type, Object value) {}

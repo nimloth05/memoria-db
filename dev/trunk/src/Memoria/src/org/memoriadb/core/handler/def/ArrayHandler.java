@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.BindArray;
 import org.memoriadb.core.meta.*;
@@ -15,7 +16,7 @@ public class ArrayHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
-    long compundTypeId = input.readLong();
+    IObjectId compundTypeId = context.createFrom(input);
     int dimensions = input.readInt();
     
     Class<?> componentType = getClassFromTypeInfo(compundTypeId, context);
@@ -26,7 +27,7 @@ public class ArrayHandler implements ISerializeHandler {
     TypeVisitorHelper<Object, Integer> visitor = new TypeVisitorHelper<Object, Integer>(context) {
 
       @Override
-      public void visitClass(Type type, long objectId) {
+      public void visitClass(Type type, IObjectId objectId) {
         fContext.objectToBind(new BindArray(fResult, fMember, objectId));
       }
 
@@ -45,7 +46,7 @@ public class ArrayHandler implements ISerializeHandler {
         Array.set(array, index, deserialize(input, context));
         continue;
       }
-      Type.values()[typeByte].readValue(input, visitor);
+      Type.values()[typeByte].readValue(input, visitor, x);
     }
     
     return array;
@@ -62,10 +63,10 @@ public class ArrayHandler implements ISerializeHandler {
      ++dimension;
    }
    
-   long componentTypeId = componentTypeToId(context, componentType);
+   IObjectId componentTypeId = componentTypeToId(context, componentType);
    int arrayLength = Array.getLength(array);
    
-   output.writeLong(componentTypeId);
+   componentTypeId.writeTo(output);
    output.writeInt(dimension);
    output.writeInt(arrayLength);
    
@@ -103,15 +104,15 @@ public class ArrayHandler implements ISerializeHandler {
     }
   }
 
-  private long componentTypeToId(ISerializeContext context, Class<?> componentType) {
+  private IObjectId componentTypeToId(ISerializeContext context, Class<?> componentType) {
     ArrayComponentType internalType = ArrayComponentType.get(componentType);
-    if (internalType == null) return context.getMetaClassId(componentType);  
+    if (internalType == null) return context.getMemoriaClassId(componentType);  
     
-    long result = ((-1 * internalType.ordinal()));
+    IObjectId result = ((-1 * internalType.ordinal()));
     return  result;
   }
   
-  private Class<?> getClassFromTypeInfo(long typeInfo, IReaderContext context) {
+  private Class<?> getClassFromTypeInfo(IObjectId typeInfo, IReaderContext context) {
     if (typeInfo < 0) {
       int realType = (int) Math.abs(typeInfo);
       return ArrayComponentType.values()[realType].getJavaClass();

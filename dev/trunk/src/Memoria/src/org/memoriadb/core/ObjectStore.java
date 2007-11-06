@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.memoriadb.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
@@ -15,7 +16,7 @@ public class ObjectStore implements IObjectStore {
 
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
-  private final Set<Long> fDelete = new IdentityHashSet<Long>();
+  private final Set<IObjectId> fDelete = new IdentityHashSet<IObjectId>();
 
   private final IMemoriaFile fFile;
 
@@ -105,28 +106,28 @@ public class ObjectStore implements IObjectStore {
   }
 
   @Override
-  public IMemoriaClass getMetaClass(Class<?> clazz) {
+  public IMemoriaClass getMemoriaClass(Class<?> clazz) {
     return fObjectRepo.getMemoriaClass(clazz);
   }
   
   @Override
-  public IMemoriaClass getMetaClass(Object obj) {
-    return getMetaClass(obj.getClass());
+  public IMemoriaClass getMemoriaClass(Object obj) {
+    return getMemoriaClass(obj.getClass());
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> T getObject(long id) {
+  public <T> T getObject(IObjectId id) {
     return (T) fObjectRepo.getObject(id);
   }
 
   @Override
-  public long getObjectId(Object obj) {
+  public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
   }
 
   @Override
-  public IObjectInfo getObjectInfo(long id) {
+  public IObjectInfo getObjectInfo(IObjectId id) {
     return fObjectRepo.getObjectInfo(id); 
   }
 
@@ -144,15 +145,15 @@ public class ObjectStore implements IObjectStore {
     return fUpdateCounter > 0;
   }
 
-  public long save(Object obj) {
-    long result = internalSave(obj);
+  public IObjectId save(Object obj) {
+    IObjectId result = internalSave(obj);
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
 
   @Override
-  public long[] save(Object... objs) {
-    long[] result = new long[objs.length];
+  public IObjectId[] save(Object... objs) {
+    IObjectId[] result = new IObjectId[objs.length];
 
     for (int i = 0; i < objs.length; ++i) {
       result[i] = internalSave(objs[i]);
@@ -162,14 +163,14 @@ public class ObjectStore implements IObjectStore {
     return result;
   }
 
-  public long saveAll(Object root) {
-    long result = internalSaveAll(root);
+  public IObjectId saveAll(Object root) {
+    IObjectId result = internalSaveAll(root);
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
 
-  public long[] saveAll(Object... roots) {
-    long[] result = new long[roots.length];
+  public IObjectId[] saveAll(Object... roots) {
+    IObjectId[] result = new IObjectId[roots.length];
 
     for (int i = 0; i < roots.length; ++i) {
       result[i] = internalSaveAll(roots[i]);
@@ -190,7 +191,7 @@ public class ObjectStore implements IObjectStore {
       fObjectRepo.objectUpdated(obj);
       serializer.serialize(obj);
     }
-    for(Long id: fDelete){
+    for(IObjectId id: fDelete){
       fObjectRepo.objectDeleted(id);
       serializer.markAsDeleted(id);
     }
@@ -214,14 +215,14 @@ public class ObjectStore implements IObjectStore {
     // if object was previously updated in current transaction, remove it from update-list
     fUpdate.remove(obj);
     
-    long id = fObjectRepo.delete(obj);
+    IObjectId id = fObjectRepo.delete(obj);
     fDelete.add(id);
   }
 
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
-  long internalSave(Object obj) {
+  /*package*/ IObjectId internalSave(Object obj) {
     
     // if the object was previous removed in the current transaction, the remove-marker will not be set
     // and the object is updated.
@@ -243,11 +244,11 @@ public class ObjectStore implements IObjectStore {
 
     // object not already in the store, add it
     fAdd.add(obj);
-    addMetaClassIfNecessary(obj);
+    addMemoriaClassIfNecessary(obj);
     return fObjectRepo.add(obj);
   }
   
-  private void addMetaClassIfNecessary(Object obj) {
+  private void addMemoriaClassIfNecessary(Object obj) {
     Class<?> klass = obj.getClass();
 
     // if obj is an array, the metaClass of the componentType is added.
@@ -283,7 +284,7 @@ public class ObjectStore implements IObjectStore {
     traversal.handle(root);
   }
 
-  private long internalSaveAll(Object root) {
+  private IObjectId internalSaveAll(Object root) {
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(root);
     return fObjectRepo.getObjectId(root);

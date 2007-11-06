@@ -2,6 +2,7 @@ package org.memoriadb.core.load.binder;
 
 import java.lang.reflect.Field;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 import org.memoriadb.exception.MemoriaException;
 
@@ -10,9 +11,9 @@ public class ObjectFieldReference implements IBindable {
   
   private final Field fField;
   private final Object fSource;
-  private final long fTargetObjectId;
+  private final IObjectId fTargetObjectId;
 
-  public ObjectFieldReference(Object source, Field field, long targetObjectId){
+  public ObjectFieldReference(Object source, Field field, IObjectId targetObjectId){
     fSource = source;
     fField = field;
     fTargetObjectId = targetObjectId;

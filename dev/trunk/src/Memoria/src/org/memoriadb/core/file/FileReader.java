@@ -3,14 +3,16 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.block.*;
+import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.FileCorruptException;
-import org.memoriadb.util.*;
+import org.memoriadb.util.CRC32Util;
 
 public class FileReader {
+  
   private final IFileReaderHandler fHandler;
   private final IMemoriaFile fFile;
+  private IObjectIdFactory fFactory;
 
   public FileReader(IMemoriaFile file, IFileReaderHandler handler) {
 
@@ -58,21 +60,21 @@ public class FileReader {
   private void readObject(byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
-    long typeId = stream.readLong();
-    long objectId = stream.readLong();
+    IObjectId typeId = fFactory.createFrom(stream);
+    IObjectId objectId = fFactory.createFrom(stream);
     long version = stream.readLong();
     
-    if(typeId == IdConstants.OBJECT_DELETED){
+    if(fFactory.isObjectDeleted(typeId)) {
       fHandler.objectDeleted(objectId, version);
       return;
     }
-    else if (typeId == IdConstants.METACLASS_DELETED) {
+    else if (fFactory.isMemoriaClassDeleted(typeId)) {
       fHandler.memoriaClassDeleted(objectId, version);
       return;
     }
 
     // no deleteMarker encountered
-    if (MemoriaFieldClass.isMetaClassObject(typeId)) {
+    if (fFactory.isMemoriaMetaClass(typeId)) {
       fHandler.memoriaClass(new HydratedObject(typeId, stream), objectId, version);
     }
     else {

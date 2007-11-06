@@ -10,7 +10,7 @@ import org.memoriadb.core.load.ObjectLoader;
  * @author msc
  *
  */
-public class Memoria {
+public final class Memoria {
   
   /**
    * @return An ObjectStore backed with an in-memory file
@@ -30,5 +30,8 @@ public class Memoria {
     IMemoriaFile file = new PhysicalFile(path);
     return open(file);
   }
-
+  
+  private Memoria() {}
+  
+   
 }

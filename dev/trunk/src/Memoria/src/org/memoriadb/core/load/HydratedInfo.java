@@ -1,5 +1,6 @@
 package org.memoriadb.core.load;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -10,12 +11,12 @@ import org.memoriadb.exception.MemoriaException;
  */
 public class HydratedInfo {
   
-  private final long fId;
+  private final IObjectId fId;
   private HydratedObject fHydratedObject;
   private long fVersion;
   private int fOldGenerationCount;
   
-  public HydratedInfo(long id, HydratedObject hydratedObject, long version) {
+  public HydratedInfo(IObjectId id, HydratedObject hydratedObject, long version) {
     fId = id;
     fHydratedObject = hydratedObject;
     fVersion = version;
@@ -27,11 +28,11 @@ public class HydratedInfo {
    * @throws Exception 
    */
   public Object getObject(IReaderContext context) throws Exception {
-    if(fHydratedObject==null) return null;
+    if(fHydratedObject == null) return null;
     return fHydratedObject.dehydrate(context);
   }
 
-  public long getObjectId() {
+  public IObjectId getObjectId() {
     return fId;
   }
 
@@ -53,7 +54,7 @@ public class HydratedInfo {
 
   @Override
   public String toString() {
-    return "HydratedObject: " + fId + (isDeleted()?" deleted":"");
+    return "HydratedObject: " + fId.toString() + (isDeleted()?" deleted":"");
   }
 
   /**

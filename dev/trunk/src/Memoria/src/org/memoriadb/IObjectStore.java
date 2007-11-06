@@ -3,6 +3,7 @@ package org.memoriadb;
 import java.util.*;
 
 import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 
@@ -66,36 +67,38 @@ public interface IObjectStore {
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
   
   // wird später ersetzt durch die typenbasierte Queries, msc...
+  //FIXME: Auf eine Test-Schnittstelle verschieben
   public Collection<Object> getAllObjects();
 
   /**
    * @return The MetaClass for the given <tt>obj</tt> or null.
    */
-  public IMemoriaClass getMetaClass(Class<?> clazz);
+  public IMemoriaClass getMemoriaClass(Class<?> clazz);
   
   /**
    * @return The MetaClass for the given <tt>obj</tt> or null.
    */
-  public IMemoriaClass getMetaClass(Object obj);
+  public IMemoriaClass getMemoriaClass(Object obj);
 
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
    *         or not.
    */
-  public <T> T getObject(long id);
+  public <T> T getObject(IObjectId id);
   
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
    *           If the given object can not be found.
    */
-  public long getObjectId(Object obj);
+  public IObjectId getObjectId(Object obj);
   
-  public IObjectInfo getObjectInfo(long id);
+  //FIXME: Auf eine Test-Schnittstelle verschieben
+  public IObjectInfo getObjectInfo(IObjectId id);
   public IObjectInfo getObjectInfo(Object obj);
   
   /**
-   * @return true, if the update-counter is bigger than 0.  
+   * @return true, if the update-counter is > 0.  
    */
   public boolean isInUpdateMode();
   
@@ -107,7 +110,7 @@ public interface IObjectStore {
    * 
    * @return The objectId of the added or updated object.
    */
-  public long save(Object obj);
+  public IObjectId save(Object obj);
   
   /**
    * Adds the given objects to the store or performs an update if the given objects are already contained.
@@ -117,7 +120,7 @@ public interface IObjectStore {
    * 
    * @return The objectIds of the added or updated objects.
    */
-  public long[] save(Object... objs);
+  public IObjectId[] save(Object... objs);
 
   /**
    * Saves the given <tt>root</tt> object and all referenced objects.
@@ -127,7 +130,7 @@ public interface IObjectStore {
    * 
    * @return objectId of the given <tt>root</tt> object.
    */
-  public long saveAll(Object root);
+  public IObjectId saveAll(Object root);
   
   /**
    * Saves the given <tt>root</tt> objects and all referenced objects.
@@ -137,6 +140,6 @@ public interface IObjectStore {
    * 
    * @return objectIds of the given <tt>root</tt> objects.
    */
-  public long[] saveAll(Object... roots);
+  public IObjectId[] saveAll(Object... roots);
 
 }

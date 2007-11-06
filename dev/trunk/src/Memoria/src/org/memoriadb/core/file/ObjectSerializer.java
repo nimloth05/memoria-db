@@ -3,6 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
@@ -35,17 +36,17 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   @Override
-  public long getMetaClassId(Class<?> klass) {
+  public IObjectId getMemoriaClassId(Class<?> klass) {
     IMemoriaClass memoriaClass = fObjectRepo.getMemoriaClass(klass);
     return fObjectRepo.getObjectId(memoriaClass);
   }
 
   @Override
-  public long getObjectId(Object obj) {
+  public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
   }
 
-  public void markAsDeleted(long id) {
+  public void markAsDeleted(IObjectId id) {
     try {
       internalMarkObjectAsDeleted(fObjectRepo.getObjectInfo(id));
     }
@@ -66,7 +67,7 @@ public class ObjectSerializer implements ISerializeContext {
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
     fStream.writeInt(3*Constants.LONG_SIZE);
     fStream.writeLong(fObjectRepo.isMetaClass(info.getObj())? IdConstants.METACLASS_DELETED : IdConstants.OBJECT_DELETED);
-    fStream.writeLong(info.getId());
+    info.getId().writeTo(fStream);
     fStream.writeLong(info.getVersion());
   }
 
@@ -75,17 +76,17 @@ public class ObjectSerializer implements ISerializeContext {
     serializeObject(metaClass, dataStream, info);
   }
 
-  private void serializeObject(IMemoriaClass classObject, DataOutput dataStream, IObjectInfo info) throws Exception {
-    long typeId = fObjectRepo.getObjectId(classObject);
+  private void serializeObject(IMemoriaClass memoriaClass, DataOutput dataStream, IObjectInfo info) throws Exception {
+    IObjectId typeId = fObjectRepo.getObjectId(memoriaClass);
 
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream(80);
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream(Constants.DEFAULT_OBJECT_SIZE);
     DataOutputStream objectStream = new DataOutputStream(buffer);
 
-    objectStream.writeLong(typeId);
-    objectStream.writeLong(info.getId());
+    typeId.writeTo(objectStream);
+    info.getId().writeTo(objectStream);
     objectStream.writeLong(info.getVersion());
 
-    classObject.getHandler().serialize(info.getObj(), objectStream, this);
+    memoriaClass.getHandler().serialize(info.getObj(), objectStream, this);
 
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);

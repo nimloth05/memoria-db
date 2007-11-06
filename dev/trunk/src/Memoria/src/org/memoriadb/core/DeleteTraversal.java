@@ -27,7 +27,7 @@ public class DeleteTraversal implements IObjectTraversal {
     fVisited.add(obj);
     fObjectStore.internalDelete(obj);
     
-    fObjectStore.getMetaClass(obj).getHandler().traverseChildren(obj, this);
+    fObjectStore.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
   }
 
 }

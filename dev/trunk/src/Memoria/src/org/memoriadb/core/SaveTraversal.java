@@ -27,7 +27,7 @@ public class SaveTraversal implements IObjectTraversal {
     fVisited.add(obj);
     fMemoria.internalSave(obj);
     
-    fMemoria.getMetaClass(obj).getHandler().traverseChildren(obj, this);
+    fMemoria.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
   }
 
 }

@@ -4,22 +4,23 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.memoriadb.core.handler.def.*;
+import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.util.IdConstants;
 
 public final class ObjectRepoFactory {
 
-  public static ObjectRepo create() {
+  public static ObjectRepo create(IObjectIdFactory factory) {
     ObjectRepo repo = new ObjectRepo();
-    registerMetaClasses(repo);
+    registerMetaClasses(repo, factory);
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepo repo) {
+  private static void registerMetaClasses(ObjectRepo repo, IObjectIdFactory factory) {
     IMemoriaClass metaClassClassObject = new MemoriaHandlerClass(new MetaFieldClassHandler(), MemoriaFieldClass.class);
     IMemoriaClass handlerMetaClassObject = new MemoriaHandlerClass(new MetaClassHandler(), MemoriaHandlerClass.class);
     
-    repo.add(IdConstants.METACLASS_OBJECT_ID, metaClassClassObject);
+    repo.add(factory.getMemoriaMetaClass(), metaClassClassObject);
     repo.add(IdConstants.HANDLER_META_CLASS_OBJECT_ID, handlerMetaClassObject);
     
     // handlers for specific library-classes

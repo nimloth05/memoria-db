@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.file.ISerializeContext;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.exception.MemoriaException;
@@ -15,7 +16,7 @@ public enum Type {
   typeBoolean {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readBoolean());
     }
 
@@ -29,7 +30,7 @@ public enum Type {
 
     
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readChar());
     }
 
@@ -42,7 +43,7 @@ public enum Type {
   typeByte {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readByte());
     }
 
@@ -56,7 +57,7 @@ public enum Type {
 
     
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readShort());
     }
 
@@ -69,7 +70,7 @@ public enum Type {
   typeInteger {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readInt());
     }
 
@@ -82,7 +83,7 @@ public enum Type {
   typeLong {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readLong());
     }
 
@@ -95,7 +96,7 @@ public enum Type {
   typeFloat {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readFloat());
     }
 
@@ -108,7 +109,7 @@ public enum Type {
   typeDouble {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readDouble());
     }
 
@@ -121,7 +122,7 @@ public enum Type {
   typeString {
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readUTF());
     }
 
@@ -138,17 +139,17 @@ public enum Type {
   typeClass {
     
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException {
-      visitor.visitClass(this, input.readLong());
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitClass(this, context.createFrom(input));
     }
 
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      long objectId = -1;
+      IObjectId objectId = null;
       if (value != null) {
         objectId = context.getObjectId(value);
       }
-      output.writeLong(objectId);
+      objectId.writeTo(output);
     }
 
   };
@@ -173,7 +174,7 @@ public enum Type {
     byte byteOrdinal = -1;
     try {
       byteOrdinal = input.readByte();
-      Type.values()[byteOrdinal].readValue(input, visitor);
+      Type.values()[byteOrdinal].readValue(input, visitor, context);
       return visitor;
     } catch (Exception e) {
       throw new MemoriaException("Could not read type Information. "  + byteOrdinal, e);
@@ -231,7 +232,7 @@ public enum Type {
     readValue(input, new TypeVisitorHelper<Void, Field>(field, context) {
 
         @Override
-        public void visitClass(Type type, long objectId) {
+        public void visitClass(Type type, IObjectId objectId) {
           fContext.objectToBind(new ObjectFieldReference(object, fMember, objectId));
         }
 
@@ -244,12 +245,12 @@ public enum Type {
             throw new MemoriaException("could not read field: '" + fMember + "' field-type: " + name(), e);
           }
         }
-      });
+      }, context);
   }
   
-  public void readValue(DataInput input, ITypeVisitor visitor) {
+  public void readValue(DataInput input, ITypeVisitor visitor, IReaderContext context) {
     try {
-      internalReadValue(input, visitor);
+      internalReadValue(input, visitor, context);
     }
     catch (IOException e) {
       throw new MemoriaException("Could not read value " + name());
@@ -265,7 +266,7 @@ public enum Type {
     }
   }
   
-  protected abstract void internalReadValue(DataInput input, ITypeVisitor visitor) throws IOException;
+  protected abstract void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException;
   
   protected abstract void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException;
   

@@ -12,6 +12,8 @@ public final class Constants {
    */
   public static final int LONG_SIZE = 8;
 
+  public static final int DEFAULT_OBJECT_SIZE = 80;
+
   private Constants() {}
 
 }

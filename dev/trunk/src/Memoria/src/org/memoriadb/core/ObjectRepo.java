@@ -3,9 +3,9 @@ package org.memoriadb.core;
 import java.util.*;
 
 import org.java.patched.PIdentityHashMap;
+import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IdConstants;
 
 /**
  * Holds the main-indexes. 
@@ -17,17 +17,15 @@ import org.memoriadb.util.IdConstants;
  */
 public class ObjectRepo implements IObjectRepo {
 
-  private long fCurrentObjectId = 0;
-  
   /**
    * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null. 
    */
-  private final Map<Long, ObjectInfo> fDeletedMap = new HashMap<Long, ObjectInfo>();
+  private final Map<IObjectId, ObjectInfo> fDeletedMap = new HashMap<IObjectId, ObjectInfo>();
 
   /**
    * Main-index
    */
-  private final Map<Long, ObjectInfo> fIdMap = new HashMap<Long, ObjectInfo>();
+  private final Map<IObjectId, ObjectInfo> fIdMap = new HashMap<IObjectId, ObjectInfo>();
 
   /**
    * Main-index
@@ -38,11 +36,13 @@ public class ObjectRepo implements IObjectRepo {
    * MataClass index
    */
   private final Map<Class<?>, IMemoriaClassConfig> fMetaObjects = new HashMap<Class<?>, IMemoriaClassConfig>();
+  
+  private IObjectIdFactory fFactory;
 
   /**
    * This method is only used for bootstrapping
    */
-  public void add(long id, IMemoriaClass object) {
+  public void add(IObjectId id, IMemoriaClass object) {
     internalPut(new ObjectInfo(id, object));
   }
 
@@ -51,23 +51,23 @@ public class ObjectRepo implements IObjectRepo {
    * 
    * @return The new id
    */
-  public long add(Object obj) {
-    long result = generateId();
+  public IObjectId add(Object obj) {
+    IObjectId result = generateId();
     internalPut(new ObjectInfo(result, obj));
     return result;
   }
 
   public void checkSanity() {
-    for (Long id : fIdMap.keySet()) {
+    for (IObjectId id : fIdMap.keySet()) {
       Object object = fIdMap.get(id).getObj();
 
-      long addressObjectId = fObjectMap.get(object).getId();
-      if (id != addressObjectId) throw new MemoriaException("diffrent IDs for object: id in id-Map " + id + " id in adress map "
-          + addressObjectId);
+      IObjectId idInObjectMap = fObjectMap.get(object).getId();
+      if (!id.equals(idInObjectMap)) throw new MemoriaException("diffrent IDs for object: id in id-Map " + id + " id in adress map "
+          + idInObjectMap);
     }
   }
 
-  public boolean contains(long id) {
+  public boolean contains(IObjectId id) {
     return fIdMap.containsKey(id);
   }
 
@@ -76,7 +76,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public long delete(Object obj) {
+  public IObjectId delete(Object obj) {
     ObjectInfo info = fObjectMap.remove(obj);
     if (info == null) throw new MemoriaException("object not found: " + obj);
     if (fIdMap.remove(info.getId()) == null) throw new MemoriaException("object not found: " + obj);
@@ -106,7 +106,7 @@ public class ObjectRepo implements IObjectRepo {
    * @param objectId
    * @return the object for the given id or null.
    */
-  public Object getObject(long objectId) {
+  public Object getObject(IObjectId objectId) {
     IObjectInfo objectInfo = fIdMap.get(objectId);
     if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
     return objectInfo.getObj();
@@ -118,13 +118,13 @@ public class ObjectRepo implements IObjectRepo {
    * @throws MemoriaException
    *           if object can not be found
    */
-  public long getObjectId(Object obj) {
+  public IObjectId getObjectId(Object obj) {
     IObjectInfo result = fObjectMap.get(obj);
     if (result == null) throw new MemoriaException("Unknown object: " + obj);
     return result.getId();
   }
 
-  public ObjectInfo getObjectInfo(long id) {
+  public ObjectInfo getObjectInfo(IObjectId id) {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
     return result;
@@ -163,7 +163,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public void objectDeleted(long id) {
+  public void objectDeleted(IObjectId id) {
     ObjectInfo info = fDeletedMap.get(id);
     internalUpdate(info);
   }
@@ -173,18 +173,16 @@ public class ObjectRepo implements IObjectRepo {
     internalUpdate(info);
   }
 
-  private long generateId() {
-    return ++fCurrentObjectId;
+  private IObjectId generateId() {
+    return fFactory.createNextId();
   }
 
   private IMemoriaClassConfig getGenericArrayMetaClass() {
-    return (IMemoriaClassConfig) fIdMap.get(IdConstants.ARRAY_META_CLASS).getObj();
+    return (IMemoriaClassConfig) fIdMap.get(fFactory.getArrayMemoriaClass()).getObj();
   }
 
   // TODO: Test for this assertions!
   private void internalPut(ObjectInfo info) {
-    fCurrentObjectId = Math.max(fCurrentObjectId, info.getId());
-
     Object previousMapped = fObjectMap.put(info.getObj(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map" + info);
 

@@ -1,12 +1,20 @@
 package org.memoriadb.core.file;
 
+import java.io.DataOutputStream;
+
+import org.memoriadb.core.id.IObjectId;
+
 public interface ISerializeContext {
   
   /**
    * @return The objectId of the MetaClass for the given class-object.
    */
-  public long getMetaClassId(Class<?> klazz);
+  public IObjectId getMemoriaClassId(Class<?> klazz);
 
-  public long getObjectId(Object obj);
+  public IObjectId getObjectId(Object obj);
+
+  public IObjectId getRootClassId();
+
+  public void writeObjectId(IObjectId superClassId, DataOutputStream output);
 
 }

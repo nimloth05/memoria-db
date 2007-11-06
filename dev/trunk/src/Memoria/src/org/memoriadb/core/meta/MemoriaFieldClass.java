@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IdConstants;
 
 
 public final class MemoriaFieldClass implements IMemoriaClassConfig {
@@ -17,13 +16,6 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
 
   private IMemoriaClass fSuperClass;
 
-  /**
-   * @return true, if this MetaClass-object represents the type MetaClass
-   */
-  public static boolean isMetaClassObject(long typeId) {
-    return typeId == IdConstants.METACLASS_OBJECT_ID;
-  }
-  
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
    * object of a given type enters the memoria-reference-space.

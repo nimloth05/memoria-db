@@ -10,7 +10,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
   public void test_add_and_delete_in_same_transaction(){
     
     for(Object obj: fStore.getAllObjects()) {
-      System.out.println(fStore.getObjectId(obj) + " metaClassId " + fStore.getObjectId(fStore.getMetaClass(obj)));
+      System.out.println(fStore.getObjectId(obj) + " metaClassId " + fStore.getObjectId(fStore.getMemoriaClass(obj)));
     }
     
     OneInt a = new OneInt(0);

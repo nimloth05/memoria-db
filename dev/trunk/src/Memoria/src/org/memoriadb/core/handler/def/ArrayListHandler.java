@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;
 import org.memoriadb.core.meta.*;
@@ -20,7 +21,7 @@ public class ArrayListHandler implements ISerializeHandler {
       Type.readValueWithType(input, context, new TypeVisitorHelper<Void, ArrayList<Object>>(list, context) {
 
         @Override
-        public void visitClass(Type type, long objectId) {
+        public void visitClass(Type type, IObjectId objectId) {
           fContext.objectToBind(new ArrayListBindable(fMember, objectId));
         }
 
@@ -28,7 +29,6 @@ public class ArrayListHandler implements ISerializeHandler {
         public void visitPrimitive(Type type, Object value) {
           fMember.add(value);
         }
-        
       });
     }
     return list;
