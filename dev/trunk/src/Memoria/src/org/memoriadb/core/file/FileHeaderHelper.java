@@ -27,7 +27,6 @@ public class FileHeaderHelper {
     int fileLayoutVersion = stream.readInt();
     
     String idFactoryClassName = stream.readUTF();
-    
     String blockManagerClassName = stream.readUTF();
     
     int headerSize = stream.readInt();
@@ -51,7 +50,6 @@ public class FileHeaderHelper {
     stream.writeInt(Memoria.getFileLayoutVersion());
     
     stream.writeUTF(idFactoryClassName);
-    
     stream.writeUTF(blockManagerClassName);
     
     int headerSize = byteArrayOutputStream.size() + 4; // plus size of this int

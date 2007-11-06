@@ -28,10 +28,9 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
-  public IObjectId createFrom(DataInput input) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public IObjectId createFrom(DataInput input) throws IOException {
+    return fRepo.getIdFactory().createFrom(input);
+  } 
 
   @Override
   public Object getObjectById(IObjectId objectId) {
