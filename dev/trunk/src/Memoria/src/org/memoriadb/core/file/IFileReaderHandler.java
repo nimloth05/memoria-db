@@ -15,9 +15,9 @@ public interface IFileReaderHandler {
   
   public void block(Block block);
   public void header(FileHeader header);
-  //FIXME: METACLASS
-  public void metaClass(HydratedObject metaClass, IObjectId id, long version);
-  public void metaClassDeleted(IObjectId id, long version);
+
+  public void memoriaClass(HydratedObject metaClass, IObjectId id, long version);
+  public void memoriaClassDeleted(IObjectId id, long version);
   
   public void object(HydratedObject object, IObjectId id, long version);
   public void objectDeleted(IObjectId id, long version);

@@ -1,7 +1,5 @@
 package org.memoriadb.core.file;
 
-import java.io.DataOutputStream;
-
 import org.memoriadb.core.id.IObjectId;
 
 public interface ISerializeContext {
@@ -14,7 +12,5 @@ public interface ISerializeContext {
   public IObjectId getObjectId(Object obj);
 
   public IObjectId getRootClassId();
-
-  public void writeObjectId(IObjectId superClassId, DataOutputStream output);
 
 }

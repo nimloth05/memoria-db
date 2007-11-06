@@ -40,7 +40,7 @@ public class MetaFieldClassHandler implements ISerializeHandler {
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) superClassId = context.getObjectId(classObject.getSuperClass());
-    context.writeObjectId(superClassId, output);
+    superClassId.writeTo(output);
     
     for(MemoriaField field: classObject.getFields()) {
       output.writeInt(field.getId());

@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.exception.MemoriaException;
 
@@ -13,7 +13,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-public interface IObjectRepo {
+public interface IObjectRepo extends IDefaultObjectIdProvider {
 
   /**
    * Adds an object to the container. A new objectId is generated.

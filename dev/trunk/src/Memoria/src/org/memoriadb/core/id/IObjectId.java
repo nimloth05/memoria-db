@@ -1,9 +1,9 @@
 package org.memoriadb.core.id;
 
-import java.io.DataOutput;
+import java.io.*;
 
 public interface IObjectId {
 
-  public void writeTo(DataOutput output);
+  public void writeTo(DataOutput output) throws IOException;
 
 }

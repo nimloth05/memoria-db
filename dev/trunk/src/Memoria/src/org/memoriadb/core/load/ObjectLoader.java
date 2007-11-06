@@ -131,12 +131,12 @@ public final class ObjectLoader implements IReaderContext {
       public void header(FileHeader header) {}
 
       @Override
-      public void metaClass(HydratedObject metaClass, IObjectId id, long version) {
+      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version) {
         addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
       }
 
       @Override
-      public void metaClassDeleted(IObjectId id, long version) {
+      public void memoriaClassDeleted(IObjectId id, long version) {
         addHydratedObject(fHydratedMetaClasses, null, id, version);
       }
 

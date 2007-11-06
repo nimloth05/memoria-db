@@ -64,11 +64,11 @@ public class FileReader {
     IObjectId objectId = fFactory.createFrom(stream);
     long version = stream.readLong();
     
-    if(fFactory.isObjectDeleted(typeId)) {
+    if(fFactory.isObjectDeletionMarker(typeId)) {
       fHandler.objectDeleted(objectId, version);
       return;
     }
-    else if (fFactory.isMemoriaClassDeleted(typeId)) {
+    else if (fFactory.isMemoriaClassDeletionMarker(typeId)) {
       fHandler.memoriaClassDeleted(objectId, version);
       return;
     }

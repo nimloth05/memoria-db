@@ -46,7 +46,7 @@ public class ArrayHandler implements ISerializeHandler {
         Array.set(array, index, deserialize(input, context));
         continue;
       }
-      Type.values()[typeByte].readValue(input, visitor, x);
+      Type.values()[typeByte].readValue(input, visitor, context);
     }
     
     return array;

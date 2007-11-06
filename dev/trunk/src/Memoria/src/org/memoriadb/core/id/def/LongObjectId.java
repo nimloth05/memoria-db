@@ -1,6 +1,6 @@
 package org.memoriadb.core.id.def;
 
-import java.io.DataOutput;
+import java.io.*;
 
 import org.memoriadb.core.id.IObjectId;
 
@@ -13,7 +13,7 @@ public final class LongObjectId implements IObjectId {
   }
 
   @Override
-  public void writeTo(DataOutput output) {
+  public void writeTo(DataOutput output) throws IOException {
     output.writeLong(fValue);
   }
 

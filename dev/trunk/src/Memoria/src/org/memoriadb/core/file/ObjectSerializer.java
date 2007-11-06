@@ -6,7 +6,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.util.Constants;
 
 /**
  * Call serialize(Object) for each object, then call getBytes(). After this, the ObjectSerializer is gone.
@@ -46,6 +46,11 @@ public class ObjectSerializer implements ISerializeContext {
     return fObjectRepo.getObjectId(obj);
   }
 
+  @Override
+  public IObjectId getRootClassId() {
+    return fObjectRepo.getRootClassId();
+  }
+  
   public void markAsDeleted(IObjectId id) {
     try {
       internalMarkObjectAsDeleted(fObjectRepo.getObjectInfo(id));
@@ -54,7 +59,7 @@ public class ObjectSerializer implements ISerializeContext {
       throw new MemoriaException(e);
     }
   }
-  
+
   public void serialize(Object obj) {
     try {
       serializeObject(fStream, fObjectRepo.getObjectInfo(obj));
@@ -66,7 +71,8 @@ public class ObjectSerializer implements ISerializeContext {
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
     fStream.writeInt(3*Constants.LONG_SIZE);
-    fStream.writeLong(fObjectRepo.isMetaClass(info.getObj())? IdConstants.METACLASS_DELETED : IdConstants.OBJECT_DELETED);
+    IObjectId typeId = fObjectRepo.isMetaClass(info.getObj()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
+    typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
     fStream.writeLong(info.getVersion());
   }

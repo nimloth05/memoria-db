@@ -35,7 +35,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * MataClass index
    */
-  private final Map<Class<?>, IMemoriaClassConfig> fMetaObjects = new HashMap<Class<?>, IMemoriaClassConfig>();
+  private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
   
   private IObjectIdFactory fFactory;
 
@@ -93,12 +93,32 @@ public class ObjectRepo implements IObjectRepo {
     return result;
   }
 
+  @Override
+  public IObjectId getArrayMemoriaClass() {
+    return fFactory.getArrayMemoriaClass();    
+  }
+
+  @Override
+  public IObjectId getHandlerMetaClass() {
+    return fFactory.getHandlerMetaClass();
+  }
+
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
   public IMemoriaClassConfig getMemoriaClass(Class<?> klass) {
     if (klass.isArray()) return getGenericArrayMetaClass();
-    return fMetaObjects.get(klass);
+    return fMemoriaClasses.get(klass);
+  }
+
+  @Override
+  public IObjectId getMemoriaClassDeletionMarker() {
+    return fFactory.getMemoriaClassDeletionMarker();
+  }
+
+  @Override
+  public IObjectId getMemoriaMetaClass() {
+    return fFactory.getMemoriaMetaClass();
   }
 
   /**
@@ -110,6 +130,11 @@ public class ObjectRepo implements IObjectRepo {
     IObjectInfo objectInfo = fIdMap.get(objectId);
     if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
     return objectInfo.getObj();
+  }
+  
+  @Override
+  public IObjectId getObjectDeletionMarker() {
+    return fFactory.getMemoriaClassDeletionMarker();
   }
 
   /**
@@ -133,6 +158,11 @@ public class ObjectRepo implements IObjectRepo {
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }
+  
+  @Override
+  public IObjectId getRootClassId() {
+    return fFactory.getRootClassId();
+  }
 
   /**
    * Adds an object after dehydration
@@ -140,7 +170,7 @@ public class ObjectRepo implements IObjectRepo {
   public void handleAdd(ObjectInfo objectInfo) {
     internalPut(objectInfo);
   }
-  
+
   /**
    * marks an object as deleted after dehydrating the delete-marker
    * @param objectInfo
@@ -150,8 +180,23 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
+    return fFactory.isMemoriaClassDeletionMarker(typeId);
+  }
+
+  @Override
+  public boolean isMemoriaMetaClass(IObjectId typeId) {
+    return fFactory.isMemoriaMetaClass(typeId);
+  }
+
+  @Override
   public boolean isMetaClass(Object obj) {
     return obj instanceof IMemoriaClass;
+  }
+
+  @Override
+  public boolean isObjectDeletionMarker(IObjectId typeId) {
+    return fFactory.isObjectDeletionMarker(typeId);
   }
 
   /**
@@ -159,7 +204,7 @@ public class ObjectRepo implements IObjectRepo {
    */
   public boolean metaClassExists(Class<?> klass) {
     if (klass.isArray()) throw new IllegalArgumentException("Array not expected");
-    return fMetaObjects.containsKey(klass);
+    return fMemoriaClasses.containsKey(klass);
   }
 
   @Override
@@ -167,7 +212,7 @@ public class ObjectRepo implements IObjectRepo {
     ObjectInfo info = fDeletedMap.get(id);
     internalUpdate(info);
   }
-  
+
   public void objectUpdated(Object obj) {
     ObjectInfo info = fObjectMap.get(obj);
     internalUpdate(info);
@@ -191,8 +236,8 @@ public class ObjectRepo implements IObjectRepo {
 
     if (info.getObj() instanceof IMemoriaClass) {
       IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObj();
-      previousMapped = fMetaObjects.put(metaObject.getJavaClass(), metaObject);
-      if (previousMapped != null) throw new MemoriaException("double registration of metaObject: " + metaObject);
+      previousMapped = fMemoriaClasses.put(metaObject.getJavaClass(), metaObject);
+      if (previousMapped != null) throw new MemoriaException("double registration of memoria class: " + metaObject);
     }
   }
 
