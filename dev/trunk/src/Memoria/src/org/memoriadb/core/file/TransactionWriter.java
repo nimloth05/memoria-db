@@ -9,9 +9,9 @@ import org.memoriadb.util.CRC32Util;
 public class TransactionWriter implements IFileWriter {
 
   private final IMemoriaFile fFile;
-  private final BlockManager fBlockManager;
+  private final MaintenanceFreeBlockManager fBlockManager;
   
-  public TransactionWriter(IMemoriaFile file, BlockManager blockManager) {
+  public TransactionWriter(IMemoriaFile file, MaintenanceFreeBlockManager blockManager) {
     fFile = file;
     fBlockManager = blockManager;
   }

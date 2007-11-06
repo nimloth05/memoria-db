@@ -21,12 +21,11 @@ public final class ObjectLoader implements IReaderContext {
   
   private final FileReader fFileReader;
   private IObjectIdFactory fIdFactory;
-  private final BlockManager fBlockManager;
+  private IBlockManager fBlockManager;
 
-  public ObjectLoader(IMemoriaFile file, BlockManager blockManager) {
+  public ObjectLoader(IMemoriaFile file) {
     if (file == null) throw new IllegalArgumentException("File was null");
     fFileReader = new FileReader(file);
-    fBlockManager = blockManager;
   }
 
   @Override
@@ -50,8 +49,9 @@ public final class ObjectLoader implements IReaderContext {
     fObjectsToBind.add(bindable);
   }
   
-  public void read(ObjectRepo repo) {
+  public void read(ObjectRepo repo, IBlockManager blockManager) {
     fRepo = repo;
+    fBlockManager = blockManager;
     try {
       readBlockData();
       dehydrateMetaClasses();

@@ -3,7 +3,7 @@ package org.memoriadb;
 import java.io.IOException;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.BlockManager;
+import org.memoriadb.core.block.MaintenanceFreeBlockManager;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.def.LongIdFactory;
 import org.memoriadb.core.load.ObjectLoader;
@@ -48,18 +48,19 @@ public final class Memoria {
 
     if (file.isEmpty()) {
       try {
-        FileHeaderHelper.writeHeader(file, LongIdFactory.class.getName());
+        FileHeaderHelper.writeHeader(file, LongIdFactory.class.getName(), MaintenanceFreeBlockManager.class.getName());
       }
       catch (IOException e) {
         throw new MemoriaException(e);
       }
     }
 
-    BlockManager blockManager = new BlockManager();
+    MaintenanceFreeBlockManager blockManager = new MaintenanceFreeBlockManager();
     ObjectLoader objectLoader = new ObjectLoader(file, blockManager);
     FileHeader header = objectLoader.readHeader();
+    
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    objectLoader.read(repo);
+    objectLoader.read(repo, header.loadBlockManager());
     return new ObjectStore(repo, file, blockManager);
   }
 

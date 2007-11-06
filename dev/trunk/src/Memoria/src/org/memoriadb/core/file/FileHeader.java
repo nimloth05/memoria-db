@@ -3,8 +3,8 @@ package org.memoriadb.core.file;
 import java.util.UUID;
 
 import org.memoriadb.core.id.IObjectIdFactory;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.Version;
+import org.memoriadb.util.*;
+
 
 /**
  * Holds the information stored in the memoria file-header 
@@ -17,15 +17,21 @@ public class FileHeader {
   private final Version fVersion;
   private final int fFileLayoutVersion;
   private final String fIdFactoryClassName;
+  private final String fBlockManagerClassName;
   private final int fHeaderSize;
 
-  public FileHeader(UUID thisUuid, UUID hostUuid, Version version, int fileLayoutVersion, String idFactoryClassName, int headerSize) {
+  public FileHeader(UUID thisUuid, UUID hostUuid, Version version, int fileLayoutVersion, String idFactoryClassName, String blockManagerClassName, int headerSize) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fVersion = version;
     fFileLayoutVersion = fileLayoutVersion;
     fIdFactoryClassName = idFactoryClassName;
+    fBlockManagerClassName = blockManagerClassName;
     fHeaderSize = headerSize;
+  }
+
+  public String getBlockManagerClassName() {
+    return fBlockManagerClassName;
   }
 
   public int getFileLayoutVersion() {
@@ -52,14 +58,12 @@ public class FileHeader {
     return fVersion;
   }
 
+  public Object loadBlockManager() {
+    return ReflectionUtil.createInstance(getBlockManagerClassName());
+  }
+
   public IObjectIdFactory loadIdFactory() {
-    // FIXME auslagern...
-    try {
-      return (IObjectIdFactory)Class.forName(getIdFactoryClassName()).newInstance();
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
+    return ReflectionUtil.createInstance(getIdFactoryClassName());
   }
   
   

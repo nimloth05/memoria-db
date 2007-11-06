@@ -1,6 +1,6 @@
 package org.memoriadb.core.block;
 
-public class BlockManager {
+public class MaintenanceFreeBlockManager implements IBlockManager {
 
   public void add(Block block) {
     

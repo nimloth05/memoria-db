@@ -28,13 +28,15 @@ public class FileHeaderHelper {
     
     String idFactoryClassName = stream.readUTF();
     
+    String blockManagerClassName = stream.readUTF();
+    
     int headerSize = stream.readInt();
     
-    return new FileHeader(thisUuid, hostUuid, version, fileLayoutVersion, idFactoryClassName, headerSize);
+    return new FileHeader(thisUuid, hostUuid, version, fileLayoutVersion, idFactoryClassName, blockManagerClassName, headerSize);
     
   }
   
-  public static void writeHeader(IMemoriaFile file, String idFactoryClassName) throws IOException {
+  public static void writeHeader(IMemoriaFile file, String idFactoryClassName, String blockManagerClassName) throws IOException {
     if(file.getSize() != 0) throw new MemoriaException("file is not empty");
     
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -49,6 +51,8 @@ public class FileHeaderHelper {
     stream.writeInt(Memoria.getFileLayoutVersion());
     
     stream.writeUTF(idFactoryClassName);
+    
+    stream.writeUTF(blockManagerClassName);
     
     int headerSize = byteArrayOutputStream.size() + 4; // plus size of this int
     stream.writeInt(headerSize); 
