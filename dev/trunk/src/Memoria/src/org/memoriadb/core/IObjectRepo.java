@@ -37,6 +37,8 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   
   public Collection<Object> getAllObjects();
 
+  public IObjectIdFactory getIdFactory();
+
   /**
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
@@ -61,12 +63,12 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * even for deleted objects, if the delete-marker is still present.
    */
   public IObjectInfo getObjectInfo(IObjectId id);
-
+  
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
   public IObjectInfo getObjectInfo(Object obj);
-  
+
   /**
    * @return true, if the given obj is a metaclass
    */
@@ -84,7 +86,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @param obj
    */
   public void objectDeleted(IObjectId id);
-
+  
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
    * written to the persistent store.

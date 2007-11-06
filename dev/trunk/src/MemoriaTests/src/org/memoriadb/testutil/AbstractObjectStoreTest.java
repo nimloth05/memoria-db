@@ -16,7 +16,6 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected IObjectStore fStore;
   
-  
   protected void beginUpdate() {
     fStore.beginUpdate();
   }

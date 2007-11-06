@@ -21,12 +21,21 @@ public final class LongObjectId implements IObjectId {
     return fValue == other.fValue;
   }
 
+  public long getLong() {
+    return fValue;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + (int) (fValue ^ (fValue >>> 32));
     return result;
+  }
+  
+  @Override
+  public String toString() {
+    return Long.toString(fValue);
   }
 
   @Override

@@ -7,7 +7,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
-import org.memoriadb.core.id.*;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
 public final class ObjectLoader implements IReaderContext {
@@ -20,7 +20,6 @@ public final class ObjectLoader implements IReaderContext {
   private ObjectRepo fRepo;
   
   private final FileReader fFileReader;
-  private IObjectIdFactory fIdFactory;
   private IBlockManager fBlockManager;
 
   public ObjectLoader(IMemoriaFile file) {
@@ -41,7 +40,7 @@ public final class ObjectLoader implements IReaderContext {
 
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
-    return fIdFactory.isRootClassId(superClassId);
+    return fRepo.isRootClassId(superClassId);
   }
 
   @Override
@@ -50,8 +49,11 @@ public final class ObjectLoader implements IReaderContext {
   }
   
   public void read(ObjectRepo repo, IBlockManager blockManager) {
+    if (blockManager == null) throw new IllegalArgumentException("blockManager null");
+    
     fRepo = repo;
     fBlockManager = blockManager;
+    
     try {
       readBlockData();
       dehydrateMetaClasses();
@@ -64,6 +66,7 @@ public final class ObjectLoader implements IReaderContext {
     }
   }
 
+  //FIXME: Aus dieser Klasse verschieben
   public FileHeader readHeader() {
     try {
       return fFileReader.readHeader();
@@ -126,7 +129,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void readBlockData() throws IOException {
-    fFileReader.readBlocks(fIdFactory, new IFileReaderHandler() {
+    fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
 
       @Override
       public void block(Block block) {

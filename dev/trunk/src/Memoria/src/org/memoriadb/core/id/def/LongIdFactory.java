@@ -17,9 +17,14 @@ public class LongIdFactory implements IObjectIdFactory {
   private long fCurrentObjectId = 0;
 
   @Override
+  public void adjustId(IObjectId id) {
+    LongObjectId longValue = (LongObjectId) id;
+    fCurrentObjectId = Math.max(fCurrentObjectId, longValue.getLong()); 
+  }
+
+  @Override
   public IObjectId createFrom(DataInput input) throws IOException {
     long id = input.readLong();
-    fCurrentObjectId = Math.max(fCurrentObjectId, id);
     return new LongObjectId(id);
   }
 

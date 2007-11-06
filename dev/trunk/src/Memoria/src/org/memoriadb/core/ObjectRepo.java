@@ -108,6 +108,11 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.getHandlerMetaClass();
   }
 
+  @Override
+  public IObjectIdFactory getIdFactory() {
+    return fIdFactory;
+  }
+
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
@@ -125,7 +130,7 @@ public class ObjectRepo implements IObjectRepo {
   public IObjectId getMemoriaMetaClass() {
     return fIdFactory.getMemoriaMetaClass();
   }
-
+  
   /**
    * 
    * @param objectId
@@ -136,7 +141,7 @@ public class ObjectRepo implements IObjectRepo {
     if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
     return objectInfo.getObj();
   }
-  
+
   @Override
   public IObjectId getObjectDeletionMarker() {
     return fIdFactory.getMemoriaClassDeletionMarker();
@@ -159,11 +164,11 @@ public class ObjectRepo implements IObjectRepo {
     if(result == null) result = fDeletedMap.get(id);
     return result;
   }
-
+  
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }
-  
+
   @Override
   public IObjectId getRootClassId() {
     return fIdFactory.getRootClassId();
@@ -238,6 +243,8 @@ public class ObjectRepo implements IObjectRepo {
 
   // TODO: Test for this assertions!
   private void internalPut(ObjectInfo info) {
+    fIdFactory.adjustId(info.getId());
+    
     Object previousMapped = fObjectMap.put(info.getObj(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
 
