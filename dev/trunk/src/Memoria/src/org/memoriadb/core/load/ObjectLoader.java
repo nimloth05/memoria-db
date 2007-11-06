@@ -1,50 +1,37 @@
 package org.memoriadb.core.load;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.FileReader;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
 public final class ObjectLoader implements IReaderContext {
 
-  private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
-  //FIXME: METACLASS
-  private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
+  private Map<Long, HydratedInfo> fHydratedObjects = new HashMap<Long, HydratedInfo>();
+  private Map<Long, HydratedInfo> fHydratedMetaClasses = new HashMap<Long, HydratedInfo>();
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
 
   private ObjectRepo fRepo;
-  private final IMemoriaFile fFile;
+  private FileWriter fFileWriter;
+  
+  private final FileReader fFileReader;
 
   public static void readIn(IMemoriaFile file, ObjectRepo repo) {
     new ObjectLoader(file).read(repo);
   }
 
   private ObjectLoader(IMemoriaFile file) {
-    if (file == null) throw new IllegalArgumentException("File for readIn was null");
-    fFile = file;
+    if (file == null) throw new IllegalArgumentException("File was null");
+    fFileReader = new FileReader(file);
   }
 
   @Override
-  public IObjectId createFrom(DataInput input) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Object getObjectById(IObjectId objectId) {
+  public Object getObjectById(long objectId) {
     return fRepo.getObject(objectId);
-  }
-
-  @Override
-  public boolean isRootClassId(IObjectId superClassId) {
-    // TODO Auto-generated method stub
-    return false;
   }
 
   @Override
@@ -55,6 +42,9 @@ public final class ObjectLoader implements IReaderContext {
   public void read(ObjectRepo repo) {
     fRepo = repo;
     try {
+      // must be the first call to the fFileReader
+      readHeader();
+      
       readBlockData();
       dehydrateMetaClasses();
       bindObjects();
@@ -62,7 +52,6 @@ public final class ObjectLoader implements IReaderContext {
       bindObjects();
     }
     catch (Exception e) {
-      e.printStackTrace();
       throw new MemoriaException(e);
     }
   }
@@ -70,7 +59,7 @@ public final class ObjectLoader implements IReaderContext {
   /**
    * @param object null if deleteMarker was encountered
    */
-  private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
+  private void addHydratedObject(Map<Long, HydratedInfo> container, HydratedObject object, long id, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
       container.put(id, new HydratedInfo(id, object, version));
@@ -93,7 +82,6 @@ public final class ObjectLoader implements IReaderContext {
     }
   }
 
-  //FIXME: METACLASS
   private void dehydrateMetaClasses() throws Exception {
     for (HydratedInfo info : fHydratedMetaClasses.values()) {
       dehydrateObject(info);
@@ -119,40 +107,40 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedObjects = null;
   }
-
+  
   private void readBlockData() throws IOException {
-    FileReader reader = new FileReader(fFile, new IFileReaderHandler() {
+    fFileReader.readBlocks(new IFileReaderHandler() {
 
       @Override
-      public void block(Block block) {}
-
-
-      @Override
-      public void header(FileHeader header) {}
+      public void block(Block block) {
+      }
 
       @Override
-      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version) {
+      public void memoriaClass(HydratedObject metaClass, long id, long version) {
         addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
       }
 
       @Override
-      public void memoriaClassDeleted(IObjectId id, long version) {
+      public void memoriaClassDeleted(long id, long version) {
         addHydratedObject(fHydratedMetaClasses, null, id, version);
       }
 
       @Override
-      public void object(HydratedObject object, IObjectId id, long version) {
+      public void object(HydratedObject object, long id, long version) {
         addHydratedObject(fHydratedObjects, object, id, version);
       }
 
       @Override
-      public void objectDeleted(IObjectId id, long version) {
+      public void objectDeleted(long id, long version) {
         addHydratedObject(fHydratedObjects, null, id, version);
       }
 
     });
 
-    reader.read();
+  }
+
+  private FileHeader readHeader() throws IOException {
+    return fFileReader.readHeader();
   }
 
 }

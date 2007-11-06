@@ -27,6 +27,8 @@ public interface IMemoriaFile {
   
   public long getSize();
   
+  public boolean isEmpty();
+
   /**
    * The given offset plus the size of the given byte-array must not exceed the file-site.
    */

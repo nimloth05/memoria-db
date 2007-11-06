@@ -33,6 +33,16 @@ public class FileWriter implements IFileWriter {
    
   }
   
+  @Override
+  public void close() {
+    fFile.close();
+  }
+
+  @Override
+  public IMemoriaFile getFile() {
+    return fFile;
+  }
+
   public void write(byte[] data) {
     try {
       append(data);

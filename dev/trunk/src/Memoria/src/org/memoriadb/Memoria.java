@@ -1,16 +1,38 @@
 package org.memoriadb;
 
+import java.io.IOException;
+
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.ObjectLoader;
+import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.Version;
 
 /**
+ * 
  * Facade to a Memoria db
  *  
  * @author msc
  *
  */
 public final class Memoria {
+  
+  private static Version fVersion = new Version(0,0,0);
+  private static int fFileLayoutVersion = 0;
+  
+  /**
+   * @return The Version of the file-layout. Stays stable as long as possible.
+   */
+  public static int getFileLayoutVersion() {
+    return fFileLayoutVersion;
+  }
+  
+  /**
+   * @return Memoria-Version.
+   */
+  public static Version getMemoriaVersion() {
+    return fVersion;
+  }
   
   /**
    * @return An ObjectStore backed with an in-memory file
@@ -22,7 +44,17 @@ public final class Memoria {
   
   public static IObjectStore open(IMemoriaFile file) {
     ObjectRepo repo = ObjectRepoFactory.create();
-    ObjectLoader.readIn(file, repo);
+    if(file.isEmpty()){
+      try {
+        FileHeaderHelper.writeHeader(file, "class");
+      }
+      catch (IOException e) {
+        throw new MemoriaException(e);
+      }
+    }
+    else {
+      ObjectLoader.readIn(file, repo);
+    }
     return new ObjectStore(repo, file);
   }
   

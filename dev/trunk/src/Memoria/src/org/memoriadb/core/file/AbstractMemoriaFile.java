@@ -35,6 +35,11 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
     return doGetSize();
   }
 
+  @Override
+  public boolean isEmpty() {
+    return getSize() == 0;
+  }
+
   /**
    * Resets the state of this file, not touching it's data.
    */
@@ -58,7 +63,7 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
   protected abstract long doGetSize();
 
   protected abstract void doWrite(byte[] data, long offset);
-
+  
   /**
    * Tells this implementation that the inputstream has been closed -> unlocks the interface.
    */

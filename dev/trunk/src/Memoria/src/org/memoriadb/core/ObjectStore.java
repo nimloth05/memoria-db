@@ -18,13 +18,10 @@ public class ObjectStore implements IObjectStore {
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
   private final Set<IObjectId> fDelete = new IdentityHashSet<IObjectId>();
 
-  private final IMemoriaFile fFile;
-
   private int fUpdateCounter = 0;
 
   public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file) {
     fObjectRepo = objectContainer;
-    fFile = file;
     FileWriter fileWriter = new FileWriter(file);
     fFileWriter = fileWriter;
   }
@@ -41,7 +38,7 @@ public class ObjectStore implements IObjectStore {
 
   @Override
   public void close() {
-    fFile.close();
+    fFileWriter.close();
   }
 
   @Override
@@ -102,7 +99,7 @@ public class ObjectStore implements IObjectStore {
   }
 
   public IMemoriaFile getFile() {
-    return fFile;
+    return fFileWriter.getFile();
   }
 
   @Override
@@ -134,10 +131,6 @@ public class ObjectStore implements IObjectStore {
   @Override
   public IObjectInfo getObjectInfo(Object obj) {
     return fObjectRepo.getObjectInfo(obj);
-  }
-
-  public long getSize() {
-    return fFile.getSize();
   }
 
   @Override

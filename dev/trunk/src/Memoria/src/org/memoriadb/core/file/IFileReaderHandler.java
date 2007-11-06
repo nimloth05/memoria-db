@@ -14,7 +14,6 @@ import org.memoriadb.core.load.HydratedObject;
 public interface IFileReaderHandler {
   
   public void block(Block block);
-  public void header(FileHeader header);
 
   public void memoriaClass(HydratedObject metaClass, IObjectId id, long version);
   public void memoriaClassDeleted(IObjectId id, long version);

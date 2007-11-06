@@ -5,38 +5,87 @@ import java.io.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.exception.FileCorruptException;
+import org.memoriadb.exception.*;
 import org.memoriadb.util.CRC32Util;
 
+/**
+ * Reads the content of a {@link IMemoriaFile}.
+ * 
+ * This protocol must be strictly adhered to
+ * 
+ * 1. Create the FileReader 
+ * 2. readHeader() - file is opened
+ * 3. readBlock
+ * 4. close()
+ * 
+ * @author msc
+ */
 public class FileReader {
   
-  private final IFileReaderHandler fHandler;
+  private enum State{created, headerRead, blockRead, closed};
+
+  
   private final IMemoriaFile fFile;
-  private IObjectIdFactory fFactory;
+  private State state = State.created;
+  private DataInputStream fStream;
+  
+  // the current position in the file
+  private long fPosition = 0;
 
-  public FileReader(IMemoriaFile file, IFileReaderHandler handler) {
-
-    fHandler = handler;
+  public FileReader(IMemoriaFile file) {
     fFile = file;
   }
 
-  public void read() throws IOException {
-    DataInputStream stream = new DataInputStream(fFile.getInputStream());
-
-    // read file header
-    long position = 0;
-    while (stream.available() > 0) {
-      position += readBlock(stream, position);
+  public void close() {
+    if(state == State.created) return;
+    
+    checkState(State.blockRead, State.closed);
+    
+    if(fStream == null) return;
+    
+    try {
+      fStream.close();
     }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
+  }
 
-    stream.close();
+  /**
+   * Reads all blocks and closes the file
+   */
+  public void readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
+    checkState(State.headerRead, State.blockRead);
+    
+    // read file header
+    while (fStream.available() > 0) {
+      fPosition += readBlock(idFactory, handler, fStream, fPosition);
+    }
+    
+    fStream.close();
+  }
+
+  public FileHeader readHeader() throws IOException {
+    checkState(State.created, State.headerRead);
+    
+    fStream = new DataInputStream(fFile.getInputStream());
+    
+    FileHeader result = FileHeaderHelper.readHeader(fStream);
+    fPosition = result.getHeaderSize();
+    
+    return result;
+  }
+
+  private void checkState(State expectedState, State nextState) {
+    if(state != expectedState) throw new MemoriaException("wrong state. Expected " + expectedState +" but was " + state);
+    state = nextState;
   }
 
   /**
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  private long readBlock(DataInputStream stream, long position) throws IOException {
+  private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
     BlockLayout.assertBlockTag(stream);
     long blockSize = stream.readLong(); // the block size
     long transactionSize = stream.readLong(); // transactionsize
@@ -50,50 +99,50 @@ public class FileReader {
 
     if (CRC32Util.getChecksum(transactionData) != crc32) throw new FileCorruptException("wrong checksum for block at position " + position);
 
-    readObjects(transactionData);
-    fHandler.block(new Block(blockSize, position));
+    readObjects(idFactory, handler, transactionData);
+    handler.block(new Block(blockSize, position));
 
     // startTag + blockSize dataSize + data.length
     return BlockLayout.TAG_SIZE + 8 + 8 + blockSize;
   }
 
-  private void readObject(byte[] data, int offset, int size) throws IOException {
+  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
-    IObjectId typeId = fFactory.createFrom(stream);
-    IObjectId objectId = fFactory.createFrom(stream);
+    IObjectId typeId = idFactory.createFrom(stream);
+    IObjectId objectId = idFactory.createFrom(stream);
     long version = stream.readLong();
     
-    if(fFactory.isObjectDeletionMarker(typeId)) {
-      fHandler.objectDeleted(objectId, version);
+    if(idFactory.isObjectDeletionMarker(typeId)) {
+      handler.objectDeleted(objectId, version);
       return;
     }
-    else if (fFactory.isMemoriaClassDeletionMarker(typeId)) {
-      fHandler.memoriaClassDeleted(objectId, version);
+    else if (idFactory.isMemoriaClassDeletionMarker(typeId)) {
+      handler.memoriaClassDeleted(objectId, version);
       return;
     }
 
     // no deleteMarker encountered
-    if (fFactory.isMemoriaMetaClass(typeId)) {
-      fHandler.memoriaClass(new HydratedObject(typeId, stream), objectId, version);
+    if (idFactory.isMemoriaMetaClass(typeId)) {
+      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, version);
     }
     else {
-      fHandler.object(new HydratedObject(typeId, stream), objectId, version);
+      handler.object(new HydratedObject(typeId, stream), objectId, version);
     }
   }
 
-  private void readObjects(byte[] data) throws IOException {
+  private void readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
     int offset = 0;
 
     while (stream.available() > 0) {
       int size = stream.readInt();
-      readObject(data, offset + 4, size);
+      readObject(idFactory, handler, data, offset + 4, size);
       offset += 4 + size;
       skip(stream, size);
     }
   }
-
+  
   private void skip(DataInputStream stream, long size) throws IOException {
     if (stream.skip(size) != size) throw new RuntimeException("could not skip bytes: " + size);
   }
