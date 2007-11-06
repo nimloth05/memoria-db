@@ -70,6 +70,7 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
+    //FIXME: Hier müssen wir zuerst in einen Buffer schreiben, da die ID-Grösse nicht mehr gegeben ist.
     fStream.writeInt(3*Constants.LONG_SIZE);
     IObjectId typeId = fObjectRepo.isMetaClass(info.getObj()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
     typeId.writeTo(fStream);
@@ -90,6 +91,7 @@ public class ObjectSerializer implements ISerializeContext {
 
     typeId.writeTo(objectStream);
     info.getId().writeTo(objectStream);
+    
     objectStream.writeLong(info.getVersion());
 
     memoriaClass.getHandler().serialize(info.getObj(), objectStream, this);

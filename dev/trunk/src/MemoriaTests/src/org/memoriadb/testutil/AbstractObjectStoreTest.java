@@ -6,7 +6,6 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.memoriadb.*;
-import org.memoriadb.core.ObjectStore;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 
@@ -42,10 +41,10 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected final void recreateStore() {
     fStore.close(); 
-    //fStore = openFile(new PhysicalFile(PATH));
-    InMemoryFile file = (InMemoryFile) ((ObjectStore)fStore).getFile();
-    file.reset();
-    fStore = openFile(file);
+    fStore = openFile(new PhysicalFile(PATH));
+    //InMemoryFile file = (InMemoryFile) ((ObjectStore)fStore).getFile();
+    //file.reset();
+    //fStore = openFile(file);
   }
   
   protected final void reopen() {
@@ -68,8 +67,8 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected void setUp() {
    File file = new File(PATH);
    file.delete(); 
-   //fStore = openFile(new PhysicalFile(PATH));
-   fStore = openFile(new InMemoryFile());
+   fStore = openFile(new PhysicalFile(PATH));
+   //fStore = openFile(new InMemoryFile());
   }
   
   @Override
