@@ -44,7 +44,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
-  public IMemoriaClassConfig getMemoriaClass(Class<?> klass);
+  public IMemoriaClassConfig getMemoriaClass(String klass);
 
   /**
    * @return The object or null, if no Object exists for the given id. 

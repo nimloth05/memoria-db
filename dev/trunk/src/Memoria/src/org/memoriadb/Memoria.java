@@ -39,12 +39,13 @@ public final class Memoria {
   /**
    * @return An ObjectStore backed with an in-memory file
    */
-  public static IObjectStore open() {
+  public static IObjectStore open(DBMode mode) {
     IMemoriaFile file = new InMemoryFile();
-    return open(file);
+    return open(file, mode);
   }
 
-  public static IObjectStore open(IMemoriaFile file) {
+  public static IObjectStore open(IMemoriaFile file, DBMode mode) {
+    if (file == null) throw new IllegalArgumentException("File was null");
 
     if (file.isEmpty()) {
       try {
@@ -56,17 +57,26 @@ public final class Memoria {
     }
 
     MaintenanceFreeBlockManager blockManager = new MaintenanceFreeBlockManager();
-    ObjectLoader objectLoader = new ObjectLoader(file);
-    FileHeader header = objectLoader.readHeader();
+    FileReader fileReader = new FileReader(file);
+    FileHeader header = readHeader(fileReader);
     
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = objectLoader.read(repo, header.loadBlockManager()); 
+    long headRevision = ObjectLoader.readIn(fileReader, repo, blockManager, mode);
     return new ObjectStore(repo, file, blockManager, headRevision);
   }
 
-  public static IObjectStore open(String path) {
+  public static IObjectStore open(String path, DBMode mode) {
     IMemoriaFile file = new PhysicalFile(path);
-    return open(file);
+    return open(file, mode);
+  }
+
+  private static FileHeader readHeader(FileReader fileReader) {
+    try {
+      return fileReader.readHeader();
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
   }
 
   private Memoria() {}

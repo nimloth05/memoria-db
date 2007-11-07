@@ -11,7 +11,7 @@ import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 
-public class MetaFieldClassHandler implements ISerializeHandler {
+public class FieldClassHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {

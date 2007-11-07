@@ -13,12 +13,14 @@ public interface IObjectInfo {
 
   public IObjectId getId();
 
+  public IObjectId getMemoriaClassId();
+
   public Object getObj();
 
   public int getOldGenerationCount();
 
   public long getVersion();
-
+  
   public boolean isDeleted();
 
 }

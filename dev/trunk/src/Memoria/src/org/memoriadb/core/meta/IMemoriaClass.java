@@ -10,6 +10,4 @@ public interface IMemoriaClass {
   
   public IMemoriaClass getSuperClass();
 
-  public Object newInstance();
-  
 }

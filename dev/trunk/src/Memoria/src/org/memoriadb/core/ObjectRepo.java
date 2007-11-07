@@ -35,7 +35,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * MataClass index
    */
-  private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
+  //private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
   
   private final IObjectIdFactory fIdFactory;
   
@@ -47,8 +47,8 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * This method is only used for bootstrapping
    */
-  public void add(IObjectId id, IMemoriaClass object) {
-    internalPut(new ObjectInfo(id, object));
+  public void add(IObjectId id, IObjectId memoriaMetaClassId, IMemoriaClass object) {
+    internalPut(new ObjectInfo(id, memoriaMetaClassId, object));
   }
 
   /**
@@ -116,7 +116,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
-  public IMemoriaClassConfig getMemoriaClass(Class<?> klass) {
+  public IMemoriaClassConfig getMemoriaClass(String klass) {
     if (klass.isArray()) return getGenericArrayMetaClass();
     return fMemoriaClasses.get(klass);
   }

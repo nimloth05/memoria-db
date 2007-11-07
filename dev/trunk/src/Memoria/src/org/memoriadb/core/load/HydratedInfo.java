@@ -23,6 +23,11 @@ public class HydratedInfo {
     fOldGenerationCount = 0;
   }
 
+  public IObjectId getMemoriaClassId() {
+    if (isDeleted()) throw new MemoriaException("This Object is deleted");
+    return fHydratedObject.getTypeId();
+  }
+
   /**
    * @return the dehydrated object or null, if the object has been deleted.
    * @throws Exception 
@@ -39,11 +44,11 @@ public class HydratedInfo {
   public int getOldGenerationCount() {
     return fOldGenerationCount;
   }
-
+  
   public long getVersion() {
     return fVersion;
   }
-  
+
   public boolean isDeleted() {
     return fHydratedObject == null;
   }
@@ -56,7 +61,7 @@ public class HydratedInfo {
   public String toString() {
     return "HydratedObject: " + fId.toString() + (isDeleted()?" deleted":"");
   }
-
+  
   /**
    * @param hydratedObject pass null to mark this object as deleted
    */

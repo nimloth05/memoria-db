@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import org.memoriadb.core.meta.*;
 
-public final class MetaObjectFactory {
+public final class MemoriaFieldClassFactory {
   
   /**
    * @return creates the metaclass for the given <tt>obj</tt>
@@ -14,6 +14,6 @@ public final class MetaObjectFactory {
   }
   
   
-  private MetaObjectFactory() {}
+  private MemoriaFieldClassFactory() {}
 
 }

@@ -17,26 +17,42 @@ public final class ObjectLoader implements IReaderContext {
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
 
-  private ObjectRepo fRepo;
-  
+  private final ObjectRepo fRepo;
   private final FileReader fFileReader;
-  private IBlockManager fBlockManager;
+  private final IBlockManager fBlockManager;
+  private final DBMode fDbMode;
 
-  public ObjectLoader(IMemoriaFile file) {
-    if (file == null) throw new IllegalArgumentException("File was null");
-    fFileReader = new FileReader(file);
+  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, DBMode mode) {
+    return new ObjectLoader(fileReader, repo, blockManager, mode).read();
   }
+
+  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, DBMode mode) {
+    if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
+    if (repo == null) throw new IllegalArgumentException("repo is null");
+    if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
+    if (mode == null) throw new IllegalArgumentException("DBMode is null");
+    
+    fFileReader = fileReader;
+    fRepo = repo;
+    fBlockManager = blockManager;
+    fDbMode = mode;
+  } 
 
   @Override
   public IObjectId createFrom(DataInput input) throws IOException {
     return fRepo.getIdFactory().createFrom(input);
-  } 
+  }
+
+  @Override
+  public DBMode getMode() {
+    return fDbMode;
+  }
 
   @Override
   public Object getObjectById(IObjectId objectId) {
     return fRepo.getObject(objectId);
   }
-
+  
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fRepo.isRootClassId(superClassId);
@@ -46,21 +62,18 @@ public final class ObjectLoader implements IReaderContext {
   public void objectToBind(IBindable bindable) {
     fObjectsToBind.add(bindable);
   }
-  
-  public long read(ObjectRepo repo, IBlockManager blockManager) {
-    if (blockManager == null) throw new IllegalArgumentException("blockManager null");
-    
-    fRepo = repo;
-    fBlockManager = blockManager;
-    
+
+  public long read() {
     try {
       long headRevision = readBlockData();
+      
       dehydrateMetaClasses();
       bindObjects();
       dehydrateObjects();
       bindObjects();
+      
       return headRevision;
-    }
+    } 
     catch (Exception e) {
       throw new MemoriaException(e);
     }
@@ -75,7 +88,7 @@ public final class ObjectLoader implements IReaderContext {
       throw new MemoriaException(e);
     }
   }
-
+  
   /**
    * @param object null if deleteMarker was encountered
    */
@@ -101,7 +114,7 @@ public final class ObjectLoader implements IReaderContext {
       throw new BindingException(e);
     }
   }
-  
+
   private void dehydrateMetaClasses() throws Exception {
     for (HydratedInfo info : fHydratedMetaClasses.values()) {
       dehydrateObject(info);
@@ -110,7 +123,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
-    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
     
     if(info.isDeleted()){
       fRepo.handleDelete(objectInfo);
@@ -126,7 +139,7 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedObjects = null;
   }
-
+  
   private long readBlockData() throws IOException {
     return fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
 
@@ -156,7 +169,6 @@ public final class ObjectLoader implements IReaderContext {
       }
 
     });
-
   }
-
+  
 }

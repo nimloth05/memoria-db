@@ -16,6 +16,7 @@ public class ObjectInfo implements IObjectInfo {
   
   private Object fObj;
   private final IObjectId fId;
+  private final IObjectId fMemoriaClassId;
   private long fVersion;
   private int fOldGenerationCount;
   
@@ -27,16 +28,17 @@ public class ObjectInfo implements IObjectInfo {
   /**
    * Use this ctor only when an object is initially added to the container.
    */
-  public ObjectInfo(IObjectId id, Object obj) {
-    this(id, obj, Constants.INITIAL_VERSION, 0);
+  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj) {
+    this(id, memoriaClassId, obj, Constants.INITIAL_VERSION, 0);
   }
 
   /**
    * Use this ctor for ojects after dehydration
    */
-  public ObjectInfo(IObjectId id, Object obj, long version, int oldGenerationCount) {
+  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, long version, int oldGenerationCount) {
     fObj = obj;
     fId = id;
+    fMemoriaClassId = memoriaClassId;
     fVersion = version;
     fOldGenerationCount = oldGenerationCount;
   }
@@ -47,6 +49,10 @@ public class ObjectInfo implements IObjectInfo {
 
   public IObjectId getId(){
     return fId;
+  }
+
+  public IObjectId getMemoriaClassId() {
+    return fMemoriaClassId;
   }
 
   public Object getObj() {
@@ -72,7 +78,7 @@ public class ObjectInfo implements IObjectInfo {
   public boolean isDeleted() {
     return fObj == null;
   }
-
+  
   public void setBlock(Block block) {
     fBlock = block;
   }
@@ -80,7 +86,7 @@ public class ObjectInfo implements IObjectInfo {
   public void setDeleted() {
     fObj = null;
   }
-  
+
   public void setObj(Object obj) {
     fObj = obj;
   }
@@ -88,7 +94,7 @@ public class ObjectInfo implements IObjectInfo {
   public void setVersion(int version) {
     fVersion = version;
   }
-
+  
   @Override
   public String toString() {
     return fId + ":" + fObj + " in revision " + fVersion;

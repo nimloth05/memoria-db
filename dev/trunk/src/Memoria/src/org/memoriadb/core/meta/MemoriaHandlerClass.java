@@ -1,7 +1,7 @@
 package org.memoriadb.core.meta;
 
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.ReflectionUtil;
 
 public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   
@@ -16,7 +16,7 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   }
   
   public MemoriaHandlerClass(String handlerName, String className) throws Exception {
-    this((ISerializeHandler) Class.forName(handlerName).newInstance(), Class.forName(className));
+    this(ReflectionUtil.<ISerializeHandler>createInstance(handlerName), Class.forName(className));
   }
 
   @Override
@@ -40,16 +40,6 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  @Override
-  public Object newInstance() {
-    try {
-      return fClazz.newInstance();
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
   }
 
   @Override

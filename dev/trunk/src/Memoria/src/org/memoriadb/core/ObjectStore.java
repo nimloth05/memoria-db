@@ -270,7 +270,7 @@ public class ObjectStore implements IObjectStoreExt {
           return;
         }
 
-        classObject = MetaObjectFactory.createMetaClass(clazz);
+        classObject = MemoriaFieldClassFactory.createMetaClass(clazz);
         if (fChildClass != null) fChildClass.setSuperClass(classObject);
         fChildClass = classObject;
         internalSave(classObject);

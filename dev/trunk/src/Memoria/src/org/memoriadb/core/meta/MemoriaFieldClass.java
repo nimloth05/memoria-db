@@ -54,7 +54,7 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   
   @Override
   public ISerializeHandler getHandler() {
-    return new org.memoriadb.core.handler.def.DefaultHandler(this);
+    return new org.memoriadb.core.handler.def.field.DefaultHandler(this);
   }
   
   /* (non-Javadoc)
@@ -71,18 +71,6 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  /* (non-Javadoc)
-   * @see org.memoriadb.core.IMetaClass#newInstance()
-   */
-  public Object newInstance()  {
-    try {
-      return getJavaClass().newInstance();
-    }
-    catch (Exception e) {
-      throw new MemoriaException("Unable to instantiate " + fClassName + " (default-ctor missing?) " + e.getMessage() );
-    }
   }
 
   public void setClassName(String name) {

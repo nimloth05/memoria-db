@@ -1,7 +1,6 @@
 package org.memoriadb.core.load;
 
 import java.io.DataInputStream;
-import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.id.IObjectId;
@@ -39,10 +38,6 @@ public class HydratedObject {
     return fTypeId;
   }
 
-  public void objectToBind(Object object, Field field, IObjectId targetId) {
-    fObjectsToBind.add(new ObjectFieldReference(object, field, targetId));
-  }
-  
   @Override
   public String toString() {
     return "hydrated for type " + fTypeId;

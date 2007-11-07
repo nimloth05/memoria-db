@@ -44,20 +44,28 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return ((ObjectStore)fStore).getFile();
   }
   
-  protected final void recreateStore() {
+  protected DBMode getInitialDBMode() {
+    return DBMode.clazz;
+  }
+  
+  protected final void recreateStore(DBMode mode) {
     fStore.close(); 
     
     //fStore = openFile(new PhysicalFile(PATH));
     
     InMemoryFile file = (InMemoryFile) getFile();
     file.reset();
-    fStore = openFile(file);
-  }
-  
-  protected final void reopen() {
-    recreateStore(); 
+    fStore = openFile(file, mode);
   }
 
+  protected final void reopen() {
+    recreateStore(DBMode.clazz); 
+  }
+  
+  protected final void reopen(DBMode mode) {
+    recreateStore(mode); 
+  }
+  
   protected final IObjectId save(Object obj) {
     return fStore.save(obj);
   }
@@ -75,7 +83,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
    File file = new File(PATH);
    file.delete(); 
    //fStore = openFile(new PhysicalFile(PATH));
-   fStore = openFile(new InMemoryFile());
+   fStore = openFile(new InMemoryFile(), getInitialDBMode());
   }
   
   @Override
@@ -83,7 +91,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.close();
   }
   
-  private IObjectStoreExt openFile(IMemoriaFile file) {
-    return (IObjectStoreExt) Memoria.open(file);
+  private IObjectStoreExt openFile(IMemoriaFile file, DBMode mode) {
+    return (IObjectStoreExt) Memoria.open(file, mode);
   }
 }

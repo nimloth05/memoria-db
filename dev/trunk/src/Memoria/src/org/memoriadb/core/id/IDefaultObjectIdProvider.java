@@ -7,7 +7,7 @@ public interface IDefaultObjectIdProvider {
   public IObjectId getHandlerMetaClass();
 
   public IObjectId getMemoriaClassDeletionMarker();
-
+  
   /**
    * ObjectID for the Meta-MetaClass for the field based MetaClass.
    */

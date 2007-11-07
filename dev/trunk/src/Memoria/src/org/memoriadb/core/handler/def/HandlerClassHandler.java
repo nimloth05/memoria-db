@@ -9,7 +9,7 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.MemoriaHandlerClass;
 import org.memoriadb.exception.MemoriaException;
 
-public class MetaClassHandler implements ISerializeHandler {
+public class HandlerClassHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {

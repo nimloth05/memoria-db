@@ -36,12 +36,6 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   @Override
-  public IObjectId getMemoriaClassId(Class<?> klass) {
-    IMemoriaClass memoriaClass = fObjectRepo.getMemoriaClass(klass);
-    return fObjectRepo.getObjectId(memoriaClass);
-  }
-
-  @Override
   public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
   }
@@ -78,7 +72,7 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   private void serializeObject(DataOutput dataStream, IObjectInfo info) throws Exception {
-    IMemoriaClass metaClass = fObjectRepo.getMemoriaClass(info.getObj().getClass());
+    IMemoriaClass metaClass = (IMemoriaClass) fObjectRepo.getObject(info.getMemoriaClassId());
     serializeObject(metaClass, dataStream, info);
   }
 

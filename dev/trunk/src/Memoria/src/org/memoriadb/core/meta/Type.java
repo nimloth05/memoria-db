@@ -7,7 +7,6 @@ import java.util.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.exception.MemoriaException;
 
 
@@ -174,7 +173,7 @@ public enum Type {
     byte byteOrdinal = -1;
     try {
       byteOrdinal = input.readByte();
-      Type.values()[byteOrdinal].readValue(input, visitor, context);
+      Type.values()[byteOrdinal].readValue(input, context, visitor);
       return visitor;
     } catch (Exception e) {
       throw new MemoriaException("Could not read type Information. "  + byteOrdinal, e);
@@ -228,27 +227,7 @@ public enum Type {
     return result;
   }
   
-  public void readFieldValue(DataInput input, final Object object, Field field, IReaderContext context) {
-    readValue(input, new TypeVisitorHelper<Void, Field>(field, context) {
-
-        @Override
-        public void visitClass(Type type, IObjectId objectId) {
-          fContext.objectToBind(new ObjectFieldReference(object, fMember, objectId));
-        }
-
-        @Override
-        public void visitPrimitive(Type type, Object value) {
-          try {
-            fMember.set(object, value);
-          }
-          catch(Exception e) {
-            throw new MemoriaException("could not read field: '" + fMember + "' field-type: " + name(), e);
-          }
-        }
-      }, context);
-  }
-  
-  public void readValue(DataInput input, ITypeVisitor visitor, IReaderContext context) {
+  public void readValue(DataInput input, IReaderContext context, ITypeVisitor visitor) {
     try {
       internalReadValue(input, visitor, context);
     }
@@ -257,12 +236,11 @@ public enum Type {
     }
   }
   
-  public void writeFieldValue(DataOutput input, Object object, Field field, ISerializeContext context) {
+  public void writeValue(DataOutput output, Object value, ISerializeContext context) {
     try {
-      Object value = field.get(object);
-      internalWriteValue(input, value, context);
+      internalWriteValue(output, value, context);
     } catch (Exception e) {
-      throw new MemoriaException("could not write value. Type: "+ name() + " field: " + field, e);
+      throw new MemoriaException("could not write value. Type: "+ name() + " value: " + value, e);
     }
   }
   
