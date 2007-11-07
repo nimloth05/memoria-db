@@ -29,13 +29,12 @@ public class TransactionWriter implements IFileWriter {
     stream.writeLong(blockSize);
 
     // transaction
-    stream.writeLong(++fHeadRevision);
     stream.writeLong(trxData.length);
+    stream.writeLong(++fHeadRevision);
     stream.write(trxData);
     stream.writeLong(CRC32Util.getChecksum(trxData));
 
     fFile.append(byteArrayOutputStream.toByteArray());
-   
   }
   
   @Override

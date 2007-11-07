@@ -91,11 +91,11 @@ public class FileReader {
   private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
     BlockLayout.assertBlockTag(stream);
     long blockSize = stream.readLong(); // the block size
+
+    long transactionSize = stream.readLong(); // transactionsize
     
     long revision = stream.readLong(); // transaction-revision
     fHeadRevision = Math.max(fHeadRevision, revision);
-    
-    long transactionSize = stream.readLong(); // transactionsize
 
     byte[] transactionData = new byte[(int) transactionSize];
     stream.read(transactionData);
