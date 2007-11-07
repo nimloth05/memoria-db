@@ -13,14 +13,13 @@ public class LoadTest extends AbstractObjectStoreTest {
   public void test_save_objectref() throws Exception {
     List<Object> objects = new ArrayList<Object>();
     
-    for(int i = 0; i < 150; ++i) {
+    for(int i = 0; i < 20000; ++i) {
       Referencer composite = new Referencer();
       composite.set(SimpleTestObj.class, "1");
       objects.add(composite);
     }
     
     saveAll(objects.toArray());
-    fStore.checkSanity();
     
     List<Referencer> allSavedObjects = getAll(Referencer.class);
     for(Referencer ref: allSavedObjects) {

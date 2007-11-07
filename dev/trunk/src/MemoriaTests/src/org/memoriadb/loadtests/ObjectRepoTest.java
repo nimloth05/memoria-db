@@ -55,7 +55,7 @@ public class ObjectRepoTest extends TestCase {
 
   public void test_put_a_lot_of_objects() {
     List<Object> objects = new ArrayList<Object>();
-    for(int i = 0; i < 100000; ++i) {
+    for(int i = 0; i < 10000; ++i) {
       Object obj = new WrongHashCode();
       
       fRepo.add(obj);
