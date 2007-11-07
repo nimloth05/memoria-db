@@ -2,9 +2,9 @@ package org.memoriadb.test.core.array;
 
 import java.util.Arrays;
 
-import org.memoriadb.test.core.AbstractObjectStoreTest;
 import org.memoriadb.test.core.array.testclasses.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ArrayTest extends AbstractObjectStoreTest {
   

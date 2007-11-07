@@ -1,8 +1,8 @@
 package org.memoriadb.test.core.collection;
 
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.test.core.AbstractObjectStoreTest;
 import org.memoriadb.test.core.collection.testclassses.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ArrayListTest extends AbstractObjectStoreTest {
 

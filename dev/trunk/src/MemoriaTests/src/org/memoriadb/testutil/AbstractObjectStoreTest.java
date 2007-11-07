@@ -1,7 +1,7 @@
 package org.memoriadb.testutil;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -33,12 +33,14 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
-    List<T> result = new ArrayList<T>();
-    for(Object object: fStore.getAllObjects()) {
-      if (clazz.isInstance(object)) result.add(clazz.cast(object));
-    }
-    return result;
+    return fStore.getAll(clazz);
   }
+  
+
+  protected final <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
+    return fStore.getAll(clazz, filter);
+  }
+  
   
   protected IMemoriaFile getFile() {
     return ((ObjectStore)fStore).getFile();

@@ -4,6 +4,7 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 
 public class InheritanceTest extends AbstractObjectStoreTest {

@@ -3,6 +3,7 @@ package org.memoriadb.test.core;
 import java.util.*;
 
 import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {

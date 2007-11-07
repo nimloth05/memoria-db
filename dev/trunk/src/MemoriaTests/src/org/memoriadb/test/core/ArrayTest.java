@@ -5,6 +5,7 @@ import java.util.Arrays;
 import junit.framework.Assert;
 
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ArrayTest extends AbstractObjectStoreTest {
   

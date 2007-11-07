@@ -5,6 +5,7 @@ import java.util.List;
 import org.memoriadb.IFilter;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class CompositeTest extends AbstractObjectStoreTest {
   
