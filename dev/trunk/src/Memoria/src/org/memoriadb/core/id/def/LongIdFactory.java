@@ -69,7 +69,7 @@ public class LongIdFactory implements IObjectIdFactory {
   }
 
   @Override
-  public boolean isMemoriaMetaClass(IObjectId typeId) {
+  public boolean isMemoriaClass(IObjectId typeId) {
     return MEMORIA_META_CLASS_ID.equals(typeId);
   }
 

@@ -1,5 +1,7 @@
 package org.memoriadb.core.file;
 
+import java.io.IOException;
+
 
 public interface IFileWriter {
 
@@ -10,6 +12,6 @@ public interface IFileWriter {
   /**
    * Saves the given object-data to the persistent store.
    */
-  public void write(byte[] objectData);
+  public void write(byte[] objectData)  throws IOException;
 
 }

@@ -1,4 +1,4 @@
-package org.memoriadb.test.util;
+package org.memoriadb.testutil;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class FilePrinter {
     }
 
     @Override
-    public void memoriaClass(HydratedObject metaClass, IObjectId id, long version) {
+    public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
       System.out.println("  class id " + id + " version " + version);
     }
 
@@ -27,7 +27,7 @@ public class FilePrinter {
     }
 
     @Override
-    public void object(HydratedObject object, IObjectId id, long version) {
+    public void object(HydratedObject object, IObjectId id, long version, int size) {
       System.out.println("  object id " + id + " version " + version);
     }
 

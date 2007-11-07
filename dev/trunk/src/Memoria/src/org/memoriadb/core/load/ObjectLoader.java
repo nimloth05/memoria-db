@@ -136,7 +136,7 @@ public final class ObjectLoader implements IReaderContext {
       }
 
       @Override
-      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version) {
+      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
         addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
       }
 
@@ -146,7 +146,7 @@ public final class ObjectLoader implements IReaderContext {
       }
 
       @Override
-      public void object(HydratedObject object, IObjectId id, long version) {
+      public void object(HydratedObject object, IObjectId id, long version, int size) {
         addHydratedObject(fHydratedObjects, object, id, version);
       }
 

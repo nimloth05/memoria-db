@@ -23,6 +23,8 @@ public final class BlockLayout {
   public static final int BLOCK_OVERHEAD = BLOCK_TAG_LEN + BLOCK_SIZE_LEN;
   
   public static final int TRX_OVERHEAD = TRX_SIZE_LEN +  REVISION_LEN + CRC_LEN;
+
+  public static final int OBJECT_SIZE_LEN = Constants.INT_SIZE;
   
   public static void assertBlockTag(DataInputStream stream) throws IOException {
     byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
@@ -33,10 +35,10 @@ public final class BlockLayout {
   /**
    * @param trxDataLength The length of the net-data in the transaction
    * 
-   * @return The the required size in bytes a block with trxDataLength bytes data in the transaction.
+   * @return The required net-size in bytes a block must have.
    */
   public static int getBlockSize(int trxDataLength) {
-    return BLOCK_OVERHEAD + TRX_OVERHEAD + trxDataLength;
+    return TRX_OVERHEAD + trxDataLength;
   }
 
   private BlockLayout() {}

@@ -15,10 +15,10 @@ public interface IFileReaderHandler {
   
   public void block(Block block);
 
-  public void memoriaClass(HydratedObject metaClass, IObjectId id, long version);
+  public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size);
   public void memoriaClassDeleted(IObjectId id, long version);
   
-  public void object(HydratedObject object, IObjectId id, long version);
+  public void object(HydratedObject object, IObjectId id, long version, int size);
   public void objectDeleted(IObjectId id, long version);
   
 }

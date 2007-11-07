@@ -2,11 +2,11 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.exception.*;
-import org.memoriadb.util.CRC32Util;
+import org.memoriadb.util.MemoriaCRC32;
 
 /**
  * Reads the content of a {@link IMemoriaFile}.
@@ -90,27 +90,35 @@ public class FileReader {
    */
   private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
     BlockLayout.assertBlockTag(stream);
+    
+    MemoriaCRC32 crc32 = new MemoriaCRC32();
     long blockSize = stream.readLong(); // the block size
-
+    crc32.updateLong(blockSize);
+    
     long transactionSize = stream.readLong(); // transactionsize
+    crc32.updateLong(transactionSize);
     
     long revision = stream.readLong(); // transaction-revision
+    crc32.updateLong(revision);
     fHeadRevision = Math.max(fHeadRevision, revision);
 
     byte[] transactionData = new byte[(int) transactionSize];
     stream.read(transactionData);
-    long crc32 = stream.readLong();
+    crc32.update(transactionData);
+
+    long expectedCrc32 = stream.readLong();
+    long value = crc32.getValue();
+    if (value != expectedCrc32) throw new FileCorruptException("wrong checksum for block at position " + position);
 
     // block may be bigger then the transaction-data -> skip
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
-    if (CRC32Util.getChecksum(transactionData) != crc32) throw new FileCorruptException("wrong checksum for block at position " + position);
 
     readObjects(idFactory, handler, revision,  transactionData);
     handler.block(new Block(blockSize, position));
 
     // revision + startTag + blockSize dataSize + data.length
-    return BlockLayout.BLOCK_TAG_LEN + 8 + 8 + 8 + blockSize;
+    return blockSize + BlockLayout.BLOCK_OVERHEAD;
   }
 
   private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
@@ -129,11 +137,11 @@ public class FileReader {
     }
 
     // no deleteMarker encountered
-    if (idFactory.isMemoriaMetaClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision);
+    if (idFactory.isMemoriaClass(typeId)) {
+      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision, size + BlockLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, stream), objectId, revision);
+      handler.object(new HydratedObject(typeId, stream), objectId, revision, size + BlockLayout.OBJECT_SIZE_LEN);
     }
   }
 
@@ -143,8 +151,8 @@ public class FileReader {
 
     while (stream.available() > 0) {
       int size = stream.readInt();
-      readObject(idFactory, handler, revision, data, offset + 4, size);
-      offset += 4 + size;
+      readObject(idFactory, handler, revision, data, offset + BlockLayout.OBJECT_SIZE_LEN, size);
+      offset += BlockLayout.OBJECT_SIZE_LEN + size;
       skip(stream, size);
     }
   }

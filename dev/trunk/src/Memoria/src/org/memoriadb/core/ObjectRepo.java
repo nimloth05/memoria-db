@@ -195,8 +195,8 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public boolean isMemoriaMetaClass(IObjectId typeId) {
-    return fIdFactory.isMemoriaMetaClass(typeId);
+  public boolean isMemoriaClass(IObjectId typeId) {
+    return fIdFactory.isMemoriaClass(typeId);
   }
 
   @Override

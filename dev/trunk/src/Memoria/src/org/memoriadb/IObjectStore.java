@@ -2,7 +2,6 @@ package org.memoriadb;
 
 import java.util.*;
 
-import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
@@ -21,9 +20,6 @@ public interface IObjectStore {
    */
   public void beginUpdate();
 
-  // wird später entfernt, msc...
-  public void checkSanity();
-
   public void close();
 
   // query
@@ -32,7 +28,7 @@ public interface IObjectStore {
   public boolean contains(Object obj);
 
   /**
-   * Removes the given object from this ObjectStore. Removed objects can later be added again.
+   * Removes the given object from this ObjectStore. Removed objects can later be added again, resulting in a new id.
    * 
    * References to the given object remain untouched for the current object graph, but will be null
    * when the file is opened with a new ObjectStore.
@@ -71,12 +67,12 @@ public interface IObjectStore {
   public Collection<Object> getAllObjects();
 
   /**
-   * @return The MetaClass for the given <tt>obj</tt> or null.
+   * @return The Class for the given <tt>obj</tt> or null.
    */
   public IMemoriaClass getMemoriaClass(Class<?> clazz);
   
   /**
-   * @return The MetaClass for the given <tt>obj</tt> or null.
+   * @return The Class for the given <tt>obj</tt> or null.
    */
   public IMemoriaClass getMemoriaClass(Object obj);
 
@@ -93,9 +89,6 @@ public interface IObjectStore {
    */
   public IObjectId getObjectId(Object obj);
   
-  //FIXME: Auf eine Test-Schnittstelle verschieben
-  public IObjectInfo getObjectInfo(IObjectId id);
-  public IObjectInfo getObjectInfo(Object obj);
   
   /**
    * @return true, if the update-counter is > 0.  

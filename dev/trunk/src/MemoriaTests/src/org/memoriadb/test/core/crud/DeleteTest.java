@@ -3,6 +3,7 @@ package org.memoriadb.test.core.crud;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.crud.testclass.*;
+import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 import org.memoriadb.util.Constants;
 

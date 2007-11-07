@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.crud.testclass;
+package org.memoriadb.test.core.testclasses;
 
 /**
  * Test-class with one int attribute.

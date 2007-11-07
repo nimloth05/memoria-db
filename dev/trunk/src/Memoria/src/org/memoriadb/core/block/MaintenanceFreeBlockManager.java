@@ -7,7 +7,6 @@ public class MaintenanceFreeBlockManager implements IBlockManager {
   }
 
   public Block getBlock(int blockSize) {
-    // TODO Auto-generated method stub
     return null;
   }
 

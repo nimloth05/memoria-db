@@ -1,8 +1,9 @@
 package org.memoriadb.core;
 
+import java.io.IOException;
 import java.util.*;
 
-import org.memoriadb.*;
+import org.memoriadb.IFilter;
 import org.memoriadb.core.block.MaintenanceFreeBlockManager;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
@@ -10,7 +11,7 @@ import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
-public class ObjectStore implements IObjectStore {
+public class ObjectStore implements IObjectStoreExt {
 
   private final IObjectRepo fObjectRepo;
   private final IFileWriter fTransactionWriter;
@@ -189,7 +190,12 @@ public class ObjectStore implements IObjectStore {
       serializer.markAsDeleted(id);
     }
     
-    fTransactionWriter.write(serializer.getBytes());
+    try {
+      fTransactionWriter.write(serializer.getBytes());
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
     
     fAdd.clear();
     fUpdate.clear();

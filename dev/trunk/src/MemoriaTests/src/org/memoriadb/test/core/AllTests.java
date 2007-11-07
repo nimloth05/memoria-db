@@ -9,6 +9,8 @@ public class AllTests {
 
     suite.addTest(org.memoriadb.test.core.backend.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.block.AllTests.suite());
+    suite.addTestSuite(org.memoriadb.test.core.collection.ArrayListTest.class);
 
     //$JUnit-BEGIN$
     suite.addTestSuite(TypeTest.class);

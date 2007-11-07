@@ -45,15 +45,15 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     assertEquals(c1_l2, c3.getC1());
   }
   
-  public void test_save_attribute() {
-    B b = new B("b");
-    IObjectId id = fStore.save(b);
+  public void test_Object() {
+    Object o = new Object();
+    IObjectId id = save(o);
     
     reopen();
     
-    B b_l1 = (B) fStore.getObject(id);
-    assertNotSame(b_l1, b);
-    assertEquals("b", b_l1.getName());
+    Object o_l1 = fStore.getObject(id);
+    assertSame(Object.class, o_l1.getClass());
+    
   }
   
   // FIXME geht noch nicht, msc
@@ -78,6 +78,17 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
 //    assertNull(a_l1.getB());
 //  }
   
+  public void test_save_attribute() {
+    B b = new B("b");
+    IObjectId id = fStore.save(b);
+    
+    reopen();
+    
+    B b_l1 = (B) fStore.getObject(id);
+    assertNotSame(b_l1, b);
+    assertEquals("b", b_l1.getName());
+  }
+  
   public void test_save_reference() {
     B b = new B("b");
     A a = new A(b);
@@ -87,16 +98,6 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     
     A a_l1 = (A) fStore.getObject(id);
     assertEquals("b", a_l1.getB().getName());
-  }
-  
-  public void test_save_same_object_twice() {
-    B b = new B("b");
-    IObjectId id = fStore.save(b,b)[1];
-    
-    reopen();
-    
-    B b_l1 = (B) fStore.getObject(id);
-    assertEquals("b", b_l1.getName());
   }
   
   // FIXME geht noch nicht, msc
@@ -109,6 +110,16 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
 //    A ab = (A) fStore.getObject(id);
 //    assertNull(ab.getB());
 //  }
+  
+  public void test_save_same_object_twice() {
+    B b = new B("b");
+    IObjectId id = fStore.save(b,b)[1];
+    
+    reopen();
+    
+    B b_l1 = (B) fStore.getObject(id);
+    assertEquals("b", b_l1.getName());
+  }
   
   public void test_update_attribute() {
     B b = new B("b");

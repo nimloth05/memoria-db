@@ -6,7 +6,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.memoriadb.*;
-import org.memoriadb.core.ObjectStore;
+import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 
@@ -14,7 +14,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   private static final String PATH = "file.mia";
   
-  protected IObjectStore fStore;
+  protected IObjectStoreExt fStore;
   
   protected void beginUpdate() {
     fStore.beginUpdate();
@@ -36,11 +36,9 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return fStore.getAll(clazz);
   }
   
-
   protected final <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
     return fStore.getAll(clazz, filter);
   }
-  
   
   protected IMemoriaFile getFile() {
     return ((ObjectStore)fStore).getFile();
@@ -85,7 +83,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.close();
   }
   
-  private IObjectStore openFile(IMemoriaFile file) {
-    return Memoria.open(file);
+  private IObjectStoreExt openFile(IMemoriaFile file) {
+    return (IObjectStoreExt) Memoria.open(file);
   }
 }
