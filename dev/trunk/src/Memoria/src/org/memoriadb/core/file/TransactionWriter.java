@@ -47,9 +47,14 @@ public class TransactionWriter implements IFileWriter {
     return fFile;
   }
 
-  public void write(byte[] data) {
+  public void write(byte[] trxData) {
+    
+    int blockSize = BlockLayout.getBlockSize(trxData.length);
+    
+    Block freeBlock = fBlockManager.getBlock(blockSize);
+    
     try {
-      append(data);
+      append(trxData);
     }
     catch (IOException e) {
       throw new MemoriaException(e);

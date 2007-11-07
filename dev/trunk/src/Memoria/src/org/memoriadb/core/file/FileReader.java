@@ -110,7 +110,7 @@ public class FileReader {
     handler.block(new Block(blockSize, position));
 
     // revision + startTag + blockSize dataSize + data.length
-    return BlockLayout.TAG_SIZE + 8 + 8 + 8 + blockSize;
+    return BlockLayout.BLOCK_TAG_LEN + 8 + 8 + 8 + blockSize;
   }
 
   private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {

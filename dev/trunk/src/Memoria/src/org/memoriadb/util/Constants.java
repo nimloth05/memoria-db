@@ -14,6 +14,13 @@ public final class Constants {
    */
   public static final long INITIAL_VERSION = 1;
 
+
+  /**
+   * The size of an int in bytes.
+   */
+  public static final int INT_SIZE = 4;
+
+  
   /**
    * The size of a long in bytes.
    */
