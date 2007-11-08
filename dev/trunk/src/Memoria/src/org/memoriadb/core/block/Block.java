@@ -1,6 +1,7 @@
 package org.memoriadb.core.block;
 
 import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.exception.MemoriaException;
 
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to
@@ -38,6 +39,8 @@ public class Block {
   }
   
   public Block(IBlockManager manager, long size, long position, int objectDataCount, int inactiveObjectDataCount) {
+    if(manager == null) throw new MemoriaException("BlockManager was null");
+    
     fManager = manager;
     fSize = size;
     fPosition = position;
@@ -96,7 +99,8 @@ public class Block {
   }
 
   public void incrementInactiveObjectDataCount() {
-    ++fInactiveObjectDataCount;    
+    ++fInactiveObjectDataCount;
+    fManager.inactiveObjectDataAddedTo(this);
   }
 
   public void incrementObjectDataCount() {
@@ -107,7 +111,5 @@ public class Block {
   public String toString() {
     return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getSize();
   }
-  
-  
   
 }

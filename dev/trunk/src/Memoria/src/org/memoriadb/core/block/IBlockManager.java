@@ -17,6 +17,10 @@ public interface IBlockManager {
    * or null, if no block met the requirements.  
    */
   public Block findRecyclebleBlock(int blockSize);
-  
+
+  /**
+   * Called when at runtime an objectData from this block was replaced by a newer generation.
+   */
+  public void inactiveObjectDataAddedTo(Block block);
 
 }

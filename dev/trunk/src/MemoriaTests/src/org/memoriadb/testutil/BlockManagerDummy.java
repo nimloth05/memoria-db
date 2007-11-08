@@ -15,4 +15,9 @@ public class BlockManagerDummy implements IBlockManager {
     return null;
   }
 
+  @Override
+  public void inactiveObjectDataAddedTo(Block block) {
+    
+  }
+
 }

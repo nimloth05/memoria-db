@@ -11,7 +11,8 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   private final double fSizeThreshold = 0.5;
   
   private final List<Block> fBlocks = new ArrayList<Block>();
-  private final Set<Block> fReadyForCleanup = new HashSet<Block>();
+  
+  private final Set<Block> fRecycleList = new TreeSet<Block>();
     
   public MaintenanceFreeBlockManager() {
     
@@ -19,6 +20,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   
   public void add(Block block) {
     fBlocks.add(block);
+    fRecycleList.add(block);
   }
   
   public Block findRecyclebleBlock(int blockSize) {
@@ -32,6 +34,11 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   @Override
   public int getBlockCount() {
     return fBlocks.size();
+  }
+
+  @Override
+  public void inactiveObjectDataAddedTo(Block block) {
+    
   }
 
   public void incrementInactiveCount(Block block) {
