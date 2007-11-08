@@ -240,7 +240,7 @@ public enum Type {
     try {
       internalWriteValue(output, value, context);
     } catch (Exception e) {
-      throw new MemoriaException("could not write value. Type: "+ name() + " value: " + value, e);
+      throw new MemoriaException("could not write value: "+ name() + " value: " + value, e);
     }
   }
   

@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.core.ObjectRepo;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.id.def.LongIdFactory;
+import org.memoriadb.core.id.def.*;
 import org.memoriadb.test.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {
@@ -54,11 +54,13 @@ public class ObjectRepoTest extends TestCase {
   }
 
   public void test_put_a_lot_of_objects() {
+    IObjectId memoriaClassId = new LongObjectId(1);
+    
     List<Object> objects = new ArrayList<Object>();
     for(int i = 0; i < 10000; ++i) {
       Object obj = new WrongHashCode();
       
-      fRepo.add(obj);
+      fRepo.add(obj, memoriaClassId);
       objects.add(obj);
     }
     

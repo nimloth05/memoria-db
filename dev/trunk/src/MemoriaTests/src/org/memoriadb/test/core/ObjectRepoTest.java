@@ -15,7 +15,7 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_deleted_object_is_not_contained() {
     SimpleTestObj obj = new SimpleTestObj();
-    IObjectId id = fRepo.add(obj);
+    IObjectId id = fRepo.add(obj, new LongObjectId(1));
     
     fRepo.delete(obj);
     
@@ -24,30 +24,26 @@ public class ObjectRepoTest extends TestCase {
     
   }
   
-  public void test_put_inheritence_object() {
-    
-  }
-  
   public void test_put_meta_object_in_cache() {
     IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
-    IObjectId id = fRepo.add(classObject);
+    IObjectId id = fRepo.add(classObject, fRepo.getMemoriaMetaClass());
     
     assertSame(classObject, fRepo.getObject(id));
-    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class));
+    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
   
   public void test_put_meta_object_with_id_in_cache() {
     IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
     IObjectId id = new LongObjectId(20);
-    fRepo.handleAdd(new ObjectInfo(id, classObject, Block.sVirtualBlock, 0, 0));
+    fRepo.handleAdd(new ObjectInfo(id, new LongObjectId(1), classObject, Block.sVirtualBlock, 0, 0));
     
     assertSame(classObject, fRepo.getObject(id));
-    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class));
+    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
   
   public void test_put_new_object_in_cache() {
     SimpleTestObj obj = new SimpleTestObj();
-    IObjectId id = fRepo.add(obj);
+    IObjectId id = fRepo.add(obj, new LongObjectId(1));
     Object obj2 = fRepo.getObject(id);
     assertSame(obj, obj2);
   }
@@ -56,10 +52,10 @@ public class ObjectRepoTest extends TestCase {
     SimpleTestObj obj = new SimpleTestObj();
     //Wir starten hier absichtlich mit 20.
     IObjectId objectId = new LongObjectId(20);
-    fRepo.handleAdd(new ObjectInfo(objectId, obj, Block.sVirtualBlock, 0, 0));
+    fRepo.handleAdd(new ObjectInfo(objectId, new LongObjectId(1), obj, Block.sVirtualBlock, 0, 0));
     
     SimpleTestObj obj2 = new SimpleTestObj();
-    IObjectId id = fRepo.add(obj2);
+    IObjectId id = fRepo.add(obj2, new LongObjectId(1));
     assertEquals(new LongObjectId(21), id);
     
     assertEquals(obj, fRepo.getObject(objectId));

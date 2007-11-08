@@ -76,9 +76,10 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
+    final IFieldObject fFieldObject = getFieldObject(obj);
+    
     new MetaClassInheritanceTraverser(fClassObject) {
       
-      private final IFieldObject fFieldObject = getFieldObject(obj);
 
       @Override
       protected void handle(IMemoriaClass metaObject) {

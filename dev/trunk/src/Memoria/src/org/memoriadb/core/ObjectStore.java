@@ -259,7 +259,6 @@ public class ObjectStore implements IObjectStoreExt {
     // object not already in the store, add it
     fAdd.add(obj);
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    System.out.println("internalSave: "+memoriaClassId);
     return fObjectRepo.add(obj, memoriaClassId);
   }
 
