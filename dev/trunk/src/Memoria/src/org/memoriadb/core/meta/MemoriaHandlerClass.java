@@ -28,11 +28,6 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
     return fSerializeHandler.getClass().getName();
   }
   
-  @Override
-  public Class<?> getJavaClass() {
-    return fClazz;
-  }
-
   public String getJavaClassName() {
     return fClazz.getName();
   }

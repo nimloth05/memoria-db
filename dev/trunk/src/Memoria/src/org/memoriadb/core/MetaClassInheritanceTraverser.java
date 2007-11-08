@@ -17,7 +17,7 @@ public abstract class MetaClassInheritanceTraverser {
       handle(classObject);
     }
     catch (Exception e) {
-      throw new MemoriaException("Exception during object traversal. classObject for JavaClass "+classObject.getJavaClass(), e);
+      throw new MemoriaException("Exception during object traversal. classObject for JavaClass "+classObject.getJavaClassName(), e);
     }
   }
 
@@ -26,7 +26,7 @@ public abstract class MetaClassInheritanceTraverser {
     while (true) {
       internalHandle(classObject);
       
-      if (classObject.getSuperClass() == null && !classObject.getJavaClass().equals(Object.class)) throw new MemoriaException("Class Hierarchy is corrupt. Only the java Object MetaClass can have no super class. " + this);
+      if (classObject.getSuperClass() == null && !classObject.getJavaClassName().equals(Object.class.getName())) throw new MemoriaException("Class Hierarchy is corrupt. Only the java Object MetaClass can have no super class. " + this);
       classObject = classObject.getSuperClass();
       if (classObject == null) break;
     }

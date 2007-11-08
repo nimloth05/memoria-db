@@ -15,17 +15,18 @@ public class HydratedInfo {
   private HydratedObject fHydratedObject;
   private long fVersion;
   private int fOldGenerationCount;
+  private IObjectId fTypeId;
   
-  public HydratedInfo(IObjectId id, HydratedObject hydratedObject, long version) {
+  public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, long version) {
     fId = id;
+    fTypeId = typeId;
     fHydratedObject = hydratedObject;
     fVersion = version;
     fOldGenerationCount = 0;
   }
 
   public IObjectId getMemoriaClassId() {
-    if (isDeleted()) throw new MemoriaException("This Object is deleted");
-    return fHydratedObject.getTypeId();
+    return fTypeId;
   }
 
   /**
@@ -53,10 +54,6 @@ public class HydratedInfo {
     return fHydratedObject == null;
   }
 
-  public void setDeleted() {
-    fHydratedObject = null;
-  }
-
   @Override
   public String toString() {
     return "HydratedObject: " + fId.toString() + (isDeleted()?" deleted":"");
@@ -65,7 +62,7 @@ public class HydratedInfo {
   /**
    * @param hydratedObject pass null to mark this object as deleted
    */
-  public void update(HydratedObject hydratedObject, long version) {
+  public void update(HydratedObject hydratedObject, IObjectId typeId, long version) {
     // es kann nicht 2 mal dieselbe Version abgespeichert sein
     if(fVersion == version) throw new MemoriaException("internal error: object-version " + version);
     
@@ -76,6 +73,7 @@ public class HydratedInfo {
     
     fVersion = version;
     fHydratedObject = hydratedObject;
+    fTypeId = typeId;
   }
   
 }

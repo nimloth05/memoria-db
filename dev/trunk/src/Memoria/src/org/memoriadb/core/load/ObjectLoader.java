@@ -89,18 +89,30 @@ public final class ObjectLoader implements IReaderContext {
     }
   }
   
+  private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long version) {
+    HydratedInfo info = container.get(id);
+    if (info == null) {
+      container.put(id, new HydratedInfo(id, deletionTypeId, null, version));
+      return;
+    } 
+
+    // object already loaded in other version, newer version survives
+    info.update(null, deletionTypeId, version);
+    if (info.getVersion() != version) throw new MemoriaException("DeletionMarker had lower revision then last objectData");
+  }
+  
   /**
    * @param object null if deleteMarker was encountered
    */
   private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, object, version));
+      container.put(id, new HydratedInfo(id, object.getTypeId(), object, version));
       return;
     } 
 
     // object already loaded in other version, newer version survives
-    info.update(object, version);
+    info.update(object, object.getTypeId(), version);
   }
 
   private void bindObjects() {
@@ -155,7 +167,7 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void memoriaClassDeleted(IObjectId id, long version) {
-        addHydratedObject(fHydratedMetaClasses, null, id, version);
+        addDeletionMarker(fHydratedMetaClasses, id, fRepo.getMemoriaClassDeletionMarker(), version);
       }
 
       @Override
@@ -165,7 +177,7 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void objectDeleted(IObjectId id, long version) {
-        addHydratedObject(fHydratedObjects, null, id, version);
+        addDeletionMarker(fHydratedObjects, id, fRepo.getObjectDeletionMarker(), version);
       }
 
     });

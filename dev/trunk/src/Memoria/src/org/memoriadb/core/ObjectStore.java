@@ -105,7 +105,7 @@ public class ObjectStore implements IObjectStoreExt {
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fObjectRepo.getMemoriaClass(clazz);
+    return fObjectRepo.getMemoriaClass(clazz.getName());
   }
   
   @Override
@@ -243,29 +243,34 @@ public class ObjectStore implements IObjectStoreExt {
 
     // object not already in the store, add it
     fAdd.add(obj);
-    addMemoriaClassIfNecessary(obj);
-    return fObjectRepo.add(obj);
+    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
+    System.out.println("internalSave: "+memoriaClassId);
+    return fObjectRepo.add(obj, memoriaClassId);
   }
   
-  private void addMemoriaClassIfNecessary(Object obj) {
+  private IObjectId addMemoriaClassIfNecessary(Object obj) {
     Class<?> klass = obj.getClass();
 
     // if obj is an array, the metaClass of the componentType is added.
     // The MetaClass for the array is generic and bootstrapped
-    if (klass.isArray()) {
-      klass = klass.getComponentType();
-    }
 
-    new InheritanceTraverser(klass) {
+    return new InheritanceTraverser(klass) {
 
       private IMemoriaClassConfig fChildClass = null;
+      private IObjectId fObjectMemoriaClass;
 
       @Override
       public void handle(Class<?> clazz) {
-        IMemoriaClassConfig classObject = fObjectRepo.getMemoriaClass(clazz);
+        if (clazz.isArray()) {
+          clazz = clazz.getComponentType();
+          if (fObjectMemoriaClass == null) fObjectMemoriaClass = fObjectRepo.getArrayMemoriaClass();
+        }
+        
+        IMemoriaClassConfig classObject = fObjectRepo.getMemoriaClass(clazz.getName());
 
         if (classObject != null) {
           if (fChildClass != null) fChildClass.setSuperClass(classObject);
+          if (fObjectMemoriaClass == null) fObjectMemoriaClass = getObjectId(classObject);
           abort();
           return;
         }
@@ -273,9 +278,11 @@ public class ObjectStore implements IObjectStoreExt {
         classObject = MemoriaFieldClassFactory.createMetaClass(clazz);
         if (fChildClass != null) fChildClass.setSuperClass(classObject);
         fChildClass = classObject;
-        internalSave(classObject);
+        
+        IObjectId id = internalSave(classObject);
+        if (fObjectMemoriaClass == null) fObjectMemoriaClass = id;
       }
-    };
+    }.fObjectMemoriaClass;
   }
 
   private void internalDeleteAll(Object root) {

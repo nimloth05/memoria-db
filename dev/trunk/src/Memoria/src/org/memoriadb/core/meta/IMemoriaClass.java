@@ -6,7 +6,7 @@ public interface IMemoriaClass {
 
   public ISerializeHandler getHandler();
 
-  public Class<?> getJavaClass();
+  public String getJavaClassName();
   
   public IMemoriaClass getSuperClass();
 

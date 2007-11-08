@@ -35,7 +35,7 @@ public class ObjectRepo implements IObjectRepo {
   /**
    * MataClass index
    */
-  //private final Map<Class<?>, IMemoriaClassConfig> fMemoriaClasses = new HashMap<Class<?>, IMemoriaClassConfig>();
+  private final Map<String, IMemoriaClassConfig> fMemoriaClasses = new HashMap<String, IMemoriaClassConfig>();
   
   private final IObjectIdFactory fIdFactory;
   
@@ -56,9 +56,9 @@ public class ObjectRepo implements IObjectRepo {
    * 
    * @return The new id
    */
-  public IObjectId add(Object obj) {
+  public IObjectId add(Object obj, IObjectId memoriaClassId) {
     IObjectId result = generateId();
-    internalPut(new ObjectInfo(result, obj));
+    internalPut(new ObjectInfo(result, memoriaClassId, obj));
     return result;
   }
 
@@ -117,7 +117,6 @@ public class ObjectRepo implements IObjectRepo {
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
   public IMemoriaClassConfig getMemoriaClass(String klass) {
-    if (klass.isArray()) return getGenericArrayMetaClass();
     return fMemoriaClasses.get(klass);
   }
 
@@ -190,13 +189,13 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
+  public boolean isMemoriaClass(IObjectId typeId) {
+    return fIdFactory.isMemoriaClass(typeId);
   }
 
   @Override
-  public boolean isMemoriaClass(IObjectId typeId) {
-    return fIdFactory.isMemoriaClass(typeId);
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
+    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
   }
 
   @Override
@@ -237,10 +236,6 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.createNextId();
   }
 
-  private IMemoriaClassConfig getGenericArrayMetaClass() {
-    return (IMemoriaClassConfig) fIdMap.get(fIdFactory.getArrayMemoriaClass()).getObj();
-  }
-
   // TODO: Test for this assertions!
   private void internalPut(ObjectInfo info) {
     fIdFactory.adjustId(info.getId());
@@ -253,7 +248,7 @@ public class ObjectRepo implements IObjectRepo {
 
     if (info.getObj() instanceof IMemoriaClass) {
       IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObj();
-      previousMapped = fMemoriaClasses.put(metaObject.getJavaClass(), metaObject);
+      previousMapped = fMemoriaClasses.put(metaObject.getJavaClassName(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of memoria class: " + metaObject);
     }
   }

@@ -77,6 +77,8 @@ public class DefaultHandler implements ISerializeHandler {
   @Override
   public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
     new MetaClassInheritanceTraverser(fClassObject) {
+      
+      private final IFieldObject fFieldObject = getFieldObject(obj);
 
       @Override
       protected void handle(IMemoriaClass metaObject) {
@@ -84,11 +86,10 @@ public class DefaultHandler implements ISerializeHandler {
           if(field.getFieldType() != Type.typeClass) continue;
           
           try {
-            // access the field via refelcion
-            traversal.handle(field.getJavaField().get(obj));
+            traversal.handle(fFieldObject.get(field.getName()));
           }
           catch (Exception e) {
-            throw new MemoriaException("Exception during object traversel. Java Class: '"+metaObject.getJavaClass()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
+            throw new MemoriaException("Exception during object traversel. Java Class: '"+metaObject.getJavaClassName()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
           }
         }
       }

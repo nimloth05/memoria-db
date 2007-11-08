@@ -20,7 +20,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @pre The given obj is not already in the container.
    * @return The newly generated id.
    */
-  public IObjectId add(Object obj);
+  public IObjectId add(Object obj, IObjectId memoriaClassId);
 
   
   public void checkSanity();

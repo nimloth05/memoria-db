@@ -68,14 +68,14 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     IMemoriaClass metaClass = fStore.getMemoriaClass(b);
     IMemoriaClass objectClass = fStore.getMemoriaClass(Object.class);
     
-    assertEquals(metaClass.getJavaClass(), B.class);
-    assertEquals(metaClass.getSuperClass().getJavaClass(), A.class);
+    assertEquals(metaClass.getJavaClassName(), B.class.getName());
+    assertEquals(metaClass.getSuperClass().getJavaClassName(), A.class.getName());
     
     IMemoriaClass javaObjectMetaObject = metaClass.getSuperClass().getSuperClass();
     IObjectId id = fStore.getObjectId(javaObjectMetaObject);
     
     assertEquals(fStore.getObjectId(objectClass), id);
-    assertEquals(javaObjectMetaObject.getJavaClass(), Object.class);
+    assertEquals(javaObjectMetaObject.getJavaClassName(), Object.class.getName());
   }
 
   private B createB() {

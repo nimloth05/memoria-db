@@ -26,7 +26,7 @@ public class FieldClassHandler implements ISerializeHandler {
       int fieldId = input.readInt();
       String name = input.readUTF();
       int type = input.readInt();
-      MemoriaField metaField = new MemoriaField(fieldId, name, type, classObject.getJavaClass());
+      MemoriaField metaField = new MemoriaField(fieldId, name, type);
       classObject.addMetaField(metaField);
     }
     return classObject;

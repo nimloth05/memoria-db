@@ -4,7 +4,6 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.exception.MemoriaException;
 
 
 public final class MemoriaFieldClass implements IMemoriaClassConfig {
@@ -57,17 +56,11 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
     return new org.memoriadb.core.handler.def.field.DefaultHandler(this);
   }
   
-  /* (non-Javadoc)
-   * @see org.memoriadb.core.IMetaClass#getJavaClass()
-   */
-  public Class<?> getJavaClass() { 
-    try {
-      return Class.forName(fClassName);
-    } catch (Exception e) {
-      throw new MemoriaException(e);
-    }
+  @Override
+  public String getJavaClassName() {
+    return fClassName;
   }
-  
+
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
