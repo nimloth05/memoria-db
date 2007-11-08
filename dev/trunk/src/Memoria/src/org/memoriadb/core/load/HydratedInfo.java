@@ -16,7 +16,7 @@ public class HydratedInfo {
   private HydratedObject fHydratedObject;
   private long fVersion;
   private int fOldGenerationCount;
-  private final Block fCurrentBlock;
+  private Block fCurrentBlock;
   private IObjectId fTypeId;
   
   public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, long version, Block currentBlock) {
@@ -69,7 +69,7 @@ public class HydratedInfo {
   /**
    * @param hydratedObject pass null to mark this object as deleted
    */
-  public void update(HydratedObject hydratedObject, IObjectId typeId, long version) {
+  public void update(Block currentBlock, HydratedObject hydratedObject, IObjectId typeId, long version) {
     // es kann nicht 2 mal dieselbe Version abgespeichert sein
     if(fVersion == version) throw new MemoriaException("internal error: object-version " + version);
     
@@ -81,6 +81,10 @@ public class HydratedInfo {
     fVersion = version;
     fHydratedObject = hydratedObject;
     fTypeId = typeId;
+    
+    // update block
+    fCurrentBlock.incrementInactiveObjectDataCount();
+    fCurrentBlock = currentBlock;
   }
   
 }

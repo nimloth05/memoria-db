@@ -17,11 +17,11 @@ public class TransactionWriter implements ITransactionWriter {
     fHeadRevision = headRevision;
   }
 
-  public Block append(byte[] trxData) throws IOException {
+  public Block append(byte[] trxData, int numberOfObjects) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
-    stream.write(BlockLayout.BLOCK_START_TAG);
+    stream.write(FileLayout.BLOCK_START_TAG);
 
     MemoriaCRC32 crc32 = new MemoriaCRC32();
 
@@ -43,7 +43,7 @@ public class TransactionWriter implements ITransactionWriter {
     stream.writeLong(crc32.getValue());
 
     // first create the block...
-    Block block = new Block(blockSize, fFile.getSize());
+    Block block = new Block(blockSize, fFile.getSize(), numberOfObjects);
     fBlockManager.add(block);
 
     // ... then add the data to the file.
@@ -67,14 +67,14 @@ public class TransactionWriter implements ITransactionWriter {
     return fFile;
   }
 
-  public Block write(byte[] trxData) throws IOException {
+  public Block write(byte[] trxData, int numberOfObjects) throws IOException {
 
-    int blockSize = BlockLayout.getBlockSize(trxData.length);
+    int blockSize = FileLayout.getBlockSize(trxData.length);
 
     Block block = fBlockManager.findRecyclebleBlock(blockSize);
     
-    // no existing block machted the requirements of the Blockmanager, append the data in a new block.
-    if (block == null) return append(trxData);
+    // no existing block matched the requirements of the Blockmanager, append the data in a new block.
+    if (block == null) return append(trxData, numberOfObjects);
 
     freeBlock(block);
     write(block, trxData);

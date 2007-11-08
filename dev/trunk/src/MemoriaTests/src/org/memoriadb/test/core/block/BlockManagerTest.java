@@ -46,8 +46,11 @@ public class BlockManagerTest extends AbstractObjectStoreTest {
     assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
     
     reopen();
+    
     assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+
+
     
   }
 }

@@ -202,7 +202,7 @@ public class ObjectStore implements IObjectStoreExt {
     }
     
     try {
-      Block block = fTransactionWriter.write(serializer.getBytes());
+      Block block = fTransactionWriter.write(serializer.getBytes(), getPendingObjectCount());
       updateCurrentBlock(fAdd, block);
       updateCurrentBlock(fUpdate, block);
       updateCurrentBlockForDeleted(fDelete, block);
@@ -298,6 +298,10 @@ public class ObjectStore implements IObjectStoreExt {
         if (fObjectMemoriaClass == null) fObjectMemoriaClass = id;
       }
     }.fObjectMemoriaClass;
+  }
+
+  private int getPendingObjectCount() {
+    return fAdd.size() + fUpdate.size() + fDelete.size();
   }
 
   private void internalDeleteAll(Object root) {

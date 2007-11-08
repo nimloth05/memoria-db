@@ -47,6 +47,7 @@ public class ObjectInfo implements IObjectInfo {
 
   @Override
   public void changeCurrentBlock(Block block) {
+    fCurrentBlock.incrementInactiveObjectDataCount();
     fCurrentBlock = block;
   }
 

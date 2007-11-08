@@ -1,6 +1,6 @@
 package org.memoriadb.core.block;
 
-import org.memoriadb.core.file.BlockLayout;
+import org.memoriadb.core.file.FileLayout;
 
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to
@@ -13,7 +13,7 @@ public class Block {
   /**
    * Bootstrapped and new objects refer to this block.
    */
-  public static final Block sVirtualBlock = new Block(0,0);
+  public static final Block sVirtualBlock = new Block(0,-1,0);
   
   /**
    * Number of bytes this block can store.
@@ -31,10 +31,15 @@ public class Block {
   
   private int fInactiveObjectDataCount;
   
-  public Block(long size, long position) {
-    super();
+  public Block(long size, long position, int objectDataCount) {
+    this(size, position, objectDataCount, 0);
+  }
+  
+  public Block(long size, long position, int objectDataCount, int inactiveObjectDataCount) {
     fSize = size;
     fPosition = position;
+    fObjectDataCount = objectDataCount;
+    fInactiveObjectDataCount = inactiveObjectDataCount;
   }
 
   @Override
@@ -58,7 +63,7 @@ public class Block {
    * @return The max number of bytes that can be stored in the contained transaction.
    */
   public long getMaxTrxDataSize() {
-    return getSize() - BlockLayout.TRX_OVERHEAD;
+    return getSize() - FileLayout.TRX_OVERHEAD;
   }
   
   public int getObjectDataCount() {
@@ -87,9 +92,17 @@ public class Block {
     return result;
   }
 
+  public void incrementInactiveObjectDataCount() {
+    ++fInactiveObjectDataCount;    
+  }
+
+  public void incrementObjectDataCount() {
+    ++fObjectDataCount;
+  }
+
   @Override
   public String toString() {
-    return "Block pos:" + getPosition() + " size: " + getSize();
+    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getSize();
   }
   
   

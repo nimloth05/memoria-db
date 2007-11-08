@@ -62,11 +62,11 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected int getOPF() {
-    return BlockLayout.OPF;
+    return FileLayout.OPF;
   }
   
   protected int getOPO() {
-    return BlockLayout.getOPO(fStore);
+    return FileLayout.getOPO(fStore);
   }
   
   protected final void recreateStore(DBMode mode) {

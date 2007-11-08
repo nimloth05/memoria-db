@@ -89,7 +89,7 @@ public class FileReader {
    * @throws IOException
    */
   private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
-    BlockLayout.assertBlockTag(stream);
+    FileLayout.assertBlockTag(stream);
     
     MemoriaCRC32 crc32 = new MemoriaCRC32();
     long blockSize = stream.readLong(); // the block size
@@ -114,12 +114,13 @@ public class FileReader {
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
 
-    handler.block(new Block(blockSize, position));
+    Block block = new Block(blockSize, position, 0);
+    handler.block(block);
     
-    readObjects(idFactory, handler, revision,  transactionData);
+    readObjects(block, idFactory, handler, revision,  transactionData);
 
     // revision + startTag + blockSize dataSize + data.length
-    return blockSize + BlockLayout.BLOCK_OVERHEAD;
+    return blockSize + FileLayout.BLOCK_OVERHEAD;
   }
 
   private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
@@ -139,21 +140,22 @@ public class FileReader {
 
     // no deleteMarker encountered
     if (idFactory.isMemoriaClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision, size + BlockLayout.OBJECT_SIZE_LEN);
+      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, stream), objectId, revision, size + BlockLayout.OBJECT_SIZE_LEN);
+      handler.object(new HydratedObject(typeId, stream), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
     }
   }
 
-  private void readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
+  private void readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
     int offset = 0;
 
     while (stream.available() > 0) {
+      block.incrementObjectDataCount();
       int size = stream.readInt();
-      readObject(idFactory, handler, revision, data, offset + BlockLayout.OBJECT_SIZE_LEN, size);
-      offset += BlockLayout.OBJECT_SIZE_LEN + size;
+      readObject(idFactory, handler, revision, data, offset + FileLayout.OBJECT_SIZE_LEN, size);
+      offset += FileLayout.OBJECT_SIZE_LEN + size;
       skip(stream, size);
     }
   }

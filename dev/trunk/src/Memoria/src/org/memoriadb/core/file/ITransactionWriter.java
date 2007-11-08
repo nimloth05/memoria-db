@@ -15,8 +15,9 @@ public interface ITransactionWriter {
 
   /**
    * Saves the given object-data to the persistent store.
+   * @param numberOfObjects TODO
    * @return The Block in which the <tt>objectData</tt> was stored.
    */
-  public Block write(byte[] objectData)  throws IOException;
+  public Block write(byte[] objectData, int numberOfObjects)  throws IOException;
 
 }

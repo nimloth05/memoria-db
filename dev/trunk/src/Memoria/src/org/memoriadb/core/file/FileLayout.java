@@ -11,7 +11,7 @@ import org.memoriadb.util.Constants;
  * Sizes are always gross-values. The BlockSize for example includes it's data as well as its block-tag and size. 
  * @author msc
  */
-public final class BlockLayout {
+public final class FileLayout {
   
   public static final byte[] BLOCK_START_TAG = new byte[] {1, 2, 3, 4, 5, 6, 7, 8};
   
@@ -51,7 +51,7 @@ public final class BlockLayout {
     return OBJECT_SIZE_LEN + 2*objectStore.getIdSize();
   }
   
-  private BlockLayout() {}
+  private FileLayout() {}
   
 
 }
