@@ -2,7 +2,6 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
-import org.memoriadb.core.block.IBlockManager;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.util.*;
 
@@ -15,24 +14,22 @@ public class FileHeader {
 
   private final UUID fThisUuid;
   private final UUID fHostUuid;
+  
+  // Only set when this is a client-db. Host revision at the time when this db was copied.
+  private final long fHostBranchRevision;
   private final Version fVersion;
   private final int fFileLayoutVersion;
   private final String fIdFactoryClassName;
-  private final String fBlockManagerClassName;
   private final int fHeaderSize;
 
-  public FileHeader(UUID thisUuid, UUID hostUuid, Version version, int fileLayoutVersion, String idFactoryClassName, String blockManagerClassName, int headerSize) {
+  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, int headerSize) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
+    fHostBranchRevision = hostBranchRevision;
     fVersion = version;
     fFileLayoutVersion = fileLayoutVersion;
     fIdFactoryClassName = idFactoryClassName;
-    fBlockManagerClassName = blockManagerClassName;
     fHeaderSize = headerSize;
-  }
-
-  public String getBlockManagerClassName() {
-    return fBlockManagerClassName;
   }
 
   public int getFileLayoutVersion() {
@@ -41,6 +38,10 @@ public class FileHeader {
 
   public int getHeaderSize() {
     return fHeaderSize;
+  }
+
+  public long getHostBranchRevision() {
+    return fHostBranchRevision;
   }
 
   public UUID getHostUuid() {
@@ -59,13 +60,8 @@ public class FileHeader {
     return fVersion;
   }
 
-  public IBlockManager loadBlockManager() {
-    return ReflectionUtil.createInstance(getBlockManagerClassName());
-  }
-
   public IObjectIdFactory loadIdFactory() {
     return ReflectionUtil.createInstance(getIdFactoryClassName());
   }
-  
   
 }

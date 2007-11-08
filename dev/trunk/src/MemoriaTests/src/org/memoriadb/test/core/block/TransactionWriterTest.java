@@ -5,7 +5,7 @@ import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.FileStructure.ObjectInfo;
 
-public class BlockTest extends AbstractObjectStoreTest {
+public class TransactionWriterTest extends AbstractObjectStoreTest {
 
   public void test_object_info(){
     Object obj = new Object();
@@ -35,10 +35,10 @@ public class BlockTest extends AbstractObjectStoreTest {
     save(new OneInt(0));
     
     FileStructure file = new FileStructure(getFile());
-    assertEquals(20, file.getBlock(0).getObject(0).getSize());
+    assertEquals(getOPO(), file.getBlock(0).getObject(0).getSize());
     
     // opf ist 4 byte
-    assertEquals(28, file.getBlock(2).getObject(0).getSize());
+    assertEquals(getOPO() + getOPF() + 4, file.getBlock(2).getObject(0).getSize());
     
   } 
   
@@ -59,4 +59,5 @@ public class BlockTest extends AbstractObjectStoreTest {
     assertEquals(positionB0+blockSize, positionB1);
     assertEquals(positionB1+blockSize, getFile().getSize());
   }
+  
 }

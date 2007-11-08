@@ -114,8 +114,9 @@ public class FileReader {
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
 
-    readObjects(idFactory, handler, revision,  transactionData);
     handler.block(new Block(blockSize, position));
+    
+    readObjects(idFactory, handler, revision,  transactionData);
 
     // revision + startTag + blockSize dataSize + data.length
     return blockSize + BlockLayout.BLOCK_OVERHEAD;

@@ -21,6 +21,7 @@ public final class ObjectLoader implements IReaderContext {
   private final FileReader fFileReader;
   private final IBlockManager fBlockManager;
   private final DBMode fDbMode;
+  private Block fCurrentBlock;
 
   public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, DBMode mode) {
     return new ObjectLoader(fileReader, repo, blockManager, mode).read();
@@ -92,7 +93,7 @@ public final class ObjectLoader implements IReaderContext {
   private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, deletionTypeId, null, version));
+      container.put(id, new HydratedInfo(id, deletionTypeId, null, version, fCurrentBlock));
       return;
     } 
 
@@ -107,7 +108,7 @@ public final class ObjectLoader implements IReaderContext {
   private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, object.getTypeId(), object, version));
+      container.put(id, new HydratedInfo(id, object.getTypeId(), object, version, fCurrentBlock));
       return;
     } 
 
@@ -135,7 +136,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
-    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), fCurrentBlock, info.getVersion(), info.getOldGenerationCount());
     
     if(info.isDeleted()){
       fRepo.handleDelete(objectInfo);
@@ -158,6 +159,7 @@ public final class ObjectLoader implements IReaderContext {
       @Override
       public void block(Block block) {
         fBlockManager.add(block);
+        fCurrentBlock = block;
       }
 
       @Override

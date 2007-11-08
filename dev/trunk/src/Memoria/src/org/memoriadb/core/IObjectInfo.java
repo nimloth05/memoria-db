@@ -1,5 +1,6 @@
 package org.memoriadb.core;
 
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.IObjectId;
 
 /**
@@ -10,6 +11,10 @@ import org.memoriadb.core.id.IObjectId;
  *
  */
 public interface IObjectInfo {
+
+  public void changeCurrentBlock(Block block);
+
+  public Object getCurrentBlock();
 
   public IObjectId getId();
 

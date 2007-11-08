@@ -1,5 +1,6 @@
 package org.memoriadb.core.load;
 
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
@@ -15,14 +16,20 @@ public class HydratedInfo {
   private HydratedObject fHydratedObject;
   private long fVersion;
   private int fOldGenerationCount;
+  private final Block fCurrentBlock;
   private IObjectId fTypeId;
   
-  public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, long version) {
+  public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, long version, Block currentBlock) {
     fId = id;
     fTypeId = typeId;
     fHydratedObject = hydratedObject;
     fVersion = version;
+    fCurrentBlock = currentBlock;
     fOldGenerationCount = 0;
+  }
+
+  public Block getCurrentBlock() {
+    return fCurrentBlock;
   }
 
   public IObjectId getMemoriaClassId() {

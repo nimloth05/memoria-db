@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.IFilter;
-import org.memoriadb.core.block.MaintenanceFreeBlockManager;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
@@ -14,8 +14,9 @@ import org.memoriadb.util.IdentityHashSet;
 public class ObjectStore implements IObjectStoreExt {
 
   private final IObjectRepo fObjectRepo;
-  private final IFileWriter fTransactionWriter;
+  private final ITransactionWriter fTransactionWriter;
 
+  // FIXME Sets of ObjectInfos could increase the performance when updating the current block
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
   private final Set<IObjectId> fDelete = new IdentityHashSet<IObjectId>();
@@ -99,15 +100,25 @@ public class ObjectStore implements IObjectStoreExt {
     return fObjectRepo.getAllObjects();
   }
 
+  @Override
+  public IBlockManager getBlockManager() {
+    return fTransactionWriter.getBlockManager();
+  }
+
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
+  }
+  
+  @Override
+  public int getIdSize() {
+    return fObjectRepo.getIdFactory().getIdSize();
   }
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
     return fObjectRepo.getMemoriaClass(clazz.getName());
   }
-  
+
   @Override
   public IMemoriaClass getMemoriaClass(Object obj) {
     return getMemoriaClass(obj.getClass());
@@ -191,17 +202,21 @@ public class ObjectStore implements IObjectStoreExt {
     }
     
     try {
-      fTransactionWriter.write(serializer.getBytes());
+      Block block = fTransactionWriter.write(serializer.getBytes());
+      updateCurrentBlock(fAdd, block);
+      updateCurrentBlock(fUpdate, block);
+      updateCurrentBlockForDeleted(fDelete, block);
     }
     catch (IOException e) {
       throw new MemoriaException(e);
     }
     
+    
     fAdd.clear();
     fUpdate.clear();
     fDelete.clear();
   }
-
+  
   void internalDelete(Object obj) {
     if(!fObjectRepo.contains(obj)) return;
     
@@ -247,7 +262,7 @@ public class ObjectStore implements IObjectStoreExt {
     System.out.println("internalSave: "+memoriaClassId);
     return fObjectRepo.add(obj, memoriaClassId);
   }
-  
+
   private IObjectId addMemoriaClassIfNecessary(Object obj) {
     Class<?> klass = obj.getClass();
 
@@ -294,6 +309,18 @@ public class ObjectStore implements IObjectStoreExt {
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(root);
     return fObjectRepo.getObjectId(root);
+  }
+
+  private void updateCurrentBlock(Set<Object> objs, Block block) {
+    for(Object obj: objs){
+      getObjectInfo(obj).changeCurrentBlock(block);
+    } 
+  }
+  
+  private void updateCurrentBlockForDeleted(Set<IObjectId> ids, Block block) {
+    for(IObjectId id: ids){
+      getObjectInfo(id).changeCurrentBlock(block);
+    } 
   }
 
 }

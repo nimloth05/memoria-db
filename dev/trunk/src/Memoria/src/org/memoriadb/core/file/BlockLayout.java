@@ -3,6 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.util.Arrays;
 
+import org.memoriadb.core.IObjectStoreExt;
 import org.memoriadb.exception.FileCorruptException;
 import org.memoriadb.util.Constants;
 
@@ -26,6 +27,8 @@ public final class BlockLayout {
 
   public static final int OBJECT_SIZE_LEN = Constants.INT_SIZE;
   
+  public static final int OPF = Constants.INT_SIZE;
+ 
   public static void assertBlockTag(DataInputStream stream) throws IOException {
     byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
     stream.read(tagBuffer);
@@ -40,7 +43,14 @@ public final class BlockLayout {
   public static int getBlockSize(int trxDataLength) {
     return TRX_OVERHEAD + trxDataLength;
   }
-
+  
+  /**
+   * @return The overhead per object, depends on the size of the IObjectId
+   */
+  public static int getOPO(IObjectStoreExt objectStore) {
+    return OBJECT_SIZE_LEN + 2*objectStore.getIdSize();
+  }
+  
   private BlockLayout() {}
   
 

@@ -9,5 +9,10 @@ public interface IObjectIdFactory extends IDefaultObjectIdProvider {
   public IObjectId createFrom(DataInput input) throws IOException;
 
   public IObjectId createNextId();
+  
+  /**
+   * @return The number of bytes a IObjectId from thsi factory requires. The size must be equal for all ids.
+   */
+  public int getIdSize();
 
 }

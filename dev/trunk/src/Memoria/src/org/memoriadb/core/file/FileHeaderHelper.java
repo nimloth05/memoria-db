@@ -21,17 +21,16 @@ public class FileHeaderHelper {
     
     UUID thisUuid = readUuid(stream);
     UUID hostUuid = readUuid(stream);
-    
+    long hostBranchVersion = stream.readLong();
     Version version = readVersion(stream);
     
-    int fileLayoutVersion = stream.readInt();
+    int fileLayoutRevision = stream.readInt();
     
     String idFactoryClassName = stream.readUTF();
-    String blockManagerClassName = stream.readUTF();
     
     int headerSize = stream.readInt();
     
-    return new FileHeader(thisUuid, hostUuid, version, fileLayoutVersion, idFactoryClassName, blockManagerClassName, headerSize);
+    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName, headerSize);
     
   }
   
@@ -45,12 +44,12 @@ public class FileHeaderHelper {
     
     writeUuid(stream, UUID.randomUUID());
     writeUuid(stream, Constants.NO_HOST_UUID);
+    stream.writeLong(Constants.NO_HOST_BRANCH_REVISION);
     
     writeVersion(stream, Memoria.getMemoriaVersion());
     stream.writeInt(Memoria.getFileLayoutVersion());
     
     stream.writeUTF(idFactoryClassName);
-    stream.writeUTF(blockManagerClassName);
     
     int headerSize = byteArrayOutputStream.size() + 4; // plus size of this int
     stream.writeInt(headerSize); 

@@ -8,7 +8,7 @@ public interface IBlockManager {
   public void add(Block block);
   
   /**
-   * ATTENTION: The returned block may contained survivors!
+   * ATTENTION: The returned block may contain survivors!
    * 
    * Returns a block that maches the requirements or null, if a new block should be appended.
    * 
@@ -16,6 +16,7 @@ public interface IBlockManager {
    * @return A block which has at least <tt>blockSize</tt> (the block still may contain survivors) 
    * or null, if no block met the requirements.  
    */
-  public Block getBlock(int blockSize);
+  public Block findRecyclebleBlock(int blockSize);
   
+
 }

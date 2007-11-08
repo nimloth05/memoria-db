@@ -3,6 +3,7 @@ package org.memoriadb.test.core;
 import junit.framework.TestCase;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.id.def.*;
 import org.memoriadb.core.meta.*;
@@ -38,7 +39,7 @@ public class ObjectRepoTest extends TestCase {
   public void test_put_meta_object_with_id_in_cache() {
     IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
     IObjectId id = new LongObjectId(20);
-    fRepo.handleAdd(new ObjectInfo(id, classObject, 0, 0));
+    fRepo.handleAdd(new ObjectInfo(id, classObject, Block.sVirtualBlock, 0, 0));
     
     assertSame(classObject, fRepo.getObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class));
@@ -55,7 +56,7 @@ public class ObjectRepoTest extends TestCase {
     SimpleTestObj obj = new SimpleTestObj();
     //Wir starten hier absichtlich mit 20.
     IObjectId objectId = new LongObjectId(20);
-    fRepo.handleAdd(new ObjectInfo(objectId, obj, 0, 0));
+    fRepo.handleAdd(new ObjectInfo(objectId, obj, Block.sVirtualBlock, 0, 0));
     
     SimpleTestObj obj2 = new SimpleTestObj();
     IObjectId id = fRepo.add(obj2);

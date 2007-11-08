@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import java.util.*;
 
 import org.java.patched.PIdentityHashMap;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
@@ -48,7 +49,7 @@ public class ObjectRepo implements IObjectRepo {
    * This method is only used for bootstrapping
    */
   public void add(IObjectId id, IObjectId memoriaMetaClassId, IMemoriaClass object) {
-    internalPut(new ObjectInfo(id, memoriaMetaClassId, object));
+    internalPut(new ObjectInfo(id, memoriaMetaClassId, object, Block.sVirtualBlock));
   }
 
   /**
@@ -58,7 +59,7 @@ public class ObjectRepo implements IObjectRepo {
    */
   public IObjectId add(Object obj, IObjectId memoriaClassId) {
     IObjectId result = generateId();
-    internalPut(new ObjectInfo(result, memoriaClassId, obj));
+    internalPut(new ObjectInfo(result, memoriaClassId, obj, Block.sVirtualBlock));
     return result;
   }
 

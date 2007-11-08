@@ -28,6 +28,8 @@ public final class Constants {
 
   public static final int DEFAULT_OBJECT_SIZE = 80;
 
+  public static final long NO_HOST_BRANCH_REVISION = -1;
+
   private Constants() {}
 
 }

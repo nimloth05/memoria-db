@@ -3,6 +3,7 @@ package org.memoriadb.core.id.def;
 import java.io.*;
 
 import org.memoriadb.core.id.*;
+import org.memoriadb.util.Constants;
 
 public class LongIdFactory implements IObjectIdFactory {
   
@@ -44,6 +45,11 @@ public class LongIdFactory implements IObjectIdFactory {
   }
 
   @Override
+  public int getIdSize() {
+    return Constants.LONG_SIZE;
+  }
+
+  @Override
   public IObjectId getMemoriaClassDeletionMarker() {
     return MEMORIA_CLASS_DELETED;
   }
@@ -64,13 +70,13 @@ public class LongIdFactory implements IObjectIdFactory {
   }
 
   @Override
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return MEMORIA_CLASS_DELETED.equals(typeId);
+  public boolean isMemoriaClass(IObjectId typeId) {
+    return MEMORIA_META_CLASS_ID.equals(typeId);
   }
 
   @Override
-  public boolean isMemoriaClass(IObjectId typeId) {
-    return MEMORIA_META_CLASS_ID.equals(typeId);
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
+    return MEMORIA_CLASS_DELETED.equals(typeId);
   }
 
   @Override

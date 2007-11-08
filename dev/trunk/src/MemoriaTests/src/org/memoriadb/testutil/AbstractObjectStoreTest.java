@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.*;
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 
@@ -16,6 +17,10 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected IObjectStoreExt fStore;
   
+  public IBlockManagerExt getBlockManager() {
+    return (IBlockManagerExt)fStore.getBlockManager();
+  }
+  
   protected void beginUpdate() {
     fStore.beginUpdate();
   }
@@ -23,13 +28,17 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected void delete(Object obj) {
     fStore.delete(obj);
   }
-  
+
   protected void deleteAll(Object obj) {
     fStore.deleteAll(obj);
   }
-
+  
   protected void endUpdate() {
     fStore.endUpdate();
+  }
+  
+  protected Object get(IObjectId id) {
+    return fStore.getObject(id);
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
@@ -46,6 +55,18 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   protected DBMode getInitialDBMode() {
     return DBMode.clazz;
+  }
+
+  protected IObjectInfo getObjectInfo(IObjectId id) {
+    return fStore.getObjectInfo(id);
+  }
+  
+  protected int getOPF() {
+    return BlockLayout.OPF;
+  }
+  
+  protected int getOPO() {
+    return BlockLayout.getOPO(fStore);
   }
   
   protected final void recreateStore(DBMode mode) {

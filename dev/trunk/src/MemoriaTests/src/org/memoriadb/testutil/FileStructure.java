@@ -18,21 +18,24 @@ public class FileStructure {
 
   public static class BlockInfo {
     private final Block fBlock;
-    private final List<ObjectInfo> fObjectInfos;
+    private final List<ObjectInfo> fObjectInfos = new ArrayList<ObjectInfo>();
 
-    public BlockInfo(Block block, List<ObjectInfo> objectInfos) {
+    public BlockInfo(Block block) {
       fBlock = block;
-      fObjectInfos = objectInfos;
+    }
+
+    public void add(ObjectInfo info) {
+      fObjectInfos.add(info);
     }
 
     public Block getBlock() {
       return fBlock;
     }
-
+    
     public ObjectInfo getObject(int index) {
       return fObjectInfos.get(index);
     }
-    
+
     public List<ObjectInfo> getObjectInfos() {
       return fObjectInfos;
     }
@@ -40,7 +43,7 @@ public class FileStructure {
     public long getPosition() {
       return fBlock.getPosition();
     }
-
+    
     public long getSize() {
       return fBlock.getSize();
     }
@@ -92,8 +95,7 @@ public class FileStructure {
   private FileHeader fHeader;
 
   private final List<BlockInfo> fBlocks = new ArrayList<BlockInfo>();
-
-  private List<ObjectInfo> fTempList = new ArrayList<ObjectInfo>();
+  private BlockInfo fCurrentBlock;
 
   public FileStructure(IMemoriaFile file) {
     FileReader reader = new FileReader(file);
@@ -125,28 +127,28 @@ public class FileStructure {
 
       @Override
       public void block(Block block) {
-        fBlocks.add(new BlockInfo(block, fTempList));
-        fTempList = new ArrayList<ObjectInfo>();
+        fCurrentBlock = new BlockInfo(block);
+        fBlocks.add(fCurrentBlock);
       }
 
       @Override
       public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
-        fTempList.add(new ObjectInfo(true, id, version, size));
+        fCurrentBlock.add(new ObjectInfo(true, id, version, size));
       }
 
       @Override
       public void memoriaClassDeleted(IObjectId id, long version) {
-        fTempList.add(new ObjectInfo(true, id, version));
+        fCurrentBlock.add(new ObjectInfo(true, id, version));
       }
 
       @Override
       public void object(HydratedObject object, IObjectId id, long version, int size) {
-        fTempList.add(new ObjectInfo(false, id, version, size));
+        fCurrentBlock.add(new ObjectInfo(false, id, version, size));
       }
 
       @Override
       public void objectDeleted(IObjectId id, long version) {
-        fTempList.add(new ObjectInfo(false, id, version));
+        fCurrentBlock.add(new ObjectInfo(false, id, version));
       }
       
     });
