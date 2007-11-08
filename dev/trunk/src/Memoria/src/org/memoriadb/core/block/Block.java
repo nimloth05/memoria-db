@@ -13,7 +13,7 @@ public class Block {
   /**
    * Bootstrapped and new objects refer to this block.
    */
-  public static final Block sVirtualBlock = new Block(0,-1,0);
+  public static final Block sVirtualBlock = new Block(null, 0,-1,0);
   
   /**
    * Number of bytes this block can store.
@@ -30,12 +30,15 @@ public class Block {
   private int fObjectDataCount;
   
   private int fInactiveObjectDataCount;
+
+  private final IBlockManager fManager;
   
-  public Block(long size, long position, int objectDataCount) {
-    this(size, position, objectDataCount, 0);
+  public Block(IBlockManager manager, long size, long position, int objectDataCount) {
+    this(manager, size, position, objectDataCount, 0);
   }
   
-  public Block(long size, long position, int objectDataCount, int inactiveObjectDataCount) {
+  public Block(IBlockManager manager, long size, long position, int objectDataCount, int inactiveObjectDataCount) {
+    fManager = manager;
     fSize = size;
     fPosition = position;
     fObjectDataCount = objectDataCount;

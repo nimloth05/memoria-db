@@ -111,8 +111,10 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected void tearDown() {
     fStore.close();
   }
-  
+   
   private IObjectStoreExt openFile(IMemoriaFile file, DBMode mode) {
-    return (IObjectStoreExt) Memoria.open(file, mode);
+    CreateConfig config = new CreateConfig();
+    config.setDBMode(mode);
+    return (IObjectStoreExt) Memoria.open(config, file);
   }
 }

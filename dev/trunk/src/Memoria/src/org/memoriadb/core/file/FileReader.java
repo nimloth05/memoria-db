@@ -2,7 +2,7 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
-import org.memoriadb.core.block.Block;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.exception.*;
@@ -55,12 +55,12 @@ public class FileReader {
   /**
    * Reads all blocks and closes the file
    */
-  public long readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
+  public long readBlocks(IBlockManager blockManager, IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
     checkState(State.headerRead, State.blockRead);
     
     // read file header
     while (fStream.available() > 0) {
-      fPosition += readBlock(idFactory, handler, fStream, fPosition);
+      fPosition += readBlock(blockManager, idFactory, handler, fStream, fPosition);
     }
     
     fStream.close();
@@ -88,7 +88,7 @@ public class FileReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  private long readBlock(IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
+  private long readBlock(IBlockManager blockManager, IObjectIdFactory idFactory, IFileReaderHandler handler, DataInputStream stream, long position) throws IOException {
     FileLayout.assertBlockTag(stream);
     
     MemoriaCRC32 crc32 = new MemoriaCRC32();
@@ -114,7 +114,7 @@ public class FileReader {
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
 
-    Block block = new Block(blockSize, position, 0);
+    Block block = new Block(blockManager, blockSize, position, 0);
     handler.block(block);
     
     readObjects(block, idFactory, handler, revision,  transactionData);

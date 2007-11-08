@@ -7,8 +7,6 @@ package org.memoriadb.core;
  *
  */
 public enum DBMode {
-  
   clazz,
   data
-
 }

@@ -23,7 +23,7 @@ public class ObjectStore implements IObjectStoreExt {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
+  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
     fObjectRepo = objectContainer;
     fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
   }
@@ -112,6 +112,11 @@ public class ObjectStore implements IObjectStoreExt {
   
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
+  }
+
+  @Override
+  public long getHeadRevision() {
+    return fTransactionWriter.getHeadRevision();
   }
 
   @Override

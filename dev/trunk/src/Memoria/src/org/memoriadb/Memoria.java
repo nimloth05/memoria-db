@@ -1,11 +1,10 @@
 package org.memoriadb;
 
-import java.io.IOException;
+import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.MaintenanceFreeBlockManager;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.def.LongIdFactory;
+import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.Version;
@@ -37,39 +36,44 @@ public final class Memoria {
   }
 
   /**
+   * Creates an db backed with an in-memory file
+   * 
    * @return An ObjectStore backed with an in-memory file
    */
-  public static IObjectStore open(DBMode mode) {
-    IMemoriaFile file = new InMemoryFile();
-    return open(file, mode);
+  public static IObjectStore open(CreateConfig config) {
+    return open(config, new InMemoryFile());
+  }
+  
+  public static IObjectStore open(CreateConfig config, IMemoriaFile file) {
+    if (file == null) throw new IllegalArgumentException("File was null");
+    writeHeader(config, file);
+    return open((OpenConfig)config, file);
   }
 
-  public static IObjectStore open(IMemoriaFile file, DBMode mode) {
+  public static IObjectStore open(CreateConfig config, String path) {
+    if(new File(path).exists()) return open((OpenConfig)config, path);
+    return open(config, new PhysicalFile(path));
+  }
+
+  public static IObjectStore open(OpenConfig config, IMemoriaFile file) {
     if (file == null) throw new IllegalArgumentException("File was null");
-
-    if (file.isEmpty()) {
-      try {
-        FileHeaderHelper.writeHeader(file, LongIdFactory.class.getName(), MaintenanceFreeBlockManager.class.getName());
-      }
-      catch (IOException e) {
-        throw new MemoriaException(e);
-      }
-    }
-
-    MaintenanceFreeBlockManager blockManager = new MaintenanceFreeBlockManager();
+    
     FileReader fileReader = new FileReader(file);
     FileHeader header = readHeader(fileReader);
     
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, blockManager, mode);
-    return new ObjectStore(repo, file, blockManager, headRevision);
+    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), config.getDBMode());
+    return new ObjectStore(repo, file, config.getBlockManager(), headRevision);
   }
-
-  public static IObjectStore open(String path, DBMode mode) {
-    IMemoriaFile file = new PhysicalFile(path);
-    return open(file, mode);
+  
+  /**
+   * @return An ObjectStore backed with a file.
+   * @pre The db-file must exist.
+   */
+  public static IObjectStore open(OpenConfig config, String path) {
+    return open(config, new PhysicalFile(path));
   }
-
+  
   private static FileHeader readHeader(FileReader fileReader) {
     try {
       return fileReader.readHeader();
@@ -79,6 +83,16 @@ public final class Memoria {
     }
   }
 
+  private static void writeHeader(CreateConfig config, IMemoriaFile file) {
+    if (file.isEmpty()) {
+      try {
+        FileHeaderHelper.writeHeader(file, config.getIdFactoryClassName());
+      }
+      catch (IOException e) {
+        throw new MemoriaException(e);
+      }
+    }
+  }
   private Memoria() {}
 
 }

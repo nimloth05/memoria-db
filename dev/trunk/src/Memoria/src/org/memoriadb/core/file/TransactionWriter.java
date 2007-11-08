@@ -6,12 +6,12 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.util.MemoriaCRC32;
 
 public class TransactionWriter implements ITransactionWriter {
-
+ 
   private final IMemoriaFile fFile;
-  private final MaintenanceFreeBlockManager fBlockManager;
+  private final IBlockManager fBlockManager;
   private long fHeadRevision;
 
-  public TransactionWriter(IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
+  public TransactionWriter(IMemoriaFile file,IBlockManager blockManager, long headRevision) {
     fFile = file;
     fBlockManager = blockManager;
     fHeadRevision = headRevision;
@@ -43,7 +43,7 @@ public class TransactionWriter implements ITransactionWriter {
     stream.writeLong(crc32.getValue());
 
     // first create the block...
-    Block block = new Block(blockSize, fFile.getSize(), numberOfObjects);
+    Block block = new Block(fBlockManager, blockSize, fFile.getSize(), numberOfObjects);
     fBlockManager.add(block);
 
     // ... then add the data to the file.
@@ -65,6 +65,11 @@ public class TransactionWriter implements ITransactionWriter {
   @Override
   public IMemoriaFile getFile() {
     return fFile;
+  }
+
+  @Override
+  public long getHeadRevision() {
+    return fHeadRevision;
   }
 
   public Block write(byte[] trxData, int numberOfObjects) throws IOException {

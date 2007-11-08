@@ -73,20 +73,26 @@ public interface IObjectStore {
   public Collection<Object> getAllObjects();
 
   /**
-   * @return The Class for the given <tt>obj</tt> or null.
+   * @return The head revision of this database. Is incremented after each transaction.
    */
-  public IMemoriaClass getMemoriaClass(Class<?> clazz);
+  public long getHeadRevision();
   
   /**
    * @return The Class for the given <tt>obj</tt> or null.
    */
-  public IMemoriaClass getMemoriaClass(Object obj);
+  public IMemoriaClass getMemoriaClass(Class<?> clazz);
 
+  /**
+   * @return The Class for the given <tt>obj</tt> or null.
+   */
+  public IMemoriaClass getMemoriaClass(Object obj);
+  
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
    *         or not.
    */
   public <T> T getObject(IObjectId id);
+  
   
   /**
    * @return The objectId of the given object.
@@ -94,7 +100,6 @@ public interface IObjectStore {
    *           If the given object can not be found.
    */
   public IObjectId getObjectId(Object obj);
-  
   
   /**
    * @return true, if the update-counter is > 0.  
@@ -110,7 +115,7 @@ public interface IObjectStore {
    * @return The objectId of the added or updated object.
    */
   public IObjectId save(Object obj);
-  
+
   /**
    * Adds the given objects to the store or performs an update if the given objects are already contained.
    * 
@@ -120,7 +125,7 @@ public interface IObjectStore {
    * @return The objectIds of the added or updated objects.
    */
   public IObjectId[] save(Object... objs);
-
+  
   /**
    * Saves the given <tt>root</tt> object and all referenced objects.
    * 
@@ -130,6 +135,7 @@ public interface IObjectStore {
    * @return objectId of the given <tt>root</tt> object.
    */
   public IObjectId saveAll(Object root);
+
   
   /**
    * Saves the given <tt>root</tt> objects and all referenced objects.
@@ -140,5 +146,4 @@ public interface IObjectStore {
    * @return objectIds of the given <tt>root</tt> objects.
    */
   public IObjectId[] saveAll(Object... roots);
-
 }

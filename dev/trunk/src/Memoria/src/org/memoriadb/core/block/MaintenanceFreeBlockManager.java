@@ -4,6 +4,12 @@ import java.util.*;
 
 public class MaintenanceFreeBlockManager implements IBlockManagerExt {
 
+  // mindestens 50% der Objekte müssen inactive sein....
+  private final double fCleanUpThreshold = 0.5;
+  
+  // die Neue Size muss mindestens 50% des platzes benötigen..
+  private final double fSizeThreshold = 0.5;
+  
   private final List<Block> fBlocks = new ArrayList<Block>();
   private final Set<Block> fReadyForCleanup = new HashSet<Block>();
     

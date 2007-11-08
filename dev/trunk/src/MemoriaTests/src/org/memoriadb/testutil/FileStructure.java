@@ -123,8 +123,8 @@ public class FileStructure {
 
   private void readFile(FileReader reader) throws IOException {
     fHeader = reader.readHeader();
-    reader.readBlocks(fHeader.loadIdFactory(), new IFileReaderHandler(){
-
+    reader.readBlocks(BlockManagerDummy.INST, fHeader.loadIdFactory(), new IFileReaderHandler(){
+ 
       @Override
       public void block(Block block) {
         fCurrentBlock = new BlockInfo(block);

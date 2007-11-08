@@ -21,6 +21,6 @@ public interface IObjectStoreExt extends IObjectStore {
   public int getIdSize();
   
   public IObjectInfo getObjectInfo(IObjectId id);
-  
+
   public IObjectInfo getObjectInfo(Object obj);  
 }

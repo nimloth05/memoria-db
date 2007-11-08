@@ -17,6 +17,11 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     assertTrue(fStore.contains(id));
   }
 
+  public void test_HeadRevision() {
+    assertEquals(0, fStore.getHeadRevision());
+    save(new Object());
+  }
+  
   public void test_incorrect_hash_code_objects() {
     WrongHashCode obj1 = new WrongHashCode("1");
     WrongHashCode obj2 = new WrongHashCode("2");
@@ -127,7 +132,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     Object loadedObj = getAll(referenceeType).get(0);
     assertSame(loadedReferencer.get(), loadedObj);
   }
-
+  
   private void internalTestSaveObjectRefFirst(Class<?> referenceeType) throws Exception {
     Referencer referencer = new Referencer();
     referencer.set(referenceeType, "1");
