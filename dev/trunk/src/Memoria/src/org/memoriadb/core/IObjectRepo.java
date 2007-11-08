@@ -35,6 +35,8 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    */
   public IObjectId delete(Object obj);
   
+  public Collection<IObjectInfo> getAllObjectInfos();
+
   public Collection<Object> getAllObjects();
 
   public IObjectIdFactory getIdFactory();

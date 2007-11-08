@@ -91,6 +91,11 @@ public class ObjectRepo implements IObjectRepo {
     return info.getId();
   }
 
+  @Override
+  public Collection<IObjectInfo> getAllObjectInfos() {
+    return Collections.<IObjectInfo>unmodifiableCollection(fObjectMap.values());
+  }
+
   public Collection<Object> getAllObjects() {
     List<Object> result = new ArrayList<Object>(fObjectMap.size());
     for (IObjectInfo info : fObjectMap.values()) {
@@ -125,12 +130,12 @@ public class ObjectRepo implements IObjectRepo {
   public IObjectId getMemoriaClassDeletionMarker() {
     return fIdFactory.getMemoriaClassDeletionMarker();
   }
-
+  
   @Override
   public IObjectId getMemoriaMetaClass() {
     return fIdFactory.getMemoriaMetaClass();
   }
-  
+
   /**
    * 
    * @param objectId
@@ -158,13 +163,13 @@ public class ObjectRepo implements IObjectRepo {
     if (result == null) throw new MemoriaException("Unknown object: " + obj);
     return result.getId();
   }
-
+  
   public ObjectInfo getObjectInfo(IObjectId id) {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
     return result;
   }
-  
+
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }

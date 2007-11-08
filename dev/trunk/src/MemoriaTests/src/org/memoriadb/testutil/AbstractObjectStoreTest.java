@@ -72,7 +72,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final void recreateStore(DBMode mode) {
     fStore.close(); 
     
-    //fStore = openFile(new PhysicalFile(PATH));
+    //fStore = openFile(new PhysicalFile(PATH), mode);
     
     InMemoryFile file = (InMemoryFile) getFile();
     file.reset();
@@ -103,7 +103,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected void setUp() {
    File file = new File(PATH);
    file.delete(); 
-   //fStore = openFile(new PhysicalFile(PATH));
+   //fStore = openFile(new PhysicalFile(PATH), getInitialDBMode());
    fStore = openFile(new InMemoryFile(), getInitialDBMode());
   }
   

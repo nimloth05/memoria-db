@@ -38,6 +38,11 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   }
 
   @Override
+  public boolean isTypeFor(String javaClass) {
+    return getJavaClassName().equals(javaClass);
+  }
+
+  @Override
   public void setSuperClass(IMemoriaClass metaClass) {
     fSuperClass = metaClass;
   }

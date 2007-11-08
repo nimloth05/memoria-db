@@ -10,4 +10,6 @@ public interface IMemoriaClass {
   
   public IMemoriaClass getSuperClass();
 
+  public boolean isTypeFor(String javaClass);
+
 }

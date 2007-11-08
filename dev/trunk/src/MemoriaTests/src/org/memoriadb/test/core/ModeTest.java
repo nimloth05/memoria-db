@@ -1,13 +1,29 @@
 package org.memoriadb.test.core;
 
 import org.memoriadb.core.DBMode;
-import org.memoriadb.core.handler.def.field.IFieldObject;
+import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ModeTest extends AbstractObjectStoreTest {
 
+  public void test_add_obejct() {
+    SimpleTestObj obj = new SimpleTestObj("1");
+    save(obj);
+    
+    reopen(DBMode.data);
+    
+    IFieldObject obj2 = new FieldMapDataObject();
+    obj2.set("fString", 2);
+    save(obj2);
+    
+    reopen();
+    
+    assertEquals(2, getAll(SimpleTestObj.class).size());
+    
+  }
+  
   public void test_delete_object_in_data_mode() {
     SimpleTestObj obj = new SimpleTestObj("1");
     IObjectId id = save(obj);

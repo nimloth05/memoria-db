@@ -66,6 +66,11 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
     return fSuperClass;
   }
 
+  @Override
+  public boolean isTypeFor(String javaClass) {
+    return fClassName.equals(javaClass);
+  }
+
   public void setClassName(String name) {
     fClassName = name;
   }

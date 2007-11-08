@@ -18,6 +18,7 @@ public class AllTests {
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     suite.addTestSuite(ModeTest.class);
+    suite.addTestSuite(CompositeTest.class);
     //FIXME: TBI
     //suite.addTestSuite(ArrayTest.class);
     //$JUnit-END$

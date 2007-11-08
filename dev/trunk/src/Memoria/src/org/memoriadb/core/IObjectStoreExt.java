@@ -13,7 +13,6 @@ import org.memoriadb.core.id.IObjectId;
  */
 public interface IObjectStoreExt extends IObjectStore {
 
-  // wird später entfernt, msc...
   public void checkSanity();
   
   public IBlockManager getBlockManager();
