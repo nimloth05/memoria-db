@@ -8,6 +8,19 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ModeTest extends AbstractObjectStoreTest {
 
+  public void test_delete_object_in_data_mode() {
+    SimpleTestObj obj = new SimpleTestObj("1");
+    IObjectId id = save(obj);
+    
+    reopen(DBMode.data);
+    
+    fStore.delete(id);
+    
+    reopen();
+    
+    assertFalse(fStore.contains(id));
+  }
+  
   public void test_save_obj() {
     SimpleTestObj obj = new SimpleTestObj("1");
     IObjectId id = save(obj);

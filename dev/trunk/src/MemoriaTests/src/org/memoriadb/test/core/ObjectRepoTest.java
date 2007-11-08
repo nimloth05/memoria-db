@@ -17,11 +17,13 @@ public class ObjectRepoTest extends TestCase {
     SimpleTestObj obj = new SimpleTestObj();
     IObjectId id = fRepo.add(obj, new LongObjectId(1));
     
+    fRepo.contains(id);
+    fRepo.contains(obj);
+    
     fRepo.delete(obj);
     
     assertFalse(fRepo.contains(obj));
     assertFalse(fRepo.contains(id));
-    
   }
   
   public void test_put_meta_object_in_cache() {

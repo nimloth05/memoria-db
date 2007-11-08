@@ -80,7 +80,7 @@ public class ObjectRepo implements IObjectRepo {
   public boolean contains(Object obj) {
     return fObjectMap.containsKey(obj);
   }
-
+  
   @Override
   public IObjectId delete(Object obj) {
     ObjectInfo info = fObjectMap.remove(obj);
@@ -223,12 +223,13 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public void objectDeleted(IObjectId id) {
+  public void updateObjectInfoDeleted(IObjectId id) {
+    //FIXME: Prüfen, ob das Element wieder aus der Map entfernt werden muss/kann.
     ObjectInfo info = fDeletedMap.get(id);
     internalUpdate(info);
   }
 
-  public void objectUpdated(Object obj) {
+  public void updateObjectInfoUpdated(Object obj) {
     ObjectInfo info = fObjectMap.get(obj);
     internalUpdate(info);
   }

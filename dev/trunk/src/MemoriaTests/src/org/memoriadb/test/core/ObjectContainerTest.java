@@ -2,11 +2,20 @@ package org.memoriadb.test.core;
 
 import java.util.*;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
+
+  public void test_contains() {
+    SimpleTestObj obj = new SimpleTestObj();
+    IObjectId id = save(obj);
+    
+    assertTrue(fStore.contains(obj));
+    assertTrue(fStore.contains(id));
+  }
 
   public void test_incorrect_hash_code_objects() {
     WrongHashCode obj1 = new WrongHashCode("1");
@@ -29,7 +38,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     }
     assertTrue("Not all objects where loaded/saved: " + actualObjs, actualObjs.isEmpty());
   }
-
+  
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
     for (int i = 0; i < 5; ++i) {

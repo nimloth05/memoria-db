@@ -85,14 +85,14 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
    * @param obj
    */
-  public void objectDeleted(IObjectId id);
+  public void updateObjectInfoDeleted(IObjectId id);
   
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
    * written to the persistent store.
    * @param obj
    */
-  public void objectUpdated(Object obj);
+  public void updateObjectInfoUpdated(Object obj);
 
 
 }

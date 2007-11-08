@@ -23,10 +23,16 @@ public interface IObjectStore {
   public void close();
 
   // query
-  public boolean contains(long id);
+  public boolean contains(IObjectId id);
 
   public boolean contains(Object obj);
 
+  /**
+   * @see {@link #delete(Object)};
+   * @param objectId
+   */
+  public void delete(IObjectId objectId);
+  
   /**
    * Removes the given object from this ObjectStore. Removed objects can later be added again, resulting in a new id.
    * 

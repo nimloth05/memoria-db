@@ -44,13 +44,18 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   @Override
-  public boolean contains(long id) {
+  public boolean contains(IObjectId id) {
     return fObjectRepo.contains(id);
   }
 
   @Override
   public boolean contains(Object obj) {
     return fObjectRepo.contains(obj);
+  }
+
+  @Override
+  public void delete(IObjectId objectId) {
+    delete(fObjectRepo.getObject(objectId));
   }
 
   @Override
@@ -104,11 +109,11 @@ public class ObjectStore implements IObjectStoreExt {
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
-
+  
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
-  
+
   @Override
   public int getIdSize() {
     return fObjectRepo.getIdFactory().getIdSize();
@@ -184,7 +189,7 @@ public class ObjectStore implements IObjectStoreExt {
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
-
+  
   public void writePendingChanges() {
     if(fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
     
@@ -193,11 +198,11 @@ public class ObjectStore implements IObjectStoreExt {
       serializer.serialize(obj);
     }
     for(Object obj: fUpdate) {
-      fObjectRepo.objectUpdated(obj);
+      fObjectRepo.updateObjectInfoUpdated(obj);
       serializer.serialize(obj);
     }
     for(IObjectId id: fDelete){
-      fObjectRepo.objectDeleted(id);
+      fObjectRepo.updateObjectInfoDeleted(id);
       serializer.markAsDeleted(id);
     }
     
@@ -216,7 +221,7 @@ public class ObjectStore implements IObjectStoreExt {
     fUpdate.clear();
     fDelete.clear();
   }
-  
+
   void internalDelete(Object obj) {
     if(!fObjectRepo.contains(obj)) return;
     
@@ -313,13 +318,13 @@ public class ObjectStore implements IObjectStoreExt {
     traversal.handle(root);
     return fObjectRepo.getObjectId(root);
   }
-
+  
   private void updateCurrentBlock(Set<Object> objs, Block block) {
     for(Object obj: objs){
       getObjectInfo(obj).changeCurrentBlock(block);
     } 
   }
-  
+
   private void updateCurrentBlockForDeleted(Set<IObjectId> ids, Block block) {
     for(IObjectId id: ids){
       getObjectInfo(id).changeCurrentBlock(block);
