@@ -4,27 +4,27 @@ import java.util.TreeSet;
 
 import junit.framework.*;
 
-import org.memoriadb.core.block.Block;
+import org.memoriadb.core.block.*;
 import org.memoriadb.exception.MemoriaException;
 
 public class BlockTest extends TestCase {
   
   public void test_compare() {
-    TreeSet<Block> set = new TreeSet<Block>();
+    TreeSet<BlockBucket> set = new TreeSet<BlockBucket>();
     
-    Block block1 = new Block(1,0);
+    BlockBucket block1 = new BlockBucket(1);
     set.add(block1);
-    Block block10 = new Block(10,0);
+    BlockBucket block10 = new BlockBucket(10);
     set.add(block10);
-    Block block100 = new Block(100,0);
+    BlockBucket block100 = new BlockBucket(100);
     set.add(block100);
     
-    assertEquals(block1, set.ceiling(new Block(1,-1)));
-    assertEquals(block10, set.ceiling(new Block(2,-1)));
-    assertEquals(block10, set.ceiling(new Block(10,-1)));
-    assertEquals(block100, set.ceiling(new Block(20,-1)));
-    assertEquals(block100, set.ceiling(new Block(100,-1)));
-    assertNull(set.ceiling(new Block(101,-1)));
+    assertEquals(block1, set.ceiling(new BlockBucket(1)));
+    assertEquals(block10, set.ceiling(new BlockBucket(2)));
+    assertEquals(block10, set.ceiling(new BlockBucket(10)));
+    assertEquals(block100, set.ceiling(new BlockBucket(20)));
+    assertEquals(block100, set.ceiling(new BlockBucket(100)));
+    assertNull(set.ceiling(new BlockBucket(101)));
   }
   
   public void test_too_many_inactive_ObjectData_throws() {

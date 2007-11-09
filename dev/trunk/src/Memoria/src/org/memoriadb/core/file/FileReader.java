@@ -112,8 +112,6 @@ public class FileReader {
 
     // block may be bigger then the transaction-data -> skip
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
-
-
     
     Block block = new Block(blockSize, position);
     // first handle block, later handle objects. The number of the ObjectData in the block is not yet resolved!

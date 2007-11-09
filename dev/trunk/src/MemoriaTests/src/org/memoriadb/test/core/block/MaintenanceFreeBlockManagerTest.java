@@ -10,14 +10,18 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
   public void test_inactiveThreshold_0() {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
-    Block b10a = new Block(10, 0);
-    b10a.setNumberOfObjectData(20);
-    manager.add(b10a);
+    Block b10 = new Block(10, 0);
+    b10.setNumberOfObjectData(20);
+    manager.add(b10);
     
     assertNull(manager.findRecyclebleBlock(11));
     assertNull(manager.findRecyclebleBlock(10));
     
     // now one ObjectData becomes inactive
+    b10.incrementInactiveObjectDataCount();
+
+    assertNull(manager.findRecyclebleBlock(11));
+    assertNotNull(manager.findRecyclebleBlock(10));
   }
   
   public void test_inactiveThreshold_50_scenario() {
@@ -45,7 +49,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertNull(manager.findRecyclebleBlock(11));
     assertSame(b10b, manager.findRecyclebleBlock(10));
   }
-
+  
   public void test_incativeThreshold_50() {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
@@ -95,7 +99,57 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
 
     // no more blocks for recycling
     assertNull(manager.findRecyclebleBlock(1));
+  }
 
+  /**
+   * The size doesn't matter
+   */
+  public void test_sizeThreshold_0() {
+    IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
+
+    Block b = new Block(1000, 0);
+    b.setNumberOfObjectData(20);
+    manager.add(b);
+    
+    b.incrementInactiveObjectDataCount();
+    
+    assertNull(manager.findRecyclebleBlock(1001));
+    assertNotNull(manager.findRecyclebleBlock(1));
+  }
+  
+  /**
+   * The block mustn't be bigger than twice the requested size.
+   */
+  public void test_sizeThreshold_100() {
+    IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 100);
+
+    Block b = new Block(1000, 0);
+    b.setNumberOfObjectData(20);
+    manager.add(b);
+    
+    b.incrementInactiveObjectDataCount();
+    
+    assertNull(manager.findRecyclebleBlock(1001));
+    assertNull(manager.findRecyclebleBlock(999));
+    assertNotNull(manager.findRecyclebleBlock(1000));
+  }
+  
+  /**
+   * The block mustn't be bigger than twice the requested size.
+   */
+  public void test_sizeThreshold_50() {
+    IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 50);
+
+    Block b = new Block(1000, 0);
+    b.setNumberOfObjectData(20);
+    manager.add(b);
+    
+    b.incrementInactiveObjectDataCount();
+    
+    assertNull(manager.findRecyclebleBlock(1001));
+    assertNull(manager.findRecyclebleBlock(1));
+    assertNull(manager.findRecyclebleBlock(499));
+    assertNotNull(manager.findRecyclebleBlock(500));
   }
 
 }

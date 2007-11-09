@@ -91,7 +91,7 @@ public class TransactionWriter implements ITransactionWriter {
    * Safes the survivors of the given <tt>block</tt>;
    */
   private void freeBlock(Block block) {
-
+    
   }
 
   private void write(Block block, byte[] trxData) {
