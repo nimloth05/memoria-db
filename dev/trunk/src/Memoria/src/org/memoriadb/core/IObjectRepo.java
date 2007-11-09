@@ -76,20 +76,20 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    */
   //FIXME: METACLASS
   public boolean isMetaClass(Object obj);
-
+  
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.
    */
   //FIXME: METACLASS
   public boolean metaClassExists(Class<?> klass);
-  
+
+
   /**
    * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
    * @param obj
    */
   public void updateObjectInfoDeleted(IObjectId id);
-
-
+  
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
    * written to the persistent store.

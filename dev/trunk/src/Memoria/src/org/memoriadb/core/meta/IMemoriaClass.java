@@ -1,8 +1,8 @@
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.*;
 
-public interface IMemoriaClass {
+public interface IMemoriaClass extends IDataObject {
 
   public ISerializeHandler getHandler();
 

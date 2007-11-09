@@ -16,19 +16,21 @@ public final class ObjectRepoFactory {
   }
 
   private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory) {
-    IMemoriaClass fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), MemoriaFieldClass.class);
-    IMemoriaClass handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), MemoriaHandlerClass.class);
+    IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), MemoriaFieldClass.class, factory.getHandlerMetaClass());
+    IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), MemoriaHandlerClass.class, factory.getHandlerMetaClass());
     
-    repo.add(factory.getMemoriaMetaClass(), factory.getHandlerMetaClass(), fieldMetaClass);
-    repo.add(factory.getHandlerMetaClass(), factory.getHandlerMetaClass(), handlerMetaClass);
+    repo.add(factory.getMemoriaMetaClass(), fieldMetaClass.getMemoriaClassId(), fieldMetaClass);
+    repo.add(factory.getHandlerMetaClass(), handlerMetaClass.getMemoriaClassId(), handlerMetaClass);
     
     // handlers for specific library-classes
-    
-    repo.add(factory.getArrayMemoriaClass(), factory.getHandlerMetaClass(), new MemoriaHandlerClass(new ArrayHandler(), Array.class));
+    repo.add(factory.getArrayMemoriaClass(), factory.getHandlerMetaClass(), new MemoriaHandlerClass(new ArrayHandler(), Array.class, factory.getHandlerMetaClass()));
 
     //These classObjects don't need a fix known ID.
-    repo.add(MemoriaFieldClassFactory.createMetaClass(Object.class), factory.getHandlerMetaClass());
-    repo.add(new MemoriaHandlerClass(new ArrayListHandler(), ArrayList.class), factory.getHandlerMetaClass());
+    IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, factory.getHandlerMetaClass());
+    repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
+    
+    IMemoriaClassConfig arrayListMemoriaClass = new MemoriaHandlerClass(new ArrayListHandler(), ArrayList.class, factory.getHandlerMetaClass());
+    repo.add(arrayListMemoriaClass, arrayListMemoriaClass.getMemoriaClassId());
   }
 
   private ObjectRepoFactory() {}

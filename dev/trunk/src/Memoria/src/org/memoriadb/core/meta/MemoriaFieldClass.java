@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 
 
 public final class MemoriaFieldClass implements IMemoriaClassConfig {
@@ -14,20 +15,23 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
 
   private IMemoriaClass fSuperClass;
+  private final IObjectId fMemoriaClassId;
 
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
    * object of a given type enters the memoria-reference-space.
    *
    */
-  public MemoriaFieldClass(Class<?> klass) {
+  public MemoriaFieldClass(Class<?> klass, IObjectId memoriaClassId) {
+    fMemoriaClassId = memoriaClassId;
     fClassName = klass.getName();
     
     addFields(klass);
   }
   
-  public MemoriaFieldClass(String className) {
+  public MemoriaFieldClass(String className, IObjectId memoriaClassId) {
     fClassName = className;
+    fMemoriaClassId = memoriaClassId;
   }
   
   public void addMetaField(MemoriaField metaField) {
@@ -61,6 +65,11 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
     return fClassName;
   }
 
+  @Override
+  public IObjectId getMemoriaClassId() {
+    return fMemoriaClassId;
+  }
+  
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;

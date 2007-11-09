@@ -28,16 +28,12 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   /**
    * Overwrite to change the memoria-configuration for opening a db. 
    */
-  protected void configureOpen(CreateConfig config) {
-    
-  }
+  protected void configureOpen(CreateConfig config) {}
 
   /**
    * Overwrite to change the memoria-configuration for reopening a db. 
    */
-  protected void configureReopen(CreateConfig config) {
-    
-  }
+  protected void configureReopen(CreateConfig config) {}
   
   protected void delete(Object obj) {
     fStore.delete(obj);
@@ -79,18 +75,23 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return FileLayout.getOPO(fStore);
   }
   
+  protected TestMode getTestMode() {
+    return TestMode.memory;
+  }
+  
   protected final void recreateStore() {
     fStore.close(); 
-    
-    //fStore = openFile(new PhysicalFile(PATH), mode);
-    
-    InMemoryFile file = (InMemoryFile) getFile();
-    file.reset();
     
     CreateConfig config = new CreateConfig();
     configureReopen(config);
     
-    fStore = openFile(file, config);
+    if (getTestMode() == TestMode.memory) {
+      InMemoryFile file = (InMemoryFile) getFile();
+      file.reset();
+      fStore = openFile(file, config);
+    } else {
+      fStore = openFile(new PhysicalFile(PATH), config);
+    }
   }
   
   protected final void reopen() {
@@ -104,19 +105,24 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final IObjectId[] save(Object...objects) {
     return fStore.save(objects);
   }
-  
+   
   protected final IObjectId saveAll(Object obj) {
     return fStore.saveAll(obj);
   }
-   
+  
   @Override
   protected void setUp() {
    File file = new File(PATH);
    file.delete(); 
-   //fStore = openFile(new PhysicalFile(PATH), getInitialDBMode());
+   
    CreateConfig config = new CreateConfig();
    configureOpen(config);
-   fStore = openFile(new InMemoryFile(), config);
+   
+   if (getTestMode() == TestMode.memory) {
+     fStore = openFile(new InMemoryFile(), config);
+   } else {
+     fStore = openFile(new PhysicalFile(PATH), config);
+   }
   }
   
   @Override

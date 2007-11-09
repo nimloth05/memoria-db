@@ -2,7 +2,7 @@ package org.memoriadb.core.handler.def;
 
 import java.io.*;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
@@ -17,7 +17,7 @@ public class HandlerClassHandler implements ISerializeHandler {
     String className = input.readUTF();
     String handlerName = input.readUTF();
     try {
-      return new MemoriaHandlerClass(handlerName, className);
+      return new MemoriaHandlerClass(handlerName, className, typeId);
     }
     catch (Exception e) {
       throw new MemoriaException(e);

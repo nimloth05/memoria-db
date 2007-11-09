@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.memoriadb.IFilter;
 import org.memoriadb.core.*;
+import org.memoriadb.core.handler.def.IListDataObject;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
@@ -19,10 +20,13 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     reopen(DBMode.data);
     
-    List<Object> allComposites = fStore.getAll(Composite.class.getName());
-    assertEquals(3, allComposites.size());
+    List<Object> l1_allComposites = fStore.getAll(Composite.class.getName());
+    assertEquals(3, l1_allComposites.size());
     
-    IFieldObject loadedRoot = (IFieldObject) fStore.getAll(Composite.class.getName(), new IFilter<Object>() {
+    List<Object> l1_allLeafs = fStore.getAll(Leaf.class.getName());
+    assertEquals(1, l1_allLeafs.size());
+    
+    IFieldObject l1_root = (IFieldObject) fStore.getAll(Composite.class.getName(), new IFilter<Object>() {
 
       @Override
       public boolean accept(Object object) {
@@ -31,9 +35,10 @@ public class CompositeTest extends AbstractObjectStoreTest {
       }
     }).get(0);
     
-    assertNotNull(loadedRoot);
+    assertNotNull(l1_root);
     
-    List<Object> list = (List<Object>) loadedRoot.get("fComponents");
+    IListDataObject listDataObject = (IListDataObject) l1_root.get("fComponents");
+    List<Object> list = listDataObject.getList();
     assertEquals(2, list.size());
     
     IFieldObject fieldObject1 = (IFieldObject) list.get(0);
@@ -42,34 +47,62 @@ public class CompositeTest extends AbstractObjectStoreTest {
     assertEquals("comp1", fieldObject1.get("fData"));
     assertEquals("comp2", fieldObject2.get("fData"));
     
-    list = (List<Object>) fieldObject1.get("fComponents");
+    listDataObject = (IListDataObject) fieldObject1.get("fComponents");
+    list = listDataObject.getList();
     assertEquals(1, list.size());
     
-    IFieldObject leaf1 = (IFieldObject) list.get(0);
-    assertEquals("leaf for comp1", leaf1.get("fData"));
+    IFieldObject l1_leaf1 = (IFieldObject) list.get(0);
+    assertEquals("leaf for comp1", l1_leaf1.get("fData"));
     
     //UPDATE the objects
     fStore.beginUpdate();
 
-    fieldObject1.set("fData", "changed value");
-    save(fieldObject1);
+    l1_leaf1.set("fData", "dataModeLeaf");
+    save(l1_leaf1);
     
-    IObjectId memoriaClassIdForLeafObject = fStore.getObjectId(fStore.getMemoriaClass(leaf1)); 
+    IObjectId memoriaClassIdForLeafObject = l1_leaf1.getMemoriaClassId();
+    
     IFieldObject leaf2 = new FieldMapDataObject(memoriaClassIdForLeafObject);
-    leaf2.set("fData", "leaf2");
+    leaf2.set("fData", "dataModeLeaf");
+    leaf2.set("fTestObj", l1_leaf1.get("fTestObj"));
     save(leaf2);
     
-    list = (List<Object>) fieldObject2.get("fComponents"); 
+    listDataObject = (IListDataObject) fieldObject2.get("fComponents");
+    list = listDataObject.getList();
     list.add(leaf2);
-    save(list);
+    save(listDataObject);
     
     fStore.endUpdate();
     
     reopen(DBMode.clazz);
     
-    List<Leaf> allLeafs = fStore.getAll(Leaf.class);
-    assertEquals(2, allLeafs.size());
+    List<Leaf> l2_allLeafs = fStore.getAll(Leaf.class);
+    assertEquals(2, l2_allLeafs.size());
     
+    for(int i =0; i < l2_allLeafs.size(); ++i) {
+      Leaf leaf = l2_allLeafs.get(i);
+      assertEquals("dataModeLeaf", leaf.getData());
+    }
+    
+    List<Composite> l2_allComposites = fStore.getAll(Composite.class);
+    assertEquals(3, l2_allComposites.size());
+    
+    assertSame(l2_allLeafs.get(0).getTestObj(), l2_allLeafs.get(1).getTestObj());
+    
+    Composite l2_root = getAll(Composite.class, new IFilter<Composite>() {
+
+      @Override
+      public boolean accept(Composite object) {
+        return object.getData().equals("root");     
+      }
+      
+    }).get(0);
+    
+    assertEquals(2, l2_root.getChildCount());
+    for(int i = 0; i < l2_root.getChildCount(); ++i) {
+      Composite child = (Composite) l2_root.getChild(i);
+      assertEquals(1, child.getChildCount());
+    }
   }
   
   public void test_save_composite() {

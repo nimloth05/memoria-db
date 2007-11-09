@@ -2,6 +2,7 @@ package org.memoriadb.loadtests;
 
 import java.util.*;
 
+import org.memoriadb.TestMode;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
@@ -32,6 +33,24 @@ public class LoadTest extends AbstractObjectStoreTest {
     
     Referencer composite = getAll(Referencer.class).get(0);
     assertNotNull("1", composite.getStringValueFromReferencee());
+  }
+  
+  public void test_save_thentousends_obejcts() {
+    fStore.beginUpdate();
+    
+    for(int i = 0; i < 10000; ++i) {
+      save(new Object());
+    }
+    
+    long currentTime = System.nanoTime();
+    fStore.endUpdate();
+    long durationInMs = (System.nanoTime() - currentTime) / 1000000;
+    assertTrue("10'000 took " +durationInMs, durationInMs < 500);
+  }
+
+  @Override
+  protected TestMode getTestMode() {
+    return TestMode.filesystem;
   }
   
 }

@@ -166,7 +166,7 @@ public class ObjectStore implements IObjectStoreExt {
 
   @Override
   public IMemoriaClass getMemoriaClass(Object obj) {
-    return getMemoriaClass(obj.getClass());
+    return fObjectRepo.getMemoriaClass(obj.getClass().getName());
   }
 
   @Override

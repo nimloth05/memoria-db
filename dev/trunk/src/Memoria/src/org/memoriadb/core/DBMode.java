@@ -1,8 +1,8 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.handler.def.field.FieldMapDataObject;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -43,7 +43,7 @@ public enum DBMode {
             return;
           }
 
-          classObject = MemoriaFieldClassFactory.createMetaClass(superClass);
+          classObject = MemoriaFieldClassFactory.createMetaClass(superClass, store.getMemoriaFieldMetaClass());
           if (fChildClass != null) fChildClass.setSuperClass(classObject);
           fChildClass = classObject;
           
@@ -58,14 +58,12 @@ public enum DBMode {
     
     @Override
     public IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store) {
-      if (obj instanceof FieldMapDataObject) {
-        FieldMapDataObject mapObject = (FieldMapDataObject)obj;
-        if (!store.contains(mapObject.getMemoriaClassId())) throw new MemoriaException("MemoriaClass does not exist");
-        return mapObject.getMemoriaClassId();
-      }     
-      IMemoriaClass memoriaClass = null;
-      store.getMemoriaClass(obj);
-      return null;
+      if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the object is not of type IDataObject");
+      
+      IDataObject dataObject = (IDataObject) obj;
+      if (!store.contains(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
+      
+      return dataObject.getMemoriaClassId();
     }
   };
 

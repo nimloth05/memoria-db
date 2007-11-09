@@ -17,9 +17,9 @@ public interface IDefaultObjectIdProvider {
   
   public IObjectId getRootClassId();
   
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId);
-  
   public boolean isMemoriaClass(IObjectId typeId);
+  
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId);
 
   public boolean isObjectDeletionMarker(IObjectId typeId);
   

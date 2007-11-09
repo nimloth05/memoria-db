@@ -37,6 +37,8 @@ public class ObjectInfo implements IObjectInfo {
    * Use this ctor for ojects after dehydration
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock, long version, int oldGenerationCount) {
+    if (memoriaClassId == null) throw new IllegalArgumentException("MemoriaClassId is null.");
+    
     fObj = obj;
     fId = id;
     fCurrentBlock = currentBlock;

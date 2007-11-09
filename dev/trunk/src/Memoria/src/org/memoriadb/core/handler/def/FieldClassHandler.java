@@ -17,7 +17,7 @@ public class FieldClassHandler implements ISerializeHandler {
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
     
-    MemoriaFieldClass classObject = new MemoriaFieldClass(className);
+    MemoriaFieldClass classObject = new MemoriaFieldClass(className, typeId);
     
     IObjectId superClassId = context.createFrom(input);
     if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
