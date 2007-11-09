@@ -238,7 +238,7 @@ public class ObjectStore implements IObjectStoreExt {
   public void writePendingChanges() {
     if(fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
     
-    ObjectSerializer serializer = new ObjectSerializer(fObjectRepo);
+    ObjectSerializer serializer = new ObjectSerializer(fObjectRepo, fDBMode);
     for(Object obj: fAdd) {
       serializer.serialize(obj);
     }

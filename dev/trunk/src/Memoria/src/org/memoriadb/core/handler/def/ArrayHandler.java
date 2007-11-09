@@ -5,12 +5,13 @@ import java.io.*;
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 
 public class ArrayHandler implements ISerializeHandler {
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
 //    IObjectId compundTypeId = context.createFrom(input);
 //    int dimensions = input.readInt();
 //    

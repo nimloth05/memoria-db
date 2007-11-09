@@ -3,6 +3,8 @@ package org.memoriadb.core.load;
 import java.io.DataInputStream;
 import java.util.*;
 
+import org.memoriadb.core.DBMode;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.core.meta.IMemoriaClass;
@@ -44,7 +46,9 @@ public class HydratedObject {
   }
   
   private Object instantiate(IReaderContext context, IMemoriaClass classObject) throws Exception {
-    return classObject.getHandler().deserialize(fInput, context);
+    Object deserializedObject = classObject.getHandler().deserialize(fInput, context, fTypeId);
+    if (context.getMode().equals(DBMode.data) && !(deserializedObject instanceof IDataObject)) throw new MemoriaException("ISerializeHandler must return a IDataObject in DBMode.data. Implementaiton error in Handler for Java-Type: " + classObject.getJavaClassName()); 
+    return deserializedObject;
   }
   
 }

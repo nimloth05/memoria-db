@@ -12,9 +12,11 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     
+    IObjectId memoriaClassId = fStore.getObjectId(fStore.getMemoriaClass(obj));
+    
     reopen(DBMode.data);
     
-    IFieldObject obj2 = new FieldMapDataObject();
+    IFieldObject obj2 = new FieldMapDataObject(memoriaClassId);
     obj2.set("fString", 2);
     save(obj2);
     

@@ -17,16 +17,16 @@ import org.memoriadb.util.Constants;
 public class ObjectSerializer implements ISerializeContext {
 
   private final IObjectRepo fObjectRepo;
-
   private final ByteArrayOutputStream fBuffer;
-
   private final DataOutput fStream;
+  private final DBMode fDbMode;
 
   /**
    * @param repo
    */
-  public ObjectSerializer(IObjectRepo repo) {
+  public ObjectSerializer(IObjectRepo repo, DBMode dbMode) {
     fObjectRepo = repo;
+    fDbMode = dbMode;
     fBuffer = new ByteArrayOutputStream();
     fStream = new DataOutputStream(fBuffer);
   }
@@ -36,15 +36,20 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   @Override
+  public DBMode getDBMode() {
+    return fDbMode;
+  }
+
+  @Override
   public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
   }
-
+  
   @Override
   public IObjectId getRootClassId() {
     return fObjectRepo.getRootClassId();
   }
-  
+
   public void markAsDeleted(IObjectId id) {
     try {
       internalMarkObjectAsDeleted(fObjectRepo.getObjectInfo(id));

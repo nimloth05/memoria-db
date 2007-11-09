@@ -21,8 +21,8 @@ public class DefaultHandler implements ISerializeHandler {
   }
 
   @Override
-  public Object deserialize(final DataInputStream input, final IReaderContext context) throws IOException {
-    final IFieldObject result = createObject(context);
+  public Object deserialize(final DataInputStream input, final IReaderContext context, IObjectId typeId) throws IOException {
+    final IFieldObject result = createObject(context, typeId);
     
     superDeserialize(result, input, context);
     if (input.available() > 0) throw new MemoriaException("Object not fully deserialized: " + result);
@@ -97,11 +97,11 @@ public class DefaultHandler implements ISerializeHandler {
     };
   }
 
-  private IFieldObject createObject(IReaderContext context) {
+  private IFieldObject createObject(IReaderContext context, IObjectId typeId) {
     if (context.getMode() == DBMode.clazz) {
       return new FieldObject(ReflectionUtil.createInstance(fClassObject.getClassName()));
     }
-    return new FieldMapDataObject();
+    return new FieldMapDataObject(typeId);
   }
 
   private IFieldObject getFieldObject(Object obj) {

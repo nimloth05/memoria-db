@@ -1,7 +1,9 @@
 package org.memoriadb.core.handler.def.field;
 
+import org.memoriadb.core.handler.IDataObject;
 
-public interface IFieldObject {
+
+public interface IFieldObject extends IDataObject {
   
   public Object get(String fieldName);
   

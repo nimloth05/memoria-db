@@ -14,7 +14,7 @@ import org.memoriadb.core.meta.*;
 public class ArrayListHandler implements ISerializeHandler {
 
   @Override
-  public Object deserialize(DataInputStream input, final IReaderContext context) throws Exception {
+  public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     ArrayList<Object> list = new ArrayList<Object>();
     while (input.available() > 0) {
       

@@ -14,7 +14,7 @@ import org.memoriadb.exception.MemoriaException;
 public class FieldClassHandler implements ISerializeHandler {
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
     
     MemoriaFieldClass classObject = new MemoriaFieldClass(className);

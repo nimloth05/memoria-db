@@ -5,6 +5,7 @@ import java.io.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.MemoriaHandlerClass;
 import org.memoriadb.exception.MemoriaException;
@@ -12,7 +13,7 @@ import org.memoriadb.exception.MemoriaException;
 public class HandlerClassHandler implements ISerializeHandler {
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context) throws IOException {
+  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
     String handlerName = input.readUTF();
     try {

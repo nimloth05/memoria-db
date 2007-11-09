@@ -5,6 +5,7 @@ import java.util.List;
 import org.memoriadb.IFilter;
 import org.memoriadb.core.DBMode;
 import org.memoriadb.core.handler.def.field.*;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
@@ -51,7 +52,8 @@ public class CompositeTest extends AbstractObjectStoreTest {
     fieldObject1.set("fData", "changed value");
     save(fieldObject1);
     
-    IFieldObject leaf2 = new FieldMapDataObject();
+    IObjectId memoriaClassIdForLeafObject = fStore.getObjectId(fStore.getMemoriaClass(leaf1)); 
+    IFieldObject leaf2 = new FieldMapDataObject(memoriaClassIdForLeafObject);
     leaf2.set("fData", "leaf2");
     save(leaf2);
     
