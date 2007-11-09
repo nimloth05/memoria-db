@@ -49,7 +49,7 @@ public class ObjectRepo implements IObjectRepo {
    * This method is only used for bootstrapping
    */
   public void add(IObjectId id, IObjectId memoriaMetaClassId, IMemoriaClass object) {
-    internalPut(new ObjectInfo(id, memoriaMetaClassId, object, Block.sVirtualBlock));
+    internalPut(new ObjectInfo(id, memoriaMetaClassId, object, Block.getDefaultBlock()));
   }
 
   /**
@@ -59,7 +59,7 @@ public class ObjectRepo implements IObjectRepo {
    */
   public IObjectId add(Object obj, IObjectId memoriaClassId) {
     IObjectId result = generateId();
-    internalPut(new ObjectInfo(result, memoriaClassId, obj, Block.sVirtualBlock));
+    internalPut(new ObjectInfo(result, memoriaClassId, obj, Block.getDefaultBlock()));
     return result;
   }
 

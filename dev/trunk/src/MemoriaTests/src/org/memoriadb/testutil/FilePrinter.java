@@ -2,7 +2,7 @@ package org.memoriadb.testutil;
 
 import java.io.IOException;
 
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
@@ -54,6 +54,6 @@ public class FilePrinter {
     
     System.out.println("------------------------");
 
-    reader.readBlocks(BlockManagerDummy.INST, header.loadIdFactory(), new PrintHandler());
+    reader.readBlocks(header.loadIdFactory(), new PrintHandler());
   };
 }

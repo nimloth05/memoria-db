@@ -154,7 +154,7 @@ public final class ObjectLoader implements IReaderContext {
   }
   
   private long readBlockData() throws IOException {
-    return fFileReader.readBlocks(fBlockManager, fRepo.getIdFactory(), new IFileReaderHandler() {
+    return fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
 
       @Override
       public void block(Block block) {

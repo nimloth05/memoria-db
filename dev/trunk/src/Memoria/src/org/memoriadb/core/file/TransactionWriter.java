@@ -43,7 +43,7 @@ public class TransactionWriter implements ITransactionWriter {
     stream.writeLong(crc32.getValue());
 
     // first create the block...
-    Block block = new Block(fBlockManager, blockSize, fFile.getSize());
+    Block block = new Block(blockSize, fFile.getSize());
     block.setNumberOfObjectData(numberOfObjects);
     fBlockManager.add(block);
 

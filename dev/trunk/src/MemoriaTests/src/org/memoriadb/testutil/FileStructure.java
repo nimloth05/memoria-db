@@ -3,7 +3,7 @@ package org.memoriadb.testutil;
 import java.io.IOException;
 import java.util.*;
 
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.Block;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
@@ -123,7 +123,8 @@ public class FileStructure {
 
   private void readFile(FileReader reader) throws IOException {
     fHeader = reader.readHeader();
-    reader.readBlocks(BlockManagerDummy.INST, fHeader.loadIdFactory(), new IFileReaderHandler(){
+    reader.readBlocks(
+        fHeader.loadIdFactory(), new IFileReaderHandler(){
  
       @Override
       public void block(Block block) {

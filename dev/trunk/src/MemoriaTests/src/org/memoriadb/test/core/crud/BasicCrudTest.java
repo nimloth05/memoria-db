@@ -78,6 +78,8 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
 //    assertNull(a_l1.getB());
 //  }
   
+  // FIXME test self-reference, msc (Objekt hat eine Ref auf sich selber)
+  
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fStore.save(b);

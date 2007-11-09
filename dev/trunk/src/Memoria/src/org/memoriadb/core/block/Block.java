@@ -9,12 +9,12 @@ import org.memoriadb.exception.MemoriaException;
  * 
  * The crc32 check at the end fo the transaction-data includes the block's size, but not it's tag.
  */
-public class Block implements Comparable<Block> {
+public class Block {
   
   /**
    * Bootstrapped and new objects refer to this block.
    */
-  public static final Block sVirtualBlock = new Block(0,-1);
+  private static final Block sDefaultBlock = new Block(0,-1);
   
   /**
    * Number of bytes this block can store.
@@ -32,25 +32,18 @@ public class Block implements Comparable<Block> {
   
   private int fInactiveObjectDataCount;
 
-  private final IBlockManager fManager;
+  private IBlockManager fManager;
   
-  public Block(IBlockManager manager, long size, long position) {
-    if(manager == null) throw new MemoriaException("BlockManager was null");
-    
-    fManager = manager;
+  public static Block getDefaultBlock() {
+    sDefaultBlock.setNumberOfObjectData(sDefaultBlock.getObjectDataCount()+1);
+    return sDefaultBlock;
+  }
+  
+  public Block(long size, long position) {
     fSize = size;
     fPosition = position;
     fObjectDataCount = 0;
     fInactiveObjectDataCount = 0;
-  }
-  
-  public Block(long size, long position) {
-    this(BlockManagerDummy.INST, size, position);
-  }
-
-  @Override
-  public int compareTo(Block o) {
-    return (int)(getSize() - o.getSize());
   }
 
   @Override
@@ -76,7 +69,7 @@ public class Block implements Comparable<Block> {
    */
   public long getInactiveRatio() {
     // when the block-size still is 0, the ratio is 0
-    //if(fObjectDataCount == 0) return 0;
+    if(fObjectDataCount == 0) return 0;
     return fInactiveObjectDataCount*100 / fObjectDataCount;
   }
 
@@ -115,12 +108,17 @@ public class Block implements Comparable<Block> {
 
   public void incrementInactiveObjectDataCount() {
     ++fInactiveObjectDataCount;
-    fManager.inactiveRatioChanged(this);
+    if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException("more inactive("+fInactiveObjectDataCount+") than active("+fObjectDataCount+") ObjectData");
+    if(fManager != null)fManager.inactiveRatioChanged(this);
+  }
+
+  public void setBlockManager(IBlockManager manager) {
+    fManager = manager;
   }
 
   public void setNumberOfObjectData(int numberOfObjects) {
     fObjectDataCount = numberOfObjects;
-    fManager.inactiveRatioChanged(this);
+    if(fManager != null)fManager.inactiveRatioChanged(this);
   }
 
   @Override
