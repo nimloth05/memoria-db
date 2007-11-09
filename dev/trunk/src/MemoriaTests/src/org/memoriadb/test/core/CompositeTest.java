@@ -3,7 +3,7 @@ package org.memoriadb.test.core;
 import java.util.List;
 
 import org.memoriadb.IFilter;
-import org.memoriadb.core.DBMode;
+import org.memoriadb.core.*;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
@@ -13,7 +13,7 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 public class CompositeTest extends AbstractObjectStoreTest {
   
   private DBMode fReopenDbMode;
-  
+
   public void test_composite_in_db_mode() {
     test_save_composite();
     
@@ -65,7 +65,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     fStore.endUpdate();
     
-    reopen();
+    reopen(DBMode.clazz);
     
     List<Leaf> allLeafs = fStore.getAll(Leaf.class);
     assertEquals(2, allLeafs.size());
@@ -92,7 +92,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     saveAll(root);
     
-    reopen();
+    reopen(DBMode.clazz);
     
     List<Composite> allComposites = getAll(Composite.class);
     assertEquals(3, allComposites.size());
@@ -111,6 +111,11 @@ public class CompositeTest extends AbstractObjectStoreTest {
     assertCompositeObject(comp1, loadedRoot.getChild(0));
     assertCompositeObject(comp2, loadedRoot.getChild(1));
     assertCompositeObject(leaf1, ((Composite) loadedRoot.getChild(0)).getChild(0));
+  }
+  
+  @Override
+  protected void configureReopen(CreateConfig config) {
+    config.setDBMode(fReopenDbMode);
   }
 
   private void assertCompositeObject(IComponent original, IComponent loaded) {
