@@ -63,7 +63,7 @@ public final class Memoria {
     
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), config.getDBMode());
-    return new ObjectStore(repo, file, config.getBlockManager(), headRevision);
+    return new ObjectStore(config.getDBMode(), repo, file, config.getBlockManager(), headRevision);
   }
   
   /**

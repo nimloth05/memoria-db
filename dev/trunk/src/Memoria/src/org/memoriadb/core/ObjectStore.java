@@ -24,7 +24,7 @@ public class ObjectStore implements IObjectStoreExt {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(DBMode dbMode, IObjectRepo objectContainer, IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
+  public ObjectStore(DBMode dbMode, IObjectRepo objectContainer, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
     fObjectRepo = objectContainer;
     fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
     fDBMode = dbMode;
