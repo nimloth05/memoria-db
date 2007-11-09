@@ -114,11 +114,14 @@ public class FileReader {
     skip(stream, blockSize - transactionSize - (8 + 8 + 8)); // (transactionSize + crc32)
 
 
-    Block block = new Block(blockManager, blockSize, position, 0);
+    
+    Block block = new Block(blockManager, blockSize, position);
+    // first handle block, later handle objects. The number of the ObjectData in the block is not yet resolved!
     handler.block(block);
     
-    readObjects(block, idFactory, handler, revision,  transactionData);
-
+    int objectCount = readObjects(idFactory, handler, revision,  transactionData);
+    block.setNumberOfObjectData(objectCount);
+    
     // revision + startTag + blockSize dataSize + data.length
     return blockSize + FileLayout.BLOCK_OVERHEAD;
   }
@@ -147,17 +150,21 @@ public class FileReader {
     }
   }
 
-  private void readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
+  /**
+   * @return The number of read ObjectData
+   */
+  private int readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
     int offset = 0;
-
+    int objectCount = 0;
     while (stream.available() > 0) {
-      block.incrementObjectDataCount();
+      ++objectCount;
       int size = stream.readInt();
       readObject(idFactory, handler, revision, data, offset + FileLayout.OBJECT_SIZE_LEN, size);
       offset += FileLayout.OBJECT_SIZE_LEN + size;
       skip(stream, size);
     }
+    return objectCount;
   }
   
   private void skip(DataInputStream stream, long size) throws IOException {

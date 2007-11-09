@@ -1,6 +1,5 @@
-package org.memoriadb.testutil;
+package org.memoriadb.core.block;
 
-import org.memoriadb.core.block.*;
 
 public class BlockManagerDummy implements IBlockManager {
 
@@ -11,12 +10,12 @@ public class BlockManagerDummy implements IBlockManager {
   }
 
   @Override
-  public Block findRecyclebleBlock(int blockSize) {
+  public Block findRecyclebleBlock(long blockSize) {
     return null;
   }
 
   @Override
-  public void inactiveObjectDataAddedTo(Block block) {
+  public void inactiveRatioChanged(Block block) {
     
   }
 

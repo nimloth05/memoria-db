@@ -12,15 +12,15 @@ public interface IBlockManager {
    * 
    * Returns a block that maches the requirements or null, if a new block should be appended.
    * 
-   * @param blockSize The gross-size of the required block.
+   * @param blockSize The net-size of the required block.
    * @return A block which has at least <tt>blockSize</tt> (the block still may contain survivors) 
    * or null, if no block met the requirements.  
    */
-  public Block findRecyclebleBlock(int blockSize);
+  public Block findRecyclebleBlock(long blockSize);
 
   /**
-   * Called when at runtime an objectData from this block was replaced by a newer generation.
+   * Called when the inactiveObjectDataRatio of a block changed.
    */
-  public void inactiveObjectDataAddedTo(Block block);
+  public void inactiveRatioChanged(Block block);
 
 }

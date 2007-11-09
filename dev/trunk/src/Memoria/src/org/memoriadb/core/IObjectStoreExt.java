@@ -7,7 +7,7 @@ import org.memoriadb.core.id.IObjectId;
 /**
  * Extended functionality for test-purposes. 
  * 
- *  Attention: It may be possible to corrupt the db when misusing the power of this interface.
+ * Attention: It may be possible to corrupt the db when misusing the power of this interface.
  * 
  * @author msc
  */

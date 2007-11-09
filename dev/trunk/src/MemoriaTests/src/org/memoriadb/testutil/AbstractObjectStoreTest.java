@@ -25,10 +25,24 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.beginUpdate();
   }
   
+  /**
+   * Overwrite to change the memoria-configuration for opening a db. 
+   */
+  protected void configureOpen(CreateConfig config) {
+    
+  }
+
+  /**
+   * Overwrite to change the memoria-configuration for reopening a db. 
+   */
+  protected void configureReopen(CreateConfig config) {
+    
+  }
+  
   protected void delete(Object obj) {
     fStore.delete(obj);
   }
-
+  
   protected void deleteAll(Object obj) {
     fStore.deleteAll(obj);
   }
@@ -48,15 +62,11 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
     return fStore.getAll(clazz, filter);
   }
-  
+
   protected IMemoriaFile getFile() {
     return ((ObjectStore)fStore).getFile();
   }
   
-  protected DBMode getInitialDBMode() {
-    return DBMode.clazz;
-  }
-
   protected IObjectInfo getObjectInfo(IObjectId id) {
     return fStore.getObjectInfo(id);
   }
@@ -64,27 +74,27 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected int getOPF() {
     return FileLayout.OPF;
   }
-  
+
   protected int getOPO() {
     return FileLayout.getOPO(fStore);
   }
   
-  protected final void recreateStore(DBMode mode) {
+  protected final void recreateStore() {
     fStore.close(); 
     
     //fStore = openFile(new PhysicalFile(PATH), mode);
     
     InMemoryFile file = (InMemoryFile) getFile();
     file.reset();
-    fStore = openFile(file, mode);
-  }
-
-  protected final void reopen() {
-    recreateStore(DBMode.clazz); 
+    
+    CreateConfig config = new CreateConfig();
+    configureReopen(config);
+    
+    fStore = openFile(file, config);
   }
   
-  protected final void reopen(DBMode mode) {
-    recreateStore(mode); 
+  protected final void reopen() {
+    recreateStore(); 
   }
   
   protected final IObjectId save(Object obj) {
@@ -98,23 +108,25 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final IObjectId saveAll(Object obj) {
     return fStore.saveAll(obj);
   }
-  
+   
   @Override
   protected void setUp() {
    File file = new File(PATH);
    file.delete(); 
    //fStore = openFile(new PhysicalFile(PATH), getInitialDBMode());
-   fStore = openFile(new InMemoryFile(), getInitialDBMode());
+   CreateConfig config = new CreateConfig();
+   configureOpen(config);
+   fStore = openFile(new InMemoryFile(), config);
   }
   
   @Override
   protected void tearDown() {
     fStore.close();
   }
-   
-  private IObjectStoreExt openFile(IMemoriaFile file, DBMode mode) {
-    CreateConfig config = new CreateConfig();
-    config.setDBMode(mode);
+  
+  private IObjectStoreExt openFile(IMemoriaFile file, CreateConfig config) {
     return (IObjectStoreExt) Memoria.open(config, file);
   }
+
+  
 }

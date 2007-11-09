@@ -9,12 +9,13 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class InheritanceTest extends AbstractObjectStoreTest {
   
+  
   public void test_create_metaObjects() {
     B b = createB();
     save(b);
     assertMetaObjectHierarchy(b);
   }
-
+  
   public void test_save_inheritance_obj() {
     B b = createB();
     b.fTestObj = new SimpleTestObj();
@@ -38,7 +39,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     C loadedC = getAll(C.class).get(0);
     assertEquals(c.fTestObj, loadedC.fTestObj);
   }
-  
+
   public void test_save_super_type_first() {
     A a = new A();
     a.setInt(1);
@@ -77,7 +78,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     assertEquals(fStore.getObjectId(objectClass), id);
     assertEquals(javaObjectMetaObject.getJavaClassName(), Object.class.getName());
   }
-
+  
   private B createB() {
     B b = new B();
     b.fBoolean = true;

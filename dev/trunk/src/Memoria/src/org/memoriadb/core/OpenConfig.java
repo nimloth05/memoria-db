@@ -4,7 +4,7 @@ import org.memoriadb.core.block.*;
 
 public class OpenConfig {
   
-  private final IBlockManager fBlockManager;
+  private IBlockManager fBlockManager;
   private DBMode fDBMode;
 
   public OpenConfig() {
@@ -24,8 +24,14 @@ public class OpenConfig {
     return fDBMode;
   }
   
+  public void setBlockManager(IBlockManager blockManager) {
+    fBlockManager = blockManager;
+  }
+  
+
   public void setDBMode(DBMode mode) {
     fDBMode = mode;
   }
+
   
 }

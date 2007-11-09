@@ -12,6 +12,8 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class CompositeTest extends AbstractObjectStoreTest {
   
+  private DBMode fReopenDbMode;
+  
   public void test_composite_in_db_mode() {
     test_save_composite();
     
@@ -114,6 +116,11 @@ public class CompositeTest extends AbstractObjectStoreTest {
   private void assertCompositeObject(IComponent original, IComponent loaded) {
     assertEquals(original.getChildCount(), loaded.getChildCount());
     assertEquals(original.getData(), loaded.getData());
+  }
+
+  private void reopen(DBMode data) {
+    fReopenDbMode = data;
+    super.reopen();
   }
 
 }

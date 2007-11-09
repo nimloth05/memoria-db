@@ -12,4 +12,6 @@ public interface IBlockManagerExt extends IBlockManager {
   
   public int getBlockCount();
   
+  public int getRecyclingBlockCount();
+  
 }

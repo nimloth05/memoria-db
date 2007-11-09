@@ -21,5 +21,5 @@ public class CreateConfig extends OpenConfig {
   public String getIdFactoryClassName() {
     return fIdFactoryClassName;
   }
-  
+
 }
