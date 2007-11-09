@@ -56,6 +56,17 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     
   }
   
+  public void test_save_attribute() {
+    B b = new B("b");
+    IObjectId id = fStore.save(b);
+    
+    reopen();
+    
+    B b_l1 = (B) fStore.getObject(id);
+    assertNotSame(b_l1, b);
+    assertEquals("b", b_l1.getName());
+  }
+  
   // FIXME geht noch nicht, msc
 //  public void test_save_null_attribute() {
 //    B b = new B(null);
@@ -80,15 +91,23 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
   
   // FIXME test self-reference, msc (Objekt hat eine Ref auf sich selber)
   
-  public void test_save_attribute() {
-    B b = new B("b");
-    IObjectId id = fStore.save(b);
+  
+  public void test_save_cyclic_save_all() {
+    Cyclic1 c1 = new Cyclic1("c1");
+    Cyclic2 c2 = new Cyclic2("c2");
+    
+    c1.setC2(c2);
+    c2.setC1(c1);
+    
+    IObjectId c1_objectId = saveAll(c1);
     
     reopen();
     
-    B b_l1 = (B) fStore.getObject(id);
-    assertNotSame(b_l1, b);
-    assertEquals("b", b_l1.getName());
+    Cyclic1 l1_c1 = fStore.getObject(c1_objectId);
+    Cyclic2 l1_c2 = fStore.getAll(Cyclic2.class).get(0);
+    
+    assertSame(l1_c1.getC2(), l1_c2);
+    assertSame(l1_c2.getC1(), l1_c1);
   }
   
   public void test_save_reference() {

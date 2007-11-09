@@ -27,15 +27,15 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
-    IObjectId id = fRepo.add(classObject, fRepo.getMemoriaMetaClass());
+    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class, fRepo.getMemoriaMetaClass());
+    IObjectId id = fRepo.add(classObject, classObject.getMemoriaClassId());
     
     assertSame(classObject, fRepo.getObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
   
   public void test_put_meta_object_with_id_in_cache() {
-    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class);
+    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class, new LongObjectId(1));
     IObjectId id = new LongObjectId(20);
     fRepo.handleAdd(new ObjectInfo(id, new LongObjectId(1), classObject, Block.getDefaultBlock(), 0, 0));
     
