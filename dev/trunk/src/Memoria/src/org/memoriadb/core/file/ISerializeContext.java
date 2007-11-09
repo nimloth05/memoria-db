@@ -7,8 +7,10 @@ public interface ISerializeContext {
   
   public DBMode getDBMode();
 
-  public IObjectId getObjectId(Object obj);
+  public IObjectId getNullReference();
   
+  public IObjectId getObjectId(Object obj);
+
   public IObjectId getRootClassId();
 
 }

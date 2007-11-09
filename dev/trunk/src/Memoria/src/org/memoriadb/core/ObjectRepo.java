@@ -136,6 +136,11 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.getMemoriaMetaClass();
   }
 
+  @Override
+  public IObjectId getNullReference() {
+    return fIdFactory.getNullReference();
+  }
+
   /**
    * 
    * @param objectId
@@ -151,7 +156,7 @@ public class ObjectRepo implements IObjectRepo {
   public IObjectId getObjectDeletionMarker() {
     return fIdFactory.getObjectDeletionMarker();
   }
-
+  
   /**
    * @param obj
    * @return
@@ -163,7 +168,7 @@ public class ObjectRepo implements IObjectRepo {
     if (result == null) throw new MemoriaException("Unknown object: " + obj);
     return result.getId();
   }
-  
+
   public ObjectInfo getObjectInfo(IObjectId id) {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
@@ -207,6 +212,10 @@ public class ObjectRepo implements IObjectRepo {
   @Override
   public boolean isMetaClass(Object obj) {
     return obj instanceof IMemoriaClass;
+  }
+
+  public boolean isNullReference(IObjectId objectId) {
+    return fIdFactory.isNullReference(objectId);
   }
 
   @Override

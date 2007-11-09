@@ -89,6 +89,31 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertTrue(fStore.contains(a.getB()));
   }
   
+  public void test_delete_not_contained_object() {
+    Object object = new Object();
+    assertFalse(fStore.contains(object));
+    
+    fStore.deleteAll(object);
+    fStore.delete(object);
+    
+    assertFalse(fStore.contains(object));
+  }
+  
+  public void test_save_object_after_deletion() {
+    Object object = new Object();
+    assertFalse(fStore.contains(object));
+    
+    fStore.deleteAll(object);
+    fStore.delete(object);
+    
+    assertFalse(fStore.contains(object));
+    
+    IObjectId id = save(object);
+    
+    assertTrue(fStore.contains(object));
+    assertTrue(fStore.contains(id));
+  }
+  
   public void test_update_and_delete_in_same_transaction() {
     OneInt a = new OneInt(0);
     IObjectId a_id = save(a);

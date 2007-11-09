@@ -41,10 +41,15 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   @Override
+  public IObjectId getNullReference() {
+    return fObjectRepo.getNullReference();
+  }
+  
+  @Override
   public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
   }
-  
+
   @Override
   public IObjectId getRootClassId() {
     return fObjectRepo.getRootClassId();

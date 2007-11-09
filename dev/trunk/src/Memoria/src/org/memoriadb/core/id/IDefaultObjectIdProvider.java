@@ -13,14 +13,18 @@ public interface IDefaultObjectIdProvider {
    */
   public IObjectId getMemoriaMetaClass();
 
+  public IObjectId getNullReference();
+  
   public IObjectId getObjectDeletionMarker();
   
   public IObjectId getRootClassId();
   
   public boolean isMemoriaClass(IObjectId typeId);
-  
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId);
 
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId);
+  
+  public boolean isNullReference(IObjectId objectId);
+  
   public boolean isObjectDeletionMarker(IObjectId typeId);
   
   public boolean isRootClassId(IObjectId superClassId);

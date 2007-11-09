@@ -53,13 +53,13 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    *         It is not considered if the object is persistent or not.
    */
   public Object getObject(IObjectId id);
-
+  
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException If the given object can not be found.
    */
   public IObjectId getObjectId(Object obj);
-  
+
   /**
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
@@ -70,26 +70,27 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
   public IObjectInfo getObjectInfo(Object obj);
-
+  
   /**
    * @return true, if the given obj is a metaclass
    */
   //FIXME: METACLASS
   public boolean isMetaClass(Object obj);
-  
+
+
   /**
    * @return true, if the metaClass for the given <tt>obj</tt> already exists.
    */
   //FIXME: METACLASS
   public boolean metaClassExists(Class<?> klass);
-
-
+  
   /**
    * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
    * @param obj
    */
   public void updateObjectInfoDeleted(IObjectId id);
-  
+
+
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
    * written to the persistent store.

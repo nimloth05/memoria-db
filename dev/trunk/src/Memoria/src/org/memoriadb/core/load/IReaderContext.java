@@ -14,8 +14,10 @@ public interface IReaderContext {
   
   public Object getObjectById(IObjectId objectId);
 
-  public boolean isRootClassId(IObjectId superClassId);
+  public boolean isNullReference(IObjectId objectId);
   
+  public boolean isRootClassId(IObjectId superClassId);
+
   public void objectToBind(IBindable bindable);
 
 }

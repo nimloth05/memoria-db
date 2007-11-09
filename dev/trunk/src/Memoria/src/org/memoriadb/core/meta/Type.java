@@ -144,7 +144,7 @@ public enum Type {
 
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      IObjectId objectId = context.getRootClassId();
+      IObjectId objectId = context.getNullReference();
       if (value != null) {
         objectId = context.getObjectId(value);
       }

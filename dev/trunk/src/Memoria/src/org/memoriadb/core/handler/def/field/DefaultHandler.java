@@ -46,6 +46,7 @@ public class DefaultHandler implements ISerializeHandler {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
+          if (fContext.isNullReference(objectId)) return;
           fContext.objectToBind(new ObjectFieldReference(fMember, field.getName(), objectId));
         }
 

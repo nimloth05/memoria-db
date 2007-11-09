@@ -55,6 +55,11 @@ public final class ObjectLoader implements IReaderContext {
   }
   
   @Override
+  public boolean isNullReference(IObjectId objectId) {
+    return fRepo.isNullReference(objectId);
+  }
+
+  @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fRepo.isRootClassId(superClassId);
   }
@@ -79,7 +84,7 @@ public final class ObjectLoader implements IReaderContext {
       throw new MemoriaException(e);
     }
   }
-
+  
   //FIXME: Aus dieser Klasse verschieben
   public FileHeader readHeader() {
     try {
@@ -101,7 +106,7 @@ public final class ObjectLoader implements IReaderContext {
     info.update(fCurrentBlock, null, deletionTypeId, version);
     if (info.getVersion() != version) throw new MemoriaException("DeletionMarker had lower revision then last objectData");
   }
-  
+
   /**
    * @param object null if deleteMarker was encountered
    */
@@ -145,14 +150,14 @@ public final class ObjectLoader implements IReaderContext {
       fRepo.handleAdd(objectInfo);
     }
   }
-
+  
   private void dehydrateObjects() throws Exception {
     for (HydratedInfo info : fHydratedObjects.values()) {
       dehydrateObject(info);
     }
     fHydratedObjects = null;
   }
-  
+
   private long readBlockData() throws IOException {
     return fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
 
