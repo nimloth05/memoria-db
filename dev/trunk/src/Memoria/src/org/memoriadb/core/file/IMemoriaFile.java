@@ -21,14 +21,28 @@ public interface IMemoriaFile {
   public void close();
   
   /**
+   * Returns a stream starting at position 0.
+   * 
+   * Attention: The stream must be closed!
+   * 
    * @return Stream for reading the whole content of the file.
    */
   public InputStream getInputStream();
   
-  public long getSize();
+  /**
+   * Returns a stream starting at the given <tt>position</tt>.
+   * 
+   * Attention: The stream must be closed!
+   * 
+   * @return Stream for reading the whole content of the file.
+   */
+  public InputStream getInputStream(long position);
   
+  public long getSize();
+
   public boolean isEmpty();
 
+  
   /**
    * The given offset plus the size of the given byte-array must not exceed the file-site.
    */

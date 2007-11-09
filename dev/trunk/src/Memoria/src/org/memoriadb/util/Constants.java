@@ -12,7 +12,7 @@ public final class Constants {
   /**
    * Initial Version for a newl added Object.
    */
-  public static final long INITIAL_VERSION = 1;
+  public static final long INITIAL_REVISION = 1;
 
 
   /**

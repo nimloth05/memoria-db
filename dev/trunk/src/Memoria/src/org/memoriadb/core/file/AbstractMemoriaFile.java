@@ -24,9 +24,14 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
 
   @Override
   public final InputStream getInputStream() {
+    return getInputStream(0);
+  }
+  
+  @Override
+  public final InputStream getInputStream(long position) {
     check();
     fLocked = true;
-    return doGetInputStream();
+    return doGetInputStream(position);
   }
 
   @Override
@@ -58,7 +63,7 @@ public abstract class AbstractMemoriaFile implements IMemoriaFile {
 
   protected abstract void doClose();
 
-  protected abstract InputStream doGetInputStream();
+  protected abstract InputStream doGetInputStream(long positio);
 
   protected abstract long doGetSize();
 

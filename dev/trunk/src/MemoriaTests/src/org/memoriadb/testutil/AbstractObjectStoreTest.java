@@ -133,6 +133,5 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   private IObjectStoreExt openFile(IMemoriaFile file, CreateConfig config) {
     return (IObjectStoreExt) Memoria.open(config, file);
   }
-
   
 }

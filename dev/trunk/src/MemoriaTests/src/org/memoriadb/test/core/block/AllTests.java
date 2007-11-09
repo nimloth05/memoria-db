@@ -11,6 +11,7 @@ public class AllTests {
     suite.addTestSuite(CurrentBlockScenarioTest.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);
     suite.addTestSuite(TransactionWriterTest.class);
+    suite.addTestSuite(SurvivorAgentTest.class);
     suite.addTestSuite(BlockTest.class);
     //$JUnit-END$
     return suite;

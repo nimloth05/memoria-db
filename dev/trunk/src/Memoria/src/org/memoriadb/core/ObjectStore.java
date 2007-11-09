@@ -196,10 +196,16 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   @Override
+  public Iterable<IObjectId> getSurvivors(Block block) {
+    SurvivorAgent agent = new SurvivorAgent(fObjectRepo, fTransactionWriter.getFile(), fObjectRepo.getIdFactory());
+    return agent.getSurvivors(block);
+  }
+  
+  @Override
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
   }
-  
+
   public IObjectId save(Object obj) {
     IObjectId result = internalSave(obj);
     if (!isInUpdateMode()) writePendingChanges();
@@ -239,15 +245,18 @@ public class ObjectStore implements IObjectStoreExt {
     if(fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
     
     ObjectSerializer serializer = new ObjectSerializer(fObjectRepo, fDBMode);
+    long headRevision = fTransactionWriter.incrementHeadRevision();
+    
     for(Object obj: fAdd) {
+      fObjectRepo.updateObjectInfoAdded(obj, headRevision);
       serializer.serialize(obj);
     }
     for(Object obj: fUpdate) {
-      fObjectRepo.updateObjectInfoUpdated(obj);
+      fObjectRepo.updateObjectInfoUpdated(obj, headRevision);
       serializer.serialize(obj);
     }
     for(IObjectId id: fDelete){
-      fObjectRepo.updateObjectInfoDeleted(id);
+      fObjectRepo.updateObjectInfoDeleted(id, headRevision); 
       serializer.markAsDeleted(id);
     }
     
@@ -282,15 +291,15 @@ public class ObjectStore implements IObjectStoreExt {
     IObjectId id = fObjectRepo.delete(obj);
     fDelete.add(id);
   }
-
+  
   IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepo.getMemoriaClass(klass);
   }
-  
+
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
-  /*package*/ IObjectId internalSave(Object obj) {
+  IObjectId internalSave(Object obj) {
     
     // if the object was previous removed in the current transaction, the remove-marker will not be set
     // and the object is updated.

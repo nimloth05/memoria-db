@@ -53,7 +53,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   /**
-   * Adds a new object to the repo. A new ObjectInfo is crated, with a new id and the version 0.
+   * Adds a new object to the repo. A new ObjectInfo is created, with a new id and the version 0.
    * 
    * @return The new id
    */
@@ -236,16 +236,21 @@ public class ObjectRepo implements IObjectRepo {
     return fMemoriaClasses.containsKey(klass);
   }
 
+  public void updateObjectInfoAdded(Object obj, long revision) {
+    ObjectInfo info = fObjectMap.get(obj);
+    info.updateRevision(revision);
+  }
+  
   @Override
-  public void updateObjectInfoDeleted(IObjectId id) {
+  public void updateObjectInfoDeleted(IObjectId id, long revision) {
     //FIXME: Prüfen, ob das Element wieder aus der Map entfernt werden muss/kann.
     ObjectInfo info = fDeletedMap.get(id);
-    internalUpdate(info);
+    internalUpdate(info, revision);
   }
 
-  public void updateObjectInfoUpdated(Object obj) {
+  public void updateObjectInfoUpdated(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
-    internalUpdate(info);
+    internalUpdate(info, revision);
   }
 
   private IObjectId generateId() {
@@ -269,9 +274,9 @@ public class ObjectRepo implements IObjectRepo {
     }
   }
 
-  private void internalUpdate(ObjectInfo info) {
+  private void internalUpdate(ObjectInfo info, long revision) {
     if (info == null) throw new MemoriaException("Object not found: " + info);
-    info.incrementVersion();
+    info.updateRevision(revision);
     info.incrememntOldGenerationCount();
   }
 

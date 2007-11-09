@@ -32,10 +32,10 @@ public class InMemoryFile extends AbstractMemoriaFile {
   }
 
   @Override
-  public InputStream doGetInputStream() {
+  public InputStream doGetInputStream(final long position) {
     
     return new InputStream() {
-      long fCursor = 0;
+      long fCursor = position;
       
       @Override
       public int available(){

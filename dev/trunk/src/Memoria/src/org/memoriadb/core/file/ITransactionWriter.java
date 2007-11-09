@@ -15,6 +15,8 @@ public interface ITransactionWriter {
 
   public long getHeadRevision();
 
+  public long incrementHeadRevision();
+  
   /**
    * Saves the given object-data to the persistent store.
    * @param numberOfObjects TODO

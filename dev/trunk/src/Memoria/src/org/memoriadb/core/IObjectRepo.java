@@ -85,18 +85,20 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   public boolean metaClassExists(Class<?> klass);
   
   /**
-   * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
-   * @param obj
+   * Tells the ObjectContainer that an object was added to the persistent store.
    */
-  public void updateObjectInfoDeleted(IObjectId id);
+  public void updateObjectInfoAdded(Object obj, long revision);
 
+
+  /**
+   * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
+   */
+  public void updateObjectInfoDeleted(IObjectId id, long headRevision);
 
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
    * written to the persistent store.
-   * @param obj
    */
-  public void updateObjectInfoUpdated(Object obj);
-
+  public void updateObjectInfoUpdated(Object obj, long headRevision);
 
 }

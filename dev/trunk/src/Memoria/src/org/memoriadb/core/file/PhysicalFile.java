@@ -48,10 +48,11 @@ public class PhysicalFile extends AbstractMemoriaFile {
     }
   }
 
+
   @Override
-  public InputStream doGetInputStream() {
+  public InputStream doGetInputStream(long position) {
     try {
-      fRandomAccessFile.seek(0);
+      fRandomAccessFile.seek(position);
     }
     catch (IOException e) {
       throw new MemoriaException(e);

@@ -34,7 +34,7 @@ public class TransactionWriter implements ITransactionWriter {
     stream.writeLong(trxData.length);
     crc32.updateLong(trxData.length);
 
-    stream.writeLong(++fHeadRevision);
+    stream.writeLong(fHeadRevision);
     crc32.updateLong(fHeadRevision);
 
     stream.write(trxData);
@@ -73,6 +73,14 @@ public class TransactionWriter implements ITransactionWriter {
     return fHeadRevision;
   }
 
+  /**
+   * Increments the headrevision of the db.
+   * @return
+   */
+  public long incrementHeadRevision() {
+    return ++fHeadRevision;
+  }
+
   public Block write(byte[] trxData, int numberOfObjects) throws IOException {
 
     int blockSize = FileLayout.getBlockSize(trxData.length);
@@ -86,7 +94,7 @@ public class TransactionWriter implements ITransactionWriter {
     write(block, trxData);
     return block;
   }
-
+  
   /**
    * Safes the survivors of the given <tt>block</tt>;
    */

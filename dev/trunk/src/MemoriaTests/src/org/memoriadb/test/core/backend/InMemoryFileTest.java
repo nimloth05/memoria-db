@@ -3,14 +3,14 @@ package org.memoriadb.test.core.backend;
 import java.io.*;
 
 import org.memoriadb.core.file.InMemoryFile;
+import org.memoriadb.util.*;
 
 import junit.framework.TestCase;
 
 public class InMemoryFileTest extends TestCase {
   private InMemoryFile fFile;
-
+  
   public void test() throws IOException {
-    fFile = new InMemoryFile();
     assertEquals(0, fFile.getSize());
     
     append((byte)1);
@@ -32,15 +32,27 @@ public class InMemoryFileTest extends TestCase {
     assertEquals(-1, stream.read());
 
   }
-  
+
   public void test_negative_numbers() {
-    fFile = new InMemoryFile();
-    
     append((byte)255);
     append((byte)128);
     
     assertEquals(255, fFile.get(0));
     assertEquals(128, fFile.get(1));
+  }
+  
+  public void test_stream_seek() throws IOException {
+    fFile.append(ByteUtil.asByteArray(1));
+    fFile.append(ByteUtil.asByteArray(2));
+    
+    DataInputStream stream = new DataInputStream(fFile.getInputStream(Constants.LONG_SIZE));
+    assertEquals(2, stream.readLong());
+    stream.close();
+  }
+  
+  @Override
+  protected void setUp() {
+    fFile = new InMemoryFile();
   }
   
   private void append(byte... bytes){

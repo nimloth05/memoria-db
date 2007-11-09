@@ -21,7 +21,7 @@ public class Block {
    * 
    * Limited to int because arrays can't be bigger than INT_MAX
    */
-  private final long fSize;
+  private long fSize;
   
   /**
    * Position in the file
@@ -39,12 +39,16 @@ public class Block {
     return sDefaultBlock;
   }
   
+  public Block(long position) {
+    this(-1, position);
+  }
+
   public Block(long size, long position) {
     fSize = size;
     fPosition = position;
     fObjectDataCount = 0;
     fInactiveObjectDataCount = 0;
-  }
+  } 
 
   @Override
   public boolean equals(Object obj) {
@@ -119,6 +123,10 @@ public class Block {
   public void setNumberOfObjectData(int numberOfObjects) {
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
+  }
+
+  public void setSize(long blockSize) {
+    fSize = blockSize;
   }
 
   @Override

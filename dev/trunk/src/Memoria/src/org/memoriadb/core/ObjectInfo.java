@@ -17,7 +17,7 @@ public class ObjectInfo implements IObjectInfo {
   private Object fObj;
   private final IObjectId fId;
   private final IObjectId fMemoriaClassId;
-  private long fVersion;
+  private long fRevision;
   private int fOldGenerationCount;
   private Block fCurrentBlock;
   
@@ -30,7 +30,7 @@ public class ObjectInfo implements IObjectInfo {
    * Use this ctor only when an object is initially added to the container.
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock) {
-    this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_VERSION, 0);
+    this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_REVISION, 0);
   }
 
   /**
@@ -43,7 +43,7 @@ public class ObjectInfo implements IObjectInfo {
     fId = id;
     fCurrentBlock = currentBlock;
     fMemoriaClassId = memoriaClassId;
-    fVersion = version;
+    fRevision = version;
     fOldGenerationCount = oldGenerationCount;
   }
 
@@ -78,18 +78,14 @@ public class ObjectInfo implements IObjectInfo {
     return fOldGenerationCount;
   }
 
-  public long getVersion() {
-    return fVersion;
+  public long getRevision() {
+    return fRevision;
   }
 
   public void incrememntOldGenerationCount() {
     ++fOldGenerationCount;
   }
 
-  public void incrementVersion() {
-    ++fVersion;
-  }
-  
   public boolean isDeleted() {
     return fObj == null;
   }
@@ -97,7 +93,7 @@ public class ObjectInfo implements IObjectInfo {
   public void setBlock(Block block) {
     fBlock = block;
   }
-
+  
   public void setDeleted() {
     fObj = null;
   }
@@ -107,12 +103,16 @@ public class ObjectInfo implements IObjectInfo {
   }
 
   public void setVersion(int version) {
-    fVersion = version;
+    fRevision = version;
   }
-  
+
   @Override
   public String toString() {
-    return fId + ":" + fObj + " in revision " + fVersion;
+    return fId + ":" + fObj + " in revision " + fRevision;
+  }
+  
+  public void updateRevision(long revision) {
+    fRevision = revision;
   }
   
 }

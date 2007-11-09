@@ -1,7 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.IObjectStore;
-import org.memoriadb.core.block.IBlockManager;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
 
 /**
@@ -18,8 +18,10 @@ public interface IObjectStoreExt extends IObjectStore {
   public IBlockManager getBlockManager();
   
   public int getIdSize();
-  
-  public IObjectInfo getObjectInfo(IObjectId id);
 
-  public IObjectInfo getObjectInfo(Object obj);  
+  public IObjectInfo getObjectInfo(IObjectId id);  
+  
+  public IObjectInfo getObjectInfo(Object obj);
+
+  public Iterable<IObjectId> getSurvivors(Block block);
 }

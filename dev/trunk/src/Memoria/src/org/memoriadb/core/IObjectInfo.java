@@ -24,7 +24,7 @@ public interface IObjectInfo {
 
   public int getOldGenerationCount();
 
-  public long getVersion();
+  public long getRevision();
   
   public boolean isDeleted();
 
