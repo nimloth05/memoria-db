@@ -44,6 +44,10 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     assertTrue("Not all objects where loaded/saved: " + actualObjs, actualObjs.isEmpty());
   }
   
+  public void test_save_null_primitive_objects() {
+    fail("To be implemented");
+  }
+  
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
     for (int i = 0; i < 5; ++i) {
