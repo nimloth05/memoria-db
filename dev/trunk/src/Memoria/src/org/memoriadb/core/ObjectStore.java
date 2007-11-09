@@ -15,6 +15,7 @@ public class ObjectStore implements IObjectStoreExt {
 
   private final IObjectRepo fObjectRepo;
   private final ITransactionWriter fTransactionWriter;
+  private final DBMode fDBMode;
 
   // FIXME Sets of ObjectInfos could increase the performance when updating the current block
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
@@ -23,9 +24,10 @@ public class ObjectStore implements IObjectStoreExt {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(IObjectRepo objectContainer, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
+  public ObjectStore(DBMode dbMode, IObjectRepo objectContainer, IMemoriaFile file, MaintenanceFreeBlockManager blockManager, long headRevision) {
     fObjectRepo = objectContainer;
     fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
+    fDBMode = dbMode;
   }
 
   @Override
@@ -79,41 +81,74 @@ public class ObjectStore implements IObjectStoreExt {
     writePendingChanges();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> getAll(Class<T> clazz) {
-    List<T> result = new ArrayList<T>();
-    for (Object object : getAllObjects()) {
-      if (clazz.isInstance(object)) result.add(clazz.cast(object));
+    return (List<T>) getAll(clazz.getName());
+  }
+
+  @Override
+  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
+    List<T> result = getAll(clazz);
+    Iterator<T> iterator = result.iterator();
+    while(iterator.hasNext()) {
+      if (!filter.accept(iterator.next())) iterator.remove();
+    }
+    return result;
+  }
+  
+  @Override
+  public List<Object> getAll(String clazz) {
+    List<Object> result = new ArrayList<Object>();
+    for (IObjectInfo objectInfo : getAllObjectInfos()) {
+      IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(objectInfo.getMemoriaClassId());
+      if (memoriaClass.isTypeFor(clazz)) result.add(objectInfo.getObj());
     }
     return result;
   }
 
   @Override
-  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    List<T> result = new ArrayList<T>();
-    for (Object object : getAllObjects()) {
-      if (clazz.isInstance(object)) {
-        T t = clazz.cast(object);
-        if (filter.accept(t)) result.add(t);
+  public List<Object> getAll(String clazz, IFilter<Object> filter) {
+    List<Object> result = new ArrayList<Object>();
+    
+    for (IObjectInfo objectInfo : getAllObjectInfos()) {
+      IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(objectInfo.getMemoriaClassId());
+      
+      if (memoriaClass.isTypeFor(clazz)) {
+        if (filter.accept(objectInfo.getObj())) result.add(objectInfo.getObj());
       }
     }
     return result;
   }
 
+  public Collection<IObjectInfo> getAllObjectInfos() {
+    return fObjectRepo.getAllObjectInfos();
+  }
+  
   @Override
   public Collection<Object> getAllObjects() {
     return fObjectRepo.getAllObjects();
   }
 
   @Override
+  public IObjectId getArrayMetaClass() {
+    return fObjectRepo.getArrayMemoriaClass();
+  }
+
+  @Override
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
-  
+
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
 
+  @Override
+  public IObjectId getHandlerMetaClass() {
+    return fObjectRepo.getHandlerMetaClass();
+  }
+  
   @Override
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
@@ -132,6 +167,11 @@ public class ObjectStore implements IObjectStoreExt {
   @Override
   public IMemoriaClass getMemoriaClass(Object obj) {
     return getMemoriaClass(obj.getClass());
+  }
+
+  @Override
+  public IObjectId getMemoriaFieldMetaClass() {
+    return fObjectRepo.getMemoriaMetaClass();
   }
 
   @SuppressWarnings("unchecked")
@@ -159,7 +199,7 @@ public class ObjectStore implements IObjectStoreExt {
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
   }
-
+  
   public IObjectId save(Object obj) {
     IObjectId result = internalSave(obj);
     if (!isInUpdateMode()) writePendingChanges();
@@ -194,7 +234,7 @@ public class ObjectStore implements IObjectStoreExt {
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
-  
+
   public void writePendingChanges() {
     if(fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
     
@@ -243,6 +283,10 @@ public class ObjectStore implements IObjectStoreExt {
     fDelete.add(id);
   }
 
+  IMemoriaClassConfig internalGetMemoriaClass(String klass) {
+    return fObjectRepo.getMemoriaClass(klass);
+  }
+  
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
@@ -273,40 +317,7 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   private IObjectId addMemoriaClassIfNecessary(Object obj) {
-    Class<?> klass = obj.getClass();
-
-    // if obj is an array, the metaClass of the componentType is added.
-    // The MetaClass for the array is generic and bootstrapped
-
-    return new InheritanceTraverser(klass) {
-
-      private IMemoriaClassConfig fChildClass = null;
-      private IObjectId fObjectMemoriaClass;
-
-      @Override
-      public void handle(Class<?> clazz) {
-        if (clazz.isArray()) {
-          clazz = clazz.getComponentType();
-          if (fObjectMemoriaClass == null) fObjectMemoriaClass = fObjectRepo.getArrayMemoriaClass();
-        }
-        
-        IMemoriaClassConfig classObject = fObjectRepo.getMemoriaClass(clazz.getName());
-
-        if (classObject != null) {
-          if (fChildClass != null) fChildClass.setSuperClass(classObject);
-          if (fObjectMemoriaClass == null) fObjectMemoriaClass = getObjectId(classObject);
-          abort();
-          return;
-        }
-
-        classObject = MemoriaFieldClassFactory.createMetaClass(clazz);
-        if (fChildClass != null) fChildClass.setSuperClass(classObject);
-        fChildClass = classObject;
-        
-        IObjectId id = internalSave(classObject);
-        if (fObjectMemoriaClass == null) fObjectMemoriaClass = id;
-      }
-    }.fObjectMemoriaClass;
+    return fDBMode.addMemoriaClassIfNecessary(obj, this);
   }
 
   private int getPendingObjectCount() {
@@ -323,7 +334,7 @@ public class ObjectStore implements IObjectStoreExt {
     traversal.handle(root);
     return fObjectRepo.getObjectId(root);
   }
-  
+
   private void updateCurrentBlock(Set<Object> objs, Block block) {
     for(Object obj: objs){
       getObjectInfo(obj).changeCurrentBlock(block);

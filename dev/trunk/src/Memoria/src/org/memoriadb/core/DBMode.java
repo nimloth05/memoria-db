@@ -12,6 +12,7 @@ import org.memoriadb.exception.MemoriaException;
  *
  */
 public enum DBMode {
+  
   clazz {
     
     @Override
@@ -61,7 +62,7 @@ public enum DBMode {
         FieldMapDataObject mapObject = (FieldMapDataObject)obj;
         if (!store.contains(mapObject.getMemoriaClassId())) throw new MemoriaException("MemoriaClass does not exist");
         return mapObject.getMemoriaClassId();
-      }
+      }     
       IMemoriaClass memoriaClass = null;
       store.getMemoriaClass(obj);
       return null;
@@ -69,4 +70,5 @@ public enum DBMode {
   };
 
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
+
 }

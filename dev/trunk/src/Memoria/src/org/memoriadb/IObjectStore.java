@@ -65,12 +65,20 @@ public interface IObjectStore {
   public void endUpdate();
 
   public <T> List<T> getAll(Class<T> clazz);
-
+  
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
+
+  public List<Object> getAll(String clazz);
+  
+  public List<Object> getAll(String clazz, IFilter<Object> filter);
   
   // wird später ersetzt durch die typenbasierte Queries, msc...
   //FIXME: Auf eine Test-Schnittstelle verschieben
   public Collection<Object> getAllObjects();
+
+  public IObjectId getArrayMetaClass();
+  
+  public IObjectId getHandlerMetaClass();
 
   /**
    * @return The head revision of this database. Is incremented after each transaction.
@@ -86,7 +94,8 @@ public interface IObjectStore {
    * @return The Class for the given <tt>obj</tt> or null.
    */
   public IMemoriaClass getMemoriaClass(Object obj);
-  
+ 
+  public IObjectId getMemoriaFieldMetaClass();
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
    *         or not.
@@ -100,7 +109,7 @@ public interface IObjectStore {
    *           If the given object can not be found.
    */
   public IObjectId getObjectId(Object obj);
-  
+
   /**
    * @return true, if the update-counter is > 0.  
    */
