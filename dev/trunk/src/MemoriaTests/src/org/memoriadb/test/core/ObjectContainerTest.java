@@ -9,6 +9,10 @@ import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
 
+  public void test_construct_protected_object() {
+    fail("To be implemented");
+  }
+
   public void test_contains() {
     SimpleTestObj obj = new SimpleTestObj();
     IObjectId id = save(obj);
@@ -16,7 +20,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     assertTrue(fStore.contains(obj));
     assertTrue(fStore.contains(id));
   }
-
+  
   public void test_HeadRevision() {
     assertEquals(0, fStore.getHeadRevision());
     save(new Object());
@@ -62,11 +66,11 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     loadedObjs.removeAll(objects);
     assertEquals("Save/load mismatch: " + loadedObjs, 0, loadedObjs.size());
   }
-
+  
   public void test_save_object_ref() throws Exception {
     internalTestSaveObjectRef(SimpleTestObj.class);
   }
-
+  
   public void test_save_object_ref_first() throws Exception {
     internalTestSaveObjectRefFirst(SimpleTestObj.class);
   }
@@ -77,6 +81,14 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
   public void test_save_object_ref_with_wrong_hashCodeObj() throws Exception {
     internalTestSaveObjectRef(WrongHashCode.class);
+  }
+
+  public void test_save_package_scoped_object() {
+    fail("To be implemented");
+  }
+
+  public void test_save_private_scoped_object() {
+    fail("To be implemented");
   }
 
   public void test_save_referencee_in_antoher_transaction() throws Exception {
