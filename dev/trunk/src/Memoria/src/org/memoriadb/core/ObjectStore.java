@@ -24,8 +24,8 @@ public class ObjectStore implements IObjectStoreExt {
 
   private int fUpdateCounter = 0;
 
-  public ObjectStore(DBMode dbMode, IObjectRepo objectContainer, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
-    fObjectRepo = objectContainer;
+  public ObjectStore(DBMode dbMode, IObjectRepo repo, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
+    fObjectRepo = repo;
     fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
     fDBMode = dbMode;
   }
@@ -46,18 +46,13 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   @Override
-  public boolean contains(IObjectId id) {
-    return fObjectRepo.contains(id);
-  }
-
-  @Override
   public boolean contains(Object obj) {
     return fObjectRepo.contains(obj);
   }
 
   @Override
-  public void delete(IObjectId objectId) {
-    delete(fObjectRepo.getObject(objectId));
+  public boolean containsId(IObjectId id) {
+    return fObjectRepo.contains(id);
   }
 
   @Override
@@ -300,13 +295,6 @@ public class ObjectStore implements IObjectStoreExt {
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
-    
-    // if the object was previous removed in the current transaction, the remove-marker will not be set
-    // and the object is updated.
-    if(fDelete.remove(obj)) {
-      fUpdate.add(obj);
-      return fObjectRepo.getObjectId(obj); 
-    }
     
     if (fAdd.contains(obj)) {
       // added in same transaction

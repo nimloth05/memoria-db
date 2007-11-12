@@ -10,8 +10,9 @@ public class TransactionWriter implements ITransactionWriter {
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
   private long fHeadRevision;
+  
 
-  public TransactionWriter(IMemoriaFile file,IBlockManager blockManager, long headRevision) {
+  public TransactionWriter(IMemoriaFile file, IBlockManager blockManager, long headRevision) {
     fFile = file;
     fBlockManager = blockManager;
     fHeadRevision = headRevision;

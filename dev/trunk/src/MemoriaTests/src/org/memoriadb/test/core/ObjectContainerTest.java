@@ -18,7 +18,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     IObjectId id = save(obj);
     
     assertTrue(fStore.contains(obj));
-    assertTrue(fStore.contains(id));
+    assertTrue(fStore.containsId(id));
   }
   
   public void test_HeadRevision() {

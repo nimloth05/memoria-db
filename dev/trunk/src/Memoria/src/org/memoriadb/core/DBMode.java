@@ -61,7 +61,7 @@ public enum DBMode {
       if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the object is not of type IDataObject");
       
       IDataObject dataObject = (IDataObject) obj;
-      if (!store.contains(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
+      if (!store.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
       
       return dataObject.getMemoriaClassId();
     }

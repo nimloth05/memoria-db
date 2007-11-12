@@ -111,7 +111,7 @@ public class ObjectInfo implements IObjectInfo {
     return fId + ":" + fObj + " in revision " + fRevision;
   }
   
-  public void updateRevision(long revision) {
+  public void setRevision(long revision) {
     fRevision = revision;
   }
   

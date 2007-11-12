@@ -34,11 +34,11 @@ public class ModeTest extends AbstractObjectStoreTest {
     
     reopen(DBMode.data);
     
-    fStore.delete(id);
+    fStore.delete(fStore.getObject(id));
     
     reopen(DBMode.clazz);
     
-    assertFalse(fStore.contains(id));
+    assertFalse(fStore.containsId(id));
   }
 
   public void test_save_obj() {

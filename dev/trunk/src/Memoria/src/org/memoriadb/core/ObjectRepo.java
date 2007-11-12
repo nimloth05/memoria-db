@@ -238,7 +238,7 @@ public class ObjectRepo implements IObjectRepo {
 
   public void updateObjectInfoAdded(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
-    info.updateRevision(revision);
+    info.setRevision(revision);
   }
   
   @Override
@@ -276,7 +276,7 @@ public class ObjectRepo implements IObjectRepo {
 
   private void internalUpdate(ObjectInfo info, long revision) {
     if (info == null) throw new MemoriaException("Object not found: " + info);
-    info.updateRevision(revision);
+    info.setRevision(revision);
     info.incrememntOldGenerationCount();
   }
 

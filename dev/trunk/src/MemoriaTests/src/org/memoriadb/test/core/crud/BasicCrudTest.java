@@ -55,7 +55,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     assertSame(Object.class, o_l1.getClass());
     
   }
-  
+
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fStore.save(b);
@@ -67,7 +67,6 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     assertEquals("b", b_l1.getName());
   }
   
-
   public void test_save_cyclic_save_all() {
     Cyclic1 c1 = new Cyclic1("c1");
     Cyclic2 c2 = new Cyclic2("c2");
@@ -136,11 +135,11 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     SelfReference l1_obj = fStore.getObject(id);
     l1_obj.assertRef();
     
-    fStore.delete(id);
+    fStore.delete(fStore.getObject(id));
     
     reopen();
     
-    assertFalse(fStore.contains(id));
+    assertFalse(fStore.containsId(id));
   }
   
   public void test_self_reference_with_all_functions() {
@@ -156,7 +155,7 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertFalse(fStore.contains(id));
+    assertFalse(fStore.containsId(id));
   }
   
   public void test_update_attribute() {
