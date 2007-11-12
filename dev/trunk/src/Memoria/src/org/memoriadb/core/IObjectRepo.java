@@ -33,7 +33,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * Called when an object is deleted in the same transaction as it was added.
    * @param id
    */
-  public IObjectId delete(Object obj);
+  public ObjectInfo delete(Object obj);
   
   public Collection<IObjectInfo> getAllObjectInfos();
 

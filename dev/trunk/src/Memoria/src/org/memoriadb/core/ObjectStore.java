@@ -20,7 +20,7 @@ public class ObjectStore implements IObjectStoreExt {
   // FIXME Sets of ObjectInfos could increase the performance when updating the current block
   private final Set<Object> fAdd = new IdentityHashSet<Object>();
   private final Set<Object> fUpdate = new IdentityHashSet<Object>();
-  private final Set<IObjectId> fDelete = new IdentityHashSet<IObjectId>();
+  private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
 
   private int fUpdateCounter = 0;
 
@@ -250,9 +250,12 @@ public class ObjectStore implements IObjectStoreExt {
       fObjectRepo.updateObjectInfoUpdated(obj, headRevision);
       serializer.serialize(obj);
     }
-    for(IObjectId id: fDelete){
-      fObjectRepo.updateObjectInfoDeleted(id, headRevision); 
-      serializer.markAsDeleted(id);
+    for(ObjectInfo info: fDelete){
+      //fObjectRepo.updateObjectInfoDeleted(id, headRevision);
+      
+      info.setRevision(headRevision);
+      info.incrememntOldGenerationCount();
+      serializer.markAsDeleted(info.getId());
     }
     
     try {
@@ -283,8 +286,8 @@ public class ObjectStore implements IObjectStoreExt {
     // if object was previously updated in current transaction, remove it from update-list
     fUpdate.remove(obj);
     
-    IObjectId id = fObjectRepo.delete(obj);
-    fDelete.add(id);
+    ObjectInfo info = fObjectRepo.delete(obj);
+    fDelete.add(info);
   }
   
   IMemoriaClassConfig internalGetMemoriaClass(String klass) {
@@ -338,9 +341,9 @@ public class ObjectStore implements IObjectStoreExt {
     } 
   }
 
-  private void updateCurrentBlockForDeleted(Set<IObjectId> ids, Block block) {
-    for(IObjectId id: ids){
-      getObjectInfo(id).changeCurrentBlock(block);
+  private void updateCurrentBlockForDeleted(Set<ObjectInfo> infos, Block block) {
+    for(IObjectInfo info: infos){
+      info.changeCurrentBlock(block);
     } 
   }
 

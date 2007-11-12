@@ -82,13 +82,13 @@ public class ObjectRepo implements IObjectRepo {
   }
   
   @Override
-  public IObjectId delete(Object obj) {
+  public ObjectInfo delete(Object obj) {
     ObjectInfo info = fObjectMap.remove(obj);
     if (info == null) throw new MemoriaException("object not found: " + obj);
     if (fIdMap.remove(info.getId()) == null) throw new MemoriaException("object not found: " + obj);
     fDeletedMap.put(info.getId(), info);
     info.setDeleted();
-    return info.getId();
+    return info;
   }
 
   @Override
