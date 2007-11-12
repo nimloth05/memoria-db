@@ -8,6 +8,7 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.Constants;
 
 
 public enum Type {
@@ -25,8 +26,30 @@ public enum Type {
     }
     
   },
-  typeChar {
+  
+  typeBooleanC {
+    
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readBoolean() : null;
+      visitor.visitPrimitive(this, value);
+    }
 
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeBoolean(((Boolean)value).booleanValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+  },
+  
+  typeChar {
     
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
@@ -39,6 +62,28 @@ public enum Type {
     }
 
   },
+  
+  typeCharC {
+    
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readChar() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeChar(((Character)value).charValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+  },
+  
   typeByte {
 
     @Override
@@ -52,6 +97,29 @@ public enum Type {
     }
     
   },
+  
+  typeByteC {
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readByte() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeByte(((Byte)value).byteValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+  },
+  
   typeShort {
 
     
@@ -66,6 +134,31 @@ public enum Type {
     }
 
   },
+  
+  typeShortC {
+
+    
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readShort() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeShort(((Short)value).shortValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+
+  },
+
+  
   typeInteger {
 
     @Override
@@ -79,6 +172,29 @@ public enum Type {
     }
 
   },
+  
+  typeIntegerC {
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readInt() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeInt(((Integer)value).intValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+
+  },
+  
   typeLong {
 
     @Override
@@ -92,6 +208,29 @@ public enum Type {
     }
 
   },
+  
+  typeLongC {
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readLong() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeLong(((Long)value).longValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+
+  },
+  
   typeFloat {
 
     @Override
@@ -105,6 +244,29 @@ public enum Type {
     }
 
   },
+  
+  typeFloatC {
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readFloat() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeFloat(((Float)value).floatValue());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+
+  },
+  
   typeDouble {
 
     @Override
@@ -118,20 +280,48 @@ public enum Type {
     }
 
   },
-  typeString {
+  
+  typeDoubleC {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readUTF());
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readDouble() : null;
+      visitor.visitPrimitive(this, value);
     }
 
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       if (value != null) {
-        output.writeUTF(value.toString());
-      } else {
-        output.writeUTF("");
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeDouble(((Double)value).doubleValue());
+        return;
       }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+
+  },
+
+  
+  typeString {
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      byte nullByte = input.readByte();
+      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readUTF() : null;
+      visitor.visitPrimitive(this, value);
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value != null) {
+        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+        output.writeUTF(value.toString());
+        return;
+      }
+      
+      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
     }
 
   },
@@ -198,28 +388,28 @@ public enum Type {
   private static Map<Class<?>, Type> createTypeMap() {
     Map<Class<?>, Type> result = new HashMap<Class<?>, Type>();
 
-    result.put(Boolean.class, typeBoolean);
+    result.put(Boolean.class, typeBooleanC);
     result.put(Boolean.TYPE, typeBoolean);
 
-    result.put(Character.class, typeChar);
+    result.put(Character.class, typeCharC);
     result.put(Character.TYPE, typeChar);
 
-    result.put(Byte.class, typeByte);
+    result.put(Byte.class, typeByteC);
     result.put(Byte.TYPE, typeByte);
 
-    result.put(Short.class, typeShort);
+    result.put(Short.class, typeShortC);
     result.put(Short.TYPE, typeShort);
 
-    result.put(Integer.class, typeInteger);
+    result.put(Integer.class, typeIntegerC);
     result.put(Integer.TYPE, typeInteger);
 
-    result.put(Long.class, typeLong);
+    result.put(Long.class, typeLongC);
     result.put(Long.TYPE, typeLong);
 
-    result.put(Float.class, typeFloat);
+    result.put(Float.class, typeFloatC);
     result.put(Float.TYPE, typeFloat);
 
-    result.put(Double.class, typeDouble);
+    result.put(Double.class, typeDoubleC);
     result.put(Double.TYPE, typeDouble);
 
     result.put(String.class, typeString);

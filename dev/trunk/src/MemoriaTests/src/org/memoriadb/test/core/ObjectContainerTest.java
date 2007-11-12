@@ -47,6 +47,16 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   public void test_save_null_primitive_objects() {
     FieldTypeTestClass obj = new FieldTypeTestClass();
     save(obj);
+    
+    assertNull(obj.fBooleanC);
+    assertNull(obj.fByteC);
+    assertNull(obj.fCharC);
+    assertNull(obj.fDoubleC);
+    assertNull(obj.fFloatC);
+    assertNull(obj.fIntC);
+    assertNull(obj.fLongC);
+    assertNull(obj.fShortC);
+    assertNull(obj.fString);
   }
   
   public void test_save_object() {

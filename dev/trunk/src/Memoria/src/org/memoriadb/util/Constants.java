@@ -30,6 +30,16 @@ public final class Constants {
 
   public static final long NO_HOST_BRANCH_REVISION = -1;
 
+  /**
+   * Marker, that a primtive Object such as Integer was null.
+   */
+  public static final byte NULL_PRIMITIVE_OBJECT = -1;
+
+  /**
+   * Marker, that a primtive Object such as Integer was not null.
+   */
+  public static final byte VALID_PRIMTIVE_OBJECT = 1;
+
   private Constants() {}
 
 }

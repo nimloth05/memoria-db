@@ -10,6 +10,7 @@ import org.memoriadb.core.id.def.LongObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.util.Constants;
 
 public class TypeTest extends TestCase {
   
@@ -40,28 +41,28 @@ public class TypeTest extends TestCase {
     
     Class<? extends FieldTypeTestClass> class1 = obj.getClass();
     assertEquals(Type.typeBoolean, Type.getType(obj.getBooleanFieldP()));
-    assertEquals(Type.typeBoolean, Type.getType(obj.getBooleanFieldC()));
+    assertEquals(Type.typeBooleanC, Type.getType(obj.getBooleanFieldC()));
     
     assertEquals(Type.typeChar, Type.getType(obj.getCharFieldP()));
-    assertEquals(Type.typeChar, Type.getType(obj.getCharFieldC()));
+    assertEquals(Type.typeCharC, Type.getType(obj.getCharFieldC()));
     
     assertEquals(Type.typeByte, Type.getType(obj.getByteFieldP()));
-    assertEquals(Type.typeByte, Type.getType(obj.getByteFieldC()));
+    assertEquals(Type.typeByteC, Type.getType(obj.getByteFieldC()));
     
     assertEquals(Type.typeShort, Type.getType(obj.getShortFieldP()));
-    assertEquals(Type.typeShort, Type.getType(obj.getShortFieldC()));
+    assertEquals(Type.typeShortC, Type.getType(obj.getShortFieldC()));
     
     assertEquals(Type.typeInteger, Type.getType(obj.getIntFieldP()));
-    assertEquals(Type.typeInteger, Type.getType(obj.getIntFieldC()));
+    assertEquals(Type.typeIntegerC, Type.getType(obj.getIntFieldC()));
     
     assertEquals(Type.typeLong, Type.getType(obj.getLongFieldP()));
-    assertEquals(Type.typeLong, Type.getType(obj.getLongFieldC()));
+    assertEquals(Type.typeLongC, Type.getType(obj.getLongFieldC()));
     
     assertEquals(Type.typeFloat, Type.getType(obj.getFloatFieldP()));
-    assertEquals(Type.typeFloat, Type.getType(obj.getFloatFieldC()));
+    assertEquals(Type.typeFloatC, Type.getType(obj.getFloatFieldC()));
     
     assertEquals(Type.typeDouble, Type.getType(obj.getDoubleFieldP()));
-    assertEquals(Type.typeDouble, Type.getType(obj.getDoubleFieldC()));
+    assertEquals(Type.typeDoubleC, Type.getType(obj.getDoubleFieldC()));
     
     assertEquals(Type.typeString, Type.getType(class1.getDeclaredField("fString")));
     
@@ -324,8 +325,10 @@ public class TypeTest extends TestCase {
     String value = "1";
     String readValue = "2";
     
+    outputMock.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
     outputMock.writeUTF(value);
     
+    EasyMock.expect(inputMock.readByte()).andReturn(Constants.VALID_PRIMTIVE_OBJECT);
     EasyMock.expect(inputMock.readUTF()).andReturn(readValue);
     
     ITypeVisitor vistiorMock = control.createMock(ITypeVisitor.class);
