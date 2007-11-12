@@ -2,12 +2,19 @@ package org.memoriadb.core.handler;
 
 import java.io.*;
 
-import org.memoriadb.core.IObjectTraversal;
+import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 
 public interface ISerializeHandler {
+
+  /**
+   * 
+   * @param className the name of the java class
+   * @param defaultInstantiator
+   */
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator);
   
   /**
    * 
@@ -17,7 +24,7 @@ public interface ISerializeHandler {
    * @return the new object
    */
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
-  
+
   /**
    * 
    * @param obj - object to serialize
@@ -25,9 +32,9 @@ public interface ISerializeHandler {
    * @param context TODO
    */
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
-
   //FIXME: Diese beiden Methoden müssen von der Schnittstelle entfernt werden, da sie nur der DefaultHandler benötigt.
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException;
+
   public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
 
   /**

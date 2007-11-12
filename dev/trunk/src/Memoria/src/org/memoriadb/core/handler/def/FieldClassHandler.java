@@ -2,16 +2,21 @@ package org.memoriadb.core.handler.def;
 
 import java.io.*;
 
-import org.memoriadb.core.IObjectTraversal;
+import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.exception.*;
 
 public class FieldClassHandler implements ISerializeHandler {
+
+  @Override
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+    if (!MemoriaFieldClass.class.getName().equals(className)) throw new SchemaCorruptException("I am a handler for type " + MemoriaFieldClass.class.getName() +" but I was called for " + className);
+  }
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
@@ -31,7 +36,7 @@ public class FieldClassHandler implements ISerializeHandler {
     }
     return classObject;
   }
-
+  
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
     MemoriaFieldClass classObject = (MemoriaFieldClass) obj;
@@ -48,7 +53,7 @@ public class FieldClassHandler implements ISerializeHandler {
       output.writeInt(field.getType());
     }
   }
-  
+
   @Override
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException {
     throw new MemoriaException("has no children");

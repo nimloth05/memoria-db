@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -52,6 +52,12 @@ public enum DBMode {
         }
       }.fObjectMemoriaClass;
     }
+    
+    @Override
+    public void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
+      IMemoriaClass memoriaClass = (IMemoriaClass) objectStore.getObject(memoriaClassId);
+      memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
+    }
   },
   
   data {
@@ -65,8 +71,13 @@ public enum DBMode {
       
       return dataObject.getMemoriaClassId();
     }
+    
+    @Override
+    public void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
   };
 
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
+
+  public abstract void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
 
 }

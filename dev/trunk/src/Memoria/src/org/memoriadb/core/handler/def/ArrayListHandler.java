@@ -10,8 +10,14 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ArrayListBindable;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.exception.SchemaCorruptException;
 
 public class ArrayListHandler implements ISerializeHandler {
+
+  @Override
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+    if (!ArrayList.class.getName().equals(className)) throw new SchemaCorruptException("I am a handler for type " + ArrayList.class.getName() +" but I was called for " + className);
+  }
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {

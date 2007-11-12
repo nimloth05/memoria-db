@@ -2,6 +2,7 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
+import org.memoriadb.core.IDefaultInstantiator;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.util.*;
 
@@ -21,14 +22,16 @@ public class FileHeader {
   private final int fFileLayoutVersion;
   private final String fIdFactoryClassName;
   private final int fHeaderSize;
+  private final String fDefaultInstantiatorClassName;
 
-  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, int headerSize) {
+  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fHostBranchRevision = hostBranchRevision;
     fVersion = version;
     fFileLayoutVersion = fileLayoutVersion;
     fIdFactoryClassName = idFactoryClassName;
+    fDefaultInstantiatorClassName = defaultInstantiator;
     fHeaderSize = headerSize;
   }
 
@@ -60,8 +63,16 @@ public class FileHeader {
     return fVersion;
   }
 
+  public IDefaultInstantiator loadDefaultInstantiator() {
+    return ReflectionUtil.createInstance(getDefaultInstantiatorClassName());
+  }
+
   public IObjectIdFactory loadIdFactory() {
     return ReflectionUtil.createInstance(getIdFactoryClassName());
+  }
+
+  private String getDefaultInstantiatorClassName() {
+    return fDefaultInstantiatorClassName;
   }
   
 }

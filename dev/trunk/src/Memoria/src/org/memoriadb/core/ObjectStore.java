@@ -23,9 +23,15 @@ public class ObjectStore implements IObjectStoreExt {
   private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
 
   private int fUpdateCounter = 0;
+  private final IDefaultInstantiator fDefaultInstantiator;
 
-  public ObjectStore(DBMode dbMode, IObjectRepo repo, IMemoriaFile file, IBlockManager blockManager, long headRevision) {
+  public ObjectStore(DBMode dbMode, IObjectRepo repo, IMemoriaFile file, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, long headRevision) {
+    if (repo == null) throw new IllegalArgumentException("objectRepo is null");
+    if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
+    if (dbMode == null) throw new IllegalArgumentException("dbMode is null");
+    
     fObjectRepo = repo;
+    fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
     fDBMode = dbMode;
   }
@@ -298,7 +304,6 @@ public class ObjectStore implements IObjectStoreExt {
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
-    
     if (fAdd.contains(obj)) {
       // added in same transaction
       return fObjectRepo.getObjectId(obj);
@@ -312,7 +317,11 @@ public class ObjectStore implements IObjectStoreExt {
 
     // object not already in the store, add it
     fAdd.add(obj);
+    
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
+    
+    fDBMode.checkCanReinstantiateObject(fObjectRepo, memoriaClassId, fDefaultInstantiator);
+    
     return fObjectRepo.add(obj, memoriaClassId);
   }
 

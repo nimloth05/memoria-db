@@ -9,8 +9,7 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.exception.*;
 
 public class DefaultHandler implements ISerializeHandler {
 
@@ -18,6 +17,11 @@ public class DefaultHandler implements ISerializeHandler {
 
   public DefaultHandler(MemoriaFieldClass classObject) {
     fClassObject = classObject;
+  }
+
+  @Override
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+    if (!defaultInstantiator.canInstantiateObject(className)) throw new SchemaCorruptException("Can not instantiate Object of type: " + className);
   }
 
   @Override
@@ -81,7 +85,6 @@ public class DefaultHandler implements ISerializeHandler {
     
     new MetaClassInheritanceTraverser(fClassObject) {
       
-
       @Override
       protected void handle(IMemoriaClass metaObject) {
         for(MemoriaField field: ((MemoriaFieldClass) metaObject).getFields()) {
@@ -100,7 +103,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   private IFieldObject createObject(IReaderContext context, IObjectId typeId) {
     if (context.getMode() == DBMode.clazz) {
-      return new FieldObject(ReflectionUtil.createInstance(fClassObject.getClassName()));
+      return new FieldObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
     }
     return new FieldMapDataObject(typeId);
   }
@@ -109,6 +112,7 @@ public class DefaultHandler implements ISerializeHandler {
     if (obj instanceof IFieldObject) {
       return (IFieldObject) obj;
     }
+    
     return new FieldObject(obj);
   }
 

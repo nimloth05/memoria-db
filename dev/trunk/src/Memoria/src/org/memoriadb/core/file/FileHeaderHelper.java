@@ -11,8 +11,7 @@ public class FileHeaderHelper {
   
   public static final byte[] MEMORIA_TAG = new byte[]{'m', 'e', 'm', 'o', 'r', 'i', 'a'};
   
-  public static FileHeader readHeader(InputStream inputStream) throws IOException {
-    DataInputStream stream = new DataInputStream(inputStream);
+  public static FileHeader readHeader(DataInputStream stream) throws IOException {
     
     if(stream.available() < MEMORIA_TAG.length) throw new MemoriaException("not a memoria file");
     byte[] buffer = new byte[MEMORIA_TAG.length];
@@ -27,14 +26,15 @@ public class FileHeaderHelper {
     int fileLayoutRevision = stream.readInt();
     
     String idFactoryClassName = stream.readUTF();
+    String defaultInstantiatorClassName = stream.readUTF();
     
     int headerSize = stream.readInt();
     
-    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName, headerSize);
+    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName, defaultInstantiatorClassName, headerSize);
     
   }
   
-  public static void writeHeader(IMemoriaFile file, String idFactoryClassName) throws IOException {
+  public static void writeHeader(IMemoriaFile file, String idFactoryClassName, String defaultInstantiatorClassName) throws IOException {
     if(file.getSize() != 0) throw new MemoriaException("file is not empty");
     
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -50,6 +50,7 @@ public class FileHeaderHelper {
     stream.writeInt(Memoria.getFileLayoutVersion());
     
     stream.writeUTF(idFactoryClassName);
+    stream.writeUTF(defaultInstantiatorClassName);
     
     int headerSize = byteArrayOutputStream.size() + 4; // plus size of this int
     stream.writeInt(headerSize); 

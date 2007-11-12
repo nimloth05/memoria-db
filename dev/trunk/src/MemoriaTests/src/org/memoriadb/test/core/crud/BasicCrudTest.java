@@ -1,11 +1,23 @@
 package org.memoriadb.test.core.crud;
 
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.exception.SchemaCorruptException;
 import org.memoriadb.test.core.crud.testclass.*;
+import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.core.testclasses.ctor.NoDefault;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class BasicCrudTest extends AbstractObjectStoreTest {
 
+  public void test_can_not_save_an_object_with_no_default_ctor() {
+    try {
+      fStore.save(new NoDefault("1"));
+      fail("InstantiationCheckException expected");
+    } catch (SchemaCorruptException e) {
+      //passed;
+    }
+  }
+  
   public void test_cyclic_reference() {
     Cyclic1 c1 = new Cyclic1("c1");
     Cyclic2 c2 = new Cyclic2("c2");
@@ -53,7 +65,6 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     
     Object o_l1 = fStore.getObject(id);
     assertSame(Object.class, o_l1.getClass());
-    
   }
 
   public void test_save_attribute() {
@@ -114,6 +125,16 @@ public class BasicCrudTest extends AbstractObjectStoreTest {
     
     B b_l1 = (B) fStore.getObject(id);
     assertEquals("b", b_l1.getName());
+  }
+  
+  public void test_save_single_object() {
+    Object o = new SimpleTestObj("1");
+    IObjectId id = save(o);
+    
+    reopen();
+    
+    Object o_l1 = fStore.getObject(id);
+    assertSame(SimpleTestObj.class, o_l1.getClass());
   }
   
   public void test_save_unsaved_reference() {

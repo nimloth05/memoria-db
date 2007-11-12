@@ -9,10 +9,6 @@ import org.memoriadb.testutil.Collections;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
 
-  public void test_construct_protected_object() {
-    fail("To be implemented");
-  }
-
   public void test_contains() {
     SimpleTestObj obj = new SimpleTestObj();
     IObjectId id = save(obj);
@@ -49,7 +45,8 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
   
   public void test_save_null_primitive_objects() {
-    fail("To be implemented");
+    FieldTypeTestClass obj = new FieldTypeTestClass();
+    save(obj);
   }
   
   public void test_save_object() {

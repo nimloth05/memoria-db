@@ -61,9 +61,10 @@ public final class Memoria {
     FileReader fileReader = new FileReader(file);
     FileHeader header = readHeader(fileReader);
     
+    IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), config.getDBMode());
-    return new ObjectStore(config.getDBMode(), repo, file, config.getBlockManager(), headRevision);
+    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
+    return new ObjectStore(config.getDBMode(), repo, file, config.getBlockManager(), header.loadDefaultInstantiator(), headRevision);
   }
   
   /**
@@ -86,7 +87,7 @@ public final class Memoria {
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
     if (file.isEmpty()) {
       try {
-        FileHeaderHelper.writeHeader(file, config.getIdFactoryClassName());
+        FileHeaderHelper.writeHeader(file, config.getIdFactoryClassName(), config.getDefaultInstantiatorClassName());
       }
       catch (IOException e) {
         throw new MemoriaException(e);

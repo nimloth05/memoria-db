@@ -22,12 +22,14 @@ public final class ObjectLoader implements IReaderContext {
   private final IBlockManager fBlockManager;
   private final DBMode fDbMode;
   private Block fCurrentBlock;
+  private final IDefaultInstantiator fDefaultInstantiator;
 
-  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, DBMode mode) {
-    return new ObjectLoader(fileReader, repo, blockManager, mode).read();
+  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, DBMode mode) {
+    return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, mode).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, DBMode mode) {
+  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, DBMode mode) {
+    if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
@@ -36,6 +38,7 @@ public final class ObjectLoader implements IReaderContext {
     fFileReader = fileReader;
     fRepo = repo;
     fBlockManager = blockManager;
+    fDefaultInstantiator = defaultInstantiator;
     fDbMode = mode;
   } 
 
@@ -45,15 +48,20 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
+  public IDefaultInstantiator getDefaultInstantiator() {
+    return fDefaultInstantiator;
+  }
+
+  @Override
   public DBMode getMode() {
     return fDbMode;
   }
-
+  
   @Override
   public Object getObjectById(IObjectId objectId) {
     return fRepo.getObject(objectId);
   }
-  
+
   @Override
   public boolean isNullReference(IObjectId objectId) {
     return fRepo.isNullReference(objectId);
@@ -68,7 +76,7 @@ public final class ObjectLoader implements IReaderContext {
   public void objectToBind(IBindable bindable) {
     fObjectsToBind.add(bindable);
   }
-
+  
   public long read() {
     try {
       long headRevision = readBlockData();
@@ -94,7 +102,7 @@ public final class ObjectLoader implements IReaderContext {
       throw new MemoriaException(e);
     }
   }
-  
+
   private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long version) {
     HydratedInfo info = container.get(id);
     if (info == null) {
@@ -139,7 +147,7 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedMetaClasses = null;
   }
-
+  
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getCurrentBlock(), info.getVersion(), info.getOldGenerationCount());
     
@@ -150,7 +158,7 @@ public final class ObjectLoader implements IReaderContext {
       fRepo.handleAdd(objectInfo);
     }
   }
-  
+
   private void dehydrateObjects() throws Exception {
     for (HydratedInfo info : fHydratedObjects.values()) {
       dehydrateObject(info);

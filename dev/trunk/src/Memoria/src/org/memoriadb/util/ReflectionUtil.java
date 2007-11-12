@@ -1,6 +1,6 @@
 package org.memoriadb.util;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
 import org.memoriadb.exception.*;
 
@@ -9,7 +9,10 @@ public class ReflectionUtil {
   @SuppressWarnings("unchecked")
   public static <T> T createInstance(String className) {
     try {
-      return (T)Class.forName(className).newInstance();
+      Class<?> clazz = Class.forName(className);
+      Constructor<?> ctor = clazz.getDeclaredConstructor();
+      ctor.setAccessible(true);
+      return (T) ctor.newInstance();
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -38,6 +41,17 @@ public class ReflectionUtil {
   }
  
   
+  public static boolean hasNoArgCtor(String className) {
+    try {
+      Class<?> clazz = Class.forName(className);
+      clazz.getDeclaredConstructor();
+      return true;
+    }
+    catch (Exception e) {
+      return false;
+    }
+  }
+
   public static void setValueFromField(Object owner, String fieldName, Object value) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
