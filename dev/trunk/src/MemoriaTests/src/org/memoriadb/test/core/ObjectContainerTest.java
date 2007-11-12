@@ -91,11 +91,22 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
 
   public void test_save_package_scoped_object() {
-    fail("To be implemented");
+    Object obj = new PackageScopedTestClass();
+    IObjectId id = save(obj);
+    
+    reopen();
+    
+    assertTrue(fStore.containsId(id));
   }
 
-  public void test_save_private_scoped_object() {
-    fail("To be implemented");
+  public void test_save_private_inner_scoped_object() {
+    OuterClass obj = new OuterClass();
+    try {
+      save(obj.getInnerClass());
+      fail("IllegalSchemaException expected");
+    } catch (IllegalStateException e) {
+      //passed
+    }
   }
 
   public void test_save_referencee_in_antoher_transaction() throws Exception {

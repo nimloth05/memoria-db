@@ -20,6 +20,8 @@ public class BlockBucket implements Comparable<BlockBucket> {
   
   @Override
   public int compareTo(BlockBucket o) {
+      //FIXME: Implementierung gefährlich, meiner Meinung nach, wäre diese bei Long.compareTo(long) besser.
+      //       Siehe Puzzler 65 in "Java Puzzlers" von Bloch...
     return (int)(fSize - o.fSize);
   }
 
