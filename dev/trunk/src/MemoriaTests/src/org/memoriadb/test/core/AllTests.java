@@ -13,14 +13,14 @@ public class AllTests {
     suite.addTestSuite(org.memoriadb.test.core.collection.ArrayListTest.class);
 
     //$JUnit-BEGIN$
-    suite.addTestSuite(TypeTest.class);
+    suite.addTestSuite(CompositeTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
-    suite.addTestSuite(ObjectRepoTest.class);
+    suite.addTestSuite(TypeTest.class);
+    suite.addTestSuite(ArrayTest.class);
     suite.addTestSuite(ModeTest.class);
-    suite.addTestSuite(CompositeTest.class);
-    //FIXME: TBI
-    //suite.addTestSuite(ArrayTest.class);
+    suite.addTestSuite(DefaultInstantiatorTest.class);
+    suite.addTestSuite(ObjectRepoTest.class);
     //$JUnit-END$
     return suite;
   }
