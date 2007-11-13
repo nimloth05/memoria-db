@@ -64,7 +64,8 @@ public final class Memoria {
     IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
-    return new ObjectStore(config.getDBMode(), repo, file, config.getBlockManager(), header.loadDefaultInstantiator(), headRevision);
+    TransactionWriter writer = new TransactionWriter(repo, config.getBlockManager(), file, headRevision, config.getDBMode());
+    return new ObjectStore(defaultInstantiator, writer);
   }
   
   /**

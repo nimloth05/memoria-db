@@ -1,5 +1,7 @@
 package org.memoriadb.core.block;
 
+import java.util.Set;
+
 
 public class BlockManagerDummy implements IBlockManager {
 
@@ -10,7 +12,7 @@ public class BlockManagerDummy implements IBlockManager {
   }
 
   @Override
-  public Block findRecyclebleBlock(long blockSize) {
+  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
     return null;
   }
 

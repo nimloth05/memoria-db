@@ -58,7 +58,7 @@ public class ObjectInfo implements IObjectInfo {
   }
 
   @Override
-  public Object getCurrentBlock() {
+  public Block getCurrentBlock() {
     return fCurrentBlock;
   }
 

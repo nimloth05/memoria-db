@@ -64,7 +64,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected IObjectInfo getObjectInfo(IObjectId id) {
-    return fStore.getObjectInfo(id);
+    return fStore.getObjectInfoForId(id);
   }
   
   protected int getOPF() {

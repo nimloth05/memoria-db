@@ -20,7 +20,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @pre The given obj is not already in the container.
    * @return The newly generated id.
    */
-  public IObjectId add(Object obj, IObjectId memoriaClassId);
+  public ObjectInfo add(Object obj, IObjectId memoriaClassId);
 
   
   public void checkSanity();
@@ -64,12 +64,12 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
    */
-  public IObjectInfo getObjectInfo(IObjectId id);
+  public ObjectInfo getObjectInfoForId(IObjectId id);
 
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
-  public IObjectInfo getObjectInfo(Object obj);
+  public ObjectInfo getObjectInfo(Object obj);
   
   /**
    * @return true, if the given obj is a metaclass

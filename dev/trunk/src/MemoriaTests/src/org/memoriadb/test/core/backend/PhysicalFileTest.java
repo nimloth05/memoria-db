@@ -38,6 +38,10 @@ public class PhysicalFileTest extends junit.framework.TestCase {
     stream.close();
   }
   
+  public void test_getPosition() {
+    
+  }
+  
   public void test_stream_seek() throws IOException {
     fPf.append(ByteUtil.asByteArray(1));
     fPf.append(ByteUtil.asByteArray(2));

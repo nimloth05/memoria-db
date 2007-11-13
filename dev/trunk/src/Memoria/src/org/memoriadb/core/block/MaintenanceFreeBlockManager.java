@@ -41,34 +41,38 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     inactiveRatioChanged(block);
   }
 
-  public Block findRecyclebleBlock(long blockSize) {
+  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
     // create a block as search-prototype
-    BlockBucket blockBucket = fRecycleList.ceiling(new BlockBucket(blockSize));
     
-    if(blockBucket==null) return null; // no block with the requested size in the recycle list.
-    if(blockBucket.isEmpty()){
-      fRecycleList.remove(blockBucket);
-      return null;
+    long currentSize = blockSize;
+    
+    while(true) {
+      BlockBucket blockBucket = fRecycleList.ceiling(new BlockBucket(currentSize));
+      if(blockBucket==null) return null; // no block with the requested size in the recycle list.
+      
+      long ratio = currentSize*100/blockBucket.getSize();
+      if(ratio >= fSizeThreshold){
+        Block result = getBlock(blockBucket, tabooBlocks);
+        if(blockBucket.isEmpty())fRecycleList.remove(blockBucket);
+        if(result != null) return result;
+      }
+      else {
+        // sizeThreshold exceeded 
+        return null;
+      }
+      currentSize = Math.max(currentSize+1, blockBucket.getSize());
     }
-    
-    long ratio = blockSize*100/blockBucket.getSize();
-    if(ratio >= fSizeThreshold){
-      return blockBucket.pop();
-    }
-    
-    // the found block is too big for the requested size.
-    return null;
   }
 
   public  Block getBlock(int index) {
     return fBlocks.get(index);
   }
-  
+
   @Override
   public int getBlockCount() {
     return fBlocks.size();
   }
-
+  
   public int getRecyclingBlockCount() {
     int result = 0;
     for(BlockBucket bucket: fRecycleList){
@@ -76,7 +80,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     }
     return result;
   }
-  
+
   @Override
   public void inactiveRatioChanged(Block block) {
     if(!blockQualifiesForRecycling(block)) return;
@@ -90,7 +94,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     
     bucket.add(block);
   }
-
+  
   private boolean blockQualifiesForRecycling(Block block) {
     // if the inactiveThreshold is 0, a single inactive ObjectData qualifies the block for recycling.
     if(fInactiveThreshold == 0) return block.getInactiveObjectDataCount()>0;
@@ -100,6 +104,15 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
 
   private void checkIsPercent(int value) {
     if(value<0 || value>100 ) throw new MemoriaException("not in [0..100]:" + value);
+  }
+
+  private Block getBlock(BlockBucket blockBucket, Set<Block> tabooBlocks) {
+    for(Block block: blockBucket.getBlocks()){ 
+      if(tabooBlocks.contains(block)) continue;
+      blockBucket.remove(block);
+      return block;
+    }
+    return null;
   }
 
 }

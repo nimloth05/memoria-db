@@ -9,6 +9,7 @@ public class AllTests {
     //$JUnit-BEGIN$
     suite.addTestSuite(BlockManagerTest.class);
     suite.addTestSuite(CurrentBlockScenarioTest.class);
+    suite.addTestSuite(SurvivorTest.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);
     suite.addTestSuite(TransactionWriterTest.class);
     suite.addTestSuite(SurvivorAgentTest.class);

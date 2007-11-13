@@ -57,7 +57,7 @@ public class ObjectSerializer implements ISerializeContext {
 
   public void markAsDeleted(IObjectId id) {
     try {
-      internalMarkObjectAsDeleted(fObjectRepo.getObjectInfo(id));
+      internalMarkObjectAsDeleted(fObjectRepo.getObjectInfoForId(id));
     }
     catch (IOException e) {
       throw new MemoriaException(e);

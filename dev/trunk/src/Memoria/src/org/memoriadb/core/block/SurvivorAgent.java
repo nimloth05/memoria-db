@@ -3,9 +3,9 @@ package org.memoriadb.core.block;
 import java.io.*;
 import java.util.*;
 
-import org.memoriadb.core.IObjectRepo;
+import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.*;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IOUtil;
@@ -17,28 +17,26 @@ import org.memoriadb.util.IOUtil;
  */
 public class SurvivorAgent implements IFileReaderHandler  {
   
-  private Set<IObjectId> fSurvivors;
+  private Set<ObjectInfo> fSurvivors;
   private final IObjectRepo fRepo;
   private final IMemoriaFile fFile;
-  private final IObjectIdFactory fIdFactory;
   
-  public SurvivorAgent(IObjectRepo repo, IMemoriaFile file, IObjectIdFactory idFactory) {
-    fRepo = repo;
+  public SurvivorAgent(IObjectRepo repo, IMemoriaFile file) {
     fFile = file;
-    fIdFactory = idFactory;
+    fRepo = repo;
   }
    
   @Override
   public void block(Block block) {
   }
 
-  public Iterable<IObjectId> getSurvivors(Block block) {
-    fSurvivors = new HashSet<IObjectId>();
+  public Set<ObjectInfo> getSurvivors(Block block) {
+    fSurvivors = new HashSet<ObjectInfo>();
     DataInputStream stream = new DataInputStream(fFile.getInputStream(block.getPosition()));
     BlockReader reader = new BlockReader();
     
     try {
-      reader.readBlock(stream, new Block(1), fIdFactory, this);
+      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this);
     }
     catch (IOException e) {
       throw new MemoriaException(e);
@@ -71,10 +69,11 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
   
   private void handleObject(IObjectId id, long revision) {
-    long revisionFromObjectRepo = fRepo.getObjectInfo(id).getRevision();
+    ObjectInfo info = fRepo.getObjectInfoForId(id);
+    long revisionFromObjectRepo = info.getRevision();
     if(revision > revisionFromObjectRepo) throw new MemoriaException("ObjectRepo has wrong revision " + revisionFromObjectRepo + " expected " + revision);
     
-    if(revisionFromObjectRepo == revision) fSurvivors.add(id);
+    if(revisionFromObjectRepo == revision) fSurvivors.add(info);
   }
   
 }

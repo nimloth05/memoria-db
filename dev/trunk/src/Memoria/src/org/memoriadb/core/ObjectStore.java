@@ -18,22 +18,18 @@ public class ObjectStore implements IObjectStoreExt {
   private final DBMode fDBMode;
 
   // FIXME Sets of ObjectInfos could increase the performance when updating the current block
-  private final Set<Object> fAdd = new IdentityHashSet<Object>();
-  private final Set<Object> fUpdate = new IdentityHashSet<Object>();
+  private final Set<ObjectInfo> fAdd = new IdentityHashSet<ObjectInfo>();
+  private final Set<ObjectInfo> fUpdate = new IdentityHashSet<ObjectInfo>();
   private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
 
   private int fUpdateCounter = 0;
   private final IDefaultInstantiator fDefaultInstantiator;
 
-  public ObjectStore(DBMode dbMode, IObjectRepo repo, IMemoriaFile file, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, long headRevision) {
-    if (repo == null) throw new IllegalArgumentException("objectRepo is null");
-    if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
-    if (dbMode == null) throw new IllegalArgumentException("dbMode is null");
-    
-    fObjectRepo = repo;
+  public ObjectStore(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer) {
     fDefaultInstantiator = defaultInstantiator;
-    fTransactionWriter = new TransactionWriter(file, blockManager, headRevision);
-    fDBMode = dbMode;
+    fTransactionWriter = writer;
+    fObjectRepo = writer.getRepo();
+    fDBMode = writer.getMode();
   }
 
   @Override
@@ -92,12 +88,12 @@ public class ObjectStore implements IObjectStoreExt {
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
     List<T> result = getAll(clazz);
     Iterator<T> iterator = result.iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       if (!filter.accept(iterator.next())) iterator.remove();
     }
     return result;
   }
-  
+
   @Override
   public List<Object> getAll(String clazz) {
     List<Object> result = new ArrayList<Object>();
@@ -111,10 +107,10 @@ public class ObjectStore implements IObjectStoreExt {
   @Override
   public List<Object> getAll(String clazz, IFilter<Object> filter) {
     List<Object> result = new ArrayList<Object>();
-    
+
     for (IObjectInfo objectInfo : getAllObjectInfos()) {
       IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(objectInfo.getMemoriaClassId());
-      
+
       if (memoriaClass.isTypeFor(clazz)) {
         if (filter.accept(objectInfo.getObj())) result.add(objectInfo.getObj());
       }
@@ -125,7 +121,7 @@ public class ObjectStore implements IObjectStoreExt {
   public Collection<IObjectInfo> getAllObjectInfos() {
     return fObjectRepo.getAllObjectInfos();
   }
-  
+
   @Override
   public Collection<Object> getAllObjects() {
     return fObjectRepo.getAllObjects();
@@ -149,7 +145,7 @@ public class ObjectStore implements IObjectStoreExt {
   public IObjectId getHandlerMetaClass() {
     return fObjectRepo.getHandlerMetaClass();
   }
-  
+
   @Override
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
@@ -187,21 +183,21 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   @Override
-  public IObjectInfo getObjectInfo(IObjectId id) {
-    return fObjectRepo.getObjectInfo(id); 
-  }
-
-  @Override
-  public IObjectInfo getObjectInfo(Object obj) {
+  public ObjectInfo getObjectInfo(Object obj) {
     return fObjectRepo.getObjectInfo(obj);
   }
 
   @Override
-  public Iterable<IObjectId> getSurvivors(Block block) {
-    SurvivorAgent agent = new SurvivorAgent(fObjectRepo, fTransactionWriter.getFile(), fObjectRepo.getIdFactory());
+  public IObjectInfo getObjectInfoForId(IObjectId id) {
+    return fObjectRepo.getObjectInfoForId(id);
+  }
+
+  @Override
+  public Set<ObjectInfo> getSurvivors(Block block) {
+    SurvivorAgent agent = new SurvivorAgent(fObjectRepo, fTransactionWriter.getFile());
     return agent.getSurvivors(block);
   }
-  
+
   @Override
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
@@ -243,59 +239,38 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   public void writePendingChanges() {
-    if(fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
-    
-    ObjectSerializer serializer = new ObjectSerializer(fObjectRepo, fDBMode);
-    long headRevision = fTransactionWriter.incrementHeadRevision();
-    
-    for(Object obj: fAdd) {
-      fObjectRepo.updateObjectInfoAdded(obj, headRevision);
-      serializer.serialize(obj);
-    }
-    for(Object obj: fUpdate) {
-      fObjectRepo.updateObjectInfoUpdated(obj, headRevision);
-      serializer.serialize(obj);
-    }
-    for(ObjectInfo info: fDelete){
-      //fObjectRepo.updateObjectInfoDeleted(id, headRevision);
-      
-      info.setRevision(headRevision);
-      info.incrememntOldGenerationCount();
-      serializer.markAsDeleted(info.getId());
-    }
-    
+    if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
+
     try {
-      Block block = fTransactionWriter.write(serializer.getBytes(), getPendingObjectCount());
-      updateCurrentBlock(fAdd, block);
-      updateCurrentBlock(fUpdate, block);
-      updateCurrentBlockForDeleted(fDelete, block);
+      fTransactionWriter.write(fAdd, fUpdate, fDelete);
     }
     catch (IOException e) {
       throw new MemoriaException(e);
     }
-    
-    
+
     fAdd.clear();
     fUpdate.clear();
     fDelete.clear();
   }
 
   void internalDelete(Object obj) {
-    if(!fObjectRepo.contains(obj)) return;
-    
-    if(fAdd.remove(obj)){
+    ObjectInfo info = getObjectInfo(obj);
+
+    if (info == null) return;
+
+    if (fAdd.remove(info)) {
       // object was added in current transaction, remove it from add-list and from the repo
       fObjectRepo.delete(obj);
       return;
     }
-    
+
     // if object was previously updated in current transaction, remove it from update-list
-    fUpdate.remove(obj);
-    
-    ObjectInfo info = fObjectRepo.delete(obj);
+    fUpdate.remove(info);
+
+    fObjectRepo.delete(obj);
     fDelete.add(info);
   }
-  
+
   IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepo.getMemoriaClass(klass);
   }
@@ -304,33 +279,30 @@ public class ObjectStore implements IObjectStoreExt {
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
-    if (fAdd.contains(obj)) {
-      // added in same transaction
-      return fObjectRepo.getObjectId(obj);
-    }
+    ObjectInfo info = getObjectInfo(obj);
 
-    if (fObjectRepo.contains(obj)) {
-      // object already in the store, perform update. obj is replaced if several updates occur in same transaction.
-      fUpdate.add(obj);
-      return fObjectRepo.getObjectId(obj);
+    if (info != null) {
+      if (fAdd.contains(info)) {
+        // added in same transaction, don't add it again
+        return fObjectRepo.getObjectId(obj);
+      }
+
+      // object already in the store, perform update. info is replaced if several updates occur in same transaction.
+      fUpdate.add(info);
+      return info.getId();
     }
 
     // object not already in the store, add it
-    fAdd.add(obj);
-    
+
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    
     fDBMode.checkCanReinstantiateObject(fObjectRepo, memoriaClassId, fDefaultInstantiator);
-    
-    return fObjectRepo.add(obj, memoriaClassId);
+    ObjectInfo result = fObjectRepo.add(obj, memoriaClassId);
+    fAdd.add(getObjectInfo(obj));
+    return result.getId();
   }
 
   private IObjectId addMemoriaClassIfNecessary(Object obj) {
     return fDBMode.addMemoriaClassIfNecessary(obj, this);
-  }
-
-  private int getPendingObjectCount() {
-    return fAdd.size() + fUpdate.size() + fDelete.size();
   }
 
   private void internalDeleteAll(Object root) {
@@ -342,18 +314,6 @@ public class ObjectStore implements IObjectStoreExt {
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(root);
     return fObjectRepo.getObjectId(root);
-  }
-
-  private void updateCurrentBlock(Set<Object> objs, Block block) {
-    for(Object obj: objs){
-      getObjectInfo(obj).changeCurrentBlock(block);
-    } 
-  }
-
-  private void updateCurrentBlockForDeleted(Set<ObjectInfo> infos, Block block) {
-    for(IObjectInfo info: infos){
-      info.changeCurrentBlock(block);
-    } 
   }
 
 }

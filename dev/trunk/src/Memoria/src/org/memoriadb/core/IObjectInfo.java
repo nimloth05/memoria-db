@@ -14,7 +14,7 @@ public interface IObjectInfo {
 
   public void changeCurrentBlock(Block block);
 
-  public Object getCurrentBlock();
+  public Block getCurrentBlock();
 
   public IObjectId getId();
 

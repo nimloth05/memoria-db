@@ -49,7 +49,8 @@ public class ObjectRepo implements IObjectRepo {
    * This method is only used for bootstrapping
    */
   public void add(IObjectId id, IObjectId memoriaMetaClassId, IMemoriaClass object) {
-    internalPut(new ObjectInfo(id, memoriaMetaClassId, object, Block.getDefaultBlock()));
+    ObjectInfo result = new ObjectInfo(id, memoriaMetaClassId, object, Block.getDefaultBlock());
+    internalPut(result);
   }
 
   /**
@@ -57,9 +58,10 @@ public class ObjectRepo implements IObjectRepo {
    * 
    * @return The new id
    */
-  public IObjectId add(Object obj, IObjectId memoriaClassId) {
-    IObjectId result = generateId();
-    internalPut(new ObjectInfo(result, memoriaClassId, obj, Block.getDefaultBlock()));
+  public ObjectInfo add(Object obj, IObjectId memoriaClassId) {
+    IObjectId id = generateId();
+    ObjectInfo result = new ObjectInfo(id, memoriaClassId, obj, Block.getDefaultBlock());
+    internalPut(result);
     return result;
   }
 
@@ -169,14 +171,14 @@ public class ObjectRepo implements IObjectRepo {
     return result.getId();
   }
 
-  public ObjectInfo getObjectInfo(IObjectId id) {
+  public ObjectInfo getObjectInfo(Object obj) {
+    return fObjectMap.get(obj);
+  }
+
+  public ObjectInfo getObjectInfoForId(IObjectId id) {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
     return result;
-  }
-
-  public ObjectInfo getObjectInfo(Object obj) {
-    return fObjectMap.get(obj);
   }
 
   @Override

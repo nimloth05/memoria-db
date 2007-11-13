@@ -1,6 +1,8 @@
 package org.memoriadb.test.core.block;
 
-import org.memoriadb.core.CreateConfig;
+import java.util.HashSet;
+
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
@@ -51,6 +53,10 @@ public class SurvivorAgentTest extends AbstractObjectStoreTest {
   }
 
   private Iterable<IObjectId> getSurvivors(Block block) {
-    return fStore.getSurvivors(block);
+    HashSet<IObjectId> result = new HashSet<IObjectId>();
+    for(IObjectInfo info: fStore.getSurvivors(block)){
+      result.add(info.getId());
+    }
+    return result;
   }
 }

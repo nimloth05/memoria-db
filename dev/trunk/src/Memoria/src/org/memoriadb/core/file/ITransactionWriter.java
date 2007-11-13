@@ -1,7 +1,9 @@
 package org.memoriadb.core.file;
 
 import java.io.IOException;
+import java.util.Set;
 
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 
 
@@ -15,13 +17,10 @@ public interface ITransactionWriter {
 
   public long getHeadRevision();
 
-  public long incrementHeadRevision();
+  public DBMode getMode();
+
+  public IObjectRepo getRepo();
   
-  /**
-   * Saves the given object-data to the persistent store.
-   * @param numberOfObjects TODO
-   * @return The Block in which the <tt>objectData</tt> was stored.
-   */
-  public Block write(byte[] objectData, int numberOfObjects)  throws IOException;
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete)  throws IOException;
   
 }

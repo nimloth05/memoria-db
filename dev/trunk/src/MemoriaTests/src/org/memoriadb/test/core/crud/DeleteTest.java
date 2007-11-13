@@ -34,7 +34,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     delete(a);
     
     assertFalse(fStore.containsId(a_id));
-    IObjectInfo info = fStore.getObjectInfo(a_id);
+    IObjectInfo info = fStore.getObjectInfoForId(a_id);
     assertTrue(info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
@@ -43,7 +43,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     
     assertFalse(fStore.containsId(a_id));
     
-    info = fStore.getObjectInfo(a_id);
+    info = fStore.getObjectInfoForId(a_id);
     assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
   }
@@ -63,12 +63,12 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertFalse(fStore.containsId(a_id));
     assertFalse(fStore.containsId(b_id));
     
-    IObjectInfo a_info = fStore.getObjectInfo(a_id);
+    IObjectInfo a_info = fStore.getObjectInfoForId(a_id);
     assertTrue(a_info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION+1, a_info.getRevision());
     assertEquals(1, a_info.getOldGenerationCount());
 
-    IObjectInfo b_info = fStore.getObjectInfo(b_id);
+    IObjectInfo b_info = fStore.getObjectInfoForId(b_id);
     assertTrue(b_info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION+1, b_info.getRevision());
     assertEquals(1, b_info.getOldGenerationCount());
@@ -132,7 +132,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
       delete(a_l1);
     endUpdate();
     
-    IObjectInfo info = fStore.getObjectInfo(a_id);
+    IObjectInfo info = fStore.getObjectInfoForId(a_id);
     assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
     assertTrue(info.isDeleted());

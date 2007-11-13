@@ -2,6 +2,8 @@ package org.memoriadb.core.block;
 
 import java.util.*;
 
+import org.memoriadb.exception.MemoriaException;
+
 public class BlockBucket implements Comparable<BlockBucket> {
   
   private final long fSize;
@@ -20,13 +22,15 @@ public class BlockBucket implements Comparable<BlockBucket> {
   
   @Override
   public int compareTo(BlockBucket o) {
-      //FIXME: Implementierung gefährlich, meiner Meinung nach, wäre diese bei Long.compareTo(long) besser.
-      //       Siehe Puzzler 65 in "Java Puzzlers" von Bloch...
     return (int)(fSize - o.fSize);
   }
 
   public int getBlockCount() {
     return fBlocks.size();
+  }
+
+  public Iterable<Block> getBlocks() {
+    return fBlocks;
   }
 
   public long getSize() {
@@ -39,6 +43,10 @@ public class BlockBucket implements Comparable<BlockBucket> {
 
   public Block pop() {
     return fBlocks.remove(0);
+  }
+
+  public void remove(Block block) {
+    if(!fBlocks.remove(block)) throw new MemoriaException("block not found: " + block);
   }
   
 }

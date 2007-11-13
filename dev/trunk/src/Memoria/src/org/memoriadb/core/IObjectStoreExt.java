@@ -1,5 +1,7 @@
 package org.memoriadb.core;
 
+import java.util.Set;
+
 import org.memoriadb.IObjectStore;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
@@ -19,9 +21,16 @@ public interface IObjectStoreExt extends IObjectStore {
   
   public int getIdSize();
 
-  public IObjectInfo getObjectInfo(IObjectId id);  
+  /**
+   * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
+   */
+  public IObjectInfo getObjectInfo(Object obj);  
   
-  public IObjectInfo getObjectInfo(Object obj);
+  /**
+   * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
+   * even for deleted objects, if the delete-marker is still present.
+   */
+  public IObjectInfo getObjectInfoForId(IObjectId id);
 
-  public Iterable<IObjectId> getSurvivors(Block block);
+  public Set<ObjectInfo> getSurvivors(Block block);
 }
