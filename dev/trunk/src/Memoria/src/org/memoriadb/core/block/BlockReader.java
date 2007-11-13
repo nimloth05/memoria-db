@@ -42,7 +42,6 @@ public class BlockReader {
     
     fRevision = stream.readLong(); // transaction-revision
     crc32.updateLong(fRevision);
-    System.out.println(transactionSize);
     byte[] transactionData = new byte[(int) transactionSize];
     stream.read(transactionData);
     crc32.update(transactionData);

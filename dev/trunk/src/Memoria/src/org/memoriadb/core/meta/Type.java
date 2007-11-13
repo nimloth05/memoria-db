@@ -350,11 +350,11 @@ public enum Type {
     if (type == null) return typeClass;
     return type;
   }
-  
+
   public static Type getType(Field field) {
     return getType(field.getType());
   }
-  
+
   public static Type getType(Object value) {
     return getType(value.getClass());
   }
