@@ -2,10 +2,11 @@ package org.memoriadb.core;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.handler.def.*;
-import org.memoriadb.core.handler.list.*;
+import org.memoriadb.core.handler.list.ListHandler;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 
@@ -40,8 +41,11 @@ public final class ObjectRepoFactory {
     IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, factory.getHandlerMetaClass());
     repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
     
-    registerHandler(repo, factory, new ArrayListHandler(), ArrayList.class.getName());
-    registerHandler(repo, factory, new LinkedListHandler(), LinkedList.class.getName());
+    registerHandler(repo, factory, new ListHandler(ArrayList.class.getName()), ArrayList.class.getName());
+    registerHandler(repo, factory, new ListHandler(LinkedList.class.getName()), LinkedList.class.getName());
+    registerHandler(repo, factory, new ListHandler(CopyOnWriteArrayList.class.getName()), CopyOnWriteArrayList.class.getName());
+    registerHandler(repo, factory, new ListHandler(Stack.class.getName()), Stack.class.getName());
+    registerHandler(repo, factory, new ListHandler(Vector.class.getName()), Vector.class.getName());
   }
 
   private ObjectRepoFactory() {}

@@ -10,13 +10,25 @@ import org.memoriadb.core.handler.def.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.exception.*;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
  * @author msc
  *
  */
-public abstract class AbstractListHandler implements ISerializeHandler {
+public class ListHandler implements ISerializeHandler {
+
+  private final String fClassName;
+  
+  public ListHandler(String className) {
+    fClassName = className;
+  }
+
+  @Override
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+    if (!fClassName.equals(className)) throw new SchemaCorruptException("I am a handler for type " + fClassName +" but I was called for " + className);
+  }
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
@@ -71,7 +83,15 @@ public abstract class AbstractListHandler implements ISerializeHandler {
     }
   }
 
-  protected abstract List<Object> createList();
+  @SuppressWarnings("unchecked")
+  protected List<Object> createList() {
+    try {
+      return (List<Object>) Class.forName(fClassName).newInstance();
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
 
   private List<?> getListObject(Object obj) {
     if (obj instanceof IListDataObject) return ((IListDataObject)obj).getList();
