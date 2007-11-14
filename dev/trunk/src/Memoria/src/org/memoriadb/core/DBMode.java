@@ -54,7 +54,7 @@ public enum DBMode {
     }
     
     @Override
-    public void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
+    public void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectStore.getObject(memoriaClassId);
       memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
     }
@@ -73,11 +73,11 @@ public enum DBMode {
     }
     
     @Override
-    public void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
+    public void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
   };
 
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
 
-  public abstract void checkCanReinstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
+  public abstract void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
 
 }

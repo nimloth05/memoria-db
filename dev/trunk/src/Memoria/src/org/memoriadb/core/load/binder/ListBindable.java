@@ -1,17 +1,17 @@
 package org.memoriadb.core.load.binder;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 
 
-public class ArrayListBindable implements IBindable {
+public class ListBindable implements IBindable {
 
-  private final ArrayList<Object> fResult;
+  private final List<Object> fResult;
   private final IObjectId fObjectId;
 
-  public ArrayListBindable(ArrayList<Object> result, IObjectId objectId) {
+  public ListBindable(List<Object> result, IObjectId objectId) {
     fResult = result;
     fObjectId = objectId;
   }

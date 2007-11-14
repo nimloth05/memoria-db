@@ -7,18 +7,18 @@ import org.memoriadb.util.ReflectionUtil;
 public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   
   private final ISerializeHandler fSerializeHandler;
-  private final Class<?> fClazz;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
+  private final String fClassName;
 
-  public MemoriaHandlerClass(ISerializeHandler handler, Class<?> clazz, IObjectId memoriaClassId) {
+  public MemoriaHandlerClass(ISerializeHandler handler, String className, IObjectId memoriaClassId) {
     fSerializeHandler = handler;
-    fClazz = clazz;
+    fClassName = className;
     fMemoriaClassId = memoriaClassId;
   }
   
   public MemoriaHandlerClass(String handlerName, String className, IObjectId memoriaClassId) throws Exception {
-    this(ReflectionUtil.<ISerializeHandler>createInstance(handlerName), Class.forName(className), memoriaClassId);
+    this(ReflectionUtil.<ISerializeHandler>createInstance(handlerName), className, memoriaClassId);
   }
 
   @Override
@@ -31,7 +31,7 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   }
   
   public String getJavaClassName() {
-    return fClazz.getName();
+    return fClassName;
   }
 
   @Override

@@ -47,7 +47,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     fStore.endUpdate();
   }
   
-  protected Object get(IObjectId id) {
+  protected <T> T get(IObjectId id) {
     return fStore.getObject(id);
   }
   

@@ -17,7 +17,6 @@ public class ObjectStore implements IObjectStoreExt {
   private final ITransactionWriter fTransactionWriter;
   private final DBMode fDBMode;
 
-  // FIXME Sets of ObjectInfos could increase the performance when updating the current block
   private final Set<ObjectInfo> fAdd = new IdentityHashSet<ObjectInfo>();
   private final Set<ObjectInfo> fUpdate = new IdentityHashSet<ObjectInfo>();
   private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
@@ -302,7 +301,7 @@ public class ObjectStore implements IObjectStoreExt {
     // object not already in the store, add it
 
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fDBMode.checkCanReinstantiateObject(fObjectRepo, memoriaClassId, fDefaultInstantiator);
+    fDBMode.checkCanInstantiateObject(fObjectRepo, memoriaClassId, fDefaultInstantiator);
     ObjectInfo result = fObjectRepo.add(obj, memoriaClassId);
     fAdd.add(getObjectInfo(obj));
     return result.getId();
