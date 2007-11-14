@@ -6,7 +6,7 @@ import org.memoriadb.core.id.def.LongIdFactory;
 
 public class CreateConfig extends OpenConfig {
 
-  private final String fIdFactoryClassName;
+  private String fIdFactoryClassName;
   private final String fDefaultInstantiatorClassName;
 
   public CreateConfig() {
@@ -27,6 +27,10 @@ public class CreateConfig extends OpenConfig {
 
   public String getIdFactoryClassName() {
     return fIdFactoryClassName;
+  }
+
+  public void setIdFactoryName(String name) {
+    fIdFactoryClassName = name;
   }
 
 }

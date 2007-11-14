@@ -10,6 +10,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.backend.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.block.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.scenario.AllTests.suite());
     suite.addTestSuite(org.memoriadb.test.core.collection.ArrayListTest.class);
 
     //$JUnit-BEGIN$
@@ -17,6 +18,7 @@ public class AllTests {
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(TypeTest.class);
+    suite.addTestSuite(LongIdFactoryTest.class);
     suite.addTestSuite(ArrayTest.class);
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);

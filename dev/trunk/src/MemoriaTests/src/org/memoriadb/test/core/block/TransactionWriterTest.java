@@ -1,5 +1,6 @@
 package org.memoriadb.test.core.block;
 
+import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.*;
@@ -40,7 +41,19 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
     // opf ist 4 byte
     assertEquals(getOPO() + getOPF() + 4, file.getBlock(2).getObject(0).getSize());
     
-  } 
+  }
+  
+  /**
+   * Tests the complete overhead needed for saving one object in one transaction (i.e. one block is written)
+   */
+  public void test_overhead_per_transaction() {
+    save(new Object());
+    save(new Object());    
+    
+    long opt = getBlockManager().getBlock(1).getPosition() - getBlockManager().getBlock(0).getPosition();
+    assertEquals(60, opt);
+    assertEquals(opt, FileLayout.getOPO(fStore) + FileLayout.TRX_OVERHEAD + FileLayout.BLOCK_OVERHEAD);
+  }
   
   public void test_position() {
     long headerSize = getFile().getSize();

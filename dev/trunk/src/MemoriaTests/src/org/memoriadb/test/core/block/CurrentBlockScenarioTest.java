@@ -7,8 +7,19 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
 
-  
-  
+  public void test_current_block() {
+    assertTrue(getLastBlockInfo().isAppend());
+    assertFalse(getLastBlockInfo().hasLastWrittenBlock());
+    
+    save(new Object());
+    
+    // header-info is never updated, reopen the db
+    reopen();
+    
+    assertTrue(getLastBlockInfo().isAppend());
+    assertEquals(getBlockManager().getBlock(0).getPosition(), getLastBlockInfo().getPosition());
+  }
+
   public void test_scenario() {
     
     beginUpdate();
@@ -130,12 +141,11 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     assertTrue(getObjectInfo(o1).isDeleted());
     assertTrue(getObjectInfo(o2).isDeleted());
   }
-
+  
   @Override
   protected void configureOpen(CreateConfig config) {
     config.setBlockManager(new AppendBlockManager());
   }
-  
 
   @Override
   protected void configureReopen(CreateConfig config) {

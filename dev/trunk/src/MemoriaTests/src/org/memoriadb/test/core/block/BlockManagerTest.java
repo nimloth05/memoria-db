@@ -49,13 +49,5 @@ public class BlockManagerTest extends AbstractObjectStoreTest {
     assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
   }
   
-  /**
-   * This test required:
-   * - fCleanUpThreshold: 50%
-   * - fSizeThreshold: 50%
-   */
-  public void test_RecycleList() {
-    
-  }
   
 }

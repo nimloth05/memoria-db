@@ -39,4 +39,5 @@ public class SimpleTestObj {
   public String toString() {
     return "s: "+fString;
   }
+  
 }

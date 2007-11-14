@@ -45,7 +45,7 @@ public class InMemoryFileTest extends TestCase {
     fFile.append(ByteUtil.asByteArray(1));
     fFile.append(ByteUtil.asByteArray(2));
     
-    DataInputStream stream = new DataInputStream(fFile.getInputStream(Constants.LONG_SIZE));
+    DataInputStream stream = new DataInputStream(fFile.getInputStream(Constants.LONG_LEN));
     assertEquals(2, stream.readLong());
     stream.close();
   }

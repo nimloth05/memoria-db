@@ -8,6 +8,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.core.block");
     //$JUnit-BEGIN$
     suite.addTestSuite(BlockManagerTest.class);
+    suite.addTestSuite(LastWrittenBlockTest.class);
     suite.addTestSuite(CurrentBlockScenarioTest.class);
     suite.addTestSuite(SurvivorTest.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);

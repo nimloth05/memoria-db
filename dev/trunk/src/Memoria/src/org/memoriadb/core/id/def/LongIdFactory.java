@@ -47,7 +47,7 @@ public class LongIdFactory implements IObjectIdFactory {
 
   @Override
   public int getIdSize() {
-    return Constants.LONG_SIZE;
+    return Constants.LONG_LEN;
   }
 
   @Override

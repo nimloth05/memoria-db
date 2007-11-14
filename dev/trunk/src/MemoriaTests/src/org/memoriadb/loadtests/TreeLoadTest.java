@@ -15,7 +15,7 @@ public class TreeLoadTest extends AbstractObjectStoreTest {
 
   public void test() {
     //Node root = createTree(12, 2);
-    Node root = createTree(15, 2);
+    Node root = createTree(12, 2);
     long start1 = System.nanoTime();
     saveAll(root);
     long start2 = System.nanoTime();

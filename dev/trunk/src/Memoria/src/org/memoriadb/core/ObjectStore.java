@@ -24,10 +24,12 @@ public class ObjectStore implements IObjectStoreExt {
 
   private int fUpdateCounter = 0;
   private final IDefaultInstantiator fDefaultInstantiator;
+  private final FileHeader fHeader;
 
-  public ObjectStore(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer) {
+  public ObjectStore(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header) {
     fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = writer;
+    fHeader = header;
     fObjectRepo = writer.getRepo();
     fDBMode = writer.getMode();
   }
@@ -144,6 +146,11 @@ public class ObjectStore implements IObjectStoreExt {
   @Override
   public IObjectId getHandlerMetaClass() {
     return fObjectRepo.getHandlerMetaClass();
+  }
+
+  @Override
+  public FileHeader getHeader() {
+    return fHeader;
   }
 
   @Override

@@ -50,6 +50,8 @@ public class TransactionWriter implements ITransactionWriter {
     Block block = new Block(blockSize, fFile.getSize());
     block.setNumberOfObjectData(numberOfObjects);
     fBlockManager.add(block);
+    
+    markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
 
     // ... then add the data to the file.
     fFile.append(byteArrayOutputStream.toByteArray());
@@ -57,6 +59,7 @@ public class TransactionWriter implements ITransactionWriter {
     return block;
   }
 
+  
   @Override
   public void close() {
     fFile.close();
@@ -86,12 +89,12 @@ public class TransactionWriter implements ITransactionWriter {
   public IObjectRepo getRepo() {
     return fRepo;
   }
-  
+
   @Override
   public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete) throws IOException {
     write(add, update, delete, new HashSet<Block>());
   }
-
+  
   /**
    * Called recursively
    */
@@ -128,7 +131,10 @@ public class TransactionWriter implements ITransactionWriter {
     
     // save survivors recursively
     write(new HashSet<ObjectInfo>(), survivors, new HashSet<ObjectInfo>(), tabooBlocks);
-            
+  }
+
+  private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
+    FileHeaderHelper.updateBlockInfo(getFile(), block, writeMode);
   }
 
   private void updateInfoForAdd(Set<ObjectInfo> infos, Block block) {
@@ -166,6 +172,8 @@ public class TransactionWriter implements ITransactionWriter {
     // transaction
     writeTransaction(trxData, stream, crc32);
 
+    markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
+
     // dd the data after the BlockTag to the file 
     fFile.write(byteArrayOutputStream.toByteArray(), block.getPosition() + FileLayout.BLOCK_OVERHEAD);
   }
@@ -175,7 +183,6 @@ public class TransactionWriter implements ITransactionWriter {
 
     // this call may return to this TransactionWriter recursivley
     Block block = fBlockManager.findRecyclebleBlock(blockSize, tabooBlocks);
-    
     
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);

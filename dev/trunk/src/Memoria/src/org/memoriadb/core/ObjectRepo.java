@@ -259,8 +259,9 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.createNextId();
   }
 
-  // TODO: Test for this assertions!
+  // TODO: Test for this assertions! which assertsion? msc
   private void internalPut(ObjectInfo info) {
+    // adjustId here for bootstrapped objects
     fIdFactory.adjustId(info.getId());
     
     Object previousMapped = fObjectMap.put(info.getObj(), info);

@@ -18,13 +18,13 @@ public final class Constants {
   /**
    * The size of an int in bytes.
    */
-  public static final int INT_SIZE = 4;
+  public static final int INT_LEN = 4;
 
   
   /**
    * The size of a long in bytes.
    */
-  public static final int LONG_SIZE = 8;
+  public static final int LONG_LEN = 8;
 
   public static final int DEFAULT_OBJECT_SIZE = 80;
 

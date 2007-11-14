@@ -7,7 +7,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.id.*;
 import org.memoriadb.exception.MemoriaException;
 
 public final class ObjectLoader implements IReaderContext {
@@ -23,6 +23,7 @@ public final class ObjectLoader implements IReaderContext {
   private final DBMode fDbMode;
   private Block fCurrentBlock;
   private final IDefaultInstantiator fDefaultInstantiator;
+  private final IObjectIdFactory fIdFactory;
 
   public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, DBMode mode) {
     return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, mode).read();
@@ -40,6 +41,7 @@ public final class ObjectLoader implements IReaderContext {
     fBlockManager = blockManager;
     fDefaultInstantiator = defaultInstantiator;
     fDbMode = mode;
+    fIdFactory = repo.getIdFactory();
   } 
 
   @Override
@@ -92,33 +94,27 @@ public final class ObjectLoader implements IReaderContext {
       throw new MemoriaException(e);
     }
   }
-  
-  //FIXME: Aus dieser Klasse verschieben
-  public FileHeader readHeader() {
-    try {
-      return fFileReader.readHeader();
-    }
-    catch (IOException e) {
-      throw new MemoriaException(e);
-    }
-  }
 
-  private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long version) {
+  private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long revision) {
+    fIdFactory.adjustId(id);
+    
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, deletionTypeId, null, version, fCurrentBlock));
+      container.put(id, new HydratedInfo(id, deletionTypeId, null, revision, fCurrentBlock));
       return;
     } 
 
     // object already loaded in other version, newer version survives
-    info.update(fCurrentBlock, null, deletionTypeId, version);
-    if (info.getVersion() != version) throw new MemoriaException("DeletionMarker had lower revision then last objectData");
+    info.update(fCurrentBlock, null, deletionTypeId, revision);
+    if (info.getVersion() != revision) throw new MemoriaException(id + ": DeletionMarker("+revision+") has lower revision then last objectData("+info.getVersion()+")");
   }
 
   /**
    * @param object null if deleteMarker was encountered
    */
   private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
+    fIdFactory.adjustId(id);
+    
     HydratedInfo info = container.get(id);
     if (info == null) {
       container.put(id, new HydratedInfo(id, object.getTypeId(), object, version, fCurrentBlock));
@@ -147,7 +143,7 @@ public final class ObjectLoader implements IReaderContext {
     }
     fHydratedMetaClasses = null;
   }
-  
+
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getCurrentBlock(), info.getVersion(), info.getOldGenerationCount());
     

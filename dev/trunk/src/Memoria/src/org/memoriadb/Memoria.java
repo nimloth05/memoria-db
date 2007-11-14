@@ -65,7 +65,7 @@ public final class Memoria {
     ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
     TransactionWriter writer = new TransactionWriter(repo, config.getBlockManager(), file, headRevision, config.getDBMode());
-    return new ObjectStore(defaultInstantiator, writer);
+    return new ObjectStore(defaultInstantiator, writer, header);
   }
   
   /**

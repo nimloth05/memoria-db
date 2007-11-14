@@ -60,7 +60,7 @@ public class FileReader {
     // FIXME sollte hier ein Buffered Reader instantiiert werden? msc
     fStream = new DataInputStream(fFile.getInputStream());
     
-    FileHeader result = FileHeaderHelper.readHeader(fStream);
+    FileHeader result = FileHeaderHelper.getHeader(fStream);
     fPosition = result.getHeaderSize();
     
     return result;

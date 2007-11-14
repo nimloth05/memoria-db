@@ -46,7 +46,7 @@ public class PhysicalFileTest extends junit.framework.TestCase {
     fPf.append(ByteUtil.asByteArray(1));
     fPf.append(ByteUtil.asByteArray(2));
     
-    DataInputStream stream = new DataInputStream(fPf.getInputStream(Constants.LONG_SIZE));
+    DataInputStream stream = new DataInputStream(fPf.getInputStream(Constants.LONG_LEN));
     assertEquals(2, stream.readLong());
     stream.close();
   }

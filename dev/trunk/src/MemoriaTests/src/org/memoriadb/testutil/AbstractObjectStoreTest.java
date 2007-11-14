@@ -63,14 +63,18 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return ((ObjectStore)fStore).getFile();
   }
   
+  protected LastWrittenBlockInfo getLastBlockInfo() {
+    return fStore.getHeader().getLastWrittenBlockInfo();
+  }
+  
   protected IObjectInfo getObjectInfo(IObjectId id) {
     return fStore.getObjectInfoForId(id);
   }
-  
+
   protected int getOPF() {
     return FileLayout.OPF;
   }
-
+  
   protected int getOPO() {
     return FileLayout.getOPO(fStore);
   }
@@ -101,11 +105,11 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected final IObjectId save(Object obj) {
     return fStore.save(obj);
   }
-  
+   
   protected final IObjectId[] save(Object...objects) {
     return fStore.save(objects);
   }
-   
+  
   protected final IObjectId saveAll(Object obj) {
     return fStore.saveAll(obj);
   }
@@ -129,7 +133,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected void tearDown() {
     fStore.close();
   }
-  
+
   private IObjectStoreExt openFile(IMemoriaFile file, CreateConfig config) {
     return (IObjectStoreExt) Memoria.open(config, file);
   }

@@ -5,7 +5,7 @@ package org.memoriadb.util;
 public final class ByteUtil {
   
   public static final int INT_SIZE = 4;
-  
+
   public static byte[] asByteArray(long value){
     byte[] result = new byte[8];
     result[0] = (byte)(value >>> 56);
@@ -32,6 +32,16 @@ public final class ByteUtil {
     int int4 = data[start+3] & 0xff;
     
     return ((int1 << 24) + (int2 << 16) + (int3 << 8) + (int4 << 0));
+  }
+
+  /**
+   * Write the given value in the given byte array at position 0
+   */
+  public static void writeInt(byte[] data, int value) {
+    data[0] = (byte)(value >>> 24);
+    data[1] = (byte)(value >>> 16);
+    data[2] = (byte)(value >>>  8);
+    data[3] = (byte)(value >>>  0);
   }
   
   private ByteUtil() {}
