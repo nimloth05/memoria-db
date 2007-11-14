@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.collection;
+package org.memoriadb.test.core.handler;
 
 import java.util.LinkedList;
 

@@ -9,7 +9,6 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.handler.def.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.core.load.binder.ListBindable;
 import org.memoriadb.core.meta.*;
 
 /**

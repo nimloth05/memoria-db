@@ -1,11 +1,11 @@
 package org.memoriadb.core;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.handler.def.*;
-import org.memoriadb.core.handler.list.ArrayListHandler;
+import org.memoriadb.core.handler.list.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 
@@ -41,6 +41,7 @@ public final class ObjectRepoFactory {
     repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
     
     registerHandler(repo, factory, new ArrayListHandler(), ArrayList.class.getName());
+    registerHandler(repo, factory, new LinkedListHandler(), LinkedList.class.getName());
   }
 
   private ObjectRepoFactory() {}

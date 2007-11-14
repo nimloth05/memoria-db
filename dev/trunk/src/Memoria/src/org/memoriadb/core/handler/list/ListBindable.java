@@ -1,4 +1,4 @@
-package org.memoriadb.core.load.binder;
+package org.memoriadb.core.handler.list;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.collection.testclassses;
+package org.memoriadb.test.core.handler.testclassses;
 
 import java.util.*;
 

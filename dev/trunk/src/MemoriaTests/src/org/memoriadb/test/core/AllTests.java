@@ -11,7 +11,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.block.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.scenario.AllTests.suite());
-    suite.addTestSuite(org.memoriadb.test.core.collection.ArrayListTest.class);
+    suite.addTest(org.memoriadb.test.core.handler.AllTests.suite());
 
     //$JUnit-BEGIN$
     suite.addTestSuite(CompositeTest.class);
