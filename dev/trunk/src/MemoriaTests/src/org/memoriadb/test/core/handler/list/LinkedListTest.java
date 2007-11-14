@@ -5,8 +5,8 @@ import java.util.*;
 public class LinkedListTest extends ListTest{
 
   @Override
-  protected List createList() {
-    return new LinkedList<Object>();
+  protected <T> List<T> createList() {
+    return new LinkedList<T>();
   }
 
 }

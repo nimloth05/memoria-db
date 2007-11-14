@@ -3,6 +3,7 @@ package org.memoriadb.loadtests;
 import java.util.*;
 
 import org.memoriadb.TestMode;
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 /**
@@ -14,19 +15,21 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 public class TreeLoadTest extends AbstractObjectStoreTest {
 
   public void test() {
+    System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);
     //Node root = createTree(12, 2);
     Node root = createTree(12, 2);
     long start1 = System.nanoTime();
-    saveAll(root);
+    IObjectId id = saveAll(root);
     long start2 = System.nanoTime();
     System.out.println("write " + (start2 - start1)/1000000);
     writeFootprint();
+    root = null; 
     reopen();
     System.out.println("read  " + (System.nanoTime() - start2)/1000000);
     writeFootprint();
 
     System.out.println();
-
+    root = fStore.getObject(id);
     System.out.println("Nodes  :" + root.countDescendants());
     System.out.println("objects: " + fStore.getAllObjects().size());
   }

@@ -230,14 +230,6 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.isRootClassId(superClassId);
   }
 
-  /**
-   * @return true, if a MetaClass object exists for the given type.
-   */
-  public boolean metaClassExists(Class<?> klass) {
-    if (klass.isArray()) throw new IllegalArgumentException("Array not expected");
-    return fMemoriaClasses.containsKey(klass);
-  }
-
   public void updateObjectInfoAdded(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
     info.setRevision(revision);
@@ -278,7 +270,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   private void internalUpdate(ObjectInfo info, long revision) {
-    if (info == null) throw new MemoriaException("Object not found: " + info);
+    if (info == null) throw new IllegalArgumentException("Object not found");
     info.setRevision(revision);
     info.incrememntOldGenerationCount();
   }

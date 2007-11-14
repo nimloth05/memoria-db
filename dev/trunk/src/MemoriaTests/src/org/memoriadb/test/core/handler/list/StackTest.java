@@ -5,8 +5,8 @@ import java.util.*;
 public class StackTest extends ListTest{
 
   @Override
-  protected List createList() {
-    return new Stack<Object>();
+  protected <T> List<T> createList() {
+    return new Stack<T>();
   }
 
 }

@@ -8,27 +8,23 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public abstract class ListTest extends AbstractObjectStoreTest {
   
-  @SuppressWarnings("unchecked")
   public void test_empty_list() {
-    List list = createList();
+    List<Object> list = createList();
     reopen(list);
   }
 
-  @SuppressWarnings("unchecked")
   public void test_int_object() {
-    List list = getIntObjectList();
+    List<Integer> list = getIntObjectList();
     reopen(list);
   }
 
-  @SuppressWarnings("unchecked")
   public void test_int_primitive() {
-    List list = getIntPrimitiveList();
+    List<Integer> list = getIntPrimitiveList();
     reopen(list);
   }
 
-  @SuppressWarnings("unchecked")
   public void test_list_in_list() {
-    List list = createList();
+    List<List<?>> list = createList();
     list.add(getIntObjectList());
     list.add(getIntPrimitiveList());
     list.add(getObjectList());
@@ -36,43 +32,66 @@ public abstract class ListTest extends AbstractObjectStoreTest {
     reopen(list);
   }
   
-  @SuppressWarnings("unchecked")
-  public void test_object() {
-    List list = getObjectList();
+  public void test_list_lifecycle() {
+    List<SimpleTestObj> list = getObjectList();
+    SimpleTestObj obj1 = list.get(0);
+    reopen(list);
+    
+    list.clear();
+    reopen(list);
+    
+    list.add(new SimpleTestObj("3"));
+    reopen(list);
+    
+    list.add(obj1);
+    reopen(list);
+  }
+  
+  public void test_mixed_list() {
+    List<Object> list = createList();
+    list.add("1");
+    list.add(getIntObjectList());
+    list.add(new SimpleTestObj());
+    
     reopen(list);
   }
 
+  public void test_object() {
+    List<SimpleTestObj> list = getObjectList();
+    reopen(list);
+  }
+  
   public void test_string() {
-    List list = createList();
+    List<String> list = createList();
     list.add("one");
     list.add("two");
     reopen(list);
   }
   
-  protected abstract List createList();
+  protected abstract <T> List<T> createList();
 
-  private List getIntObjectList() {
-    List list = createList();
+  private List<Integer> getIntObjectList() {
+    List<Integer> list = createList();
     list.add(new Integer(1));
     list.add(new Integer(2));
     return list;
   }
   
-  private List getIntPrimitiveList() {
-    List list = createList();
+  private List<Integer> getIntPrimitiveList() {
+    List<Integer> list = createList();
     list.add(1);
     list.add(1);
     return list;
   }
   
-  private List getObjectList() {
-    List list = createList();
+  private List<SimpleTestObj> getObjectList() {
+    List<SimpleTestObj> list = createList();
     list.add(new SimpleTestObj("1"));
     list.add(new SimpleTestObj("2"));
     return list;
   }
   
-  private void reopen(List list) {
+  private void reopen(List<?> list) {
     IObjectId id = saveAll(list);
     reopen();
     assertEquals(list, get(id));

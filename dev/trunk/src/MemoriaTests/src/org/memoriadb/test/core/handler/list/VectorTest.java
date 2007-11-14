@@ -5,8 +5,8 @@ import java.util.*;
 public class VectorTest extends ListTest{
 
   @Override
-  protected List createList() {
-    return new Vector<Object>();
+  protected <T> List<T> createList() {
+    return new Vector<T>();
   }
 
 }

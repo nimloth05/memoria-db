@@ -5,8 +5,8 @@ import java.util.*;
 public class ArrayListTest extends ListTest{
 
   @Override
-  protected List createList() {
-    return new ArrayList<Object>();
+  protected <T> List<T> createList() {
+    return new ArrayList<T>();
   }
-
+  
 }

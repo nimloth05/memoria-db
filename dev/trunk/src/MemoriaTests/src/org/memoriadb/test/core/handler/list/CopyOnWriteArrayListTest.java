@@ -6,8 +6,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CopyOnWriteArrayListTest extends ListTest{
 
   @Override
-  protected List createList() {
-    return new CopyOnWriteArrayList<Object>();
+  protected <T> List<T> createList() {
+    return new CopyOnWriteArrayList<T>();
   }
 
 }

@@ -61,15 +61,15 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   public IObjectId getObjectId(Object obj);
 
   /**
+   * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
+   */
+  public ObjectInfo getObjectInfo(Object obj);
+
+  /**
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
    */
   public ObjectInfo getObjectInfoForId(IObjectId id);
-
-  /**
-   * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
-   */
-  public ObjectInfo getObjectInfo(Object obj);
   
   /**
    * @return true, if the given obj is a metaclass
@@ -78,12 +78,6 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   public boolean isMetaClass(Object obj);
 
 
-  /**
-   * @return true, if the metaClass for the given <tt>obj</tt> already exists.
-   */
-  //FIXME: METACLASS
-  public boolean metaClassExists(Class<?> klass);
-  
   /**
    * Tells the ObjectContainer that an object was added to the persistent store.
    */

@@ -1,7 +1,6 @@
 package org.memoriadb.test.core.handler;
 
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.test.core.collection.*;
 import org.memoriadb.test.core.handler.testclassses.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
