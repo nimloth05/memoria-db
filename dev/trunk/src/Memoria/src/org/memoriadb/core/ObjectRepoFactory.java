@@ -1,6 +1,5 @@
 package org.memoriadb.core;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -9,43 +8,66 @@ import org.memoriadb.core.handler.def.*;
 import org.memoriadb.core.handler.list.ListHandler;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.util.ReflectionUtil;
 
 public final class ObjectRepoFactory {
 
-  public static ObjectRepo create(IObjectIdFactory idFactory) {
+  public static ObjectRepo create(IObjectIdFactory idFactory, List<String> customHandlers) {
     ObjectRepo repo = new ObjectRepo(idFactory);
-    registerMetaClasses(repo, idFactory);
+    registerMetaClasses(repo, idFactory, customHandlers);
     return repo;
   }
 
+  private static void addCustomHandlers(ObjectRepo repo, IDefaultObjectIdProvider factory, List<String> customHandlers) {
+    for (String className : customHandlers) {
+      registerHandler(repo, factory, (ISerializeHandler)ReflectionUtil.createInstance(className));
+    }
+  }
+
   /**
-   * @param handler The handler to handle objects of type <tt>className</tt>.
-   * @param className Name of the class the given <tt>handler</tt> can deal with.
+   * @param handler
+   *          The handler to handle objects of type <tt>className</tt>.
+   * @param className
+   *          Name of the class the given <tt>handler</tt> can deal with.
    */
-  private static void registerHandler(ObjectRepo repo, IDefaultObjectIdProvider factory, ISerializeHandler handler, String className) {
-    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, className, factory.getHandlerMetaClass());
+  private static void registerHandler(ObjectRepo repo, IDefaultObjectIdProvider factory, ISerializeHandler handler) {
+    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, factory.getHandlerMetaClass());
     repo.add(classConfig, classConfig.getMemoriaClassId());
   }
-  
-  private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory) {
-    IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), MemoriaFieldClass.class.getName(), factory.getHandlerMetaClass());
-    IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), MemoriaHandlerClass.class.getName(), factory.getHandlerMetaClass());
-    
+
+  /**
+   * @param handler
+   *          The handler to handle objects of type <tt>className</tt>.
+   * @param className
+   *          Name of the class the given <tt>handler</tt> can deal with.
+   */
+  private static void registerListHandler(ObjectRepo repo, IDefaultObjectIdProvider factory, Class<?> listClass) {
+    registerHandler(repo, factory, new ListHandler(listClass.getName()));
+  }
+
+  private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory, List<String> customHandlers) {
+    IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
+    IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
+
     repo.add(factory.getMemoriaMetaClass(), fieldMetaClass.getMemoriaClassId(), fieldMetaClass);
     repo.add(factory.getHandlerMetaClass(), handlerMetaClass.getMemoriaClassId(), handlerMetaClass);
-    
-    // handlers for specific library-classes
-    repo.add(factory.getArrayMemoriaClass(), factory.getHandlerMetaClass(), new MemoriaHandlerClass(new ArrayHandler(), Array.class.getName(), factory.getHandlerMetaClass()));
 
-    //These classObjects don't need a fix known ID.
+    // handlers for specific library-classes
+    repo.add(factory.getArrayMemoriaClass(), factory.getHandlerMetaClass(), new MemoriaHandlerClass(new ArrayHandler(), factory
+        .getHandlerMetaClass()));
+
+    // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, factory.getHandlerMetaClass());
     repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
-    
-    registerHandler(repo, factory, new ListHandler(ArrayList.class.getName()), ArrayList.class.getName());
-    registerHandler(repo, factory, new ListHandler(LinkedList.class.getName()), LinkedList.class.getName());
-    registerHandler(repo, factory, new ListHandler(CopyOnWriteArrayList.class.getName()), CopyOnWriteArrayList.class.getName());
-    registerHandler(repo, factory, new ListHandler(Stack.class.getName()), Stack.class.getName());
-    registerHandler(repo, factory, new ListHandler(Vector.class.getName()), Vector.class.getName());
+
+    registerListHandler(repo, factory, ArrayList.class);
+    registerListHandler(repo, factory, LinkedList.class);
+    registerListHandler(repo, factory, CopyOnWriteArrayList.class);
+    registerListHandler(repo, factory, Stack.class);
+    registerListHandler(repo, factory, Vector.class);
+
+    addCustomHandlers(repo, factory, customHandlers);
+
   }
 
   private ObjectRepoFactory() {}

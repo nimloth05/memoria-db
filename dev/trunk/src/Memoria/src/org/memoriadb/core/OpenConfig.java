@@ -1,9 +1,11 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.block.*;
+import org.memoriadb.core.listener.*;
 
 public class OpenConfig {
   
+  private final IMemoriaListeners fListeners = new MemoriaListeners();
   private IBlockManager fBlockManager;
   private DBMode fDBMode;
 
@@ -15,13 +17,17 @@ public class OpenConfig {
     fBlockManager = blockManager;
     fDBMode = mode;
   }
-
+  
   public IBlockManager getBlockManager() {
     return fBlockManager;
   }
 
   public DBMode getDBMode() {
     return fDBMode;
+  }
+
+  public IMemoriaListeners getListeners() {
+    return fListeners;
   }
   
   public void setBlockManager(IBlockManager blockManager) {

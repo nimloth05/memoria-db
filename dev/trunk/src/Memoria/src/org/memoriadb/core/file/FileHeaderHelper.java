@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import org.memoriadb.Memoria;
+import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.Block;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
@@ -29,18 +30,7 @@ public class FileHeaderHelper {
     crc.update(headerInfo);
     if(readCrc != crc.getValue()) throw new MemoriaException("header corrupt");
     
-    DataInputStream headerInfoStream = new DataInputStream(new ByteArrayInputStream(headerInfo));
-    UUID thisUuid = readUuid(headerInfoStream);
-    UUID hostUuid = readUuid(headerInfoStream);
-    long hostBranchVersion = headerInfoStream.readLong();
-    Version version = readVersion(headerInfoStream);
-    int fileLayoutRevision = headerInfoStream.readInt();
-
-    String idFactoryClassName = headerInfoStream.readUTF();
-    String defaultInstantiatorClassName = headerInfoStream.readUTF();
-
-    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
-        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo);
+    return readHeaderInfo(readCurrentBlockInfo, headerInfoSize, headerInfo);
   }
 
   /**
@@ -53,12 +43,12 @@ public class FileHeaderHelper {
     file.write(data, FileLayout.CURRENT_BLOCK_INFO_START_POSITION);
   }
 
-  public static void writeHeader(IMemoriaFile file, String idFactoryClassName, String defaultInstantiatorClassName) throws IOException {
+  public static void writeHeader(IMemoriaFile file, CreateConfig config) throws IOException {
     writeMemoriaTag(file);
     
     writeDefaultLastWrittenBlockInfo(file);
 
-    byte[] headerInfo = getHeaderInfo(idFactoryClassName, defaultInstantiatorClassName);
+    byte[] headerInfo = writeHeaderInfo(config);
     int headerInfoSize = headerInfo.length;
     
     MemoriaCRC32 crc = new MemoriaCRC32();
@@ -95,20 +85,26 @@ public class FileHeaderHelper {
     return byteArrayOutputStream.toByteArray();
   }
 
-  private static byte[] getHeaderInfo(String idFactoryClassName, String defaultInstantiatorClassName) throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
+  private static FileHeader readHeaderInfo(LastWrittenBlockInfo readCurrentBlockInfo, int headerInfoSize, byte[] headerInfo)
+      throws IOException {
+    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(headerInfo));
+    UUID thisUuid = readUuid(stream);
+    UUID hostUuid = readUuid(stream);
+    long hostBranchVersion = stream.readLong();
+    Version version = readVersion(stream);
+    int fileLayoutRevision = stream.readInt();
 
-    writeUuid(stream, UUID.randomUUID());
-    writeUuid(stream, Constants.NO_HOST_UUID);
-    stream.writeLong(Constants.NO_HOST_BRANCH_REVISION);
-
-    writeVersion(stream, Memoria.getMemoriaVersion());
-    stream.writeInt(Memoria.getFileLayoutVersion());
-
-    stream.writeUTF(idFactoryClassName);
-    stream.writeUTF(defaultInstantiatorClassName);
-    return byteArrayOutputStream.toByteArray();
+    String idFactoryClassName = stream.readUTF();
+    String defaultInstantiatorClassName = stream.readUTF();
+    
+    int customHandlerCount = stream.readInt();
+    List<String> customHandlers = new ArrayList<String>();
+    for(int i = 0; i < customHandlerCount; ++i) {
+      customHandlers.add(stream.readUTF());
+    }
+    
+    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
+        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, customHandlers);
   }
 
   private static LastWrittenBlockInfo readLastWrittenBlockInfo(DataInputStream stream) throws IOException {
@@ -130,7 +126,7 @@ public class FileHeaderHelper {
   private static Version readVersion(DataInputStream stream) throws IOException {
     return new Version(stream.readInt(), stream.readInt(), stream.readInt());
   }
-  
+
   /**
    * When no block was written, the last-written-block info is initialized with default-values.
    */
@@ -138,6 +134,28 @@ public class FileHeaderHelper {
     byte[] byteArrayOutputStream = getCurrentBlockInfo(NO_CURRENT_BLOCK, FileLayout.WRITE_MODE_APPEND);
     
     file.append(byteArrayOutputStream);
+  }
+  
+  private static byte[] writeHeaderInfo(CreateConfig config) throws IOException {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
+
+    writeUuid(stream, UUID.randomUUID());
+    writeUuid(stream, Constants.NO_HOST_UUID);
+    stream.writeLong(Constants.NO_HOST_BRANCH_REVISION);
+
+    writeVersion(stream, Memoria.getMemoriaVersion());
+    stream.writeInt(Memoria.getFileLayoutVersion());
+
+    stream.writeUTF(config.getIdFactoryClassName());
+    stream.writeUTF(config.getDefaultInstantiatorClassName());
+    
+    stream.writeInt(config.getCustomHandlerCount());
+    for(String handlerClassName: config.getCustomHandlers()){
+      stream.writeUTF(handlerClassName);
+    }
+    
+    return byteArrayOutputStream.toByteArray();
   }
 
   private static void writeMemoriaTag(IMemoriaFile file) {

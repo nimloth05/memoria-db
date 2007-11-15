@@ -38,6 +38,11 @@ public class FieldClassHandler implements ISerializeHandler {
   }
   
   @Override
+  public String getClassName() {
+    return MemoriaFieldClass.class.getName();
+  }
+
+  @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
     MemoriaFieldClass classObject = (MemoriaFieldClass) obj;
     

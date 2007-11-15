@@ -35,6 +35,11 @@ public class DefaultHandler implements ISerializeHandler {
   }
 
   @Override
+  public String getClassName() {
+    throw new MemoriaException("not implemented");
+  }
+
+  @Override
   public void serialize(final Object obj, final DataOutputStream output, final ISerializeContext context) throws Exception {
     superSerialize(obj, output, context);
   }

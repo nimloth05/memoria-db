@@ -57,6 +57,11 @@ public class ListHandler implements ISerializeHandler {
   }
 
   @Override
+  public String getClassName() {
+    return fClassName;
+  }
+
+  @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     List<?> list = getListObject(obj);
     for(Object listEntry: list) {

@@ -12,6 +12,7 @@ public class AllTests {
     suite.addTestSuite(CurrentBlockScenarioTest.class);
     suite.addTestSuite(SurvivorTest.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);
+    suite.addTestSuite(LastWrittenBlockAfterCrashTest.class);
     suite.addTestSuite(TransactionWriterTest.class);
     suite.addTestSuite(SurvivorAgentTest.class);
     suite.addTestSuite(BlockTest.class);

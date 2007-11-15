@@ -26,17 +26,22 @@ public interface ISerializeHandler {
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
 
   /**
+   * @return Name of the java-type this handler han deal with.
+   */
+  public String getClassName();
+  /**
    * 
    * @param obj - object to serialize
    * @param output - the stream
    * @param context TODO
    */
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
+
   //FIXME: Diese beiden Methoden müssen von der Schnittstelle entfernt werden, da sie nur der DefaultHandler benötigt.
   public void superDeserialize(Object result, DataInputStream input, IReaderContext context) throws IOException;
 
   public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
-
+  
   /**
    * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 
    * For non-Containers, all referenced objects are visited

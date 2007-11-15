@@ -6,7 +6,6 @@ import java.util.*;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 
-
 public final class MemoriaFieldClass implements IMemoriaClassConfig {
 
   private String fClassName;
@@ -18,22 +17,22 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   private final IObjectId fMemoriaClassId;
 
   /**
-   * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first
-   * object of a given type enters the memoria-reference-space.
-   *
+   * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first object of a
+   * given type enters the memoria-reference-space.
+   * 
    */
   public MemoriaFieldClass(Class<?> klass, IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
     fClassName = klass.getName();
-    
+
     addFields(klass);
   }
-  
+
   public MemoriaFieldClass(String className, IObjectId memoriaClassId) {
     fClassName = className;
     fMemoriaClassId = memoriaClassId;
   }
-  
+
   public void addMetaField(MemoriaField metaField) {
     fFieldIdToInfo.put(metaField.getId(), metaField);
     fFieldNameToInfo.put(metaField.getName(), metaField);
@@ -54,12 +53,12 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   public Iterable<MemoriaField> getFields() {
     return fFieldIdToInfo.values();
   }
-  
+
   @Override
   public ISerializeHandler getHandler() {
     return new org.memoriadb.core.handler.def.field.DefaultHandler(this);
   }
-  
+
   @Override
   public String getJavaClassName() {
     return fClassName;
@@ -69,7 +68,7 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   public IObjectId getMemoriaClassId() {
     return fMemoriaClassId;
   }
-  
+
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
@@ -96,12 +95,12 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   private void addFields(Class<?> klass) {
     Field[] fields = klass.getDeclaredFields();
     int fieldId = 0;
-    for(Field field: fields) {
+    for (Field field : fields) {
       if (Modifier.isTransient(field.getModifiers())) continue;
-      
+
       MemoriaField metaField = MemoriaField.create(++fieldId, field);
       addMetaField(metaField);
-    }    
+    }
   }
-  
+
 }

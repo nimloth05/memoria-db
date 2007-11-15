@@ -64,7 +64,7 @@ public enum DBMode {
     
     @Override
     public IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store) {
-      if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the object is not of type IDataObject");
+      if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject");
       
       IDataObject dataObject = (IDataObject) obj;
       if (!store.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");

@@ -13,20 +13,19 @@ public class TransactionWriter implements ITransactionWriter {
   private final IBlockManager fBlockManager;
   private long fHeadRevision;
   private final IObjectRepo fRepo;
-  private final DBMode fMode;
   private final SurvivorAgent fSurvivorAgent;
+  private final OpenConfig fConfig;
 
-  public TransactionWriter(IObjectRepo repo, IBlockManager blockManager, IMemoriaFile file, long headRevision, DBMode mode) {
+  public TransactionWriter(IObjectRepo repo, OpenConfig config, IMemoriaFile file, long headRevision) {
+    fConfig = config;
     if (repo == null) throw new IllegalArgumentException("objectRepo is null");
-    if (mode == null) throw new IllegalArgumentException("dbMode is null");
+    if (config == null) throw new IllegalArgumentException("config is null");
     if(file == null) throw new IllegalArgumentException("file is null");
-    if(blockManager == null) throw new IllegalArgumentException("blockManager is null");
     
     fRepo = repo;
     fFile = file;
-    fBlockManager = blockManager;
+    fBlockManager = config.getBlockManager();
     fHeadRevision = headRevision;
-    fMode = mode;
     fSurvivorAgent = new SurvivorAgent(repo, file);
   }
 
@@ -50,11 +49,14 @@ public class TransactionWriter implements ITransactionWriter {
     Block block = new Block(blockSize, fFile.getSize());
     block.setNumberOfObjectData(numberOfObjects);
     fBlockManager.add(block);
+     
+    fConfig.getListeners().triggerBeforeAppend(block);
     
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
-
     // ... then add the data to the file.
     fFile.append(byteArrayOutputStream.toByteArray());
+    
+    fConfig.getListeners().triggerAfterAppend(block);
 
     return block;
   }
@@ -82,7 +84,7 @@ public class TransactionWriter implements ITransactionWriter {
 
   @Override
   public DBMode getMode() {
-    return fMode;
+    return fConfig.getDBMode();
   }
 
   @Override
@@ -100,7 +102,7 @@ public class TransactionWriter implements ITransactionWriter {
    */
   public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks) throws IOException {
     
-    ObjectSerializer serializer = new ObjectSerializer(fRepo, fMode);
+    ObjectSerializer serializer = new ObjectSerializer(fRepo, getMode());
     
     for(ObjectInfo info: add) {
       serializer.serialize(info.getObj());
@@ -123,7 +125,8 @@ public class TransactionWriter implements ITransactionWriter {
 
   /**
    * Safes the survivors of the given <tt>block</tt>;
-   * @throws IOException 
+   * 
+   * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks) throws IOException {
     Set<ObjectInfo> survivors = fSurvivorAgent.getSurvivors(block);
@@ -171,11 +174,14 @@ public class TransactionWriter implements ITransactionWriter {
 
     // transaction
     writeTransaction(trxData, stream, crc32);
-
+    
+    fConfig.getListeners().triggerBeforeWrite(block);
+    
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
-
-    // dd the data after the BlockTag to the file 
+    // dd the data after the BlockTag to the file
     fFile.write(byteArrayOutputStream.toByteArray(), block.getPosition() + FileLayout.BLOCK_OVERHEAD);
+    
+    fConfig.getListeners().triggerAfterWrite(block);
   }
 
   private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks) throws IOException {
@@ -197,8 +203,8 @@ public class TransactionWriter implements ITransactionWriter {
     stream.writeLong(trxData.length);
     crc32.updateLong(trxData.length);
 
-    // increment revision here. If it's a saving of survivors or an append, 
-    // either way the revision must be incremeneted at the time of writing back 
+    // increment revision here. If it's a saving of survivors or an append,
+    // either way the revision must be incremeneted at the time of writing back
     stream.writeLong(++fHeadRevision);
     crc32.updateLong(fHeadRevision);
 

@@ -9,16 +9,14 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   private final ISerializeHandler fSerializeHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
-  private final String fClassName;
 
-  public MemoriaHandlerClass(ISerializeHandler handler, String className, IObjectId memoriaClassId) {
+  public MemoriaHandlerClass(ISerializeHandler handler, IObjectId memoriaClassId) {
     fSerializeHandler = handler;
-    fClassName = className;
     fMemoriaClassId = memoriaClassId;
   }
   
-  public MemoriaHandlerClass(String handlerName, String className, IObjectId memoriaClassId) throws Exception {
-    this(ReflectionUtil.<ISerializeHandler>createInstance(handlerName), className, memoriaClassId);
+  public MemoriaHandlerClass(String handlerName, IObjectId memoriaClassId) throws Exception {
+    this(ReflectionUtil.<ISerializeHandler>createInstance(handlerName), memoriaClassId);
   }
 
   @Override
@@ -31,7 +29,7 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   }
   
   public String getJavaClassName() {
-    return fClassName;
+    return fSerializeHandler.getClassName();
   }
 
   @Override
