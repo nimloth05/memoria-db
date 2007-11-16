@@ -164,8 +164,7 @@ public class FileHeaderHelper {
   }
 
   private static void writeUuid(DataOutputStream stream, UUID uuid) throws IOException {
-    stream.writeLong(uuid.getMostSignificantBits());
-    stream.writeLong(uuid.getLeastSignificantBits());
+    ByteUtil.writeUUID(stream, uuid);
   }
 
   private static void writeVersion(DataOutputStream stream, Version version) throws IOException {

@@ -1,5 +1,8 @@
 package org.memoriadb.util;
 
+import java.io.*;
+import java.util.UUID;
+
 
 
 public final class ByteUtil {
@@ -34,6 +37,10 @@ public final class ByteUtil {
     return ((int1 << 24) + (int2 << 16) + (int3 << 8) + (int4 << 0));
   }
 
+  public static UUID readUUID(DataInput input) throws IOException {
+    return new UUID(input.readLong(), input.readLong());
+  }
+  
   /**
    * Write the given value in the given byte array at position 0
    */
@@ -43,7 +50,12 @@ public final class ByteUtil {
     data[2] = (byte)(value >>>  8);
     data[3] = (byte)(value >>>  0);
   }
-  
+
+  public static void writeUUID(DataOutput output, UUID uuid) throws IOException {
+    output.writeLong(uuid.getMostSignificantBits());
+    output.writeLong(uuid.getLeastSignificantBits());
+  }
+
   private ByteUtil() {}
 
 }

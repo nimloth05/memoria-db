@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.crud;
+package org.memoriadb.test.core.crud.basic;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.SchemaCorruptException;
@@ -7,7 +7,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
-public class BasicCrudTest extends AbstractObjectStoreTest {
+public abstract class BasicCrudTest extends AbstractObjectStoreTest {
 
   public void test_can_not_save_an_object_with_no_default_ctor() {
     try {

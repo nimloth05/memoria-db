@@ -9,6 +9,7 @@ public class LongIdFactoryTest extends AbstractObjectStoreTest {
   /**
    * Because of a bug in the id-factory-handling, the ids of deleted objects were not 
    * registered in the IdFactory what lead to redundant ids!
+   * 
    */
   public void test_id_factory() {
     LongObjectId id1 = (LongObjectId) save(new Object());

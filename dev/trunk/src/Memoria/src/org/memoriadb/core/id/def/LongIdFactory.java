@@ -5,7 +5,7 @@ import java.io.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.util.Constants;
 
-public class LongIdFactory implements IObjectIdFactory {
+public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory {
   
   private static final IObjectId MEMORIA_META_CLASS_ID =          new LongObjectId(1);
   private static final IObjectId HANDLER_MEMORIA_CLASS_OBJECT_ID = new LongObjectId(2);
@@ -73,31 +73,6 @@ public class LongIdFactory implements IObjectIdFactory {
   @Override
   public IObjectId getRootClassId() {
     return ROOT_CLASS_ID;
-  }
-
-  @Override
-  public boolean isMemoriaClass(IObjectId typeId) {
-    return MEMORIA_META_CLASS_ID.equals(typeId);
-  }
-
-  @Override
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return MEMORIA_CLASS_DELETED.equals(typeId);
-  }
-
-  @Override
-  public boolean isNullReference(IObjectId objectId) {
-    return NULL_REFERENCE_ID.equals(objectId);
-  }
-
-  @Override
-  public boolean isObjectDeletionMarker(IObjectId typeId) {
-    return OBJECT_DELETED.equals(typeId);
-  }
-
-  @Override
-  public boolean isRootClassId(IObjectId superClassId) {
-    return ROOT_CLASS_ID.equals(superClassId);
   }
 
 }
