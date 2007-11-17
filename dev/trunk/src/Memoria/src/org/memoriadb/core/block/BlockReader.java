@@ -78,7 +78,7 @@ public class BlockReader {
     }
 
     // no deleteMarker encountered
-    if (idFactory.isMemoriaClass(typeId)) {
+    if (idFactory.isMemoriaFieldClass(typeId)  || idFactory.isMemoriaHandlerClass(typeId)) {
       handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {

@@ -30,7 +30,7 @@ public class ObjectInfo implements IObjectInfo {
    * Use this ctor only when an object is initially added to the container.
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock) {
-    this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_REVISION, 0);
+    this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_HEAD_REVISION, 0);
   }
 
   /**
@@ -102,17 +102,13 @@ public class ObjectInfo implements IObjectInfo {
     fObj = obj;
   }
 
-  public void setVersion(int version) {
-    fRevision = version;
+  public void setRevision(long revision) {
+    fRevision = revision;
   }
-
+  
   @Override
   public String toString() {
     return fId + ":" + fObj + " in revision " + fRevision;
-  }
-  
-  public void setRevision(long revision) {
-    fRevision = revision;
   }
   
 }

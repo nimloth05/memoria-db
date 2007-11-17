@@ -202,13 +202,18 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public boolean isMemoriaClass(IObjectId typeId) {
-    return fIdFactory.isMemoriaClass(typeId);
+  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
+    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
   }
 
   @Override
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
+  public boolean isMemoriaFieldClass(IObjectId typeId) {
+    return fIdFactory.isMemoriaFieldClass(typeId);
+  }
+
+  @Override
+  public boolean isMemoriaHandlerClass(IObjectId typeId) {
+    return fIdFactory.isMemoriaHandlerClass(typeId);
   }
 
   @Override
@@ -229,12 +234,12 @@ public class ObjectRepo implements IObjectRepo {
   public boolean isRootClassId(IObjectId superClassId) {
     return fIdFactory.isRootClassId(superClassId);
   }
-
+  
   public void updateObjectInfoAdded(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
     info.setRevision(revision);
   }
-  
+
   @Override
   public void updateObjectInfoDeleted(IObjectId id, long revision) {
     //FIXME: Prüfen, ob das Element wieder aus der Map entfernt werden muss/kann.

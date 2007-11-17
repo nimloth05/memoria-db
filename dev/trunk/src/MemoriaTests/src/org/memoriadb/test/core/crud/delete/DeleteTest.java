@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.crud;
+package org.memoriadb.test.core.crud.delete;
 
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.id.IObjectId;
@@ -7,7 +7,7 @@ import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 import org.memoriadb.util.Constants;
 
-public class DeleteTest extends AbstractObjectStoreTest {
+public abstract class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_add_and_delete_in_same_transaction(){
     
@@ -36,7 +36,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertFalse(fStore.containsId(a_id));
     IObjectInfo info = fStore.getObjectInfoForId(a_id);
     assertTrue(info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
     
     reopen();
@@ -44,7 +44,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     assertFalse(fStore.containsId(a_id));
     
     info = fStore.getObjectInfoForId(a_id);
-    assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
   }
   
@@ -65,12 +65,12 @@ public class DeleteTest extends AbstractObjectStoreTest {
     
     IObjectInfo a_info = fStore.getObjectInfoForId(a_id);
     assertTrue(a_info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION+1, a_info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, a_info.getRevision());
     assertEquals(1, a_info.getOldGenerationCount());
 
     IObjectInfo b_info = fStore.getObjectInfoForId(b_id);
     assertTrue(b_info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION+1, b_info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, b_info.getRevision());
     assertEquals(1, b_info.getOldGenerationCount());
 
   }
@@ -133,7 +133,7 @@ public class DeleteTest extends AbstractObjectStoreTest {
     endUpdate();
     
     IObjectInfo info = fStore.getObjectInfoForId(a_id);
-    assertEquals(Constants.INITIAL_REVISION+1, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
     assertTrue(info.isDeleted());
     

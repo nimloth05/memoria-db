@@ -1,7 +1,8 @@
 package org.memoriadb.core.handler.list;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
@@ -17,17 +18,48 @@ import org.memoriadb.exception.*;
  * @author msc
  *
  */
-public class ListHandler implements ISerializeHandler {
-
-  private final String fClassName;
+public abstract class ListHandler implements ISerializeHandler {
   
-  public ListHandler(String className) {
-    fClassName = className;
+  public static class ArrayListHandler extends ListHandler {
+    @Override
+    public String getClassName() {
+      return ArrayList.class.getName();
+    }
   }
-
+  
+  public static class CopyOnWriteListHandler extends ListHandler {
+    @Override
+    public String getClassName() {
+      return CopyOnWriteArrayList.class.getName();
+    }
+  }
+  
+  public static class LinkedListHandler extends ListHandler {
+    @Override
+    public String getClassName() {
+      return LinkedList.class.getName();
+    }
+  }
+  
+  public static class StackHandler extends ListHandler {
+    @Override
+    public String getClassName() {
+      return Stack.class.getName();
+    }
+  }
+  
+  public static class VectorHandler extends ListHandler {
+    @Override
+    public String getClassName() {
+      return Vector.class.getName();
+    }
+  }
+  
+  
+  
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!fClassName.equals(className)) throw new SchemaCorruptException("I am a handler for type " + fClassName +" but I was called for " + className);
+    if (!getClassName().equals(className)) throw new SchemaCorruptException("I am a handler for type " + getClassName() +" but I was called for " + className);
   }
 
   @Override
@@ -54,11 +86,6 @@ public class ListHandler implements ISerializeHandler {
       result = new ListDataObject(list, typeId);
     }
     return result;
-  }
-
-  @Override
-  public String getClassName() {
-    return fClassName;
   }
 
   @Override
@@ -91,7 +118,7 @@ public class ListHandler implements ISerializeHandler {
   @SuppressWarnings("unchecked")
   protected List<Object> createList() {
     try {
-      return (List<Object>) Class.forName(fClassName).newInstance();
+      return (List<Object>) Class.forName(getClassName()).newInstance();
     }
     catch (Exception e) {
       throw new MemoriaException(e);

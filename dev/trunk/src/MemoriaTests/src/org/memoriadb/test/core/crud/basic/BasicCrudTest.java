@@ -5,7 +5,7 @@ import org.memoriadb.exception.SchemaCorruptException;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.*;
 
 public abstract class BasicCrudTest extends AbstractObjectStoreTest {
 
@@ -27,6 +27,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     IObjectId idc1 = save(c2, c1)[1];
     
+    FilePrinter.print(getFile());
     reopen();
     
     Cyclic1 c1_l1 = (Cyclic1) fStore.getObject(idc1);

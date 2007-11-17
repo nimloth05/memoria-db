@@ -10,7 +10,7 @@ public final class Constants {
   public static final UUID NO_HOST_UUID = new UUID(0, 0);
 
   /**
-   * Initial Version for a newl added Object.
+   * Initial Version for a newly added Object.
    */
   public static final long INITIAL_REVISION = 1;
 
@@ -39,6 +39,8 @@ public final class Constants {
    * Marker, that a primtive Object such as Integer was not null.
    */
   public static final byte VALID_PRIMTIVE_OBJECT = 1;
+
+  public static final long INITIAL_HEAD_REVISION = 0;
 
   private Constants() {}
 

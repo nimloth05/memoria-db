@@ -5,6 +5,7 @@ import java.io.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.util.Constants;
 
 /**
  * Reads the content of a {@link IMemoriaFile}.
@@ -28,7 +29,7 @@ public class FileReader {
   
   // the current position in the file
   private long fPosition = 0;
-  private long fHeadRevision;
+  private long fHeadRevision = Constants.INITIAL_HEAD_REVISION;
 
   public FileReader(IMemoriaFile file) {
     fFile = file;

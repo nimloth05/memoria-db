@@ -6,6 +6,7 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
+import org.memoriadb.util.Constants;
 
 public class ObjectContainerTest extends AbstractObjectStoreTest {
 
@@ -18,7 +19,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   }
   
   public void test_HeadRevision() {
-    assertEquals(0, fStore.getHeadRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION+1, fStore.getHeadRevision());
     save(new Object());
   }
   
