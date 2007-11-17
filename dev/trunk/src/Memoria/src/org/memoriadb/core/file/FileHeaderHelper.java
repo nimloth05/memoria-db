@@ -97,14 +97,8 @@ public class FileHeaderHelper {
     String idFactoryClassName = stream.readUTF();
     String defaultInstantiatorClassName = stream.readUTF();
     
-    int customHandlerCount = stream.readInt();
-    List<String> customHandlers = new ArrayList<String>();
-    for(int i = 0; i < customHandlerCount; ++i) {
-      customHandlers.add(stream.readUTF());
-    }
-    
     return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
-        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, customHandlers);
+        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo);
   }
 
   private static LastWrittenBlockInfo readLastWrittenBlockInfo(DataInputStream stream) throws IOException {
@@ -149,11 +143,6 @@ public class FileHeaderHelper {
 
     stream.writeUTF(config.getIdFactoryClassName());
     stream.writeUTF(config.getDefaultInstantiatorClassName());
-    
-    stream.writeInt(config.getCustomHandlerCount());
-    for(String handlerClassName: config.getCustomHandlers()){
-      stream.writeUTF(handlerClassName);
-    }
     
     return byteArrayOutputStream.toByteArray();
   }

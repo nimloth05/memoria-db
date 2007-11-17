@@ -19,7 +19,6 @@ public class HandlerClassHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
-    //String className = input.readUTF();
     String handlerName = input.readUTF();
     try {
       return new MemoriaHandlerClass(handlerName, typeId);
@@ -38,7 +37,6 @@ public class HandlerClassHandler implements ISerializeHandler {
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
     MemoriaHandlerClass classObject = (MemoriaHandlerClass) obj;
     
-    //output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());
   }
 

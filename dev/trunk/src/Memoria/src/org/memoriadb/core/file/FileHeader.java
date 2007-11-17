@@ -1,6 +1,6 @@
 package org.memoriadb.core.file;
 
-import java.util.*;
+import java.util.UUID;
 
 import org.memoriadb.core.IDefaultInstantiator;
 import org.memoriadb.core.id.IObjectIdFactory;
@@ -24,9 +24,8 @@ public class FileHeader {
   private final int fHeaderSize;
   private final String fDefaultInstantiatorClassName;
   private final LastWrittenBlockInfo fLastWrittenBlockInfo;
-  private final List<String> fCustomHandlers;
 
-  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo, List<String> customHandlers) {
+  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fHostBranchRevision = hostBranchRevision;
@@ -36,11 +35,6 @@ public class FileHeader {
     fDefaultInstantiatorClassName = defaultInstantiator;
     fHeaderSize = headerSize;
     fLastWrittenBlockInfo = lastWrittenBlockInfo;
-    fCustomHandlers = customHandlers;
-  }
-
-  public List<String> getCustomHandlers() {
-    return fCustomHandlers;
   }
 
   public int getFileLayoutVersion() {

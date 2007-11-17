@@ -1,7 +1,6 @@
 package org.memoriadb;
 
 import java.io.*;
-import java.util.List;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
@@ -66,7 +65,7 @@ public final class Memoria {
     FileHeader header = readHeader(fileReader);
 
     IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
-    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory(), header.getCustomHandlers());
+    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
@@ -74,7 +73,7 @@ public final class Memoria {
     
     if (headRevision == Constants.INITIAL_HEAD_REVISION) {
       objectStore.beginUpdate();
-      addDefaultMetaClasses(objectStore, header.getCustomHandlers());
+      addDefaultMetaClasses(objectStore, ((CreateConfig)config).getCustomHandlers());
       objectStore.endUpdate();
     }
     
@@ -89,13 +88,13 @@ public final class Memoria {
     return open(config, new PhysicalFile(path));
   }
 
-  private static void addCustomHandlers(ObjectStore store, List<String> customHandlers) {
+  private static void addCustomHandlers(ObjectStore store, Iterable<String> customHandlers) {
     for (String className : customHandlers) {
       registerHandler(store, (ISerializeHandler)ReflectionUtil.createInstance(className));
     }
   }
   
-  private static void addDefaultMetaClasses(ObjectStore store, List<String> customHandlers) {
+  private static void addDefaultMetaClasses(ObjectStore store, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, store.getMemoriaFieldMetaClass());
     //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());

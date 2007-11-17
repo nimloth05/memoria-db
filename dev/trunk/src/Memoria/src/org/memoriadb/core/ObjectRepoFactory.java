@@ -1,20 +1,18 @@
 package org.memoriadb.core;
 
-import java.util.List;
-
 import org.memoriadb.core.handler.def.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 
 public final class ObjectRepoFactory {
 
-  public static ObjectRepo create(IObjectIdFactory idFactory, List<String> customHandlers) {
+  public static ObjectRepo create(IObjectIdFactory idFactory) {
     ObjectRepo repo = new ObjectRepo(idFactory);
-    registerMetaClasses(repo, idFactory, customHandlers);
+    registerMetaClasses(repo, idFactory);
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory, List<String> customHandlers) {
+  private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory) {
     IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
     IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
 

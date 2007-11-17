@@ -40,12 +40,8 @@ public class CreateConfig extends OpenConfig {
     fCustomHandlers.add(className);
   }
 
-  public int getCustomHandlerCount() {
-    return fCustomHandlers.size();
-  }
-
   public Iterable<String> getCustomHandlers() {
-    return fCustomHandlers;
+    return Collections.unmodifiableCollection(fCustomHandlers);
   }
 
   public String getDefaultInstantiatorClassName() {
