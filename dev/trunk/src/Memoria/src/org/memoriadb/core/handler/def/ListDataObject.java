@@ -15,6 +15,11 @@ public class ListDataObject implements IListDataObject {
   }
 
   @Override
+  public boolean equals(Object obj) {
+    return fList.equals(obj);
+  }
+
+  @Override
   public List<Object> getList() {
     return fList;
   }
@@ -23,5 +28,17 @@ public class ListDataObject implements IListDataObject {
   public IObjectId getMemoriaClassId() {
     return fId;
   }
+
+  @Override
+  public int hashCode() {
+    return fList.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return fList.toString();
+  }
+  
+  
 
 }
