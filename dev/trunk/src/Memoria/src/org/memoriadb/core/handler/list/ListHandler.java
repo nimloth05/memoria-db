@@ -97,16 +97,6 @@ public abstract class ListHandler implements ISerializeHandler {
   }
 
   @Override
-  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) {
-    throw new UnsupportedOperationException("To be implemented! Write Test-first");
-  }
-
-  @Override
-  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    throw new UnsupportedOperationException("To be implemented! Write Test-first");    
-  }
-
-  @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     List<?> list = (List<?>) obj;
     

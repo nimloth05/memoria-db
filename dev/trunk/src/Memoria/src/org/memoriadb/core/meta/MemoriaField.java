@@ -19,7 +19,7 @@ public final class MemoriaField {
    * @param id
    * @param name
    * @param ordinal
-   * @param clazz - the java class where this field has been declared.
+   * 
    */
   public MemoriaField(int id, String name, Type type) {
     fFieldId = id;
