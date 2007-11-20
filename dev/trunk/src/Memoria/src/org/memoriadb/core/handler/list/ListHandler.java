@@ -59,7 +59,7 @@ public abstract class ListHandler implements ISerializeHandler {
   
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!getClassName().equals(className)) throw new SchemaCorruptException("I am a handler for type " + getClassName() +" but I was called for " + className);
+    if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() +" but I was called for " + className);
   }
 
   @Override

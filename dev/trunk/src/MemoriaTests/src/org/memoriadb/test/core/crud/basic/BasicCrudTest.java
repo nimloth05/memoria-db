@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.crud.basic;
 
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.SchemaCorruptException;
+import org.memoriadb.exception.SchemaException;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
@@ -13,7 +13,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     try {
       fStore.save(new NoDefault("1"));
       fail("InstantiationCheckException expected");
-    } catch (SchemaCorruptException e) {
+    } catch (SchemaException e) {
       //passed;
     }
   }

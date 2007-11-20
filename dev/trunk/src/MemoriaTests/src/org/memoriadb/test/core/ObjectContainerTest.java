@@ -3,6 +3,7 @@ package org.memoriadb.test.core;
 import java.util.*;
 
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.exception.SchemaException;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
@@ -104,8 +105,8 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     OuterClass obj = new OuterClass();
     try {
       save(obj.getInnerClass());
-      fail("IllegalSchemaException expected");
-    } catch (IllegalStateException e) {
+      fail("SchemaCorruptException expected");
+    } catch (SchemaException e) {
       //passed
     }
   }

@@ -22,7 +22,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!defaultInstantiator.canInstantiateObject(className)) throw new SchemaCorruptException("Can not instantiate Object of type: " + className);
+    if (!defaultInstantiator.canInstantiateObject(className)) throw new SchemaException("Can not instantiate Object of type: " + className);
   }
 
   @Override

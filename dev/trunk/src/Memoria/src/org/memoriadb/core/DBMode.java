@@ -3,7 +3,8 @@ package org.memoriadb.core;
 import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.exception.*;
+import org.memoriadb.util.ReflectionUtil;
 
 /**
  * The DBMode represents the two possibles modes for memoria: <b>class</b> and <b>data</b>. 
@@ -56,6 +57,12 @@ public enum DBMode {
     @Override
     public void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectStore.getObject(memoriaClassId);
+      
+      Class<?> javaClass = ReflectionUtil.getClass(memoriaClass.getJavaClassName());
+      if (ReflectionUtil.isNonStaticInnerClass(javaClass)) {
+        throw new SchemaException("Can not save non-static inner classes " + javaClass);
+      }
+      
       memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
     }
   },

@@ -14,7 +14,7 @@ public class HandlerClassHandler implements ISerializeHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!MemoriaHandlerClass.class.getName().equals(className)) throw new SchemaCorruptException("I am a handler for type " + MemoriaHandlerClass.class.getName() +" but I was called for " + className);
+    if (!MemoriaHandlerClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + MemoriaHandlerClass.class.getName() +" but I was called for " + className);
   }
 
   @Override
