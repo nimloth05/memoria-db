@@ -82,41 +82,22 @@ public class ObjectStore implements IObjectStoreExt {
   @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> getAll(Class<T> clazz) {
-    return (List<T>) getAll(clazz.getName());
+    return fDBMode.getStrategy().getAll(fObjectRepo, clazz);
   }
 
   @Override
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    List<T> result = getAll(clazz);
-    Iterator<T> iterator = result.iterator();
-    while (iterator.hasNext()) {
-      if (!filter.accept(iterator.next())) iterator.remove();
-    }
-    return result;
+    return fDBMode.getStrategy().getAll(fObjectRepo, clazz, filter);
   }
 
   @Override
   public List<Object> getAll(String clazz) {
-    List<Object> result = new ArrayList<Object>();
-    for (IObjectInfo objectInfo : getAllObjectInfos()) {
-      IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(objectInfo.getMemoriaClassId());
-      if (memoriaClass.isTypeFor(clazz)) result.add(objectInfo.getObj());
-    }
-    return result;
+    return fDBMode.getStrategy().getAll(fObjectRepo, clazz);
   }
 
   @Override
   public List<Object> getAll(String clazz, IFilter<Object> filter) {
-    List<Object> result = new ArrayList<Object>();
-
-    for (IObjectInfo objectInfo : getAllObjectInfos()) {
-      IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(objectInfo.getMemoriaClassId());
-
-      if (memoriaClass.isTypeFor(clazz)) {
-        if (filter.accept(objectInfo.getObj())) result.add(objectInfo.getObj());
-      }
-    }
-    return result;
+    return fDBMode.getStrategy().getAll(fObjectRepo, clazz, filter);
   }
 
   public Collection<IObjectInfo> getAllObjectInfos() {

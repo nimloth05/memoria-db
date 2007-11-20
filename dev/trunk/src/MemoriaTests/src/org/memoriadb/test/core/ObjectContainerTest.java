@@ -65,11 +65,12 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
+    fStore.beginUpdate();
     for (int i = 0; i < 5; ++i) {
       objects.add(new SimpleTestObj("Hallo Welt " + i));
+      save(objects.get(i));
     }
-
-    save(objects.toArray());
+    fStore.endUpdate();
 
     reopen();
 

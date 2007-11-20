@@ -3,6 +3,7 @@ package org.memoriadb.core;
 import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.query.*;
 import org.memoriadb.exception.*;
 import org.memoriadb.util.ReflectionUtil;
 
@@ -66,6 +67,11 @@ public enum DBMode {
       
       memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
     }
+    
+    @Override
+    public IQueryStrategy instantiateQueryStrategy() {
+      return new ClassModeQueryStrategy();
+    }
   },
   
   data {
@@ -82,7 +88,14 @@ public enum DBMode {
     
     @Override
     public void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
+    
+    @Override
+    public IQueryStrategy instantiateQueryStrategy() {
+      return new DataModeQueryStrategy();
+    }
   };
+  
+  private final IQueryStrategy fQueryStrategy = instantiateQueryStrategy();
 
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
 
@@ -90,5 +103,11 @@ public enum DBMode {
    * Before an object is added to the ObjectRepository, it is checked for instantiability. 
    */
   public abstract void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
-
+  
+  public final IQueryStrategy getStrategy() {
+    return fQueryStrategy;
+  }
+  
+  protected abstract IQueryStrategy instantiateQueryStrategy();
+  
 }

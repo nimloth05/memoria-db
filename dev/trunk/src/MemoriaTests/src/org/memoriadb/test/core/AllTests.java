@@ -27,6 +27,7 @@ public class AllTests {
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     suite.addTest(org.memoriadb.test.core.enu.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.query.AllTests.suite());
     //$JUnit-END$
     return suite;
   }

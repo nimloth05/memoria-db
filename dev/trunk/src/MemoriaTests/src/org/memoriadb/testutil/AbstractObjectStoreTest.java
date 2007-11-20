@@ -120,6 +120,10 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return fStore.saveAll(obj);
   }
   
+  protected final void setDBMode(DBMode mode) {
+    fReopenDbMode = mode;
+  }
+  
   @Override
   protected void setUp() {
    File file = new File(PATH);
@@ -134,12 +138,12 @@ public abstract class AbstractObjectStoreTest extends TestCase {
      fStore = openFile(new PhysicalFile(PATH), config);
    }
   }
-  
+
   @Override
   protected void tearDown() {
     fStore.close();
   }
-
+  
   private IObjectStoreExt openFile(IMemoriaFile file, CreateConfig config) {
     return (IObjectStoreExt) Memoria.open(config, file);
   }
