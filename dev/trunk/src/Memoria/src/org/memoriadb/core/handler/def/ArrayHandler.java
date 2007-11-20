@@ -68,14 +68,6 @@ public class ArrayHandler implements ISerializeHandler {
     }
   }
 
-  public void superDeserialize(Object result, DataInputStream input, IReaderContext context) {
-    throw new UnsupportedOperationException("To be implemented!");
-  }
-
-  public void superSerialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    throw new UnsupportedOperationException("To be implemented!");
-  }
-
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     if (!obj.getClass().isArray()) throw new MemoriaException("array expected but was " + obj);

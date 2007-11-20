@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.memoriadb.exception.MemoriaException;
 
-public class IOUtil {
+public final class IOUtil {
 
   public static void close(Closeable closeable) {
     if (closeable == null) return;
@@ -16,5 +16,7 @@ public class IOUtil {
       throw new MemoriaException(e);
     }
   }
+  
+  private IOUtil() {}
 
 }
