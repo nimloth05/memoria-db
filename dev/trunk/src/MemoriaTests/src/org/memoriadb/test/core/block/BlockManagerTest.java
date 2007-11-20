@@ -13,14 +13,14 @@ public class BlockManagerTest extends AbstractObjectStoreTest {
   public void test_blocks_are_created() {
     save(new Object());
     
-    Block block_after_append = getBlockManager().getBlock(0);
+    Block block_after_append = getBlockFromManager(1);
     
     reopen();
     
-    Block block_after_reopen = getBlockManager().getBlock(0);
+    Block block_after_reopen = getBlockFromManager(1);
     
     FileStructure file = new FileStructure(getFile());
-    Block block_from_FileStructure = file.getBlock(0).getBlock();
+    Block block_from_FileStructure = file.getBlock(1).getBlock();
     
     assertEquals(block_after_append, block_after_reopen);
     assertEquals(block_after_reopen, block_from_FileStructure);
@@ -33,13 +33,13 @@ public class BlockManagerTest extends AbstractObjectStoreTest {
     IObjectId o2 = save(new Object());
     endUpdate();
     
-    Block block1 = getBlockManager().getBlock(0);
+    Block block1 = getBlockFromManager(1);
     assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block1, getObjectInfo(o2).getCurrentBlock());
     
     // update o2 to block2
     save(get(o2));
-    Block block2 = getBlockManager().getBlock(1);
+    Block block2 = getBlockManager().getBlock(2);
     assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
     
@@ -47,6 +47,10 @@ public class BlockManagerTest extends AbstractObjectStoreTest {
     reopen();
     assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+  }
+
+  private Block getBlockFromManager(int index) {
+    return getBlockManager().getBlock(index);
   }
   
   

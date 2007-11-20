@@ -5,6 +5,7 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
 import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.util.ReflectionUtil;
 
 /**
  * The DBMode represents the two possibles modes for memoria: <b>class</b> and <b>data</b>. 
@@ -31,7 +32,7 @@ public enum DBMode {
         @Override
         public void handle(Class<?> superClass) {
           if (superClass.isArray()) {
-            superClass = superClass.getComponentType();
+            superClass = ReflectionUtil.getTypeInfo(superClass).getJavaClass(); 
             if (fObjectMemoriaClass == null) fObjectMemoriaClass = store.getArrayMetaClass();
           }
           
@@ -85,6 +86,9 @@ public enum DBMode {
 
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
 
+  /**
+   * Before an object is added to the ObjectRepository, it is checked for instantiability. 
+   */
   public abstract void checkCanInstantiateObject(IObjectRepo objectStore, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
 
 }

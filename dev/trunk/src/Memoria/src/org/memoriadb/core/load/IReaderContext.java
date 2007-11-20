@@ -8,7 +8,7 @@ import org.memoriadb.core.id.IObjectId;
 
 public interface IReaderContext {
 
-  public IObjectId createFrom(DataInput input) throws IOException;
+  public IObjectId readObjectId(DataInput input) throws IOException;
 
   public IDefaultInstantiator getDefaultInstantiator();
   

@@ -10,7 +10,7 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 public class LastWrittenBlockAfterCrashTest extends AbstractObjectStoreTest {
 
   public void test_crash_after_safing_survivors() {
-
+    
     beginUpdate();
     IObjectId id1 = save(new Object());
     IObjectId id2 = save(new Object());
@@ -19,16 +19,15 @@ public class LastWrittenBlockAfterCrashTest extends AbstractObjectStoreTest {
     reopen();
 
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(0).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
 
-        
-    // second block, block 0 has one inactive, one active.
+    // write block2, block1 has one inactive, one active.
     delete(get(id1));
     
     reopen();
     
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(2).getPosition(), getLastBlockInfo().getPosition());
 
     
     // crashes
@@ -40,19 +39,19 @@ public class LastWrittenBlockAfterCrashTest extends AbstractObjectStoreTest {
 
     reopen();
     
-    // block 2 is the last block that was written (contains the survivor o2), then the write-process crashed
+    // block 3 is the last block that was writte (contains the survivor o2), then the write-process crashed
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(2).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(3).getPosition(), getLastBlockInfo().getPosition());
     
-    // survivor in block0 was safed -> no active ObjectData in block0
-    assertEquals(2, getBlockManager().getBlock(0).getObjectDataCount());
-    assertEquals(2, getBlockManager().getBlock(0).getInactiveObjectDataCount());
+    // survivor in block1 was safed -> no active ObjectData in block0
+    assertEquals(2, getBlockManager().getBlock(1).getObjectDataCount());
+    assertEquals(2, getBlockManager().getBlock(1).getInactiveObjectDataCount());
     
-    // o2 is the survivor that is now in block 2
-    assertEquals(getBlockManager().getBlock(2), getObjectInfo(id2).getCurrentBlock());
+    // o2 is the survivor that is now in block3
+    assertEquals(getBlockManager().getBlock(3), getObjectInfo(id2).getCurrentBlock());
     assertFalse(getObjectInfo(id2).isDeleted());
     
-    assertEquals(getBlockManager().getBlock(1), getObjectInfo(id1).getCurrentBlock());
+    assertEquals(getBlockManager().getBlock(2), getObjectInfo(id1).getCurrentBlock());
     assertTrue(getObjectInfo(id1).isDeleted());
 
   }

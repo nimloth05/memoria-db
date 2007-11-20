@@ -28,7 +28,9 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     WrongHashCode obj1 = new WrongHashCode("1");
     WrongHashCode obj2 = new WrongHashCode("2");
 
-    save(obj1, obj2);
+    save(obj1);
+    save(obj2);
+    
     List<WrongHashCode> expectedObjs = Arrays.asList(obj1, obj2);
     reopen();
 
@@ -121,7 +123,8 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
   public void test_save_same_object_twice() {
     WrongHashCode obj = new WrongHashCode();
-    save(obj, obj);
+    save(obj);
+    save(obj);
 
     reopen();
     List<WrongHashCode> objs = getAll(WrongHashCode.class);
@@ -172,7 +175,8 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   private void internalTestSaveObjectRefFirst(Class<?> referenceeType) throws Exception {
     Referencer referencer = new Referencer();
     referencer.set(referenceeType, "1");
-    save(referencer.get(), referencer);
+    save(referencer.get());
+    save(referencer);
 
     assertEquals(1, getAll(referenceeType).size());
 

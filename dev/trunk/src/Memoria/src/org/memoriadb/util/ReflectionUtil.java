@@ -2,6 +2,7 @@ package org.memoriadb.util;
 
 import java.lang.reflect.*;
 
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.exception.*;
 
 public final class ReflectionUtil {
@@ -19,12 +20,12 @@ public final class ReflectionUtil {
     }
   }
   
-  public static Class<?> getClass(String className) {
+  public static Class<?> getClass(String javaClassName) {
     try {
-      return Class.forName(className);
+      return Class.forName(javaClassName);
     }
-    catch (Exception e) {
-      return null;
+    catch (ClassNotFoundException e) {
+      throw new MemoriaException(e);
     }
   }
   
@@ -38,13 +39,27 @@ public final class ReflectionUtil {
     return getField(clazz.getSuperclass(), name);
   }
  
+  public static TypeInfo getTypeInfo(Class<?> componentType) {
+    int dimension = 1;
+    componentType = componentType.getComponentType();
+    while (componentType.isArray()) {
+      componentType = componentType.getComponentType();
+      ++dimension;
+    }
+    return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
+  }
   
+  public static TypeInfo getTypeInfo(Object array) {
+    if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
+    return getTypeInfo(array.getClass());
+  }
+
   public static Object getValueFromField(Object owner, String fieldName) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
       declaredField.setAccessible(true);
       return declaredField.get(owner);
-    }
+    } 
     catch (Exception e) {
       throw new MemoriaException(e);  
     }
@@ -60,7 +75,8 @@ public final class ReflectionUtil {
       return false;
     }
   }
-
+  
+  
   public static boolean isNonStaticInnerClass(Class<?> javaClass) {
     return javaClass.getEnclosingClass() != null && !Modifier.isStatic(javaClass.getModifiers());
   }

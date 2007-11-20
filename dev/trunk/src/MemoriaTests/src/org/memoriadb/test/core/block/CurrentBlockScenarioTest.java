@@ -17,7 +17,7 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     reopen();
     
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(0).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
   }
 
   public void test_scenario() {
@@ -27,9 +27,9 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     IObjectId o2 = save(new Object());
     endUpdate();
     
-    assertEquals(1, getBlockManager().getBlockCount());
+    assertEquals(2, getBlockManager().getBlockCount());
     
-    Block block1 = getBlockManager().getBlock(0);
+    Block block1 = getBlockManager().getBlock(1);
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(0, block1.getInactiveObjectDataCount());
@@ -38,7 +38,7 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     
     // o2 is saved again in block2
     save(get(o2));
-    Block block2 = getBlockManager().getBlock(1);
+    Block block2 = getBlockManager().getBlock(2);
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(1, block1.getInactiveObjectDataCount());
     assertEquals(1, block2.getObjectDataCount());
@@ -58,9 +58,9 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     save(get(o2));
     endUpdate();
     
-    block1 = getBlockManager().getBlock(0);
-    block2 = getBlockManager().getBlock(1);
-    Block block3 = getBlockManager().getBlock(2);
+    block1 = getBlockManager().getBlock(1);
+    block2 = getBlockManager().getBlock(2);
+    Block block3 = getBlockManager().getBlock(3);
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -73,8 +73,8 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     assertEquals(block3, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block3, getObjectInfo(o2).getCurrentBlock());
     
-    block1 = getBlockManager().getBlock(0);
-    block2 = getBlockManager().getBlock(1);
+    block1 = getBlockManager().getBlock(1);
+    block2 = getBlockManager().getBlock(2);
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -85,8 +85,8 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     
     // deletion-marker for o1 in block4
     delete(get(o1));
-    block3 = getBlockManager().getBlock(2);
-    Block block4 = getBlockManager().getBlock(3);
+    block3 = getBlockManager().getBlock(3);
+    Block block4 = getBlockManager().getBlock(4);
     
     assertEquals(block4, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block3, getObjectInfo(o2).getCurrentBlock());
@@ -105,7 +105,7 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     
     // deletion-marker for o2 in block5
     delete(get(o2));
-    Block block5 = getBlockManager().getBlock(4);
+    Block block5 = getBlockManager().getBlock(5);
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -124,9 +124,9 @@ public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
     assertTrue(getObjectInfo(o2).isDeleted());
     
     reopen();
-    block1 = getBlockManager().getBlock(0);
-    block2 = getBlockManager().getBlock(1);
-    block3 = getBlockManager().getBlock(2);
+    block1 = getBlockManager().getBlock(1);
+    block2 = getBlockManager().getBlock(2);
+    block3 = getBlockManager().getBlock(3);
     
     assertEquals(block4, getObjectInfo(o1).getCurrentBlock());
     assertEquals(block5, getObjectInfo(o2).getCurrentBlock());

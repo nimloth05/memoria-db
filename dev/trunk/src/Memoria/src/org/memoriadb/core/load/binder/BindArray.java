@@ -21,7 +21,7 @@ public class BindArray implements IBindable {
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-      Object obj = context.getObjectById(fId);
+      Object obj = context.isNullReference(fId)? null: context.getObjectById(fId);
       Array.set(fArray, fIndex, obj);
   }
 

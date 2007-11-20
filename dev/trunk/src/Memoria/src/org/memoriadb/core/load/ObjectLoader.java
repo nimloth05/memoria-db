@@ -45,7 +45,7 @@ public final class ObjectLoader implements IReaderContext {
   } 
 
   @Override
-  public IObjectId createFrom(DataInput input) throws IOException {
+  public IObjectId readObjectId(DataInput input) throws IOException {
     return fRepo.getIdFactory().createFrom(input);
   }
 

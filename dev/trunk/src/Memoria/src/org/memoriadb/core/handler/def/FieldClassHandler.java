@@ -24,7 +24,7 @@ public class FieldClassHandler implements ISerializeHandler {
     
     MemoriaFieldClass classObject = new MemoriaFieldClass(className, typeId);
     
-    IObjectId superClassId = context.createFrom(input);
+    IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
     
     while (input.available() > 0) {

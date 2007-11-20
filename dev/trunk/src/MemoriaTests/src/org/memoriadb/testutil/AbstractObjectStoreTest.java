@@ -116,10 +116,6 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     return fStore.save(obj);
   }
   
-  protected final IObjectId[] save(Object...objects) {
-    return fStore.save(objects);
-  }
-  
   protected final IObjectId saveAll(Object obj) {
     return fStore.saveAll(obj);
   }

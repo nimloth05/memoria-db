@@ -1,5 +1,5 @@
 package org.memoriadb.core.handler.def;
-
+// FIXME kann entfernt werden, abgelöst durch Type, msc
 public enum ArrayComponentType {
 
   booleanPrimitive {

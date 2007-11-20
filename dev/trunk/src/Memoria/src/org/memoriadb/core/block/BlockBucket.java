@@ -14,7 +14,7 @@ public class BlockBucket implements Comparable<BlockBucket> {
   }
   
   public void add(Block block) {
-    // optimization to avoid instantiation of the List in case when no Blocks are added (search-prototype)
+    // optimization to avoid instantiation of the List in case when no Blocks are added (when BlockBucket is search-prototype)
     if(fBlocks == null) fBlocks = new ArrayList<Block>();
     
     fBlocks.add(block);

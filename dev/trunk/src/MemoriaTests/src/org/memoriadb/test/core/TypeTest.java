@@ -163,7 +163,7 @@ public class TypeTest extends TestCase {
     EasyMock.expect(fSerializeContext.getObjectId(obj)).andStubReturn(new LongObjectId(1));
     outputMock.writeLong(1);
     
-    EasyMock.expect(fReaderContext.createFrom(inputMock)).andReturn(new LongObjectId(1));
+    EasyMock.expect(fReaderContext.readObjectId(inputMock)).andReturn(new LongObjectId(1));
     
     ITypeVisitor visitorMock = control.createMock(ITypeVisitor.class);
     visitorMock.visitClass(Type.typeClass, new LongObjectId(1));

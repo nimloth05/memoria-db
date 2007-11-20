@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.Constants;
 
@@ -36,15 +36,21 @@ public class ObjectSerializer implements ISerializeContext {
   }
 
   @Override
+  public IObjectId getMemoriaClassId(String className) {
+    IMemoriaClassConfig memoriaClass = fObjectRepo.getMemoriaClass(className);
+    return fObjectRepo.getObjectId(memoriaClass);
+  }
+
+  @Override
   public DBMode getDBMode() {
     return fDbMode;
   }
-
+  
   @Override
   public IObjectId getNullReference() {
     return fObjectRepo.getNullReference();
   }
-  
+
   @Override
   public IObjectId getObjectId(Object obj) {
     return fObjectRepo.getObjectId(obj);
@@ -53,6 +59,11 @@ public class ObjectSerializer implements ISerializeContext {
   @Override
   public IObjectId getRootClassId() {
     return fObjectRepo.getRootClassId();
+  }
+
+  @Override
+  public boolean isDataMode() {
+    return getDBMode() == DBMode.data;
   }
 
   public void markAsDeleted(IObjectId id) {

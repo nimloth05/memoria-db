@@ -21,23 +21,23 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     
     delete(get(id1));
     
-    assertEquals(2, getBlockManager().getBlockCount());
+    assertEquals(3, getBlockManager().getBlockCount());
     
     // update o2 from block0. block0 must not be recycled, because o2 resides in block0
     save(get(id2));
     
-    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(4, getBlockManager().getBlockCount());
     
-    assertEquals(2, getBlock(0).getInactiveObjectDataCount());
-    assertEquals(getBlock(1), getCurrentBlock(id1));
-    assertEquals(getBlock(2), getCurrentBlock(id2));
+    assertEquals(2, getBlock(1).getInactiveObjectDataCount());
+    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(3), getCurrentBlock(id2));
 
   }
   
   public void test_reusing_one_block() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);
-    assertEquals(1, getBlockManager().getBlockCount());
+    assertEquals(2, getBlockManager().getBlockCount());
     
     reopen();
     
@@ -48,9 +48,9 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     // let o2 reuse the free block
     IObjectId id2 = save(new Object());
     
-    assertEquals(2, getBlockManager().getBlockCount());
-    assertEquals(getBlock(0), getCurrentBlock(id2));
-    assertEquals(getBlock(1), getCurrentBlock(id1));
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(getBlock(1), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getCurrentBlock(id1));
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
     assertFalse(fStore.containsId(id1));
@@ -58,9 +58,9 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(2, getBlockManager().getBlockCount());
-    assertEquals(getBlock(0), getCurrentBlock(id2));
-    assertEquals(getBlock(1), getCurrentBlock(id1));
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(getBlock(1), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getCurrentBlock(id1));
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
     assertFalse(fStore.containsId(id1));
@@ -77,27 +77,27 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     // second block, block 0 has one inactive, one active.
     delete(get(id1));
     
-    assertEquals(2, getObjectInfo(id1).getRevision());
-    assertEquals(1, getObjectInfo(id2).getRevision());
+    assertEquals(3, getObjectInfo(id1).getRevision());
+    assertEquals(2, getObjectInfo(id2).getRevision());
     
-    assertEquals(50, getBlock(0).getInactiveRatio());
-    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(50, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
     
     IObjectId id3 = save(new Object());
 
     // test trx-id is proper
-    assertEquals(2, getObjectInfo(id1).getRevision());
-    assertEquals(3, getObjectInfo(id2).getRevision());
-    assertEquals(4, getObjectInfo(id3).getRevision());
+    assertEquals(3, getObjectInfo(id1).getRevision());
+    assertEquals(4, getObjectInfo(id2).getRevision());
+    assertEquals(5, getObjectInfo(id3).getRevision());
     
     assertFalse(fStore.containsId(id1));
     assertTrue(fStore.containsId(id2));
     assertTrue(fStore.containsId(id3));
 
-    assertEquals(3, getBlockManager().getBlockCount());
-    assertEquals(getBlock(0), getCurrentBlock(id3));
-    assertEquals(getBlock(1), getCurrentBlock(id1));
-    assertEquals(getBlock(2), getCurrentBlock(id2));
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(getBlock(1), getCurrentBlock(id3));
+    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(3), getCurrentBlock(id2));
     
     reopen();
 
@@ -105,14 +105,14 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     assertTrue(fStore.containsId(id2));
     assertTrue(fStore.containsId(id3));
 
-    assertEquals(3, getBlockManager().getBlockCount());
-    assertEquals(getBlock(0), getCurrentBlock(id3));
-    assertEquals(getBlock(1), getCurrentBlock(id1));
-    assertEquals(getBlock(2), getCurrentBlock(id2));
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(getBlock(1), getCurrentBlock(id3));
+    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(3), getCurrentBlock(id2));
     
-    assertEquals(0, getBlock(0).getInactiveRatio());
     assertEquals(0, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
+    assertEquals(0, getBlock(3).getInactiveRatio());
   }
   
   @Override

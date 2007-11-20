@@ -22,10 +22,10 @@ public interface IObjectStore {
 
   public void close();
 
+  public boolean contains(Object obj);
+
   // query
   public boolean containsId(IObjectId id);
-
-  public boolean contains(Object obj);
 
   /**
    * Removes the given object from this ObjectStore. Removed objects can later be added again, resulting in a new id.
@@ -85,9 +85,11 @@ public interface IObjectStore {
   public IMemoriaClass getMemoriaClass(Class<?> clazz);
 
   /**
-   * @return The Class for the given <tt>obj</tt> or null.
+   * @return The Class for the given <tt>obj</tt>.
    */
   public IMemoriaClass getMemoriaClass(Object obj);
+  
+  public IObjectId getMemoriaClassId(Object obj);
  
   public IObjectId getMemoriaFieldMetaClass();
   /**
@@ -118,16 +120,6 @@ public interface IObjectStore {
    * @return The objectId of the added or updated object.
    */
   public IObjectId save(Object obj);
-
-  /**
-   * Adds the given objects to the store or performs an update if the given objects are already contained.
-   * 
-   * Changes are immediately written to the persistent store, except this ObjectStore is in 
-   * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
-   * 
-   * @return The objectIds of the added or updated objects.
-   */
-  public IObjectId[] save(Object... objs);
   
   /**
    * Saves the given <tt>root</tt> object and all referenced objects.
@@ -139,14 +131,4 @@ public interface IObjectStore {
    */
   public IObjectId saveAll(Object root);
 
-  
-  /**
-   * Saves the given <tt>root</tt> objects and all referenced objects.
-   * 
-   * Changes are immediately written to the persistent store, except this ObjectStore is in 
-   * UpdateMode. in this case, changes are batched until <tt>endUpdate()</tt> is called. 
-   * 
-   * @return objectIds of the given <tt>root</tt> objects.
-   */
-  public IObjectId[] saveAll(Object... roots);
 }

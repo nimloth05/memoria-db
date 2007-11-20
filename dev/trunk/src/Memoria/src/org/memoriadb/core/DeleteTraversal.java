@@ -25,9 +25,9 @@ public class DeleteTraversal implements IObjectTraversal {
     if(fVisited.contains(obj)) return;
     
     fVisited.add(obj);
-    fObjectStore.internalDelete(obj);
     
     fObjectStore.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
+    fObjectStore.internalDelete(obj);
   }
 
 }

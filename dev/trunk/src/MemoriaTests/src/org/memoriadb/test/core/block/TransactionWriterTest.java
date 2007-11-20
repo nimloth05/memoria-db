@@ -14,19 +14,19 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
     delete(obj);
     
     FileStructure file = new FileStructure(getFile());
-    assertEquals(2, file.getBlockCount());
+    assertEquals(3, file.getBlockCount());
     
-    ObjectInfo o1 = file.getBlock(0).getObject(0);
-    ObjectInfo o2 = file.getBlock(1).getObject(0);
+    ObjectInfo o1 = file.getBlock(1).getObject(0);
+    ObjectInfo o2 = file.getBlock(2).getObject(0);
     
     assertEquals(false, o1.isClass());
     assertEquals(false, o1.isDeleteMarker());
-    assertEquals(1, o1.getVersion());
+    assertEquals(2, o1.getVersion());
     assertEquals(id, o1.getId());
 
     assertEquals(false, o2.isClass());
     assertEquals(true, o2.isDeleteMarker());
-    assertEquals(2, o2.getVersion());
+    assertEquals(3, o2.getVersion());
     assertEquals(id, o2.getId());
   }
   
@@ -36,10 +36,10 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
     save(new OneInt(0));
     
     FileStructure file = new FileStructure(getFile());
-    assertEquals(getOPO(), file.getBlock(0).getObject(0).getSize());
+    assertEquals(getOPO(), file.getBlock(1).getObject(0).getSize());
     
     // opf ist 4 byte
-    assertEquals(getOPO() + getOPF() + 4, file.getBlock(2).getObject(0).getSize());
+    assertEquals(getOPO() + getOPF() + 4, file.getBlock(3).getObject(0).getSize());
     
   }
   
@@ -50,7 +50,7 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
     save(new Object());
     save(new Object());    
     
-    long opt = getBlockManager().getBlock(1).getPosition() - getBlockManager().getBlock(0).getPosition();
+    long opt = getBlockManager().getBlock(2).getPosition() - getBlockManager().getBlock(1).getPosition();
     assertEquals(60, opt);
     assertEquals(opt, FileLayout.getOPO(fStore) + FileLayout.TRX_OVERHEAD + FileLayout.BLOCK_OVERHEAD);
   }
@@ -63,8 +63,8 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
 
     FileStructure file = new FileStructure(getFile());
     
-    long positionB0 = file.getBlock(0).getPosition();
-    long positionB1 = file.getBlock(1).getPosition();
+    long positionB0 = file.getBlock(1).getPosition();
+    long positionB1 = file.getBlock(2).getPosition();
     
     long blockSize = positionB1 - positionB0;
     

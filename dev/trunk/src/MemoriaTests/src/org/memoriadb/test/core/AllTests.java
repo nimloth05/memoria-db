@@ -1,8 +1,9 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.test.core.scenario.CompositeTest;
-
 import junit.framework.*;
+
+import org.memoriadb.test.core.handler.array.ArrayTest;
+import org.memoriadb.test.core.scenario.CompositeTest;
 
 public class AllTests {
 

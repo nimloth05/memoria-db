@@ -1,4 +1,4 @@
-package org.memoriadb.test.core;
+package org.memoriadb.test.core.handler.array;
 
 import java.util.Arrays;
 

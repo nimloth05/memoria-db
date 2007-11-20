@@ -25,7 +25,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     c1.setC2(c2);
     c2.setC1(c1);
     
-    IObjectId idc1 = save(c2, c1)[1];
+    IObjectId idc1 = saveAll(c1);
     
     FilePrinter.print(getFile());
     reopen();
@@ -46,7 +46,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     c1_l1.setC2(c3);
     c3.setC1(c1_l1);
     
-    save(c1_l1,c3);
+    saveAll(c1_l1);
    
     reopen();
     
@@ -110,7 +110,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
   public void test_save_reference() {
     B b = new B("b");
     A a = new A(b);
-    IObjectId id = fStore.save(b,a)[1];
+    IObjectId id = saveAll(a);
     
     reopen();
     
@@ -120,7 +120,8 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
   
   public void test_save_same_object_twice() {
     B b = new B("b");
-    IObjectId id = fStore.save(b,b)[1];
+    IObjectId id = save(b);
+    save(b);
     
     reopen();
     

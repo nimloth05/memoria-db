@@ -13,21 +13,21 @@ public class LastWrittenBlockTest extends AbstractObjectStoreTest {
 
     reopen();
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(0).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
 
     // deleting the object, waht results in a free block and a deletionMarker.
     delete(get(id1));
 
     reopen();
     assertTrue(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(2).getPosition(), getLastBlockInfo().getPosition());
 
     // reuse the free block
     save(new Object());
 
     reopen();
     assertFalse(getLastBlockInfo().isAppend());
-    assertEquals(getBlockManager().getBlock(0).getPosition(), getLastBlockInfo().getPosition());
+    assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
 
   }
 

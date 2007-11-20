@@ -6,7 +6,7 @@ import java.util.*;
 import org.memoriadb.IFilter;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
@@ -158,6 +158,11 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   @Override
+  public IDefaultObjectIdProvider getIdFactory() {
+    return fObjectRepo.getIdFactory();
+  }
+
+  @Override
   public int getIdSize() {
     return fObjectRepo.getIdFactory().getIdSize();
   }
@@ -169,7 +174,12 @@ public class ObjectStore implements IObjectStoreExt {
 
   @Override
   public IMemoriaClass getMemoriaClass(Object obj) {
-    return fObjectRepo.getMemoriaClass(obj.getClass().getName());
+    return getObject(getMemoriaClassId(obj));
+  }
+
+  @Override
+  public IObjectId getMemoriaClassId(Object obj) {
+    return getObjectInfo(obj).getMemoriaClassId();
   }
 
   @Override
@@ -215,31 +225,8 @@ public class ObjectStore implements IObjectStoreExt {
     return result;
   }
 
-  @Override
-  public IObjectId[] save(Object... objs) {
-    IObjectId[] result = new IObjectId[objs.length];
-
-    for (int i = 0; i < objs.length; ++i) {
-      result[i] = internalSave(objs[i]);
-    }
-
-    if (!isInUpdateMode()) writePendingChanges();
-    return result;
-  }
-
   public IObjectId saveAll(Object root) {
     IObjectId result = internalSaveAll(root);
-    if (!isInUpdateMode()) writePendingChanges();
-    return result;
-  }
-
-  public IObjectId[] saveAll(Object... roots) {
-    IObjectId[] result = new IObjectId[roots.length];
-
-    for (int i = 0; i < roots.length; ++i) {
-      result[i] = internalSaveAll(roots[i]);
-    }
-
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
@@ -261,7 +248,6 @@ public class ObjectStore implements IObjectStoreExt {
 
   void internalDelete(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
-
     if (info == null) return;
 
     if (fAdd.remove(info)) {
@@ -312,6 +298,7 @@ public class ObjectStore implements IObjectStoreExt {
   }
 
   private void internalDeleteAll(Object root) {
+    if(!contains(root)) return;
     DeleteTraversal traversal = new DeleteTraversal(this);
     traversal.handle(root);
   }

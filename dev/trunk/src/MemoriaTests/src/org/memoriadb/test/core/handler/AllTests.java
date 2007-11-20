@@ -8,6 +8,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.core.handler");
     
     suite.addTest(org.memoriadb.test.core.handler.list.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.handler.array.AllTests.suite());
     
     //$JUnit-BEGIN$
     suite.addTestSuite(LinkedListTest.class);
