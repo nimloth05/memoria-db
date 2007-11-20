@@ -69,15 +69,4 @@ public class ModeTest extends AbstractObjectStoreTest {
     assertEquals(l1_obj.get("fString"), l2_obj.getString());
   }
 
-  @Override
-  protected void configureReopen(CreateConfig config) {
-    config.setDBMode(fReopenDbMode);
-  }
-  
-  private void reopen(DBMode data) {
-    fReopenDbMode = data;
-    super.reopen();
-  }
-  
-  
 }

@@ -16,6 +16,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   private static final String PATH = "file.mia";
   
   protected IObjectStoreExt fStore;
+  private DBMode fReopenDbMode = DBMode.clazz;
   
   public IBlockManagerExt getBlockManager() {
     return (IBlockManagerExt)fStore.getBlockManager();
@@ -33,7 +34,9 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   /**
    * Overwrite to change the memoria-configuration for reopening a db. 
    */
-  protected void configureReopen(CreateConfig config) {}
+  protected void configureReopen(CreateConfig config) {
+    config.setDBMode(fReopenDbMode);
+  }
   
   protected void delete(Object obj) {
     fStore.delete(obj);
@@ -98,14 +101,21 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     }
   }
   
+  
+  
   protected final void reopen() {
     recreateStore(); 
   }
   
+  protected void reopen(DBMode data) {
+    fReopenDbMode = data;
+    reopen();
+  }
+   
   protected final IObjectId save(Object obj) {
     return fStore.save(obj);
   }
-   
+  
   protected final IObjectId[] save(Object...objects) {
     return fStore.save(objects);
   }

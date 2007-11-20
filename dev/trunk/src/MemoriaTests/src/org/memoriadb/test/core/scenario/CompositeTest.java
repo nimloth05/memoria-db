@@ -1,9 +1,9 @@
-package org.memoriadb.test.core;
+package org.memoriadb.test.core.scenario;
 
 import java.util.List;
 
 import org.memoriadb.IFilter;
-import org.memoriadb.core.*;
+import org.memoriadb.core.DBMode;
 import org.memoriadb.core.handler.def.IListDataObject;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
@@ -13,8 +13,6 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class CompositeTest extends AbstractObjectStoreTest {
   
-  private DBMode fReopenDbMode;
-
   public void test_composite_in_db_mode() {
     test_save_composite();
     
@@ -146,19 +144,9 @@ public class CompositeTest extends AbstractObjectStoreTest {
     assertCompositeObject(leaf1, ((Composite) loadedRoot.getChild(0)).getChild(0));
   }
   
-  @Override
-  protected void configureReopen(CreateConfig config) {
-    config.setDBMode(fReopenDbMode);
-  }
-
   private void assertCompositeObject(IComponent original, IComponent loaded) {
     assertEquals(original.getChildCount(), loaded.getChildCount());
     assertEquals(original.getData(), loaded.getData());
-  }
-
-  private void reopen(DBMode data) {
-    fReopenDbMode = data;
-    super.reopen();
   }
 
 }

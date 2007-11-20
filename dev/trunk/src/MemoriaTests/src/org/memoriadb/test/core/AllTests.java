@@ -1,5 +1,7 @@
 package org.memoriadb.test.core;
 
+import org.memoriadb.test.core.scenario.CompositeTest;
+
 import junit.framework.*;
 
 public class AllTests {
@@ -23,6 +25,7 @@ public class AllTests {
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
+    suite.addTest(org.memoriadb.test.core.enu.AllTests.suite());
     //$JUnit-END$
     return suite;
   }

@@ -15,7 +15,8 @@ public class DefaultInstantiatorTest extends TestCase {
     try {
       fDefaultInstantiator.newInstance(NoDefault.class.getName());
       fail("Can not instantiate an Object with no default ctor");
-    } catch(MemoriaException e) {
+    } 
+    catch(MemoriaException e) {
       //passed
     }
   }

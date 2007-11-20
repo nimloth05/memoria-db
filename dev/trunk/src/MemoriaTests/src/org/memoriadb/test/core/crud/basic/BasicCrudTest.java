@@ -5,7 +5,6 @@ import org.memoriadb.exception.SchemaCorruptException;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
-import org.memoriadb.test.core.testclasses.enums.*;
 import org.memoriadb.testutil.*;
 
 public abstract class BasicCrudTest extends AbstractObjectStoreTest {
@@ -59,28 +58,6 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertEquals(c1_l2, c3.getC1());
   }
   
-  public void test_enum_field() {
-	  EnumUse obj = new EnumUse();
-	  obj.setEnum(TestEnum.b);
-	  IObjectId objId = save(obj);
-	  obj = null;
-	  
-	  reopen();
-	  EnumUse l1_obj = fStore.getObject(objId);
-	  assertEquals(TestEnum.b, l1_obj.getEnum());
-  }
-  
-  public void test_null_enum_ref() {
-    EnumUse obj = new EnumUse();
-    obj.setEnum(null);
-    IObjectId objId = save(obj);
-    obj = null;
-    
-    reopen();
-    EnumUse l1_obj = fStore.getObject(objId);
-    assertEquals(null, l1_obj.getEnum());
-  }
-
   public void test_Object() {
     Object o = new Object();
     IObjectId id = save(o);
