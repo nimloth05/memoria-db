@@ -30,8 +30,8 @@ public class FieldClassHandler implements ISerializeHandler {
     while (input.available() > 0) {
       int fieldId = input.readInt();
       String name = input.readUTF();
-      int type = input.readInt();
-      MemoriaField metaField = new MemoriaField(fieldId, name, type);
+      int ordinal = input.readInt();
+      MemoriaField metaField = new MemoriaField(fieldId, name, Type.values()[ordinal]);
       classObject.addMetaField(metaField);
     }
     return classObject;
@@ -55,7 +55,7 @@ public class FieldClassHandler implements ISerializeHandler {
     for(MemoriaField field: classObject.getFields()) {
       output.writeInt(field.getId());
       output.writeUTF(field.getName());
-      output.writeInt(field.getType());
+      output.writeInt(field.getType().ordinal());
     }
   }
 

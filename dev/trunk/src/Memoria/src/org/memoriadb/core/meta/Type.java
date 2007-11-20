@@ -341,11 +341,31 @@ public enum Type {
       objectId.writeTo(output);
     }
 
+  },
+  
+  typeEnum {
+    
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitEnum(this, input.readInt());
+    }
+
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      if (value == null) {
+        output.writeInt(Constants.NO_ENUM_REF);
+        return;
+      }
+      Enum<?> enumValue = (Enum<?>) value;
+      output.writeInt(enumValue.ordinal());
+    }
   };
 
   private static final Map<Class<?>, Type> sPrimitiveTypeMap = createTypeMap();
 
   public static Type getType(Class<?> javaType) {
+    if (javaType.isEnum()) return typeEnum;
+    
     Type type = sPrimitiveTypeMap.get(javaType);
     if (type == null) return typeClass;
     return type;

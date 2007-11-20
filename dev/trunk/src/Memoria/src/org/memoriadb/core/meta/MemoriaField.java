@@ -7,12 +7,10 @@ public final class MemoriaField {
 
   private final int fFieldId;
   private final String fName;
-
-  // FIXME: Es gibt später die Möglichkeit, Enums direkt zu speichern, ohne das ordinal.
-  private final int fType;
+  private final Type fType;
 
   public static MemoriaField create(int id, Field field) {
-    MemoriaField result = new MemoriaField(id, field.getName(), Type.getType(field).ordinal());
+    MemoriaField result = new MemoriaField(id, field.getName(), Type.getType(field));
     return result;
   }
 
@@ -23,14 +21,14 @@ public final class MemoriaField {
    * @param ordinal
    * @param clazz - the java class where this field has been declared.
    */
-  public MemoriaField(int id, String name, int ordinal) {
+  public MemoriaField(int id, String name, Type type) {
     fFieldId = id;
-    fType = ordinal;
+    fType = type;
     fName = name;
   }
 
   public Type getFieldType() {
-    return Type.values()[fType];
+    return fType;
   }
 
   public int getId() {
@@ -41,13 +39,13 @@ public final class MemoriaField {
     return fName;
   }
   
-  public int getType() {
+  public Type getType() {
     return fType;
   }
 
   @Override
   public String toString() {
-    return "FieldName: "+fName;
+    return "FieldName: " + fName;
   }
 
 }

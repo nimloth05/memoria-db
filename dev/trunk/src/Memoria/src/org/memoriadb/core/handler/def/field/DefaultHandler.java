@@ -10,6 +10,7 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
+import org.memoriadb.util.Constants;
 
 public class DefaultHandler implements ISerializeHandler {
 
@@ -60,9 +61,16 @@ public class DefaultHandler implements ISerializeHandler {
         }
 
         @Override
+        public void visitEnum(Type type, int enumOrdinal) {
+          if (enumOrdinal == Constants.NO_ENUM_REF) return;
+          fMember.set(field.getName(), enumOrdinal);
+        }
+
+        @Override
         public void visitPrimitive(Type type, Object value) {
           fMember.set(field.getName(), value);
         }
+        
       });
     }
     

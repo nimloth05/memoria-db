@@ -52,11 +52,20 @@ public class ReflectionUtil {
     }
   }
 
-  public static void setValueFromField(Object owner, String fieldName, Object value) {
+  public static void setValueForField(final Object owner, final String fieldName, final Object value) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
       declaredField.setAccessible(true);
-      declaredField.set(owner, value);
+      
+      Object valueToSet = value;
+      
+      Class<?> type = declaredField.getType();
+      if (type.isEnum()) {
+        int ordinal = ((Integer)value).intValue();
+        valueToSet = type.getEnumConstants()[ordinal];
+      }
+      
+      declaredField.set(owner, valueToSet);
     }
     catch (Exception e) {
       throw new MemoriaException(e);  

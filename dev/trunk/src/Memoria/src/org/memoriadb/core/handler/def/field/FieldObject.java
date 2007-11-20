@@ -29,7 +29,7 @@ public class FieldObject implements IFieldObject {
 
   @Override
   public void set(String fieldName, Object value) {
-    ReflectionUtil.setValueFromField(fObejct, fieldName, value); 
+    ReflectionUtil.setValueForField(fObejct, fieldName, value); 
   }
 
 }

@@ -42,6 +42,11 @@ public final class Constants {
 
   public static final long INITIAL_HEAD_REVISION = 0;
 
+  /**
+   * Default value for a enum ref which is null.
+   */
+  public static final int NO_ENUM_REF = -1;
+
   private Constants() {}
 
 }

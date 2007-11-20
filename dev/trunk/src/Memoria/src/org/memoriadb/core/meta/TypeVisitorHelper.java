@@ -34,6 +34,11 @@ public abstract class TypeVisitorHelper<R, M> implements ITypeVisitor {
   public void visitClass(Type type, IObjectId objectId) {}
   
   @Override
+  public void visitEnum(Type type, int enumOrdinal) {}
+
+  @Override
   public void visitPrimitive(Type type, Object value) {}
+  
+  
   
 }
