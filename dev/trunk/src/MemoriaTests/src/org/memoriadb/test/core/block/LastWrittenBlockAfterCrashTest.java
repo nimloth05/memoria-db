@@ -32,7 +32,7 @@ public class LastWrittenBlockAfterCrashTest extends AbstractObjectStoreTest {
     
     // crashes
     try {
-      IObjectId id3 = save(new Object());
+      save(new Object());
     }
     catch(MemoriaException e) {
     }

@@ -1,14 +1,12 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.DBMode;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class ModeTest extends AbstractObjectStoreTest {
-
-  private DBMode fReopenDbMode;
 
   public void test_add_obejct() {
     SimpleTestObj obj = new SimpleTestObj("1");
@@ -25,6 +23,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     reopen(DBMode.clazz);
     
     assertEquals(2, getAll(SimpleTestObj.class).size());
+    
   }
   
   public void test_delete_object_in_data_mode() {
@@ -68,9 +67,4 @@ public class ModeTest extends AbstractObjectStoreTest {
     assertEquals(l1_obj.get("fString"), l2_obj.getString());
   }
 
-  @Override
-  protected void configureReopen(CreateConfig config) {
-    config.setDBMode(fReopenDbMode);
-  }
-  
 }
