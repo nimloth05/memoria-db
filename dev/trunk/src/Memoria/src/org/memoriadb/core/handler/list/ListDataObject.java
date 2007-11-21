@@ -4,12 +4,12 @@ import java.util.*;
 
 import org.memoriadb.core.id.IObjectId;
 
-public class CollectionDataObject implements IListDataObject {
+public class ListDataObject implements IListDataObject {
   
   private final IObjectId fId;
   private final List<Object> fList;
 
-  public CollectionDataObject(List<Object> list, IObjectId id) {
+  public ListDataObject(List<Object> list, IObjectId id) {
     fList = list;
     fId = id;
   }

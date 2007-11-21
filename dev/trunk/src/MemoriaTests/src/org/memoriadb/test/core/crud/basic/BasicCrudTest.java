@@ -107,6 +107,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertNull(l1_b.getName());
   }
   
+
   public void test_save_null_reference() {
     A a = new A();
     
@@ -118,6 +119,15 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     A l1_a = (A) fStore.getObject(id);
     assertNull("b", l1_a.getB());
+  }
+  
+  public void test_save_object_with_static_field() {
+    StaticFieldObject obj = new StaticFieldObject();
+    IObjectId id = save(obj);
+    
+    reopen();
+    
+    assertTrue(fStore.containsId(id));
   }
   
   public void test_save_reference() {

@@ -3,7 +3,7 @@ package org.memoriadb.test.core.handler.list;
 import java.util.List;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.def.IListDataObject;
+import org.memoriadb.core.handler.list.IListDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
@@ -11,6 +11,26 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 public abstract class ListTest extends AbstractObjectStoreTest {
   
   private DBMode fDbMode = DBMode.clazz;
+
+  public void test_data_mode() {
+    List<SimpleTestObj> objectList = getObjectList();
+    IObjectId objectId = saveAll(objectList);
+    
+    fDbMode = DBMode.data;
+    reopen();
+    
+    IListDataObject l1_list = fStore.getObject(objectId);
+    assertEquals(objectList.size(), l1_list.getList().size());
+    l1_list.getList().remove(0);
+    save(l1_list);
+    
+    fDbMode = DBMode.clazz;
+    reopen();
+    
+    List<SimpleTestObj> l2_list = fStore.getObject(objectId);
+    assertEquals(objectList.size(), l2_list.size() + 1);
+    assertEquals(objectList.get(1), l2_list.get(0));
+  }
 
   public void test_data_mode_scenario() {
     List<SimpleTestObj> objectList = getObjectList();
@@ -49,30 +69,10 @@ public abstract class ListTest extends AbstractObjectStoreTest {
     List<Integer> list = getIntObjectList();
     reopen(list);
   }
-
+  
   public void test_int_primitive() {
     List<Integer> list = getIntPrimitiveList();
     reopen(list);
-  }
-  
-  public void test_data_mode() {
-    List<SimpleTestObj> objectList = getObjectList();
-    IObjectId objectId = saveAll(objectList);
-    
-    fDbMode = DBMode.data;
-    reopen();
-    
-    IListDataObject l1_list = fStore.getObject(objectId);
-    assertEquals(objectList.size(), l1_list.getList().size());
-    l1_list.getList().remove(0);
-    save(l1_list);
-    
-    fDbMode = DBMode.clazz;
-    reopen();
-    
-    List<SimpleTestObj> l2_list = fStore.getObject(objectId);
-    assertEquals(objectList.size(), l2_list.size() + 1);
-    assertEquals(objectList.get(1), l2_list.get(0));
   }
   
   public void test_list_in_list() {

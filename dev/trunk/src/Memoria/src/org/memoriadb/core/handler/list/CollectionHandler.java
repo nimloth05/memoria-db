@@ -37,12 +37,22 @@ public abstract class CollectionHandler implements ISerializeHandler {
     public String getClassName() {
       return CopyOnWriteArrayList.class.getName();
     }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
+    }
   }
   
   public static class LinkedListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return LinkedList.class.getName();
+    }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
     }
   }
   
@@ -51,6 +61,11 @@ public abstract class CollectionHandler implements ISerializeHandler {
     public String getClassName() {
       return Stack.class.getName();
     }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
+    }
   }
   
   public static class VectorHandler extends CollectionHandler {
@@ -58,8 +73,12 @@ public abstract class CollectionHandler implements ISerializeHandler {
     public String getClassName() {
       return Vector.class.getName();
     }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
+    }
   }
-  
   
   
   @Override
