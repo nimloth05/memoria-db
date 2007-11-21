@@ -5,7 +5,7 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.query.*;
 import org.memoriadb.exception.*;
-import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.util.*;
 
 
 /**
@@ -20,40 +20,15 @@ public enum DBMode {
     
     @Override
     public IObjectId addMemoriaClassIfNecessary(Object obj, final ObjectStore store) {
-      Class<?> klass = obj.getClass();
-
-      // if obj is an array, the metaClass of the componentType is added.
-      // The MetaClass for the array is generic and bootstrapped
-
-      return new InheritanceTraverser(klass) {
-
-        private IMemoriaClassConfig fChildClass = null;
-        private IObjectId fObjectMemoriaClass;
-
-        @Override
-        public void handle(Class<?> superClass) {
-          if (superClass.isArray()) {
-            superClass = ReflectionUtil.getTypeInfo(superClass).getJavaClass(); 
-            if (fObjectMemoriaClass == null) fObjectMemoriaClass = store.getArrayMetaClass();
-          }
-          
-          IMemoriaClassConfig classObject = store.internalGetMemoriaClass(superClass.getName());
-
-          if (classObject != null) {
-            if (fChildClass != null) fChildClass.setSuperClass(classObject);
-            if (fObjectMemoriaClass == null) fObjectMemoriaClass = store.getObjectId(classObject);
-            abort();
-            return;
-          }
-
-          classObject = MemoriaFieldClassFactory.createMetaClass(superClass, store.getMemoriaFieldMetaClass());
-          if (fChildClass != null) fChildClass.setSuperClass(classObject);
-          fChildClass = classObject;
-          
-          IObjectId id = store.internalSave(classObject);
-          if (fObjectMemoriaClass == null) fObjectMemoriaClass = id;
-        }
-      }.fObjectMemoriaClass;
+      
+      if (obj.getClass().isArray()) {
+        TypeInfo typeInfo = ReflectionUtil.getTypeInfo(obj.getClass());
+        if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(store, typeInfo.getJavaClass());
+        return store.getIdFactory().getArrayMemoriaClass();
+      }
+      
+      return addTypeHierarchy(store, obj.getClass());
+      
     }
     
     @Override
@@ -72,6 +47,50 @@ public enum DBMode {
     public IQueryStrategy instantiateQueryStrategy() {
       return new ClassModeQueryStrategy();
     }
+
+
+    /**
+     * @param store 
+     * @return The id of the first (most derived) class in the hierarchy, because this is the
+     * typeId of the object.
+     * 
+     * Idempotent, already stored classes are ignored.
+     */
+    private IObjectId addTypeHierarchy(ObjectStore store, Class<?> javaClass) {
+      IMemoriaClassConfig classObject = store.internalGetMemoriaClass(javaClass.getName());
+
+      // if the class is already in the store, all it's superclasses must also be known. Do nothing.
+      if (classObject != null) {
+        return store.getObjectId(classObject);
+      }
+
+      // add the current class and all its superclasses to the store
+      classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, store.getMemoriaFieldMetaClass());
+      IObjectId result = store.internalSave(classObject);
+      
+      recursiveAddTypeHierarchy(store, javaClass, classObject);
+      
+      return result;
+    }
+
+    private void recursiveAddTypeHierarchy(ObjectStore store, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
+      Class<?> javaClass = superClass.getSuperclass();
+      if(javaClass == null) return;
+
+      // the super-class may already be there (bootstrapped, other hierarchy-branch)
+      IMemoriaClassConfig classObject = store.internalGetMemoriaClass(javaClass.getName());
+      if(classObject != null){
+        subClassconfig.setSuperClass(classObject);
+        return;
+      }
+      
+      classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, store.getMemoriaFieldMetaClass());
+      store.internalSave(classObject);
+      subClassconfig.setSuperClass(classObject);
+      
+      recursiveAddTypeHierarchy(store, javaClass, classObject);
+    }
+    
   },
   
   data {
@@ -97,6 +116,9 @@ public enum DBMode {
   
   private final IQueryStrategy fQueryStrategy = instantiateQueryStrategy();
 
+  /**
+   * @return ObjectId of the MemoriaClass for the given obj 
+   */
   public abstract IObjectId addMemoriaClassIfNecessary(Object obj, ObjectStore store);
 
   /**

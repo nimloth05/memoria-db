@@ -9,6 +9,7 @@ public class AllTests {
     //$JUnit-BEGIN$
     suite.addTestSuite(BasicOneDimensionalArrayTest.class);
     suite.addTestSuite(ComponentTypeTest.class);
+    suite.addTestSuite(BasicMultiDimensionalArrayTest.class);
     suite.addTestSuite(ArrayTest.class);
     //$JUnit-END$
     return suite;

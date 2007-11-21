@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.test.core.testclasses.inheritance.C;
+import org.memoriadb.test.core.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
@@ -83,10 +83,16 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
   
   public void test_Object_array_with_inheritance() {
     C[] arr = new C[]{new C(1,2l,"3", true, new SimpleTestObj("4"), (short)5), new C(2,2l,"3", true, new SimpleTestObj("4"), (short)5)};
-    int memoriaClassCount = fStore.getAll(IMemoriaClass.class).size();
+
     IObjectId id = saveAll(arr);
-   
-    //assertEquals(memoriaClassCount + 1, fStore.getAll(IMemoriaClass.class).size());
+    
+    // save a C to get the MemoriaClass of C
+    C prototype = new C();
+    save(prototype);
+    IMemoriaClass classC = fStore.getMemoriaClass(prototype);
+    assertEquals(C.class.getName(), classC.getJavaClassName());
+    IMemoriaClass classB = classC.getSuperClass();
+    assertEquals(B.class.getName(), classB.getJavaClassName());
     
     assertEquals(fStore.getIdFactory().getArrayMemoriaClass(), fStore.getMemoriaClassId(arr));
     

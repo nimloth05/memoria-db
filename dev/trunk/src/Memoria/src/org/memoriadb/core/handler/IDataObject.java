@@ -15,7 +15,7 @@ public interface IDataObject {
   
   /**
    * 
-   * @return the objectId for the memoriaClass for this Object.
+   * @return ObjectId of the memoriaClass for this Object.
    */
   public IObjectId getMemoriaClassId();
 

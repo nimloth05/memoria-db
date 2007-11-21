@@ -244,7 +244,7 @@ public class ObjectStore implements IObjectStoreExt {
     fDelete.add(info);
   }
 
-  IMemoriaClassConfig internalGetMemoriaClass(String klass) {
+  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepo.getMemoriaClass(klass);
   }
 

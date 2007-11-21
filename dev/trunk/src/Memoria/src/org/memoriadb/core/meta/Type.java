@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.Constants;
@@ -419,11 +418,13 @@ public enum Type {
 
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      IObjectId objectId = context.getNullReference();
-      if (value != null) {
-        objectId = context.getObjectId(value);
+      if(value == null) {
+        context.getNullReference().writeTo(output);
+        return;
       }
-      objectId.writeTo(output);
+      
+      if(!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object: " + value);
+      context.getObjectId(value).writeTo(output);
     }
 
   },
@@ -544,7 +545,7 @@ public enum Type {
       internalWriteValue(output, value, context);
     }
     catch (Exception e) {
-      throw new MemoriaException("could not write value: " + name() + " value: " + value, e);
+      throw new MemoriaException(e);
     }
   }
 

@@ -65,9 +65,10 @@ public class DefaultHandler implements ISerializeHandler {
       protected void handle(IMemoriaClass metaObject) {
         for(MemoriaField field: ((MemoriaFieldClass) metaObject).getFields()) {
           if(field.getFieldType() != Type.typeClass) continue;
-          
+          Object referencee = fFieldObject.get(field.getName());
+          if(referencee == null) continue;
           try {
-            traversal.handle(fFieldObject.get(field.getName()));
+            traversal.handle(referencee);
           }
           catch (Exception e) {
             throw new MemoriaException("Exception during object traversel. Java Class: '"+metaObject.getJavaClassName()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);

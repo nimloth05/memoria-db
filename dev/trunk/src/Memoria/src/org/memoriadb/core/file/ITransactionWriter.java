@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.IBlockManager;
 
 
 public interface ITransactionWriter {

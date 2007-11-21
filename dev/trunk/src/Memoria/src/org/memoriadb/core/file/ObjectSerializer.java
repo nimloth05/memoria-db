@@ -112,4 +112,9 @@ public class ObjectSerializer implements ISerializeContext {
     dataStream.write(objectData);
   }
 
+  @Override
+  public boolean contains(Object obj) {
+    return fObjectRepo.contains(obj);
+  }
+
 }

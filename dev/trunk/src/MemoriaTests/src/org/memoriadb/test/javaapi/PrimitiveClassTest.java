@@ -7,7 +7,10 @@ import junit.framework.TestCase;
 public class PrimitiveClassTest extends TestCase {
   public void test() throws ClassNotFoundException {
     
-    assertEquals(int.class, (new int[0][2][2]).getClass().getComponentType());
+    int[][][] d3= new int[1][1][2];
+    
+    System.out.println(d3[0][0][1]);
+    
     
     System.out.println(Integer.class);
     System.out.println(int.class.isPrimitive());
