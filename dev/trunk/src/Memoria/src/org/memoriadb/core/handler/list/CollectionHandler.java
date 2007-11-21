@@ -7,7 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.*;
-import org.memoriadb.core.handler.def.ICollectionDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
@@ -28,8 +27,8 @@ public abstract class CollectionHandler implements ISerializeHandler {
     }
 
     @Override
-    protected IDataObject createDataObject(Collection<?> collection, IObjectId typeId) {
-      return new ListDataObject((List)collection, typeId);
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
     }
   }
   
@@ -120,10 +119,10 @@ public abstract class CollectionHandler implements ISerializeHandler {
     }
   }
 
-  protected abstract IDataObject createDataObject(Collection<?> collection, IObjectId typeId);
+  protected abstract IDataObject createDataObject(Collection<Object> collection, IObjectId typeId);
   
   private Collection<?> getListObject(Object obj) {
-    if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject)obj).getList();
+    if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject)obj).getCollection();
     return (Collection<?>) obj;
   }
 
