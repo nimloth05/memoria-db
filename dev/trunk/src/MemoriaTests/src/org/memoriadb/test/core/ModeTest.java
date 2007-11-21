@@ -66,5 +66,4 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj l2_obj = fStore.getObject(id);
     assertEquals(l1_obj.get("fString"), l2_obj.getString());
   }
-
 }

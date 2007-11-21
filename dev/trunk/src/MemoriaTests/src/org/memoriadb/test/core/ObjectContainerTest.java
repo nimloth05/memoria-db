@@ -72,6 +72,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     }
     fStore.endUpdate();
 
+    saveAll(objects.toArray());
     reopen();
 
     List<SimpleTestObj> loadedObjs = getAll(SimpleTestObj.class);

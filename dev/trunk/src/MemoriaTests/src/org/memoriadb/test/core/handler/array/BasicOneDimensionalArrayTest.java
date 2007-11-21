@@ -89,10 +89,16 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     // save a C to get the MemoriaClass of C
     C prototype = new C();
     save(prototype);
+    
+    // check hierarchy
     IMemoriaClass classC = fStore.getMemoriaClass(prototype);
     assertEquals(C.class.getName(), classC.getJavaClassName());
     IMemoriaClass classB = classC.getSuperClass();
     assertEquals(B.class.getName(), classB.getJavaClassName());
+    IMemoriaClass classA = classB.getSuperClass();
+    assertEquals(A.class.getName(), classA.getJavaClassName());
+    IMemoriaClass classObject = classA.getSuperClass();
+    assertEquals(Object.class.getName(), classObject.getJavaClassName());
     
     assertEquals(fStore.getIdFactory().getArrayMemoriaClass(), fStore.getMemoriaClassId(arr));
     
