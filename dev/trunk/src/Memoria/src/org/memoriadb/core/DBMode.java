@@ -22,7 +22,7 @@ public enum DBMode {
     public IObjectId addMemoriaClassIfNecessary(Object obj, final ObjectStore store) {
       
       if (obj.getClass().isArray()) {
-        TypeInfo typeInfo = ReflectionUtil.getTypeInfo(obj.getClass());
+        TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
         if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(store, typeInfo.getJavaClass());
         return store.getIdFactory().getArrayMemoriaClass();
       }

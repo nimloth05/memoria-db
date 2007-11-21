@@ -22,7 +22,7 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     int[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Integer_array() {
@@ -36,7 +36,7 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     Integer[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Integer_array_width_null_value() {
@@ -50,7 +50,18 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     Integer[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
+  }
+  
+  public void test_mixed_Object_array() {
+    Object[] arr = new Object[]{1,"2", new SimpleTestObj("3")};
+    IObjectId id = saveAll(arr);
+    
+    reopen();
+    
+    Object[] arr_l1 = get(id);
+
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Object_array() {
@@ -64,7 +75,7 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     SimpleTestObj[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Object_array_width_null_value() {
@@ -78,7 +89,7 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     SimpleTestObj[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Object_array_with_inheritance() {
@@ -107,7 +118,7 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     C[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_string_array() {
@@ -121,7 +132,26 @@ public class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
     String[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
-    Arrays.equals(arr, arr_l1);
+    assertTrue(Arrays.equals(arr, arr_l1));
+  }
+  
+  public void test_update_int_array() {
+    int[] arr = new int[]{1,2,3};
+    IObjectId id = save(arr);
+    
+    arr[0] = -1;
+    save(arr);
+    
+    reopen();
+    
+    int[] l1_arr = get(id);
+    assertEquals(-1, l1_arr[0]);
+    l1_arr[0]=-2;
+    save(l1_arr);
+    
+    reopen();
+    int[] l2_arr = get(id);
+    assertEquals(-2, l2_arr[0]);
   }
   
 }

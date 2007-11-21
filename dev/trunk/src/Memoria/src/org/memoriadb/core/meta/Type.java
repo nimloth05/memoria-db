@@ -470,6 +470,14 @@ public enum Type {
     return getType(value.getClass());
   }
 
+  /**
+   * @return true, if the given object is a primitive (int/Integer, etc). Enums are NOT primitives
+   */
+  public static boolean isPrimitive(Object object) {
+    Type type = getType(object);
+    return (type != Type.typeClass) && (type != Type.typeEnum);
+  }
+
   public static <T extends ITypeVisitor> T readValueWithType(DataInput input, IReaderContext context, T visitor) {
     byte byteOrdinal = -1;
     try {
@@ -484,6 +492,10 @@ public enum Type {
 
   public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context) {
     Type type = getType(value);
+    writeValueWithType(output, value, context, type);
+  }
+  
+  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context, Type type) {
     if (type.ordinal() > Byte.MAX_VALUE) throw new MemoriaException("Can not write back type, type ordinal is bigger than Byte.MAX_VALUE");
 
     byte ordinalByte = (byte) type.ordinal();
@@ -530,6 +542,10 @@ public enum Type {
   }
 
   public abstract Class<?> getClassLiteral();
+
+  public boolean isPrimitive() {
+    return (this != Type.typeClass) && (this != Type.typeEnum);
+  }
 
   public void readValue(DataInput input, IReaderContext context, ITypeVisitor visitor) {
     try {

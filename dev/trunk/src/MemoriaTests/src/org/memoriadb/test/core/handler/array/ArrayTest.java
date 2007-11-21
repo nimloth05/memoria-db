@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
+import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
@@ -30,7 +31,7 @@ public class ArrayTest extends AbstractObjectStoreTest {
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
       final MultiDimensionalArrayContainer other = (MultiDimensionalArrayContainer) obj;
-      if (!Arrays.equals(fArray, other.fArray)) return false;
+      if (!Arrays.deepEquals(fArray, other.fArray)) return false;
       return true;
     }
 
@@ -91,14 +92,14 @@ public class ArrayTest extends AbstractObjectStoreTest {
   private void internal_test_array_object_container(IArrayContainer container) {
     container.set();
 
-    saveAll(container);
+    IObjectId id = saveAll(container);
     reopen();
 
-    IArrayContainer loadedContainer = getAll(IArrayContainer.class).get(0);
+    IArrayContainer l1_Container = get(id);
     SimpleTestObj loadedObj = getAll(SimpleTestObj.class).get(0);
 
-    loadedContainer.assertSame(loadedObj);
-    assertEquals(container, loadedContainer);
+    l1_Container.assertSame(loadedObj);
+    assertEquals(container, l1_Container);
   }
 
 }

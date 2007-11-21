@@ -20,9 +20,15 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>ch.activesource.environment.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>com.cenqua.clover.core.clovernature</nature>
+		<nature>ch.activesource.environment.dslnature</nature>
 	</natures>
 </projectDescription>

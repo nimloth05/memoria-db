@@ -29,6 +29,16 @@ public final class ReflectionUtil {
     }
   }
   
+  public static TypeInfo getComponentTypeInfo(Class<?> componentType) {
+    int dimension = 1;
+    componentType = componentType.getComponentType();
+    while (componentType.isArray()) {
+      componentType = componentType.getComponentType();
+      ++dimension;
+    }
+    return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
+  }
+ 
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
     for(Field field: fields) {
@@ -38,20 +48,10 @@ public final class ReflectionUtil {
     if (clazz.getSuperclass() == null) throw new SchemaException("No such field. Class: "+ clazz+ " field: "+name);
     return getField(clazz.getSuperclass(), name);
   }
- 
-  public static TypeInfo getTypeInfo(Class<?> componentType) {
-    int dimension = 1;
-    componentType = componentType.getComponentType();
-    while (componentType.isArray()) {
-      componentType = componentType.getComponentType();
-      ++dimension;
-    }
-    return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
-  }
   
   public static TypeInfo getTypeInfo(Object array) {
     if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
-    return getTypeInfo(array.getClass());
+    return getComponentTypeInfo(array.getClass());
   }
 
   public static Object getValueFromField(Object owner, String fieldName) {
@@ -75,7 +75,6 @@ public final class ReflectionUtil {
       return false;
     }
   }
-  
   
   public static boolean isMemoriaTransient(Field field) {
     return Modifier.isTransient(field.getModifiers());

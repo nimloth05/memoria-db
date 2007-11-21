@@ -167,7 +167,7 @@ public class ObjectRepo implements IObjectRepo {
    */
   public IObjectId getObjectId(Object obj) {
     IObjectInfo result = fObjectMap.get(obj);
-    if (result == null) throw new MemoriaException("Unknown object: " + obj);
+    if (result == null) throw new MemoriaException("Unknown object '" + obj + "' -- using saveAll() instead of save() may solve the problem.");
     return result.getId();
   }
 

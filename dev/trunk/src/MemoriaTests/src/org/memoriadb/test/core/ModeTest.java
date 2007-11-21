@@ -23,7 +23,6 @@ public class ModeTest extends AbstractObjectStoreTest {
     reopen(DBMode.clazz);
     
     assertEquals(2, getAll(SimpleTestObj.class).size());
-    
   }
   
   public void test_delete_object_in_data_mode() {

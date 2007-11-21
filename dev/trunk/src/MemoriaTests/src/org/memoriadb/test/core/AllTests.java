@@ -2,7 +2,6 @@ package org.memoriadb.test.core;
 
 import junit.framework.*;
 
-import org.memoriadb.test.core.handler.array.ArrayTest;
 import org.memoriadb.test.core.scenario.CompositeTest;
 
 public class AllTests {
@@ -22,7 +21,6 @@ public class AllTests {
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(TypeTest.class);
     suite.addTestSuite(LongIdFactoryTest.class);
-    suite.addTestSuite(ArrayTest.class);
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);

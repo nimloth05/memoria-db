@@ -168,6 +168,8 @@ public class TypeTest extends TestCase {
     ITypeVisitor visitorMock = control.createMock(ITypeVisitor.class);
     visitorMock.visitClass(Type.typeClass, new LongObjectId(1));
     
+    EasyMock.expect(fSerializeContext.contains(EasyMock.anyObject())).andReturn(true);
+    
     control.replay();
     EasyMock.replay(fSerializeContext, fReaderContext);
     
