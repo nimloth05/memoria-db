@@ -31,7 +31,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
       return new ListDataObject((List<Object>)collection, typeId);
     }
   }
-  
+
   public static class CopyOnWriteListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
@@ -42,6 +42,20 @@ public abstract class CollectionHandler implements ISerializeHandler {
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
       return new ListDataObject((List<Object>)collection, typeId);
     }
+  }
+  
+  public static class HashSetHandler extends CollectionHandler {
+
+    @Override
+    public String getClassName() {
+      return HashSet.class.getName();
+    }
+
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new SetDataObject((Set<Object>)collection, typeId);
+    }
+  
   }
   
   public static class LinkedListHandler extends CollectionHandler {
@@ -122,7 +136,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
 
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
-    List<?> list = (List<?>) obj;
+    Collection<?> list = (Collection<?>) obj;
     
     for(Object listEntry: list) {
       if (Type.getType(listEntry) == Type.typeClass) traversal.handle(listEntry);

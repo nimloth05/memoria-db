@@ -2,14 +2,11 @@ package org.memoriadb.test.core.handler.set;
 
 import java.util.*;
 
-
-public class HashSetTest extends SetTest {
+public class TreeSetTest extends SetTest {
 
   @Override
   protected <T> Collection<T> createCollection() {
-    return new HashSet<T>();
+    return new TreeSet<T>();
   }
-
-  
 
 }

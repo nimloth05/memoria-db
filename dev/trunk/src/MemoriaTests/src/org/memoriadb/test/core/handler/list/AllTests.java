@@ -2,6 +2,8 @@ package org.memoriadb.test.core.handler.list;
 
 import junit.framework.*;
 
+import org.memoriadb.test.core.handler.set.*;
+
 public class AllTests {
 
   public static Test suite() {
@@ -12,6 +14,8 @@ public class AllTests {
     suite.addTestSuite(StackTest.class);
     suite.addTestSuite(LinkedListTest.class);
     suite.addTestSuite(ArrayListTest.class);
+    suite.addTestSuite(HashSetTest.class);
+    suite.addTestSuite(TreeSetTest.class);
     //$JUnit-END$
     return suite;
   }

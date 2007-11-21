@@ -4,29 +4,24 @@ import java.util.*;
 
 import org.memoriadb.core.id.IObjectId;
 
-public class ListDataObject implements IListDataObject {
-  
-  private final IObjectId fId;
-  private final List<Object> fList;
+public class SetDataObject implements ISetDataObject {
 
-  public ListDataObject(List<Object> list, IObjectId id) {
-    fList = list;
+  private final IObjectId fId;
+  private final Set<Object> fSet;
+
+  public SetDataObject(Set<Object> list, IObjectId id) {
+    fSet = list;
     fId = id;
   }
 
   @Override
   public boolean equals(Object obj) {
-    return fList.equals(obj);
+    return fSet.equals(obj);
   }
 
   @Override
   public Collection<Object> getCollection() {
-    return fList;
-  }
-
-  @Override
-  public List<Object> getList() {
-    return fList;
+    return fSet;
   }
 
   @Override
@@ -35,13 +30,20 @@ public class ListDataObject implements IListDataObject {
   }
 
   @Override
+  public Set<Object> getSet() {
+    return fSet;
+  }
+
+  @Override
   public int hashCode() {
-    return fList.hashCode();
+    return fSet.hashCode();
   }
 
   @Override
   public String toString() {
-    return fList.toString();
+    return fSet.toString();
   }
+  
+  
 
 }
