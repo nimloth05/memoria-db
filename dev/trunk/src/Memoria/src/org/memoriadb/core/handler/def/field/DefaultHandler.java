@@ -79,10 +79,10 @@ public class DefaultHandler implements ISerializeHandler {
   }
 
   private IFieldObject createObject(IReaderContext context, IObjectId typeId) {
-    if (context.getMode() == DBMode.clazz) {
-      return new FieldObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
+    if (context.isInDataMode()) {
+      return new FieldMapDataObject(typeId);
     }
-    return new FieldMapDataObject(typeId);
+    return new FieldObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
   }
 
   private IFieldObject getFieldObject(Object obj) {

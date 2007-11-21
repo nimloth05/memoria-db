@@ -65,7 +65,7 @@ public class ObjectRepo implements IObjectRepo {
     return result;
   }
 
-  public void checkSanity() {
+  public void checkIndexConsistancy() {
     for (IObjectId id : fIdMap.keySet()) {
       Object object = fIdMap.get(id).getObj();
 
@@ -217,7 +217,7 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
-  public boolean isMetaClass(Object obj) {
+  public boolean isMemoriaClass(Object obj) {
     return obj instanceof IMemoriaClass;
   }
 

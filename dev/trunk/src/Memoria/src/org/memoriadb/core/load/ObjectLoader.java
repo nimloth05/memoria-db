@@ -13,41 +13,36 @@ import org.memoriadb.exception.MemoriaException;
 public final class ObjectLoader implements IReaderContext {
 
   private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
+ 
   private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
-
   private final ObjectRepo fRepo;
   private final FileReader fFileReader;
   private final IBlockManager fBlockManager;
-  private final DBMode fDbMode;
   private Block fCurrentBlock;
   private final IDefaultInstantiator fDefaultInstantiator;
   private final IObjectIdFactory fIdFactory;
+  private final IStore fStore;
 
-  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, DBMode mode) {
-    return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, mode).read();
+  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IStore store) {
+    return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, store).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, DBMode mode) {
+  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IStore store) {
     if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
-    if (mode == null) throw new IllegalArgumentException("DBMode is null");
+    if (store == null) throw new IllegalArgumentException("store is null");
     
+    fStore = store;
     fFileReader = fileReader;
     fRepo = repo;
     fBlockManager = blockManager;
     fDefaultInstantiator = defaultInstantiator;
-    fDbMode = mode;
     fIdFactory = repo.getIdFactory();
   } 
-
-  @Override
-  public IObjectId readObjectId(DataInput input) throws IOException {
-    return fRepo.getIdFactory().createFrom(input);
-  }
 
   @Override
   public IDefaultInstantiator getDefaultInstantiator() {
@@ -55,13 +50,13 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
-  public DBMode getMode() {
-    return fDbMode;
+  public Object getObjectById(IObjectId objectId) {
+    return fRepo.getObject(objectId);
   }
   
   @Override
-  public Object getObjectById(IObjectId objectId) {
-    return fRepo.getObject(objectId);
+  public boolean isInDataMode() {
+    return fStore.isInDataMode();
   }
 
   @Override
@@ -93,6 +88,11 @@ public final class ObjectLoader implements IReaderContext {
     catch (Exception e) {
       throw new MemoriaException(e);
     }
+  }
+
+  @Override
+  public IObjectId readObjectId(DataInput input) throws IOException {
+    return fRepo.getIdFactory().createFrom(input);
   }
 
   private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long revision) {

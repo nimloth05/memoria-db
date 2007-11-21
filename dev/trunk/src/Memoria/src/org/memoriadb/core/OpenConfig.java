@@ -7,23 +7,17 @@ public class OpenConfig {
   
   private final IMemoriaListeners fListeners = new MemoriaListeners();
   private IBlockManager fBlockManager;
-  private DBMode fDBMode;
 
   public OpenConfig() {
-    this(new MaintenanceFreeBlockManager(), DBMode.clazz);
+    this(new MaintenanceFreeBlockManager());
   }
   
-  public OpenConfig(IBlockManager blockManager, DBMode mode) {
+  public OpenConfig(IBlockManager blockManager) {
     fBlockManager = blockManager;
-    fDBMode = mode;
   }
   
   public IBlockManager getBlockManager() {
     return fBlockManager;
-  }
-
-  public DBMode getDBMode() {
-    return fDBMode;
   }
 
   public IMemoriaListeners getListeners() {
@@ -33,11 +27,5 @@ public class OpenConfig {
   public void setBlockManager(IBlockManager blockManager) {
     fBlockManager = blockManager;
   }
-  
-
-  public void setDBMode(DBMode mode) {
-    fDBMode = mode;
-  }
-
   
 }

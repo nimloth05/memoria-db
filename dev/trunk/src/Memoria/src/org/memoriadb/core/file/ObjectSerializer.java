@@ -19,33 +19,32 @@ public class ObjectSerializer implements ISerializeContext {
   private final IObjectRepo fObjectRepo;
   private final ByteArrayOutputStream fBuffer;
   private final DataOutput fStream;
-  private final DBMode fDbMode;
 
   /**
    * @param repo
    */
-  public ObjectSerializer(IObjectRepo repo, DBMode dbMode) {
+  public ObjectSerializer(IObjectRepo repo) {
     fObjectRepo = repo;
-    fDbMode = dbMode;
     fBuffer = new ByteArrayOutputStream();
     fStream = new DataOutputStream(fBuffer);
+  }
+
+  @Override
+  public boolean contains(Object obj) {
+    return fObjectRepo.contains(obj);
   }
 
   public byte[] getBytes() {
     return fBuffer.toByteArray();
   }
 
+  
   @Override
   public IObjectId getMemoriaClassId(String className) {
     IMemoriaClassConfig memoriaClass = fObjectRepo.getMemoriaClass(className);
     return fObjectRepo.getObjectId(memoriaClass);
   }
 
-  @Override
-  public DBMode getDBMode() {
-    return fDbMode;
-  }
-  
   @Override
   public IObjectId getNullReference() {
     return fObjectRepo.getNullReference();
@@ -59,11 +58,6 @@ public class ObjectSerializer implements ISerializeContext {
   @Override
   public IObjectId getRootClassId() {
     return fObjectRepo.getRootClassId();
-  }
-
-  @Override
-  public boolean isDataMode() {
-    return getDBMode() == DBMode.data;
   }
 
   public void markAsDeleted(IObjectId id) {
@@ -86,7 +80,7 @@ public class ObjectSerializer implements ISerializeContext {
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
     fStream.writeInt(2*fObjectRepo.getIdFactory().getIdSize());
-    IObjectId typeId = fObjectRepo.isMetaClass(info.getObj()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
+    IObjectId typeId = fObjectRepo.isMemoriaClass(info.getObj()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
     typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
   }
@@ -110,11 +104,6 @@ public class ObjectSerializer implements ISerializeContext {
     byte[] objectData = buffer.toByteArray();
     dataStream.writeInt(objectData.length);
     dataStream.write(objectData);
-  }
-
-  @Override
-  public boolean contains(Object obj) {
-    return fObjectRepo.contains(obj);
   }
 
 }

@@ -23,7 +23,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   public ObjectInfo add(Object obj, IObjectId memoriaClassId);
 
   
-  public void checkSanity();
+  public void checkIndexConsistancy();
   
   public boolean contains(IObjectId id);
   
@@ -75,7 +75,7 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
    * @return true, if the given obj is a metaclass
    */
   //FIXME: METACLASS
-  public boolean isMetaClass(Object obj);
+  public boolean isMemoriaClass(Object obj);
 
 
   /**

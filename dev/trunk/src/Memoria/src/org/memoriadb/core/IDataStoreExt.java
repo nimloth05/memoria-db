@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
-import org.memoriadb.IObjectStore;
+import org.memoriadb.IDataStore;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.FileHeader;
 import org.memoriadb.core.id.*;
@@ -15,7 +15,7 @@ import org.memoriadb.core.meta.IMemoriaClass;
  * 
  * @author msc
  */
-public interface IObjectStoreExt extends IObjectStore {
+public interface IDataStoreExt extends IDataStore {
 
   public void checkIndexConsistancy();
   

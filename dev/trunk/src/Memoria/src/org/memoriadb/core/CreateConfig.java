@@ -19,7 +19,7 @@ public class CreateConfig extends OpenConfig {
   }
 
   public CreateConfig(IBlockManager blockManager, String IdFactoryClassName, String defaultInstantiatorClassName) {
-    super(blockManager, DBMode.clazz);
+    super(blockManager);
     fIdFactoryClassName = IdFactoryClassName;
     fDefaultInstantiatorClassName = defaultInstantiatorClassName;
   }

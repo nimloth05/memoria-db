@@ -158,7 +158,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
     }
     
     Object result = collection;
-    if (context.getMode() == DBMode.data) {
+    if (context.isInDataMode()) {
       result = createDataObject(collection, typeId); 
     }
     return result;

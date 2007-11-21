@@ -83,11 +83,6 @@ public class TransactionWriter implements ITransactionWriter {
   }
 
   @Override
-  public DBMode getMode() {
-    return fConfig.getDBMode();
-  }
-
-  @Override
   public IObjectRepo getRepo() {
     return fRepo;
   }
@@ -102,7 +97,7 @@ public class TransactionWriter implements ITransactionWriter {
    */
   public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks) throws IOException {
     
-    ObjectSerializer serializer = new ObjectSerializer(fRepo, getMode());
+    ObjectSerializer serializer = new ObjectSerializer(fRepo);
     
     for(ObjectInfo info: add) {
       serializer.serialize(info.getObj());

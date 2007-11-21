@@ -11,7 +11,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  * 
  */
-public interface IObjectStore {
+public interface IDataStore {
 
   /**
    * Starts an update. Changes are immediately refelcted in memory, but not written back to the

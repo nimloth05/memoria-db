@@ -5,33 +5,31 @@ import java.util.*;
 import org.memoriadb.IFilter;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.query.ClassModeQueryStrategy;
-import org.memoriadb.exception.SchemaException;
-import org.memoriadb.util.*;
+import org.memoriadb.exception.MemoriaException;
 
-public class ObjectStore implements IObjectStoreExt, IStore {
+public class DataStore implements IDataStoreExt, IStore {
 
   private final TrxHandler fTrxHandler;
   private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
   
-  public ObjectStore(TrxHandler trxHandler) {
+  public DataStore(TrxHandler trxHandler) {
     fTrxHandler = trxHandler;
   }
 
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TrxHandler trxHandler, Object obj) {
+    if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject");
     
-    if (obj.getClass().isArray()) {
-      TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
-      if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(trxHandler, typeInfo.getJavaClass());
-      return trxHandler.getIdFactory().getArrayMemoriaClass();
-    }
+    IDataObject dataObject = (IDataObject) obj;
+    if (!trxHandler.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
     
-    return addTypeHierarchy(trxHandler, obj.getClass());
-    
+    return dataObject.getMemoriaClassId();
   }
+
 
   @Override
   public void beginUpdate() {
@@ -39,16 +37,8 @@ public class ObjectStore implements IObjectStoreExt, IStore {
   }
 
   @Override
-  public void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
-    IMemoriaClass memoriaClass = (IMemoriaClass) trxHandler.getObject(memoriaClassId);
-    
-    Class<?> javaClass = ReflectionUtil.getClass(memoriaClass.getJavaClassName());
-    if (ReflectionUtil.isNonStaticInnerClass(javaClass)) {
-      throw new SchemaException("Can not save non-static inner classes " + javaClass);
-    }
-    
-    memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
-  }
+  public void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
+
 
   @Override
   public void checkIndexConsistancy() {
@@ -188,35 +178,35 @@ public class ObjectStore implements IObjectStoreExt, IStore {
 
   @Override
   public boolean isInDataMode() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isInUpdateMode() {
     return fTrxHandler.isInUpdateMode();
   }
-
+  
+  
   public IObjectId save(Object obj) {
     return fTrxHandler.save(obj);
   }
-
+  
   public IObjectId saveAll(Object root) {
     return fTrxHandler.saveAll(root);
   }
   
-  
   public void writePendingChanges() {
     fTrxHandler.writePendingChanges();
   }
-  
+
+
   void internalDelete(Object obj) {
     fTrxHandler.internalDelete(obj);
   }
-  
+
   /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTrxHandler.internalGetMemoriaClass(klass);
   }
-
 
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
@@ -224,46 +214,5 @@ public class ObjectStore implements IObjectStoreExt, IStore {
   IObjectId internalSave(Object obj) {
     return fTrxHandler.internalSave(obj);
   }
-
-  /**
-   * @param trxHandler 
-   * @return The id of the first (most derived) class in the hierarchy, because this is the
-   * typeId of the object.
-   * 
-   * Idempotent, already stored classes are ignored.
-   */
-  private IObjectId addTypeHierarchy(TrxHandler trxHandler, Class<?> javaClass) {
-    IMemoriaClassConfig classObject = trxHandler.internalGetMemoriaClass(javaClass.getName());
-
-    // if the class is already in the store, all it's superclasses must also be known. Do nothing.
-    if (classObject != null) {
-      return trxHandler.getObjectId(classObject);
-    }
-
-    // add the current class and all its superclasses to the store
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, trxHandler.getMemoriaFieldMetaClass());
-    IObjectId result = trxHandler.internalSave(classObject);
-    
-    recursiveAddTypeHierarchy(trxHandler, javaClass, classObject);
-    
-    return result;
-  }
-
-  private void recursiveAddTypeHierarchy(TrxHandler trxHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
-    Class<?> javaClass = superClass.getSuperclass();
-    if(javaClass == null) return;
-
-    // the super-class may already be there (bootstrapped, other hierarchy-branch)
-    IMemoriaClassConfig classObject = trxHandler.internalGetMemoriaClass(javaClass.getName());
-    if(classObject != null){
-      subClassconfig.setSuperClass(classObject);
-      return;
-    }
-    
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, trxHandler.getMemoriaFieldMetaClass());
-    trxHandler.internalSave(classObject);
-    subClassconfig.setSuperClass(classObject);
-    
-    recursiveAddTypeHierarchy(trxHandler, javaClass, classObject);
-  }
+  
 }
