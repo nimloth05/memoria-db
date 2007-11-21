@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.handler.list;
+package org.memoriadb.test.core.handler.collection;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

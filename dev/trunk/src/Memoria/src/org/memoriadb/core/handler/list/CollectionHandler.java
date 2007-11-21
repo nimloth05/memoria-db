@@ -2,7 +2,7 @@ package org.memoriadb.core.handler.list;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
@@ -32,6 +32,18 @@ public abstract class CollectionHandler implements ISerializeHandler {
     }
   }
 
+  public static class ConcurrentSkipListSetHandler extends CollectionHandler {
+    @Override
+    public String getClassName() {
+      return ConcurrentSkipListSet.class.getName();
+    }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>)collection, typeId);
+    }
+  }
+  
   public static class CopyOnWriteListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
@@ -58,6 +70,19 @@ public abstract class CollectionHandler implements ISerializeHandler {
   
   }
   
+  public static class LinkedHashSetHandler extends CollectionHandler {
+    
+    @Override
+    public String getClassName() {
+      return LinkedHashSet.class.getName();
+    }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new SetDataObject((Set<Object>)collection, typeId);
+    }
+  }
+  
   public static class LinkedListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
@@ -79,6 +104,19 @@ public abstract class CollectionHandler implements ISerializeHandler {
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
       return new ListDataObject((List<Object>)collection, typeId);
+    }
+  }
+  
+  public static class TreeSetHandler extends CollectionHandler {
+    
+    @Override
+    public String getClassName() {
+      return TreeSet.class.getName();
+    }
+    
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new SetDataObject((Set<Object>)collection, typeId);
     }
   }
   

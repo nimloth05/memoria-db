@@ -4,7 +4,7 @@ import org.memoriadb.IObjectStore;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 
-public class SimpleTestObj {
+public class SimpleTestObj implements Comparable<SimpleTestObj> {
   
   private String fString;
   
@@ -22,6 +22,11 @@ public class SimpleTestObj {
   }
 
   @Override
+  public int compareTo(SimpleTestObj o) {
+    return this.fString.compareTo(o.fString);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
@@ -33,7 +38,7 @@ public class SimpleTestObj {
     else if (!fString.equals(other.fString)) return false;
     return true;
   }
-
+  
   public String getString() {
     return fString;
   }
@@ -45,7 +50,7 @@ public class SimpleTestObj {
     result = prime * result + ((fString == null) ? 0 : fString.hashCode());
     return result;
   }
-  
+
   @Override
   public String toString() {
     return "s: "+fString;

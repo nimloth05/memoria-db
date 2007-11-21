@@ -106,6 +106,10 @@ public final class Memoria {
     registerHandler(store, new CollectionHandler.StackHandler());
     registerHandler(store, new CollectionHandler.VectorHandler());
     registerHandler(store, new CollectionHandler.HashSetHandler());
+    registerHandler(store, new CollectionHandler.LinkedHashSetHandler());
+    registerHandler(store, new CollectionHandler.TreeSetHandler());
+    registerHandler(store, new CollectionHandler.ConcurrentSkipListSetHandler());
+    
 
     addCustomHandlers(store, customHandlers);
     
