@@ -6,7 +6,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.handler.list.ListHandler;
+import org.memoriadb.core.handler.list.CollectionHandler;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
@@ -100,11 +100,11 @@ public final class Memoria {
     //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
     store.save(objectMemoriaClass);
 
-    registerHandler(store, new ListHandler.ArrayListHandler());
-    registerHandler(store, new ListHandler.LinkedListHandler());
-    registerHandler(store, new ListHandler.CopyOnWriteListHandler());
-    registerHandler(store, new ListHandler.StackHandler());
-    registerHandler(store, new ListHandler.VectorHandler());
+    registerHandler(store, new CollectionHandler.ArrayListHandler());
+    registerHandler(store, new CollectionHandler.LinkedListHandler());
+    registerHandler(store, new CollectionHandler.CopyOnWriteListHandler());
+    registerHandler(store, new CollectionHandler.StackHandler());
+    registerHandler(store, new CollectionHandler.VectorHandler());
 
     addCustomHandlers(store, customHandlers);
     

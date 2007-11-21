@@ -6,49 +6,55 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.handler.def.*;
+import org.memoriadb.core.handler.*;
+import org.memoriadb.core.handler.def.ICollectionDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
+import org.memoriadb.util.ReflectionUtil;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
  * @author msc
  *
  */
-public abstract class ListHandler implements ISerializeHandler {
+public abstract class CollectionHandler implements ISerializeHandler {
   
-  public static class ArrayListHandler extends ListHandler {
+  public static class ArrayListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return ArrayList.class.getName();
     }
+
+    @Override
+    protected IDataObject createDataObject(Collection<?> collection, IObjectId typeId) {
+      return new ListDataObject((List)collection, typeId);
+    }
   }
   
-  public static class CopyOnWriteListHandler extends ListHandler {
+  public static class CopyOnWriteListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return CopyOnWriteArrayList.class.getName();
     }
   }
   
-  public static class LinkedListHandler extends ListHandler {
+  public static class LinkedListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return LinkedList.class.getName();
     }
   }
   
-  public static class StackHandler extends ListHandler {
+  public static class StackHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return Stack.class.getName();
     }
   }
   
-  public static class VectorHandler extends ListHandler {
+  public static class VectorHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return Vector.class.getName();
@@ -64,14 +70,14 @@ public abstract class ListHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
-    List<Object> list = createList();
+    Collection<Object> collection = createCollection();
     while (input.available() > 0) {
       
-      Type.readValueWithType(input, context, new TypeVisitorHelper<Void, List<Object>>(list, context) {
+      Type.readValueWithType(input, context, new TypeVisitorHelper<Void, Collection<Object>>(collection, context) {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          fContext.objectToBind(new ListBindable(fMember, objectId));
+          fContext.objectToBind(new CollectionBindable(fMember, objectId));
         }
 
         @Override
@@ -81,16 +87,16 @@ public abstract class ListHandler implements ISerializeHandler {
       });
     }
     
-    Object result = list;
+    Object result = collection;
     if (context.getMode() == DBMode.data) {
-      result = new ListDataObject(list, typeId);
+      result = createDataObject(collection, typeId); 
     }
     return result;
   }
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    List<?> list = getListObject(obj);
+    Collection<?> list = getListObject(obj);
     for(Object listEntry: list) {
       Type.writeValueWithType(output, listEntry, context);
     }
@@ -105,19 +111,20 @@ public abstract class ListHandler implements ISerializeHandler {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  protected List<Object> createList() {
+  protected Collection<Object> createCollection() {
     try {
-      return (List<Object>) Class.forName(getClassName()).newInstance();
+      return ReflectionUtil.createInstance(getClassName());
     }
     catch (Exception e) {
       throw new MemoriaException(e);
     }
   }
 
-  private List<?> getListObject(Object obj) {
-    if (obj instanceof IListDataObject) return ((IListDataObject)obj).getList();
-    return (List<?>) obj;
+  protected abstract IDataObject createDataObject(Collection<?> collection, IObjectId typeId);
+  
+  private Collection<?> getListObject(Object obj) {
+    if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject)obj).getList();
+    return (Collection<?>) obj;
   }
 
 }

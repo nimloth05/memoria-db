@@ -60,7 +60,4 @@ public class IdentityHashSet<T> extends AbstractSet<T> {
   public int size() {
     return fBackend.keySet().size();
   }
-  
-  
-
 }

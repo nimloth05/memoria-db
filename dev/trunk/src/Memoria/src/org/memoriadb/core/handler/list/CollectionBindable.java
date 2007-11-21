@@ -1,17 +1,17 @@
 package org.memoriadb.core.handler.list;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 
 
-public class ListBindable implements IBindable {
+public class CollectionBindable implements IBindable {
 
-  private final List<Object> fResult;
+  private final Collection<Object> fResult;
   private final IObjectId fObjectId;
 
-  public ListBindable(List<Object> result, IObjectId objectId) {
+  public CollectionBindable(Collection<Object> result, IObjectId objectId) {
     fResult = result;
     fObjectId = objectId;
   }

@@ -1,10 +1,11 @@
 package org.memoriadb.core.meta;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.util.ReflectionUtil;
 
 public final class MemoriaFieldClass implements IMemoriaClassConfig {
 
@@ -96,7 +97,8 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
     Field[] fields = klass.getDeclaredFields();
     int fieldId = 0;
     for (Field field : fields) {
-      if (Modifier.isTransient(field.getModifiers())) continue;
+      if (ReflectionUtil.isStatic(field)) continue;
+      if (ReflectionUtil.isMemoriaTransient(field)) continue;
 
       MemoriaField metaField = MemoriaField.create(++fieldId, field);
       addMetaField(metaField);

@@ -77,10 +77,18 @@ public final class ReflectionUtil {
   }
   
   
+  public static boolean isMemoriaTransient(Field field) {
+    return Modifier.isTransient(field.getModifiers());
+  }
+  
   public static boolean isNonStaticInnerClass(Class<?> javaClass) {
     return javaClass.getEnclosingClass() != null && !Modifier.isStatic(javaClass.getModifiers());
   }
   
+  public static boolean isStatic(Field field) {
+    return Modifier.isStatic(field.getModifiers());
+  }
+
   public static void setValueForField(final Object owner, final String fieldName, final Object value) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
@@ -100,7 +108,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);  
     }
   }
-  
+
   private ReflectionUtil() {}
   
     
