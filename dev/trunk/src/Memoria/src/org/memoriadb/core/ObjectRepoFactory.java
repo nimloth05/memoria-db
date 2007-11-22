@@ -1,8 +1,7 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.handler.HandlerClassHandler;
 import org.memoriadb.core.handler.array.ArrayHandler;
-import org.memoriadb.core.handler.def.*;
+import org.memoriadb.core.handler.def.HandlerClassHandler;
 import org.memoriadb.core.handler.field.FieldClassHandler;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;

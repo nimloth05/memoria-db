@@ -1,11 +1,13 @@
 package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.handler.enu.EnumHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.util.*;
 
 public class ObjectModeStrategy implements IModeStrategy {
+  
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
     
@@ -13,6 +15,12 @@ public class ObjectModeStrategy implements IModeStrategy {
       TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
       if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(transactionHandler, typeInfo.getJavaClass());
       return transactionHandler.getIdFactory().getArrayMemoriaClass();
+    }
+    
+    if (obj.getClass().isEnum()) {
+      Class<?> enumClass = obj.getClass();
+      if (enumClass.getSuperclass().isEnum()) enumClass = enumClass.getSuperclass();
+      return addTypeHierarchy(transactionHandler, enumClass);
     }
     
     return addTypeHierarchy(transactionHandler, obj.getClass());
@@ -42,6 +50,13 @@ public class ObjectModeStrategy implements IModeStrategy {
     // if the class is already in the store, all it's superclasses must also be known. Do nothing.
     if (classObject != null) {
       return transactionHandler.getObjectId(classObject);
+    }
+    
+    if (javaClass.isEnum()) {
+      IMemoriaClassConfig enumClassObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
+      IObjectId result = transactionHandler.internalSave(enumClassObject);
+      recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+      return result;
     }
 
     // add the current class and all its superclasses to the store

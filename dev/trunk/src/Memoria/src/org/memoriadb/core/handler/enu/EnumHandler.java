@@ -1,0 +1,45 @@
+package org.memoriadb.core.handler.enu;
+
+import java.io.*;
+
+import org.memoriadb.core.*;
+import org.memoriadb.core.file.ISerializeContext;
+import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.load.IReaderContext;
+
+public class EnumHandler implements ISerializeHandler {
+
+  private final String fName;
+
+  public EnumHandler(Class<?> javaClass) {
+    this(javaClass.getName());
+  }
+
+  public EnumHandler(String name) {
+    fName = name;
+  }
+
+  @Override
+  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {}
+
+  @Override
+  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    return null;
+  }
+
+  @Override
+  public String getClassName() {
+    return fName;
+  }
+
+  @Override
+  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+    
+    
+  }
+
+  @Override
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {}
+
+}

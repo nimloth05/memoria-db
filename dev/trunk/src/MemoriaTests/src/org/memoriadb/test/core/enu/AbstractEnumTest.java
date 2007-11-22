@@ -65,6 +65,18 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     EnumUse l3_obj = fObjectStore.getObject(objId);
     assertEquals(l2_obj.getEnum(), l3_obj.getEnum());
   }
+  
+  public void test_use_enum_in_a_object_field() {
+    ObjectEnumUse obj = new ObjectEnumUse();
+    obj.setEnum(TestEnum.b);
+    IObjectId id = save(obj);
+    
+    reopen();
+    
+    ObjectEnumUse l1_obj = get(id);
+    assertEquals(TestEnum.b, l1_obj.getEnum());
+    
+  }
 
 
 }

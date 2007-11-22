@@ -20,6 +20,50 @@ public final class ReflectionUtil {
     }
   }
   
+  /**
+   * Creates an instance by a string ctor.
+   * 
+   * @param <T>
+   * @param className
+   * @param arg
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T createInstance(String className, String arg) {
+    try {
+      Class<?> clazz = getClass(className);
+      Constructor<?> ctor = clazz.getDeclaredConstructor(arg.getClass());
+      ctor.setAccessible(true);
+      return (T) ctor.newInstance(arg);
+    }
+    catch (NoSuchMethodException e) {
+      return null;
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+  
+  public static <T> T createInstanceWithDefaultOrStringCtor(String className, String arg) {
+    try {
+      Class<?> clazz = getClass(className);
+      for(Constructor<?> ctor: clazz.getDeclaredConstructors()) {
+        Class<?>[] parameterTypes = ctor.getParameterTypes();
+        if (parameterTypes.length == 0) {
+          return (T) ctor.newInstance();
+        }
+        
+        if (parameterTypes.length == 1 && parameterTypes[0].equals(String.class)) {
+          return (T) ctor.newInstance(arg);
+        }
+      }
+      throw new MemoriaException("Could not find a default ctor or a ctro with a single String argument");
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+  
   public static Class<?> getClass(String javaClassName) {
     try {
       return Class.forName(javaClassName);
@@ -28,7 +72,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
-  
+ 
   public static TypeInfo getComponentTypeInfo(Class<?> componentType) {
     int dimension = 1;
     componentType = componentType.getComponentType();
@@ -38,7 +82,7 @@ public final class ReflectionUtil {
     }
     return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
   }
- 
+  
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
     for(Field field: fields) {
@@ -48,7 +92,7 @@ public final class ReflectionUtil {
     if (clazz.getSuperclass() == null) throw new SchemaException("No such field. Class: "+ clazz+ " field: "+name);
     return getField(clazz.getSuperclass(), name);
   }
-  
+
   public static TypeInfo getTypeInfo(Object array) {
     if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
     return getComponentTypeInfo(array.getClass());
@@ -64,7 +108,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);  
     }
   }
-
+  
   public static boolean hasNoArgCtor(String className) {
     try {
       Class<?> clazz = getClass(className);
@@ -83,7 +127,7 @@ public final class ReflectionUtil {
   public static boolean isNonStaticInnerClass(Class<?> javaClass) {
     return javaClass.getEnclosingClass() != null && !Modifier.isStatic(javaClass.getModifiers());
   }
-  
+
   public static boolean isStatic(Field field) {
     return Modifier.isStatic(field.getModifiers());
   }

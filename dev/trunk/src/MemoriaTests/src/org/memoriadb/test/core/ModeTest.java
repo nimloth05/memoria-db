@@ -1,6 +1,5 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
