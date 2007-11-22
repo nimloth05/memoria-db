@@ -1,5 +1,6 @@
-package org.memoriadb.core;
+package org.memoriadb.core.mode;
 
+import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
 
 /**

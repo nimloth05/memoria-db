@@ -2,40 +2,23 @@ package org.memoriadb.core;
 
 import java.io.IOException;
 
-import org.memoriadb.IObjectStore;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.handler.list.CollectionHandler;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.util.ReflectionUtil;
 
 public class Bootstrap {
 
-  public static IObjectStore open(OpenConfig config, IMemoriaFile file) {
+  public static TrxHandler openOrCreate(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
     if (file == null) throw new IllegalArgumentException("File was null");
-
-    FileReader fileReader = new FileReader(file);
-    FileHeader header = readHeader(fileReader);
-
-    IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
-    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
-
-    TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
     
-    TrxHandler trxHandler = new TrxHandler(defaultInstantiator, writer, header);
+    if(file.isEmpty())  return createDb(config, file, strategy);
     
-    ObjectStore objectStore = new ObjectStore();
-    
-    if (headRevision == Constants.INITIAL_HEAD_REVISION) {
-      objectStore.beginUpdate();
-      addDefaultMetaClasses(trxHandler, ((CreateConfig)config).getCustomHandlers());
-      objectStore.endUpdate();
-    }
-    
-    return objectStore;
+    return openDb(config, file, strategy);
   }
   
   private static void addCustomHandlers(TrxHandler trxHandler, Iterable<String> customHandlers) {
@@ -43,7 +26,6 @@ public class Bootstrap {
       registerHandler(trxHandler, (ISerializeHandler)ReflectionUtil.createInstance(className));
     }
   }
-  
 
   private static void addDefaultMetaClasses(TrxHandler trxHansdler, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
@@ -59,7 +41,36 @@ public class Bootstrap {
 
     addCustomHandlers(trxHansdler, customHandlers);
   }
-  
+
+  private static TrxHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
+
+    writeHeader(config, file);
+    
+    TrxHandler trxHandler = openDb(config, file, strategy);
+    
+    // bootstap memoriaClasses
+    trxHandler.beginUpdate();
+    addDefaultMetaClasses(trxHandler, (config).getCustomHandlers());
+    trxHandler.endUpdate();
+    
+    return trxHandler;
+    
+  }
+
+  private static TrxHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
+    FileReader fileReader = new FileReader(file);
+    FileHeader header = readHeader(fileReader);
+
+    IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
+    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
+    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, strategy);
+
+    TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
+    TrxHandler trxHandler = new TrxHandler(defaultInstantiator, writer, header, strategy);
+    
+    return trxHandler;
+  }
+
   private static FileHeader readHeader(FileReader fileReader) {
     try {
       return fileReader.readHeader();
@@ -68,7 +79,6 @@ public class Bootstrap {
       throw new MemoriaException(e);
     }
   }
-  
   
   /**
    * @param handler
@@ -80,18 +90,16 @@ public class Bootstrap {
     IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, trxHandler.getIdFactory().getHandlerMetaClass());
     trxHandler.save(classConfig);
   }
-
-
+  
+  
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
-    if (file.isEmpty()) {
-      try {
-        FileHeaderHelper.writeHeader(file, config);
-      }
-      catch (IOException e) {
-        throw new MemoriaException(e);
-      }
+    try {
+      FileHeaderHelper.writeHeader(file, config);
+    }
+    catch (IOException e) {
+      throw new MemoriaException("error writing header " + file);
     }
   }
-  
+
 
 }

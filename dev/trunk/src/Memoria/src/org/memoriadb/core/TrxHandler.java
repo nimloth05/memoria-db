@@ -7,6 +7,7 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
@@ -167,39 +168,7 @@ public class TrxHandler implements ITrxHandler {
     return agent.getSurvivors(block);
   }
 
-  @Override
-  public boolean isInUpdateMode() {
-    return fUpdateCounter > 0;
-  }
-
-  public IObjectId save(Object obj) {
-    IObjectId result = internalSave(obj);
-    if (!isInUpdateMode()) writePendingChanges();
-    return result;
-  }
-
-  public IObjectId saveAll(Object root) {
-    IObjectId result = internalSaveAll(root);
-    if (!isInUpdateMode()) writePendingChanges();
-    return result;
-  }
-
-  public void writePendingChanges() {
-    if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
-
-    try {
-      fTransactionWriter.write(fAdd, fUpdate, fDelete);
-    }
-    catch (IOException e) {
-      throw new MemoriaException(e);
-    }
-
-    fAdd.clear();
-    fUpdate.clear();
-    fDelete.clear();
-  }
-
-  void internalDelete(Object obj) {
+  public void internalDelete(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
     if (info == null) return;
 
@@ -215,15 +184,15 @@ public class TrxHandler implements ITrxHandler {
     fObjectRepo.delete(obj);
     fDelete.add(info);
   }
- 
-  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
+
+  public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepo.getMemoriaClass(klass);
   }
 
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
-  IObjectId internalSave(Object obj) {
+  public IObjectId internalSave(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
 
     if (info != null) {
@@ -244,6 +213,38 @@ public class TrxHandler implements ITrxHandler {
     ObjectInfo result = fObjectRepo.add(obj, memoriaClassId);
     fAdd.add(getObjectInfo(obj));
     return result.getId();
+  }
+
+  @Override
+  public boolean isInUpdateMode() {
+    return fUpdateCounter > 0;
+  }
+
+  public IObjectId save(Object obj) {
+    IObjectId result = internalSave(obj);
+    if (!isInUpdateMode()) writePendingChanges();
+    return result;
+  }
+ 
+  public IObjectId saveAll(Object root) {
+    IObjectId result = internalSaveAll(root);
+    if (!isInUpdateMode()) writePendingChanges();
+    return result;
+  }
+
+  public void writePendingChanges() {
+    if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
+
+    try {
+      fTransactionWriter.write(fAdd, fUpdate, fDelete);
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
+
+    fAdd.clear();
+    fUpdate.clear();
+    fDelete.clear();
   }
 
   private IObjectId addMemoriaClassIfNecessary(Object obj) {

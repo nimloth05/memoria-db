@@ -9,8 +9,10 @@ public class PhysicalFile extends AbstractMemoriaFile {
 
   private final RandomAccessFile fRandomAccessFile;
   private FileLock fLock;
+  private final String fPath;
 
   public PhysicalFile(String path) {
+    fPath = path;
     try {
       fRandomAccessFile = new RandomAccessFile(path, "rws");
       fLock = fRandomAccessFile.getChannel().tryLock();
@@ -108,6 +110,11 @@ public class PhysicalFile extends AbstractMemoriaFile {
     internalWrite(data, offset);
   }
 
+  @Override
+  public String toString() {
+    return fPath;
+  }
+  
   private void internalWrite(byte[] data, long offset) {
     try {
       fRandomAccessFile.seek(offset);

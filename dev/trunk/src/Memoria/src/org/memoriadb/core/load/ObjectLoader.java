@@ -8,6 +8,7 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.id.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.exception.MemoriaException;
 
 public final class ObjectLoader implements IReaderContext {

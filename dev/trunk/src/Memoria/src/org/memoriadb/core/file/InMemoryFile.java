@@ -72,4 +72,9 @@ public class InMemoryFile extends AbstractMemoriaFile {
     return fData[(int)index] & 0xFF;
   }
   
+  @Override
+  public String toString() {
+    return "in memory file";
+  }
+  
 }

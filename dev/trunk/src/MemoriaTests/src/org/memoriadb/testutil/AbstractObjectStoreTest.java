@@ -10,6 +10,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.mode.ObjectStore;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   

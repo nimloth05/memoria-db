@@ -1,11 +1,9 @@
 package org.memoriadb;
 
-import java.io.File;
-
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.load.ObjectLoader;
-import org.memoriadb.util.*;
+import org.memoriadb.core.mode.*;
+import org.memoriadb.util.Version;
 
 /**
  * 
@@ -34,8 +32,6 @@ public final class Memoria {
   }
 
   /**
-   * Creates an db backed with an in-memory file
-   * 
    * @return An ObjectStore backed with an in-memory file
    */
   public static IObjectStore open(CreateConfig config) {
@@ -43,108 +39,27 @@ public final class Memoria {
   }
 
   public static IObjectStore open(CreateConfig config, IMemoriaFile file) {
-    if (file == null) throw new IllegalArgumentException("File was null");
-    writeHeader(config, file);
-    return open((OpenConfig) config, file);
+    return new ObjectStore(Bootstrap.openOrCreate(config, file, new ObjectModeStrategy()));
   }
 
   public static IObjectStore open(CreateConfig config, String path) {
-    if (new File(path).exists()) return open((OpenConfig) config, path);
     return open(config, new PhysicalFile(path));
   }
-
-  public static IObjectStore open(OpenConfig config, IMemoriaFile file) {
-    if (file == null) throw new IllegalArgumentException("File was null");
-
-    FileReader fileReader = new FileReader(file);
-    FileHeader header = readHeader(fileReader);
-
-    IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
-    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
-
-    TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
-    ObjectStore objectStore = new ObjectStore(new TrxHandler(defaultInstantiator, writer, header));
-    
-    if (headRevision == Constants.INITIAL_HEAD_REVISION) {
-      objectStore.beginUpdate();
-      addDefaultMetaClasses(objectStore, ((CreateConfig)config).getCustomHandlers());
-      objectStore.endUpdate();
-    }
-    
-    return objectStore;
-  }
-
+  
   /**
-   * @return An ObjectStore backed with a file.
-   * @pre The db-file must exist.
+   * @return An ObjectStore backed with an in-memory file
    */
-  public static IObjectStore open(OpenConfig config, String path) {
-    return open(config, new PhysicalFile(path));
+  public static IDataStore openDataMode(CreateConfig config) {
+    return openDataMode(config, new InMemoryFile());
   }
 
-<<<<<<< .mine
-=======
-  private static void addCustomHandlers(ObjectStore store, Iterable<String> customHandlers) {
-    for (String className : customHandlers) {
-      registerHandler(store, (ISerializeHandler)ReflectionUtil.createInstance(className));
-    }
-  }
-  
-  private static void addDefaultMetaClasses(ObjectStore store, Iterable<String> customHandlers) {
-    // These classObjects don't need a fix known ID.
-    IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, store.getMemoriaFieldMetaClass());
-    //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
-    store.save(objectMemoriaClass);
-
-    registerHandler(store, new CollectionHandler.ArrayListHandler());
-    registerHandler(store, new CollectionHandler.LinkedListHandler());
-    registerHandler(store, new CollectionHandler.CopyOnWriteListHandler());
-    registerHandler(store, new CollectionHandler.StackHandler());
-    registerHandler(store, new CollectionHandler.VectorHandler());
-    registerHandler(store, new CollectionHandler.HashSetHandler());
-    registerHandler(store, new CollectionHandler.LinkedHashSetHandler());
-    registerHandler(store, new CollectionHandler.TreeSetHandler());
-    registerHandler(store, new CollectionHandler.ConcurrentSkipListSetHandler());
-    
-
-    addCustomHandlers(store, customHandlers);
-    
+  public static IDataStore openDataMode(CreateConfig config, IMemoriaFile file) {
+    return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
   }
 
-  
-  private static FileHeader readHeader(FileReader fileReader) {
-    try {
-      return fileReader.readHeader();
-    }
-    catch (IOException e) {
-      throw new MemoriaException(e);
-    }
+  public static IDataStore openDataMode(CreateConfig config, String path) {
+    return openDataMode(config, new PhysicalFile(path));
   }
-
-
-  /**
-   * @param handler
-   *          The handler to handle objects of type <tt>className</tt>.
-   * @param className
-   *          Name of the class the given <tt>handler</tt> can deal with.
-   */
-  private static void registerHandler(ObjectStore store, ISerializeHandler handler) {
-    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, store.getHandlerMetaClass());
-    store.save(classConfig);
-  }
-  
-  private static void writeHeader(CreateConfig config, IMemoriaFile file) {
-    if (file.isEmpty()) {
-      try {
-        FileHeaderHelper.writeHeader(file, config);
-      }
-      catch (IOException e) {
-        throw new MemoriaException(e);
-      }
-    }
-  }
->>>>>>> .r171
 
   private Memoria() {}
 

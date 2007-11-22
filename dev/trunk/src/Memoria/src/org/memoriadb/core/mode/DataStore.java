@@ -1,17 +1,16 @@
-package org.memoriadb.core;
+package org.memoriadb.core.mode;
 
 import java.util.*;
 
 import org.memoriadb.IFilter;
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.query.ClassModeQueryStrategy;
-import org.memoriadb.exception.MemoriaException;
 
-public class DataStore implements IDataStoreExt, IModeStrategy {
+public class DataStore implements IDataStoreExt {
 
   private final TrxHandler fTrxHandler;
   private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
@@ -20,25 +19,11 @@ public class DataStore implements IDataStoreExt, IModeStrategy {
     fTrxHandler = trxHandler;
   }
 
-  @Override
-  public IObjectId addMemoriaClassIfNecessary(final TrxHandler trxHandler, Object obj) {
-    if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject");
-    
-    IDataObject dataObject = (IDataObject) obj;
-    if (!trxHandler.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
-    
-    return dataObject.getMemoriaClassId();
-  }
-
 
   @Override
   public void beginUpdate() {
     fTrxHandler.beginUpdate();
   }
-
-  @Override
-  public void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
-
 
   @Override
   public void checkIndexConsistancy() {
@@ -176,16 +161,16 @@ public class DataStore implements IDataStoreExt, IModeStrategy {
     return fTrxHandler.getSurvivors(block);
   }
 
-  @Override
-  public boolean isInDataMode() {
-    return true;
-  }
 
+  public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
+    return fTrxHandler.internalGetMemoriaClass(klass);
+  }
+  
+  
   @Override
   public boolean isInUpdateMode() {
     return fTrxHandler.isInUpdateMode();
   }
-  
   
   public IObjectId save(Object obj) {
     return fTrxHandler.save(obj);
@@ -194,18 +179,14 @@ public class DataStore implements IDataStoreExt, IModeStrategy {
   public IObjectId saveAll(Object root) {
     return fTrxHandler.saveAll(root);
   }
-  
+
+
   public void writePendingChanges() {
     fTrxHandler.writePendingChanges();
   }
 
-
   void internalDelete(Object obj) {
     fTrxHandler.internalDelete(obj);
-  }
-
-  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
-    return fTrxHandler.internalGetMemoriaClass(klass);
   }
 
   /**
