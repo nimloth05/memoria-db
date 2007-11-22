@@ -1,10 +1,9 @@
-package org.memoriadb.core.handler.def;
+package org.memoriadb.core.handler;
 
 import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.MemoriaHandlerClass;

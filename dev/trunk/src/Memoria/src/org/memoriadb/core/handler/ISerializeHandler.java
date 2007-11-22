@@ -10,14 +10,12 @@ import org.memoriadb.core.load.IReaderContext;
 public interface ISerializeHandler {
 
   /**
-   * 
    * @param className the name of the java class
    * @param defaultInstantiator
    */
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator);
   
   /**
-   * 
    * @param input
    * @param context TODO
    * @param typeId TODO
@@ -30,7 +28,6 @@ public interface ISerializeHandler {
    */
   public String getClassName();
   /**
-   * 
    * @param obj - object to serialize
    * @param output - the stream
    * @param context TODO

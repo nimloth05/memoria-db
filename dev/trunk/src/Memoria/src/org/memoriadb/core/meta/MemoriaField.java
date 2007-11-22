@@ -15,11 +15,9 @@ public final class MemoriaField {
   }
 
   /**
-   * 
    * @param id
    * @param name
    * @param ordinal
-   * 
    */
   public MemoriaField(int id, String name, Type type) {
     fFieldId = id;

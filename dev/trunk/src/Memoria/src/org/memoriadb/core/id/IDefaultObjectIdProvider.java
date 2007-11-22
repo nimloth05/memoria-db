@@ -17,6 +17,12 @@ public interface IDefaultObjectIdProvider {
   
   public IObjectId getObjectDeletionMarker();
   
+  /**
+   * @return Id of primitives (String, Integer, int, etc.). No MemoriaClass is created, 
+   * the returned id is never contained in the store.
+   */
+  public IObjectId getPrimitiveClassId();
+  
   public IObjectId getRootClassId();
   
   public boolean isMemoriaClassDeletionMarker(IObjectId typeId);

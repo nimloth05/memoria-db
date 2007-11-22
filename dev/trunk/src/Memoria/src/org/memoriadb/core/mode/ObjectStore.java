@@ -6,9 +6,12 @@ import org.memoriadb.IFilter;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.query.*;
+import org.memoriadb.exception.*;
+import org.memoriadb.util.ReflectionUtil;
 
 public class ObjectStore implements IObjectStoreExt  {
 
@@ -22,13 +25,10 @@ public class ObjectStore implements IObjectStoreExt  {
     fTransactionHandler = transactionHandler;
   }
 
- 
-
   @Override
   public void beginUpdate() {
     fTransactionHandler.beginUpdate();
   }
-
 
   @Override
   public void checkIndexConsistancy() {
@@ -173,17 +173,19 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   public IObjectId save(Object obj) {
+    checkObject(obj);
     return fTransactionHandler.save(obj);
   }
 
   public IObjectId saveAll(Object root) {
+    checkObject(root);
     return fTransactionHandler.saveAll(root);
   }
-  
-  
+
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
+  
   
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
@@ -192,13 +194,24 @@ public class ObjectStore implements IObjectStoreExt  {
   /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
-
-
+  
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
     return fTransactionHandler.internalSave(obj);
+  }
+
+
+  private void checkObject(Object obj) {
+    if(obj instanceof IDataObject) throw new MemoriaException("IDataObjects are for data-mode only: " + obj);
+    
+    if (ReflectionUtil.isNonStaticInnerClass(obj.getClass())) {
+      throw new SchemaException("Can not save non-static inner classes " + obj.getClass());
+    }
+    
+    if(Type.isPrimitive(obj)) throw new MemoriaException("can not save primitive");
+    
   }
 
 }

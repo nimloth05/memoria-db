@@ -3,7 +3,6 @@ package org.memoriadb.core.mode;
 import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.SchemaException;
 import org.memoriadb.util.*;
 
 public class ObjectModeStrategy implements IModeStrategy {
@@ -22,12 +21,6 @@ public class ObjectModeStrategy implements IModeStrategy {
   @Override
   public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
     IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
-    
-    Class<?> javaClass = ReflectionUtil.getClass(memoriaClass.getJavaClassName());
-    if (ReflectionUtil.isNonStaticInnerClass(javaClass)) {
-      throw new SchemaException("Can not save non-static inner classes " + javaClass);
-    }
-    
     memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
   }
   

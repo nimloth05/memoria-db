@@ -182,6 +182,11 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
+  public IObjectId getPrimitiveClassId() {
+    return fIdFactory.getPrimitiveClassId();
+  }
+
+  @Override
   public IObjectId getRootClassId() {
     return fIdFactory.getRootClassId();
   }
@@ -202,6 +207,11 @@ public class ObjectRepo implements IObjectRepo {
   }
 
   @Override
+  public boolean isMemoriaClass(Object obj) {
+    return obj instanceof IMemoriaClass;
+  }
+
+  @Override
   public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
     return fIdFactory.isMemoriaClassDeletionMarker(typeId);
   }
@@ -216,11 +226,6 @@ public class ObjectRepo implements IObjectRepo {
     return fIdFactory.isMemoriaHandlerClass(typeId);
   }
 
-  @Override
-  public boolean isMemoriaClass(Object obj) {
-    return obj instanceof IMemoriaClass;
-  }
-
   public boolean isNullReference(IObjectId objectId) {
     return fIdFactory.isNullReference(objectId);
   }
@@ -229,12 +234,12 @@ public class ObjectRepo implements IObjectRepo {
   public boolean isObjectDeletionMarker(IObjectId typeId) {
     return fIdFactory.isObjectDeletionMarker(typeId);
   }
-
+  
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fIdFactory.isRootClassId(superClassId);
   }
-  
+
   public void updateObjectInfoAdded(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
     info.setRevision(revision);

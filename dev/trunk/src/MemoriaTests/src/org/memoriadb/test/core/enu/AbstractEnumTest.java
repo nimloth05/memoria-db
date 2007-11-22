@@ -1,6 +1,6 @@
 package org.memoriadb.test.core.enu;
 
-import org.memoriadb.core.handler.def.field.IFieldObject;
+import org.memoriadb.core.handler.field.IFieldObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.enums.*;
 import org.memoriadb.testutil.AbstractObjectStoreTest;

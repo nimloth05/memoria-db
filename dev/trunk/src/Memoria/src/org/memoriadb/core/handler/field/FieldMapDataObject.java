@@ -1,4 +1,4 @@
-package org.memoriadb.core.handler.def.field;
+package org.memoriadb.core.handler.field;
 
 import java.util.*;
 

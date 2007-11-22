@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.crud.basic;
 
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.SchemaException;
+import org.memoriadb.exception.*;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
@@ -130,6 +130,33 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertTrue(fObjectStore.containsId(id));
   }
   
+  public void test_save_primitive_fails() {
+    
+    beginUpdate();
+    
+    try{
+      save(1);
+      fail("primitive was saved");
+    }
+    catch(MemoriaException e) {
+    }
+    
+    try{
+      save(new Integer(1));
+      fail("primitive was saved");
+    }
+    catch(MemoriaException e) {
+    }
+
+    try{
+      save("str");
+      fail("primitive was saved");
+    }
+    catch(MemoriaException e) {
+    }
+    
+  }
+  
   public void test_save_reference() {
     B b = new B("b");
     A a = new A(b);
@@ -244,5 +271,6 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     A l3_a = fObjectStore.getObject(id);
     assertNotNull(l3_a.getB());
   }
+  
   
 }

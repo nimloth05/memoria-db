@@ -8,7 +8,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
-public class BasicMultiDimensionalArrayTest extends AbstractObjectStoreTest {
+public abstract class BasicMultiDimensionalArrayTest extends AbstractObjectStoreTest {
 
   public void test_int_array() {
     int[][] arr = new int[][]{new int[]{1,2}, new int[]{3,4,5}};

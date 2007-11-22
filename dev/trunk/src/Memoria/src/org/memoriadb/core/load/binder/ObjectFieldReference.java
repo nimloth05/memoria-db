@@ -1,6 +1,6 @@
 package org.memoriadb.core.load.binder;
 
-import org.memoriadb.core.handler.def.field.IFieldObject;
+import org.memoriadb.core.handler.field.IFieldObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 import org.memoriadb.exception.MemoriaException;

@@ -57,7 +57,7 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
 
   @Override
   public ISerializeHandler getHandler() {
-    return new org.memoriadb.core.handler.def.field.DefaultHandler(this);
+    return new org.memoriadb.core.handler.field.DefaultHandler(this);
   }
 
   @Override

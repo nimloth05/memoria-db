@@ -15,6 +15,7 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   private static final IObjectId MEMORIA_CLASS_DELETED = new LongObjectId(-2);
   private static final IObjectId OBJECT_DELETED =    new LongObjectId(-3);
   private static final IObjectId NULL_REFERENCE_ID =    new LongObjectId(-4);
+  private static final IObjectId PRIMITIVE_CLASS_ID =    new LongObjectId(-5);
   
   private long fCurrentObjectId = 0;
 
@@ -68,6 +69,11 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   @Override
   public IObjectId getObjectDeletionMarker() {
     return OBJECT_DELETED;
+  }
+
+  @Override
+  public IObjectId getPrimitiveClassId() {
+    return PRIMITIVE_CLASS_ID;
   }
 
   @Override

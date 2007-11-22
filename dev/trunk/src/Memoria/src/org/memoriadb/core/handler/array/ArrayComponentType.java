@@ -1,4 +1,4 @@
-package org.memoriadb.core.handler.def;
+package org.memoriadb.core.handler.array;
 // FIXME kann entfernt werden, abgelöst durch Type, msc
 public enum ArrayComponentType {
 
