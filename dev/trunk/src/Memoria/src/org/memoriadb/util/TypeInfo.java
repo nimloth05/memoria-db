@@ -35,7 +35,11 @@ public class TypeInfo {
   }
 
   public Class<?> getJavaClass() {
-    if (fComponentType == Type.typeClass) return ReflectionUtil.getClass(getClassName());
-    return fComponentType.getClassLiteral();
+    if (fComponentType.isPrimitive()) return fComponentType.getClassLiteral();
+    return ReflectionUtil.getClass(getClassName());
+  }
+
+  public boolean isPrimitive() {
+    return fComponentType.isPrimitive();
   }
 }

@@ -46,15 +46,25 @@ public final class ObjectLoader implements IReaderContext {
   } 
 
   @Override
+  public IObjectId getArrayMemoriaClass() {
+    return fRepo.getArrayMemoriaClass();
+  }
+
+  @Override
   public IDefaultInstantiator getDefaultInstantiator() {
     return fDefaultInstantiator;
   }
-
+  
   @Override
   public Object getObjectById(IObjectId objectId) {
     return fRepo.getObject(objectId);
   }
-  
+
+  @Override
+  public IObjectId getPrimitiveClassId() {
+    return fRepo.getPrimitiveClassId();
+  }
+
   @Override
   public boolean isInDataMode() {
     return fStore.isDataMode();
@@ -64,7 +74,7 @@ public final class ObjectLoader implements IReaderContext {
   public boolean isNullReference(IObjectId objectId) {
     return fRepo.isNullReference(objectId);
   }
-
+  
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fRepo.isRootClassId(superClassId);
@@ -74,7 +84,7 @@ public final class ObjectLoader implements IReaderContext {
   public void objectToBind(IBindable bindable) {
     fObjectsToBind.add(bindable);
   }
-  
+
   public long read() {
     try {
       long headRevision = readBlockData();

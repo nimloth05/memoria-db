@@ -11,7 +11,7 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.BindArray;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.util.TypeInfo;
 
 public class ArrayHandler implements ISerializeHandler {
 
@@ -23,11 +23,11 @@ public class ArrayHandler implements ISerializeHandler {
     int dimension = input.readInt();
     int length = input.readInt();
     Type componentType = Type.values()[input.readByte()];
-    
+
     IArray array = instantiateArray(input, context, dimension, length, componentType);
-    
-    if(dimension == 1) {
-      if(componentType.isPrimitive()) { 
+
+    if (dimension == 1) {
+      if (componentType.isPrimitive()) {
         readPrimitives(input, context, array, componentType);
       }
       else {
@@ -38,8 +38,8 @@ public class ArrayHandler implements ISerializeHandler {
       // multidimensional array, read components, which are also arrays
       readObjects(input, context, array);
     }
-    
-    return array;
+
+    return array.getResult();
   }
 
   @Override
@@ -51,19 +51,18 @@ public class ArrayHandler implements ISerializeHandler {
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
     IArray array = getArray(obj);
 
-    TypeInfo componentTypeInfo = ReflectionUtil.getComponentTypeInfo(array.getClass());
-    int arrayLength = Array.getLength(array);
+    TypeInfo componentTypeInfo = array.getComponentTypeInfo();
 
     output.writeInt(componentTypeInfo.getDimension());
-    output.writeInt(arrayLength);
+    output.writeInt(array.length());
     output.writeByte(componentTypeInfo.getComponentType().ordinal());
-    
+
     // if componentType is a class, write MemoriaClassId
-    if(componentTypeInfo.getComponentType() == Type.typeClass) {
+    if (componentTypeInfo.getComponentType() == Type.typeClass) {
       context.getMemoriaClassId(componentTypeInfo.getClassName()).writeTo(output);
     }
-    
-    if(componentTypeInfo.getDimension() == 1) {
+
+    if (componentTypeInfo.getDimension() == 1) {
       // store content of the array, either primitives are objectIds
       storeArrayContent(context, output, componentTypeInfo, array);
     }
@@ -76,41 +75,41 @@ public class ArrayHandler implements ISerializeHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     IArray array = getArray(obj);
-    
+
     int length = array.length();
     for (int i = 0; i < length; ++i) {
       Object object = array.get(i);
-      if(object == null) continue;
-      if(Type.isPrimitive(object)) continue;
-       
+      if (object == null) continue;
+      if (Type.isPrimitive(object)) continue;
+
       traversal.handle(object);
     }
   }
 
   private IArray getArray(Object obj) {
-    if(obj instanceof IArray){
-      return (IArray) obj;
-    }
+    if (obj instanceof IArray) { return (IArray) obj; }
 
     return new ObjectArray(obj);
   }
 
-  private IArray instantiateArray(DataInputStream input, IReaderContext context, int dimension, int length, Type componentType) throws IOException {
-    String componentClassName = null;
-    if(componentType == Type.typeClass){
-      // read MemoriaClass of componentType
-      IObjectId memoriaClassId = context.readObjectId(input);
-      IMemoriaClassConfig memoriaClass = (IMemoriaClassConfig) context.getObjectById(memoriaClassId);
-      componentClassName = memoriaClass.getJavaClassName();
-      return new ObjectArray(memoriaClassId, memoriaClass, dimension, length);
+  private IArray instantiateArray(DataInputStream input, IReaderContext context, int dimension, int length, Type componentType)
+      throws IOException {
+
+    if (componentType.isPrimitive()) {
+      // name is given only for debug-reasons
+      TypeInfo typeInfo = new TypeInfo(componentType, dimension, componentType.name());
+      return new ObjectArray(context.getArrayMemoriaClass(), context.getPrimitiveClassId(), typeInfo, length);
     }
-    else {
-      componentClassName = componentType.getj;
-    }
-    
+
+    // read MemoriaClass of componentType
+    IObjectId memoriaClassId = context.readObjectId(input);
+    IMemoriaClassConfig memoriaClass = (IMemoriaClassConfig) context.getObjectById(memoriaClassId);
+
+    TypeInfo typeInfo = new TypeInfo(componentType, dimension, memoriaClass.getJavaClassName());
+    return new ObjectArray(context.getArrayMemoriaClass(), memoriaClassId, typeInfo, length);
   }
 
-  private void readObject(DataInputStream input, final IReaderContext context, final Object array, final int index) {
+  private void readObject(DataInputStream input, final IReaderContext context, final IArray array, final int index) {
     Type.readValueWithType(input, context, new ITypeVisitor() {
 
       @Override
@@ -120,19 +119,19 @@ public class ArrayHandler implements ISerializeHandler {
 
       @Override
       public void visitEnum(Type type, int enumOrdinal) {
-        //FIXME muss noch implementiert werden
+      // FIXME muss noch implementiert werden
       }
 
       @Override
       public void visitPrimitive(Type type, Object value) {
-        Array.set(array, index, value);
+        array.set(index, value);
       }
-      
-    });    
+
+    });
   }
 
-  private void readObjects(DataInputStream input, IReaderContext context, Object array) {
-    for(int i = 0; i < Array.getLength(array); ++i) {
+  private void readObjects(DataInputStream input, IReaderContext context, IArray array) {
+    for (int i = 0; i < array.length(); ++i) {
       readObject(input, context, array, i);
     }
   }
@@ -152,14 +151,14 @@ public class ArrayHandler implements ISerializeHandler {
 
       @Override
       public void visitPrimitive(Type type, Object value) {
-        array.set(index, value);        
+        array.set(index, value);
       }
-      
+
     });
   }
 
   private void readPrimitives(DataInputStream input, IReaderContext context, IArray array, Type componentType) {
-    for(int i = 0; i < Array.getLength(array); ++i) {
+    for (int i = 0; i < array.length(); ++i) {
       readPrimitive(input, context, array, i, componentType);
     }
   }
@@ -167,10 +166,10 @@ public class ArrayHandler implements ISerializeHandler {
   /**
    * Stores the content of an one-dimensional array, either primitives or references
    */
-  private void storeArrayContent(ISerializeContext context, DataOutputStream output, TypeInfo componentTypeInfo, IArray array) throws IOException {
-    if(componentTypeInfo.getDimension() != 1) throw new MemoriaException("one dimensional array expected");
-    
-    if(componentTypeInfo.getComponentType().isPrimitive()){
+  private void storeArrayContent(ISerializeContext context, DataOutputStream output, TypeInfo componentTypeInfo, IArray array) {
+    if (componentTypeInfo.getDimension() != 1) throw new MemoriaException("one dimensional array expected");
+
+    if (componentTypeInfo.getComponentType().isPrimitive()) {
       writePrimitives(context, output, componentTypeInfo, array);
     }
     else {
@@ -179,26 +178,26 @@ public class ArrayHandler implements ISerializeHandler {
   }
 
   /**
-   *  Writes the id of the given obj to the given stream or NullReference, if the given obj is null. 
+   * Writes the id of the given obj to the given stream or NullReference, if the given obj is null.
    */
-  private void writeObject(ISerializeContext context, DataOutputStream output, Object obj) throws IOException {
-    if(obj == null){
+  private void writeObject(ISerializeContext context, DataOutputStream output, Object obj)  {
+    if (obj == null) {
       Type.writeValueWithType(output, null, context, Type.typeClass);
       return;
     }
-    
+
     Type.writeValueWithType(output, obj, context);
   }
 
-  private void writeObjects(ISerializeContext context, DataOutputStream output, IArray array) throws IOException {
-    for(int i = 0; i < array.length(); ++i){
+  private void writeObjects(ISerializeContext context, DataOutputStream output, IArray array) {
+    for (int i = 0; i < array.length(); ++i) {
       writeObject(context, output, array.get(i));
     }
   }
 
   private void writePrimitives(ISerializeContext context, DataOutputStream output, TypeInfo componentTypeInfo, IArray array) {
-    for(int i = 0; i < Array.getLength(array); ++i){
-      componentTypeInfo.getComponentType().writeValue(output, Array.get(array, i), context);
+    for (int i = 0; i < array.length(); ++i) {
+      componentTypeInfo.getComponentType().writeValue(output, array.get(i), context);
     }
   }
 
