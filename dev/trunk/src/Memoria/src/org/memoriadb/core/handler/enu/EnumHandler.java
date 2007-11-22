@@ -7,6 +7,7 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.meta.IMemoriaClass;
 
 public class EnumHandler implements ISerializeHandler {
 
@@ -25,7 +26,9 @@ public class EnumHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
-    return null;
+    IEnumObject enumObject = createEnumObject(context, typeId);
+    enumObject.setOrdinal(input.readInt());
+    return enumObject.getObject((IMemoriaClass) context.getObjectById(typeId));
   }
 
   @Override
@@ -35,11 +38,21 @@ public class EnumHandler implements ISerializeHandler {
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
-    
-    
+    IEnumObject enumObject = createEnumObject(obj);
+    output.writeInt(enumObject.getOrdinal());
   }
 
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {}
+  
+  private IEnumObject createEnumObject(IReaderContext context, IObjectId memoriaClassId) {
+    if (context.isInDataMode()) return new EnumDataObject(memoriaClassId);
+    return new EnumObject(memoriaClassId);
+  }
+
+  private IEnumObject createEnumObject(Object obj) {
+    if (obj instanceof IEnumObject) return (IEnumObject) obj;
+    return new EnumObject((Enum<?>) obj);
+  }
 
 }
