@@ -11,7 +11,7 @@ import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
-public class TrxHandler implements ITrxHandler {
+public class TransactionHandler implements ITrxHandler {
 
   private final IObjectRepo fObjectRepo;
   private final ITransactionWriter fTransactionWriter;
@@ -25,7 +25,7 @@ public class TrxHandler implements ITrxHandler {
   private final FileHeader fHeader;
   private final IModeStrategy fStore;
 
-  public TrxHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header, IModeStrategy store) {
+  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header, IModeStrategy store) {
     fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = writer;
     fHeader = header;

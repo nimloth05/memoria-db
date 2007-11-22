@@ -8,11 +8,11 @@ import org.memoriadb.exception.MemoriaException;
 public class DataModeStrategy implements IModeStrategy {
  
   @Override
-  public IObjectId addMemoriaClassIfNecessary(final TrxHandler trxHandler, Object obj) {
+  public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
     if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject");
     
     IDataObject dataObject = (IDataObject) obj;
-    if (!trxHandler.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
+    if (!transactionHandler.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId");
     
     return dataObject.getMemoriaClassId();
   }
@@ -22,7 +22,7 @@ public class DataModeStrategy implements IModeStrategy {
 
 
   @Override
-  public boolean isInDataMode() {
+  public boolean isDataMode() {
     return true;
   }
   

@@ -12,112 +12,112 @@ import org.memoriadb.core.query.ClassModeQueryStrategy;
 
 public class DataStore implements IDataStoreExt {
 
-  private final TrxHandler fTrxHandler;
+  private final TransactionHandler fTransactionHandler;
   private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
   
-  public DataStore(TrxHandler trxHandler) {
-    fTrxHandler = trxHandler;
+  public DataStore(TransactionHandler transactionHandler) {
+    fTransactionHandler = transactionHandler;
   }
 
 
   @Override
   public void beginUpdate() {
-    fTrxHandler.beginUpdate();
+    fTransactionHandler.beginUpdate();
   }
 
   @Override
   public void checkIndexConsistancy() {
-    fTrxHandler.checkIndexConsistancy();
+    fTransactionHandler.checkIndexConsistancy();
   }
 
   @Override
   public void close() {
-    fTrxHandler.close();
+    fTransactionHandler.close();
   }
 
   @Override
   public boolean contains(Object obj) {
-    return fTrxHandler.contains(obj);
+    return fTransactionHandler.contains(obj);
   }
 
   @Override
   public boolean containsId(IObjectId id) {
-    return fTrxHandler.contains(id);
+    return fTransactionHandler.contains(id);
   }
 
   @Override
   public void delete(Object obj) {
-    fTrxHandler.delete(obj);
+    fTransactionHandler.delete(obj);
   }
 
   @Override
   public void deleteAll(Object root) {
-    fTrxHandler.deleteAll(root);
+    fTransactionHandler.deleteAll(root);
   }
 
   @Override
   public void endUpdate() {
-    fTrxHandler.endUpdate();
+    fTransactionHandler.endUpdate();
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> getAll(Class<T> clazz) {
-    return fQueryStrategy.getAll(fTrxHandler.getObjectRepo(), clazz);
+    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
   }
 
   @Override
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    return fQueryStrategy.getAll(fTrxHandler.getObjectRepo(), clazz, filter);
+    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
 
   @Override
   public List<Object> getAll(String clazz) {
-    return fQueryStrategy.getAll(fTrxHandler.getObjectRepo(), clazz);
+    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
   }
 
   @Override
   public List<Object> getAll(String clazz, IFilter<Object> filter) {
-    return fQueryStrategy.getAll(fTrxHandler.getObjectRepo(), clazz, filter);
+    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
 
   @Override
   public Collection<Object> getAllObjects() {
-    return fTrxHandler.getAllObjects();
+    return fTransactionHandler.getAllObjects();
   }
 
   @Override
   public IBlockManager getBlockManager() {
-    return fTrxHandler.getBlockManager();
+    return fTransactionHandler.getBlockManager();
   }
 
   public IMemoriaFile getFile() {
-    return fTrxHandler.getFile();
+    return fTransactionHandler.getFile();
   }
 
   @Override
   public FileHeader getHeader() {
-    return fTrxHandler.getHeader();
+    return fTransactionHandler.getHeader();
   }
 
   @Override
   public long getHeadRevision() {
-    return fTrxHandler.getHeadRevision();
+    return fTransactionHandler.getHeadRevision();
   }
 
   @Override
   public IDefaultObjectIdProvider getIdFactory() {
-    return fTrxHandler.getIdFactory();
+    return fTransactionHandler.getIdFactory();
   }
 
   @Override
   public int getIdSize() {
-    return fTrxHandler.getIdSize();
+    return fTransactionHandler.getIdSize();
   }
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fTrxHandler.getMemoriaClass(clazz.getName());
+    return fTransactionHandler.getMemoriaClass(clazz.getName());
   }
 
   @Override
@@ -132,68 +132,68 @@ public class DataStore implements IDataStoreExt {
 
   @Override
   public IObjectId getMemoriaFieldMetaClass() {
-    return fTrxHandler.getMemoriaFieldMetaClass();
+    return fTransactionHandler.getMemoriaFieldMetaClass();
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(IObjectId id) {
-    return (T) fTrxHandler.getObject(id);
+    return (T) fTransactionHandler.getObject(id);
   }
 
   @Override
   public IObjectId getObjectId(Object obj) {
-    return fTrxHandler.getObjectId(obj);
+    return fTransactionHandler.getObjectId(obj);
   }
 
   @Override
   public ObjectInfo getObjectInfo(Object obj) {
-    return fTrxHandler.getObjectInfo(obj);
+    return fTransactionHandler.getObjectInfo(obj);
   }
 
   @Override
   public IObjectInfo getObjectInfoForId(IObjectId id) {
-    return fTrxHandler.getObjectInfoForId(id);
+    return fTransactionHandler.getObjectInfoForId(id);
   }
 
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
-    return fTrxHandler.getSurvivors(block);
+    return fTransactionHandler.getSurvivors(block);
   }
 
 
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
-    return fTrxHandler.internalGetMemoriaClass(klass);
+    return fTransactionHandler.internalGetMemoriaClass(klass);
   }
   
   
   @Override
   public boolean isInUpdateMode() {
-    return fTrxHandler.isInUpdateMode();
+    return fTransactionHandler.isInUpdateMode();
   }
   
   public IObjectId save(Object obj) {
-    return fTrxHandler.save(obj);
+    return fTransactionHandler.save(obj);
   }
   
   public IObjectId saveAll(Object root) {
-    return fTrxHandler.saveAll(root);
+    return fTransactionHandler.saveAll(root);
   }
 
 
   public void writePendingChanges() {
-    fTrxHandler.writePendingChanges();
+    fTransactionHandler.writePendingChanges();
   }
 
   void internalDelete(Object obj) {
-    fTrxHandler.internalDelete(obj);
+    fTransactionHandler.internalDelete(obj);
   }
 
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
-    return fTrxHandler.internalSave(obj);
+    return fTransactionHandler.internalSave(obj);
   }
   
 }

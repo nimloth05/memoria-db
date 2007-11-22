@@ -13,7 +13,7 @@ import org.memoriadb.util.ReflectionUtil;
 
 public class Bootstrap {
 
-  public static TrxHandler openOrCreate(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
+  public static TransactionHandler openOrCreate(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
     if (file == null) throw new IllegalArgumentException("File was null");
     
     if(file.isEmpty())  return createDb(config, file, strategy);
@@ -21,13 +21,13 @@ public class Bootstrap {
     return openDb(config, file, strategy);
   }
   
-  private static void addCustomHandlers(TrxHandler trxHandler, Iterable<String> customHandlers) {
+  private static void addCustomHandlers(TransactionHandler transactionHandler, Iterable<String> customHandlers) {
     for (String className : customHandlers) {
-      registerHandler(trxHandler, (ISerializeHandler)ReflectionUtil.createInstance(className));
+      registerHandler(transactionHandler, (ISerializeHandler)ReflectionUtil.createInstance(className));
     }
   }
 
-  private static void addDefaultMetaClasses(TrxHandler trxHansdler, Iterable<String> customHandlers) {
+  private static void addDefaultMetaClasses(TransactionHandler trxHansdler, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, trxHansdler.getMemoriaFieldMetaClass());
     //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
@@ -42,22 +42,22 @@ public class Bootstrap {
     addCustomHandlers(trxHansdler, customHandlers);
   }
 
-  private static TrxHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
+  private static TransactionHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
 
     writeHeader(config, file);
     
-    TrxHandler trxHandler = openDb(config, file, strategy);
+    TransactionHandler transactionHandler = openDb(config, file, strategy);
     
     // bootstap memoriaClasses
-    trxHandler.beginUpdate();
-    addDefaultMetaClasses(trxHandler, (config).getCustomHandlers());
-    trxHandler.endUpdate();
+    transactionHandler.beginUpdate();
+    addDefaultMetaClasses(transactionHandler, (config).getCustomHandlers());
+    transactionHandler.endUpdate();
     
-    return trxHandler;
+    return transactionHandler;
     
   }
 
-  private static TrxHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
+  private static TransactionHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
     FileReader fileReader = new FileReader(file);
     FileHeader header = readHeader(fileReader);
 
@@ -66,9 +66,9 @@ public class Bootstrap {
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, strategy);
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
-    TrxHandler trxHandler = new TrxHandler(defaultInstantiator, writer, header, strategy);
+    TransactionHandler transactionHandler = new TransactionHandler(defaultInstantiator, writer, header, strategy);
     
-    return trxHandler;
+    return transactionHandler;
   }
 
   private static FileHeader readHeader(FileReader fileReader) {
@@ -86,9 +86,9 @@ public class Bootstrap {
    * @param className
    *          Name of the class the given <tt>handler</tt> can deal with.
    */
-  private static void registerHandler(TrxHandler trxHandler, ISerializeHandler handler) {
-    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, trxHandler.getIdFactory().getHandlerMetaClass());
-    trxHandler.save(classConfig);
+  private static void registerHandler(TransactionHandler transactionHandler, ISerializeHandler handler) {
+    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, transactionHandler.getIdFactory().getHandlerMetaClass());
+    transactionHandler.save(classConfig);
   }
   
   

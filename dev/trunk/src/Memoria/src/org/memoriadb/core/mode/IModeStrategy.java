@@ -4,8 +4,6 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
 
 /**
- * Base-interface for IObjectStore and IDataStore.
- * 
  * @author msc
  * 
  */
@@ -13,7 +11,7 @@ public interface IModeStrategy {
   /**
    * @return ObjectId of the MemoriaClass for the given obj
    */
-  public abstract IObjectId addMemoriaClassIfNecessary(TrxHandler trxHandler, Object obj);
+  public abstract IObjectId addMemoriaClassIfNecessary(TransactionHandler transactionHandler, Object obj);
 
   /**
    * Before an object is added to the ObjectRepository, it is checked for instantiability.
@@ -23,6 +21,6 @@ public interface IModeStrategy {
   /**
    * @return true, if the db is operated in data-mode (the java classes are not required).
    */
-  public abstract boolean isInDataMode();
+  public abstract boolean isDataMode();
 
 }

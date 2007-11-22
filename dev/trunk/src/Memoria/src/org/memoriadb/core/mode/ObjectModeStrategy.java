@@ -8,16 +8,15 @@ import org.memoriadb.util.*;
 
 public class ObjectModeStrategy implements IModeStrategy {
   @Override
-  public IObjectId addMemoriaClassIfNecessary(final TrxHandler trxHandler, Object obj) {
+  public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
     
     if (obj.getClass().isArray()) {
       TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
-      if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(trxHandler, typeInfo.getJavaClass());
-      return trxHandler.getIdFactory().getArrayMemoriaClass();
+      if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(transactionHandler, typeInfo.getJavaClass());
+      return transactionHandler.getIdFactory().getArrayMemoriaClass();
     }
     
-    return addTypeHierarchy(trxHandler, obj.getClass());
-    
+    return addTypeHierarchy(transactionHandler, obj.getClass());
   }
 
   @Override
@@ -33,51 +32,51 @@ public class ObjectModeStrategy implements IModeStrategy {
   }
   
   @Override
-  public boolean isInDataMode() {
+  public boolean isDataMode() {
     return false;
   }
 
   /**
-   * @param trxHandler 
+   * @param transactionHandler 
    * @return The id of the first (most derived) class in the hierarchy, because this is the
    * typeId of the object.
    * 
    * Idempotent, already stored classes are ignored.
    */
-  private IObjectId addTypeHierarchy(TrxHandler trxHandler, Class<?> javaClass) {
-    IMemoriaClassConfig classObject = trxHandler.internalGetMemoriaClass(javaClass.getName());
+  private IObjectId addTypeHierarchy(TransactionHandler transactionHandler, Class<?> javaClass) {
+    IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
 
     // if the class is already in the store, all it's superclasses must also be known. Do nothing.
     if (classObject != null) {
-      return trxHandler.getObjectId(classObject);
+      return transactionHandler.getObjectId(classObject);
     }
 
     // add the current class and all its superclasses to the store
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, trxHandler.getMemoriaFieldMetaClass());
-    IObjectId result = trxHandler.internalSave(classObject);
+    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
+    IObjectId result = transactionHandler.internalSave(classObject);
     
-    recursiveAddTypeHierarchy(trxHandler, javaClass, classObject);
+    recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     
     return result;
   }
   
 
-  private void recursiveAddTypeHierarchy(TrxHandler trxHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
+  private void recursiveAddTypeHierarchy(TransactionHandler transactionHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
     Class<?> javaClass = superClass.getSuperclass();
     if(javaClass == null) return;
 
     // the super-class may already be there (bootstrapped, other hierarchy-branch)
-    IMemoriaClassConfig classObject = trxHandler.internalGetMemoriaClass(javaClass.getName());
+    IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
     if(classObject != null){
       subClassconfig.setSuperClass(classObject);
       return;
     }
     
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, trxHandler.getMemoriaFieldMetaClass());
-    trxHandler.internalSave(classObject);
+    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
+    transactionHandler.internalSave(classObject);
     subClassconfig.setSuperClass(classObject);
     
-    recursiveAddTypeHierarchy(trxHandler, javaClass, classObject);
+    recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
   }
   
   

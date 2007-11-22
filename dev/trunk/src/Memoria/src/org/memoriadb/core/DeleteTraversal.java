@@ -14,10 +14,10 @@ import org.memoriadb.util.IdentityHashSet;
 public class DeleteTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
-  private final TrxHandler fTrxHandler;
+  private final TransactionHandler fTransactionHandler;
   
-  public DeleteTraversal(TrxHandler trxHandler) {
-    fTrxHandler = trxHandler;
+  public DeleteTraversal(TransactionHandler transactionHandler) {
+    fTransactionHandler = transactionHandler;
   }
 
   @Override
@@ -26,8 +26,8 @@ public class DeleteTraversal implements IObjectTraversal {
     
     fVisited.add(obj);
     
-    fTrxHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
-    fTrxHandler.internalDelete(obj);
+    fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
+    fTransactionHandler.internalDelete(obj);
   }
 
 }

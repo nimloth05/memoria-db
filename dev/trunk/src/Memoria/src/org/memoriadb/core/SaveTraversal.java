@@ -14,10 +14,10 @@ import org.memoriadb.util.IdentityHashSet;
 public class SaveTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
-  private final TrxHandler fTrxHandler;
+  private final TransactionHandler fTransactionHandler;
   
-  public SaveTraversal(TrxHandler trxHandler) {
-    fTrxHandler = trxHandler;
+  public SaveTraversal(TransactionHandler transactionHandler) {
+    fTransactionHandler = transactionHandler;
   }
 
   @Override
@@ -25,9 +25,9 @@ public class SaveTraversal implements IObjectTraversal {
     if(fVisited.contains(obj)) return;
     
     fVisited.add(obj);
-    fTrxHandler.internalSave(obj);
+    fTransactionHandler.internalSave(obj);
     
-    fTrxHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
+    fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
   }
 
 }

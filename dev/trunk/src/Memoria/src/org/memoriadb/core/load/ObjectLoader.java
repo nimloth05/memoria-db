@@ -57,7 +57,7 @@ public final class ObjectLoader implements IReaderContext {
   
   @Override
   public boolean isInDataMode() {
-    return fStore.isInDataMode();
+    return fStore.isDataMode();
   }
 
   @Override
