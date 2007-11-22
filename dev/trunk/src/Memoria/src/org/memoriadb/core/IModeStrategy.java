@@ -8,7 +8,7 @@ import org.memoriadb.core.id.IObjectId;
  * @author msc
  * 
  */
-public interface IStore {
+public interface IModeStrategy {
   /**
    * @return ObjectId of the MemoriaClass for the given obj
    */

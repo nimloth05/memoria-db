@@ -11,7 +11,7 @@ import org.memoriadb.core.meta.*;
 import org.memoriadb.core.query.ClassModeQueryStrategy;
 import org.memoriadb.exception.MemoriaException;
 
-public class DataStore implements IDataStoreExt, IStore {
+public class DataStore implements IDataStoreExt, IModeStrategy {
 
   private final TrxHandler fTrxHandler;
   private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();

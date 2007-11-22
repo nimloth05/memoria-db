@@ -1,15 +1,10 @@
 package org.memoriadb;
 
-import java.io.*;
+import java.io.File;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.FileReader;
-import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.handler.list.CollectionHandler;
 import org.memoriadb.core.load.ObjectLoader;
-import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
 
 /**
@@ -69,7 +64,7 @@ public final class Memoria {
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, config.getDBMode());
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
-    ObjectStore objectStore = new ObjectStore(defaultInstantiator, writer, header);
+    ObjectStore objectStore = new ObjectStore(new TrxHandler(defaultInstantiator, writer, header));
     
     if (headRevision == Constants.INITIAL_HEAD_REVISION) {
       objectStore.beginUpdate();
@@ -88,6 +83,8 @@ public final class Memoria {
     return open(config, new PhysicalFile(path));
   }
 
+<<<<<<< .mine
+=======
   private static void addCustomHandlers(ObjectStore store, Iterable<String> customHandlers) {
     for (String className : customHandlers) {
       registerHandler(store, (ISerializeHandler)ReflectionUtil.createInstance(className));
@@ -147,6 +144,7 @@ public final class Memoria {
       }
     }
   }
+>>>>>>> .r171
 
   private Memoria() {}
 

@@ -22,9 +22,9 @@ public class TrxHandler implements ITrxHandler {
   private int fUpdateCounter = 0;
   private final IDefaultInstantiator fDefaultInstantiator;
   private final FileHeader fHeader;
-  private final IStore fStore;
+  private final IModeStrategy fStore;
 
-  public TrxHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header, IStore store) {
+  public TrxHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header, IModeStrategy store) {
     fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = writer;
     fHeader = header;

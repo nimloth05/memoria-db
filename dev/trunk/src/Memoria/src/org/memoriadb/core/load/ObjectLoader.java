@@ -23,13 +23,13 @@ public final class ObjectLoader implements IReaderContext {
   private Block fCurrentBlock;
   private final IDefaultInstantiator fDefaultInstantiator;
   private final IObjectIdFactory fIdFactory;
-  private final IStore fStore;
+  private final IModeStrategy fStore;
 
-  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IStore store) {
+  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
     return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, store).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IStore store) {
+  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
     if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
