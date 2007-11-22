@@ -18,7 +18,9 @@ public class DataModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {}
+  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
+    // FIXME was muss hier überprüft werden?
+  }
 
 
   @Override

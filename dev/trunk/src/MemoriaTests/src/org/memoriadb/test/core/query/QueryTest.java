@@ -14,7 +14,7 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(1, fStore.getAll(SimpleTestObj.class).size());
+    assertEquals(1, fObjectStore.getAll(SimpleTestObj.class).size());
   }
   
   public void test_getAll_by_class_name() {
@@ -23,7 +23,7 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(1, fStore.getAll(SimpleTestObj.class.getName()).size());
+    assertEquals(1, fObjectStore.getAll(SimpleTestObj.class.getName()).size());
   }
   
   public void test_getAll_class_name_with_filter() {
@@ -32,7 +32,7 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    List<Object> result = fStore.getAll(SimpleTestObj.class.getName(), new IFilter<Object>() {
+    List<Object> result = fObjectStore.getAll(SimpleTestObj.class.getName(), new IFilter<Object>() {
 
       @Override
       public boolean accept(Object object) {

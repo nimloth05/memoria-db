@@ -52,7 +52,7 @@ public class TransactionWriterTest extends AbstractObjectStoreTest {
     
     long opt = getBlockManager().getBlock(2).getPosition() - getBlockManager().getBlock(1).getPosition();
     assertEquals(60, opt);
-    assertEquals(opt, FileLayout.getOPO(fStore) + FileLayout.TRX_OVERHEAD + FileLayout.BLOCK_OVERHEAD);
+    assertEquals(opt, FileLayout.getOPO(fObjectStore) + FileLayout.TRX_OVERHEAD + FileLayout.BLOCK_OVERHEAD);
   }
   
   public void test_position() {

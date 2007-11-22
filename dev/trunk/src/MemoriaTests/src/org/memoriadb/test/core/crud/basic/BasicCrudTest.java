@@ -11,7 +11,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
 
   public void test_can_not_save_an_object_with_no_default_ctor() {
     try {
-      fStore.save(new NoDefault("1"));
+      fObjectStore.save(new NoDefault("1"));
       fail("InstantiationCheckException expected");
     } catch (SchemaException e) {
       //passed;
@@ -30,7 +30,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     FilePrinter.print(getFile());
     reopen();
     
-    Cyclic1 c1_l1 = (Cyclic1) fStore.getObject(idc1);
+    Cyclic1 c1_l1 = (Cyclic1) fObjectStore.getObject(idc1);
     Cyclic2 c2_l1 = c1_l1.getC2();
     
     assertNotSame(c1, c1_l1);
@@ -50,7 +50,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
    
     reopen();
     
-    Cyclic1 c1_l2 = (Cyclic1) fStore.getObject(idc1);
+    Cyclic1 c1_l2 = (Cyclic1) fObjectStore.getObject(idc1);
     Cyclic2 c3_l1 = c1_l2.getC2();
      
     assertNotSame(c3, c3_l1);
@@ -64,17 +64,17 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    Object o_l1 = fStore.getObject(id);
+    Object o_l1 = fObjectStore.getObject(id);
     assertSame(Object.class, o_l1.getClass());
   }
   
   public void test_save_attribute() {
     B b = new B("b");
-    IObjectId id = fStore.save(b);
+    IObjectId id = fObjectStore.save(b);
     
     reopen();
     
-    B b_l1 = (B) fStore.getObject(id);
+    B b_l1 = (B) fObjectStore.getObject(id);
     assertNotSame(b_l1, b);
     assertEquals("b", b_l1.getName());
   }
@@ -90,8 +90,8 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    Cyclic1 l1_c1 = fStore.getObject(c1_objectId);
-    Cyclic2 l1_c2 = fStore.getAll(Cyclic2.class).get(0);
+    Cyclic1 l1_c1 = fObjectStore.getObject(c1_objectId);
+    Cyclic2 l1_c2 = fObjectStore.getAll(Cyclic2.class).get(0);
     
     assertSame(l1_c1.getC2(), l1_c2);
     assertSame(l1_c2.getC1(), l1_c1);
@@ -99,11 +99,11 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
   
   public void test_save_null_attribute() {
     B b = new B(null);
-    IObjectId id = fStore.save(b);
+    IObjectId id = fObjectStore.save(b);
     
     reopen();
     
-    B l1_b = (B) fStore.getObject(id);
+    B l1_b = (B) fObjectStore.getObject(id);
     assertNull(l1_b.getName());
   }
   
@@ -117,7 +117,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    A l1_a = (A) fStore.getObject(id);
+    A l1_a = (A) fObjectStore.getObject(id);
     assertNull("b", l1_a.getB());
   }
   
@@ -127,7 +127,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertTrue(fStore.containsId(id));
+    assertTrue(fObjectStore.containsId(id));
   }
   
   public void test_save_reference() {
@@ -137,7 +137,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    A a_l1 = (A) fStore.getObject(id);
+    A a_l1 = (A) fObjectStore.getObject(id);
     assertEquals("b", a_l1.getB().getName());
   }
   
@@ -148,7 +148,7 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    B b_l1 = (B) fStore.getObject(id);
+    B b_l1 = (B) fObjectStore.getObject(id);
     assertEquals("b", b_l1.getName());
   }
   
@@ -158,17 +158,17 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    Object o_l1 = fStore.getObject(id);
+    Object o_l1 = fObjectStore.getObject(id);
     assertSame(SimpleTestObj.class, o_l1.getClass());
   }
   
   public void test_save_unsaved_reference() {
     A a = new A(null); // b is not saved
-    IObjectId id = fStore.save(a);
+    IObjectId id = fObjectStore.save(a);
     
     reopen();
     
-    A l1_a = fStore.getObject(id);
+    A l1_a = fObjectStore.getObject(id);
     assertNull(l1_a.getB());
   }
   
@@ -178,14 +178,14 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    SelfReference l1_obj = fStore.getObject(id);
+    SelfReference l1_obj = fObjectStore.getObject(id);
     l1_obj.assertRef();
     
-    fStore.delete(fStore.getObject(id));
+    fObjectStore.delete(fObjectStore.getObject(id));
     
     reopen();
     
-    assertFalse(fStore.containsId(id));
+    assertFalse(fObjectStore.containsId(id));
   }
   
   public void test_self_reference_with_all_functions() {
@@ -194,54 +194,54 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    SelfReference l1_obj = fStore.getObject(id);
+    SelfReference l1_obj = fObjectStore.getObject(id);
     l1_obj.assertRef();
     
-    fStore.deleteAll(l1_obj);
+    fObjectStore.deleteAll(l1_obj);
     
     reopen();
     
-    assertFalse(fStore.containsId(id));
+    assertFalse(fObjectStore.containsId(id));
   }
   
   public void test_update_attribute() {
     B b = new B("b");
-    IObjectId idb = fStore.save(b);
+    IObjectId idb = fObjectStore.save(b);
     b.setName("bb");
-    IObjectId idbb = fStore.save(b);
+    IObjectId idbb = fObjectStore.save(b);
     assertEquals(idb, idbb);
     
     reopen();
     
-    B b_l1 = (B) fStore.getObject(idbb);
+    B b_l1 = (B) fObjectStore.getObject(idbb);
     assertEquals("bb", b_l1.getName());
   }
   
   public void test_update_unsaved_reference() {
     A a = new A(null); // b is not saved
-    IObjectId id = fStore.save(a);
+    IObjectId id = fObjectStore.save(a);
     
     reopen();
     
-    A l1_a = fStore.getObject(id);
+    A l1_a = fObjectStore.getObject(id);
     assertNull(l1_a.getB());
     
     B b = new B();
-    fStore.beginUpdate();
+    fObjectStore.beginUpdate();
     a.setB(b);
-    fStore.save(b);
+    fObjectStore.save(b);
     
-    fStore.endUpdate();
+    fObjectStore.endUpdate();
     
-    A l2_a = fStore.getObject(id);
+    A l2_a = fObjectStore.getObject(id);
     assertNull(l2_a.getB());
 
-    B l2_b = fStore.getAll(B.class).get(0);
+    B l2_b = fObjectStore.getAll(B.class).get(0);
     l2_a.setB(l2_b);
-    fStore.save(l2_a);
+    fObjectStore.save(l2_a);
     reopen();
     
-    A l3_a = fStore.getObject(id);
+    A l3_a = fObjectStore.getObject(id);
     assertNotNull(l3_a.getB());
   }
   

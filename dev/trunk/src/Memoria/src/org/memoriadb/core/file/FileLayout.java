@@ -3,7 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.util.Arrays;
 
-import org.memoriadb.core.IObjectStoreExt;
+import org.memoriadb.core.mode.IObjectStoreExt;
 import org.memoriadb.exception.FileCorruptException;
 import org.memoriadb.util.Constants;
 

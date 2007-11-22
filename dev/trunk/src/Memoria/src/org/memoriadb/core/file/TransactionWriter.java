@@ -183,7 +183,7 @@ public class TransactionWriter implements ITransactionWriter {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     // this call may return to this TransactionWriter recursivley
-    Block block = fBlockManager.findRecyclebleBlock(blockSize, tabooBlocks);
+    Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
     
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);

@@ -1,6 +1,5 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.core.DBMode;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
@@ -12,15 +11,15 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     
-    IObjectId memoriaClassId = fStore.getObjectId(fStore.getMemoriaClass(obj));
+    IObjectId memoriaClassId = fObjectStore.getObjectId(fObjectStore.getMemoriaClass(obj));
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
     IFieldObject obj2 = new FieldMapDataObject(memoriaClassId);
     obj2.set("fString", 2);
     save(obj2);
     
-    reopen(DBMode.clazz);
+    reopen();
     
     assertEquals(2, getAll(SimpleTestObj.class).size());
   }
@@ -29,23 +28,23 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     IObjectId id = save(obj);
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
-    fStore.delete(fStore.getObject(id));
+    fDataStore.delete(fDataStore.getObject(id));
     
-    reopen(DBMode.clazz);
+    reopen();
     
-    assertFalse(fStore.containsId(id));
+    assertFalse(fObjectStore.containsId(id));
   }
 
   public void test_save_obj() {
     SimpleTestObj obj = new SimpleTestObj("1");
     IObjectId id = save(obj);
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fStore.getObject(id);
+    IFieldObject l1_obj = fDataStore.getObject(id);
     assertEquals(obj.getString(), l1_obj.get("fString"));
   }
   
@@ -53,16 +52,16 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     IObjectId id = save(obj);
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fStore.getObject(id);
+    IFieldObject l1_obj = fDataStore.getObject(id);
     l1_obj.set("fString", "2");
     save(l1_obj);
     
-    reopen(DBMode.clazz);
+    reopen();
     
-    SimpleTestObj l2_obj = fStore.getObject(id);
+    SimpleTestObj l2_obj = fObjectStore.getObject(id);
     assertEquals(l1_obj.get("fString"), l2_obj.getString());
   }
 }

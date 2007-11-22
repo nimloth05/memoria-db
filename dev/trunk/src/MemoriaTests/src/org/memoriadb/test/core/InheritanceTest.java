@@ -9,11 +9,14 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class InheritanceTest extends AbstractObjectStoreTest {
   
-  
   public void test_create_metaObjects() {
     B b = createB();
     save(b);
     assertMetaObjectHierarchy(b);
+  }
+  
+  public void test_memoriaClass_for_Object_exists() {
+    assertEquals(Object.class.getName(), fObjectStore.getMemoriaClass(Object.class).getJavaClassName());
   }
   
   public void test_save_inheritance_obj() {
@@ -68,16 +71,16 @@ public class InheritanceTest extends AbstractObjectStoreTest {
   }
   
   private void assertMetaObjectHierarchy(B b) {
-    IMemoriaClass metaClass = fStore.getMemoriaClass(b);
-    IMemoriaClass objectClass = fStore.getMemoriaClass(Object.class);
+    IMemoriaClass metaClass = fObjectStore.getMemoriaClass(b);
+    IMemoriaClass objectClass = fObjectStore.getMemoriaClass(Object.class);
     
     assertEquals(metaClass.getJavaClassName(), B.class.getName());
     assertEquals(metaClass.getSuperClass().getJavaClassName(), A.class.getName());
     
     IMemoriaClass javaObjectMetaObject = metaClass.getSuperClass().getSuperClass();
-    IObjectId id = fStore.getObjectId(javaObjectMetaObject);
+    IObjectId id = fObjectStore.getObjectId(javaObjectMetaObject);
     
-    assertEquals(fStore.getObjectId(objectClass), id);
+    assertEquals(fObjectStore.getObjectId(objectClass), id);
     assertEquals(javaObjectMetaObject.getJavaClassName(), Object.class.getName());
   }
   

@@ -8,7 +8,7 @@ import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 
-public interface ITrxHandler {
+public interface ITransactionHandler {
   /**
    * Starts an update. Changes are immediately refelcted in memory, but not written back to the
    * persistent store until <tt>endUpdate()</tt> is called.

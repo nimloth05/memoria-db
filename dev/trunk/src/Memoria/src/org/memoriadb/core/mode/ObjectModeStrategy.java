@@ -20,8 +20,8 @@ public class ObjectModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
-    IMemoriaClass memoriaClass = (IMemoriaClass) trxHandler.getObject(memoriaClassId);
+  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
+    IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
     
     Class<?> javaClass = ReflectionUtil.getClass(memoriaClass.getJavaClassName());
     if (ReflectionUtil.isNonStaticInnerClass(javaClass)) {

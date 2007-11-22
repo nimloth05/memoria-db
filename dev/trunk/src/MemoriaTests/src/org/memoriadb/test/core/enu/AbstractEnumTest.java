@@ -13,9 +13,9 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     IObjectId objId = save(obj);
     obj = null;
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
-    IFieldObject l1_obj = fStore.getObject(objId);
+    IFieldObject l1_obj = fDataStore.getObject(objId);
     assertEquals(TestEnum.b.ordinal(), l1_obj.get("fEnum"));
   }
   
@@ -26,7 +26,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.getObject(objId);
     assertEquals(TestEnum.b, l1_obj.getEnum());
   }
   
@@ -37,7 +37,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.getObject(objId);
     assertEquals(null, l1_obj.getEnum());
   }
   
@@ -48,21 +48,21 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.getObject(objId);
     assertEquals(null, l1_obj.getEnum());
     
     l1_obj.setEnum(TestEnum.a);
     save(l1_obj);
     
     reopen();
-    EnumUse l2_obj = fStore.getObject(objId);
+    EnumUse l2_obj = fObjectStore.getObject(objId);
     assertEquals(l1_obj.getEnum(), l2_obj.getEnum());
     
     l2_obj.setEnum(TestEnum.b);
     save(l2_obj);
     
     reopen();
-    EnumUse l3_obj = fStore.getObject(objId);
+    EnumUse l3_obj = fObjectStore.getObject(objId);
     assertEquals(l2_obj.getEnum(), l3_obj.getEnum());
   }
 

@@ -1,15 +1,24 @@
 package org.memoriadb.test.core.testclasses;
 
-import org.memoriadb.core.IObjectStoreExt;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.mode.*;
 
 public class SimpleTestObj implements Comparable<SimpleTestObj> {
   
   private String fString;
   
+  public static IFieldObject createFieldObject(IDataStoreExt dataStore, String stringValue) {
+    IObjectId memoriaClassId = dataStore.getObjectId(dataStore.getMemoriaClass(SimpleTestObj.class));
+    return setField(stringValue, memoriaClassId);
+  }
+
   public static IFieldObject createFieldObject(IObjectStoreExt objectStore, String stringValue) {
     IObjectId memoriaClassId = objectStore.getObjectId(objectStore.getMemoriaClass(SimpleTestObj.class));
+    return setField(stringValue, memoriaClassId);
+  }
+  
+  private static IFieldObject setField(String stringValue, IObjectId memoriaClassId) {
     IFieldObject result = new FieldMapDataObject(memoriaClassId);
     result.set("fString", stringValue);
     return result;

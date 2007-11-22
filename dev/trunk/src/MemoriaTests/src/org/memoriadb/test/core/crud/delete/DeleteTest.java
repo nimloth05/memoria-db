@@ -11,8 +11,8 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_add_and_delete_in_same_transaction(){
     
-    for(Object obj: fStore.getAllObjects()) {
-      System.out.println(fStore.getObjectId(obj) + " metaClassId " + fStore.getObjectId(fStore.getMemoriaClass(obj)));
+    for(Object obj: fObjectStore.getAllObjects()) {
+      System.out.println(fObjectStore.getObjectId(obj) + " metaClassId " + fObjectStore.getObjectId(fObjectStore.getMemoriaClass(obj)));
     }
     
     OneInt a = new OneInt(0);
@@ -21,11 +21,11 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
       delete(a);
     endUpdate();
     
-    assertFalse(fStore.contains(a));
+    assertFalse(fObjectStore.contains(a));
     
     reopen();
     
-    assertFalse(fStore.containsId(a_id));
+    assertFalse(fObjectStore.containsId(a_id));
   }
   
   public void test_basic_delete() {
@@ -33,17 +33,17 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
     IObjectId a_id = save(a);
     delete(a);
     
-    assertFalse(fStore.containsId(a_id));
-    IObjectInfo info = fStore.getObjectInfoForId(a_id);
+    assertFalse(fObjectStore.containsId(a_id));
+    IObjectInfo info = fObjectStore.getObjectInfoForId(a_id);
     assertTrue(info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
     
     reopen();
     
-    assertFalse(fStore.containsId(a_id));
+    assertFalse(fObjectStore.containsId(a_id));
     
-    info = fStore.getObjectInfoForId(a_id);
+    info = fObjectStore.getObjectInfoForId(a_id);
     assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
   }
@@ -51,24 +51,24 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
   public void test_delete_aggregate() {
     A a = new A(new B("b"));
     IObjectId a_id = saveAll(a);
-    IObjectId b_id = fStore.getObjectId(a.getB());
+    IObjectId b_id = fObjectStore.getObjectId(a.getB());
     
     deleteAll(a);
     
-    assertFalse(fStore.containsId(a_id));
-    assertFalse(fStore.containsId(b_id));
+    assertFalse(fObjectStore.containsId(a_id));
+    assertFalse(fObjectStore.containsId(b_id));
     
     reopen();
 
-    assertFalse(fStore.containsId(a_id));
-    assertFalse(fStore.containsId(b_id));
+    assertFalse(fObjectStore.containsId(a_id));
+    assertFalse(fObjectStore.containsId(b_id));
     
-    IObjectInfo a_info = fStore.getObjectInfoForId(a_id);
+    IObjectInfo a_info = fObjectStore.getObjectInfoForId(a_id);
     assertTrue(a_info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION + 2, a_info.getRevision());
     assertEquals(1, a_info.getOldGenerationCount());
 
-    IObjectInfo b_info = fStore.getObjectInfoForId(b_id);
+    IObjectInfo b_info = fObjectStore.getObjectInfoForId(b_id);
     assertTrue(b_info.isDeleted());
     assertEquals(Constants.INITIAL_REVISION + 2, b_info.getRevision());
     assertEquals(1, b_info.getOldGenerationCount());
@@ -80,12 +80,12 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
     saveAll(a);
     
     deleteAll(a);
-    assertFalse(fStore.contains(a));
-    assertFalse(fStore.contains(a.getB()));
+    assertFalse(fObjectStore.contains(a));
+    assertFalse(fObjectStore.contains(a.getB()));
     
     saveAll(a);
-    assertTrue(fStore.contains(a));
-    assertTrue(fStore.contains(a.getB()));
+    assertTrue(fObjectStore.contains(a));
+    assertTrue(fObjectStore.contains(a.getB()));
   }
   
   public void test_delete_and_readd() {
@@ -110,12 +110,12 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_delete_not_contained_object() {
     Object object = new Object();
-    assertFalse(fStore.contains(object));
+    assertFalse(fObjectStore.contains(object));
     
-    fStore.deleteAll(object);
-    fStore.delete(object);
+    fObjectStore.deleteAll(object);
+    fObjectStore.delete(object);
     
-    assertFalse(fStore.contains(object));
+    assertFalse(fObjectStore.contains(object));
   }
   
   public void test_save_and_delete_in_same_transaction() {
@@ -124,7 +124,7 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    OneInt a_l1 = fStore.getObject(a_id);
+    OneInt a_l1 = fObjectStore.getObject(a_id);
     
     a_l1.setInt(1);
     beginUpdate();
@@ -132,7 +132,7 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
       delete(a_l1);
     endUpdate();
     
-    IObjectInfo info = fStore.getObjectInfoForId(a_id);
+    IObjectInfo info = fObjectStore.getObjectInfoForId(a_id);
     assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
     assertTrue(info.isDeleted());
@@ -141,17 +141,17 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_save_object_after_deletion() {
     Object object = new Object();
-    assertFalse(fStore.contains(object));
+    assertFalse(fObjectStore.contains(object));
     
-    fStore.deleteAll(object);
-    fStore.delete(object);
+    fObjectStore.deleteAll(object);
+    fObjectStore.delete(object);
     
-    assertFalse(fStore.contains(object));
+    assertFalse(fObjectStore.contains(object));
     
     IObjectId id = save(object);
     
-    assertTrue(fStore.contains(object));
-    assertTrue(fStore.containsId(id));
+    assertTrue(fObjectStore.contains(object));
+    assertTrue(fObjectStore.containsId(id));
   }
   
 }

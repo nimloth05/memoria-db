@@ -12,7 +12,7 @@ public class BlockManagerDummy implements IBlockManager {
   }
 
   @Override
-  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
+  public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
     return null;
   }
 

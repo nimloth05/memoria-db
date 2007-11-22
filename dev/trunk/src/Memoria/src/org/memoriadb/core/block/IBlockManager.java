@@ -18,7 +18,7 @@ public interface IBlockManager {
    * @return A block which has at least <tt>blockSize</tt> (the block still may contain survivors) 
    * or null, if no block met the requirements.  
    */
-  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks);
+  public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks);
 
   /**
    * Called when the inactiveObjectDataRatio of a block changed.

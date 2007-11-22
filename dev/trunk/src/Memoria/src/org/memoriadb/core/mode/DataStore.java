@@ -8,12 +8,12 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.query.ClassModeQueryStrategy;
+import org.memoriadb.core.query.*;
 
 public class DataStore implements IDataStoreExt {
 
   private final TransactionHandler fTransactionHandler;
-  private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
+  private final IQueryStrategy fQueryStrategy = new DataModeQueryStrategy();
   
   public DataStore(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
@@ -117,7 +117,7 @@ public class DataStore implements IDataStoreExt {
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fTransactionHandler.getMemoriaClass(clazz.getName());
+    return fTransactionHandler.getMemoriaClass(clazz);
   }
 
   @Override

@@ -8,12 +8,15 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.query.ClassModeQueryStrategy;
+import org.memoriadb.core.query.*;
 
 public class ObjectStore implements IObjectStoreExt  {
 
+  // FIXME hier sollte die Schnittstelle von TransactionHandler verwendet werden, geht aber nicht.
+  // bringt die Schnittstelle überhaupt etwas?
   private final TransactionHandler fTransactionHandler;
-  private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
+  
+  private final IQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
   
   public ObjectStore(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
@@ -44,7 +47,7 @@ public class ObjectStore implements IObjectStoreExt  {
 
   @Override
   public boolean containsId(IObjectId id) {
-    return fTransactionHandler.contains(id);
+    return fTransactionHandler.containsId(id);
   }
 
   @Override
@@ -119,7 +122,7 @@ public class ObjectStore implements IObjectStoreExt  {
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fTransactionHandler.getMemoriaClass(clazz.getName());
+    return fTransactionHandler.getMemoriaClass(clazz);
   }
 
   @Override

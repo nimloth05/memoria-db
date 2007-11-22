@@ -16,14 +16,14 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     b10.setNumberOfObjectData(20);
     manager.add(b10);
     
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     // now one ObjectData becomes inactive
     b10.incrementInactiveObjectDataCount();
 
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertNotNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
   }
   
   public void test_inactiveThreshold_50_scenario() {
@@ -33,23 +33,23 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     b10a.setNumberOfObjectData(2);
     manager.add(b10a);
     
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     b10a.incrementInactiveObjectDataCount();
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertSame(b10a, manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertSame(b10a, manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     Block b10b = new Block(10, 1);
     b10b.setNumberOfObjectData(2);
     manager.add(b10b);
 
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     b10b.incrementInactiveObjectDataCount();
-    assertNull(manager.findRecyclebleBlock(11, new HashSet<Block>()));
-    assertSame(b10b, manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
+    assertSame(b10b, manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
   }
   
   public void test_incativeThreshold_50() {
@@ -59,16 +59,16 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     b10a.setNumberOfObjectData(2);
     manager.add(b10a);
 
-    assertNull(manager.findRecyclebleBlock(20, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(20, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
 
     b10a.incrementInactiveObjectDataCount();
 
-    assertNull(manager.findRecyclebleBlock(20, new HashSet<Block>()));
-    assertSame(b10a, manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(20, new HashSet<Block>()));
+    assertSame(b10a, manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
 
     // block is gone...
-    assertNull(manager.findRecyclebleBlock(10, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
   }
 
   /**
@@ -96,11 +96,11 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertEquals(2, manager.getBlockCount());
     assertEquals(2, manager.getRecyclingBlockCount());
 
-    assertNotNull(manager.findRecyclebleBlock(1, new HashSet<Block>()));
-    assertNotNull(manager.findRecyclebleBlock(1, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
 
     // no more blocks for recycling
-    assertNull(manager.findRecyclebleBlock(1, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
   }
 
   /**
@@ -115,8 +115,8 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     
     b.incrementInactiveObjectDataCount();
     
-    assertNull(manager.findRecyclebleBlock(1001, new HashSet<Block>()));
-    assertNotNull(manager.findRecyclebleBlock(1, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(1001, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
   }
   
   /**
@@ -131,9 +131,9 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     
     b.incrementInactiveObjectDataCount();
     
-    assertNull(manager.findRecyclebleBlock(1001, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(999, new HashSet<Block>()));
-    assertNotNull(manager.findRecyclebleBlock(1000, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(1001, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(999, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(1000, new HashSet<Block>()));
   }
   
   /**
@@ -148,10 +148,10 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     
     b.incrementInactiveObjectDataCount();
     
-    assertNull(manager.findRecyclebleBlock(1001, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(1, new HashSet<Block>()));
-    assertNull(manager.findRecyclebleBlock(499, new HashSet<Block>()));
-    assertNotNull(manager.findRecyclebleBlock(500, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(1001, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
+    assertNull(manager.allocatedRecyclebleBlock(499, new HashSet<Block>()));
+    assertNotNull(manager.allocatedRecyclebleBlock(500, new HashSet<Block>()));
   }
   
   public void test_tabooBlocks_are_not_returned() {
@@ -165,7 +165,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
 
     HashSet<Block> hashSet = new HashSet<Block>();
     hashSet.add(b);
-    assertNull(manager.findRecyclebleBlock(10, hashSet));
+    assertNull(manager.allocatedRecyclebleBlock(10, hashSet));
   }
 
 }

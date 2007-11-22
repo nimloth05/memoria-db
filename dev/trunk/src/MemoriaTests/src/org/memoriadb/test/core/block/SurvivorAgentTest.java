@@ -54,7 +54,7 @@ public class SurvivorAgentTest extends AbstractObjectStoreTest {
 
   private Iterable<IObjectId> getSurvivors(Block block) {
     HashSet<IObjectId> result = new HashSet<IObjectId>();
-    for(IObjectInfo info: fStore.getSurvivors(block)){
+    for(IObjectInfo info: fObjectStore.getSurvivors(block)){
       result.add(info.getId());
     }
     return result;

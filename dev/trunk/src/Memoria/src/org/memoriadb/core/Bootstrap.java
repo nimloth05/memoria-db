@@ -39,6 +39,11 @@ public class Bootstrap {
     registerHandler(trxHansdler, new CollectionHandler.StackHandler());
     registerHandler(trxHansdler, new CollectionHandler.VectorHandler());
 
+    registerHandler(trxHansdler, new CollectionHandler.HashSetHandler());
+    registerHandler(trxHansdler, new CollectionHandler.LinkedHashSetHandler());
+    registerHandler(trxHansdler, new CollectionHandler.TreeSetHandler());
+    registerHandler(trxHansdler, new CollectionHandler.ConcurrentSkipListSetHandler());
+    
     addCustomHandlers(trxHansdler, customHandlers);
   }
 

@@ -11,9 +11,10 @@ import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.IdentityHashSet;
 
-public class TransactionHandler implements ITrxHandler {
+public class TransactionHandler implements ITransactionHandler {
 
   private final IObjectRepo fObjectRepo;
+  
   private final ITransactionWriter fTransactionWriter;
 
   private final Set<ObjectInfo> fAdd = new IdentityHashSet<ObjectInfo>();

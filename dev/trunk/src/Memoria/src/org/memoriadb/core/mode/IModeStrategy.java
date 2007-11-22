@@ -16,7 +16,7 @@ public interface IModeStrategy {
   /**
    * Before an object is added to the ObjectRepository, it is checked for instantiability.
    */
-  public abstract void checkCanInstantiateObject(ITrxHandler trxHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
+  public abstract void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
 
   /**
    * @return true, if the db is operated in data-mode (the java classes are not required).

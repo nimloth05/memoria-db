@@ -28,8 +28,8 @@ public class LoadTest extends AbstractObjectStoreTest {
     List<Referencer> allSavedObjects = getAll(Referencer.class);
     for(Referencer ref: allSavedObjects) {
       Object obj = ref.get();
-      IObjectId objectId = fStore.getObjectId(obj);
-      assertSame("id collision: "+objectId, obj, fStore.getObject(objectId));
+      IObjectId objectId = fObjectStore.getObjectId(obj);
+      assertSame("id collision: "+objectId, obj, fObjectStore.getObject(objectId));
     }
     
     reopen();
@@ -39,14 +39,14 @@ public class LoadTest extends AbstractObjectStoreTest {
   }
   
   public void test_save_thentousends_obejcts() {
-    fStore.beginUpdate();
+    fObjectStore.beginUpdate();
     
     for(int i = 0; i < 10000; ++i) {
       save(new Object());
     }
     
     long currentTime = System.nanoTime();
-    fStore.endUpdate();
+    fObjectStore.endUpdate();
     long durationInMs = (System.nanoTime() - currentTime) / 1000000;
     assertTrue("10'000 took " +durationInMs, durationInMs < 500);
   }

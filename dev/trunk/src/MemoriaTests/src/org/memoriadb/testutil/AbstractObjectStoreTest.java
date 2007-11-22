@@ -9,22 +9,23 @@ import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.mode.ObjectStore;
+import org.memoriadb.core.mode.*;
 
 public abstract class AbstractObjectStoreTest extends TestCase {
   
   private static final String PATH = "file.mia";
   
-  protected IObjectStoreExt fStore;
-  private DBMode fReopenDbMode = DBMode.clazz;
+  protected IObjectStoreExt fObjectStore;
+  protected IDataStoreExt fDataStore;
   
   public IBlockManagerExt getBlockManager() {
-    return (IBlockManagerExt)fStore.getBlockManager();
+    return (IBlockManagerExt)fObjectStore.getBlockManager();
   }
   
   protected void beginUpdate() {
-    fStore.beginUpdate();
+    fObjectStore.beginUpdate();
   }
   
   /**
@@ -35,44 +36,43 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   /**
    * Overwrite to change the memoria-configuration for reopening a db. 
    */
-  protected void configureReopen(CreateConfig config) {
-    config.setDBMode(fReopenDbMode);
-  }
+  protected void configureReopen(CreateConfig config) {}
   
   protected void delete(Object obj) {
-    fStore.delete(obj);
+    fObjectStore.delete(obj);
   }
   
   protected void deleteAll(Object obj) {
-    fStore.deleteAll(obj);
+    fObjectStore.deleteAll(obj);
   }
   
   protected void endUpdate() {
-    fStore.endUpdate();
+    fObjectStore.endUpdate();
   }
   
   protected <T> T get(IObjectId id) {
-    return fStore.getObject(id);
+    return fObjectStore.getObject(id);
   }
   
   protected final <T> List<T> getAll(Class<T> clazz) {
-    return fStore.getAll(clazz);
+    return fObjectStore.getAll(clazz);
   }
   
   protected final <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    return fStore.getAll(clazz, filter);
+    return fObjectStore.getAll(clazz, filter);
   }
 
   protected IMemoriaFile getFile() {
-    return ((ObjectStore)fStore).getFile();
+    if(fObjectStore!=null) return ((ObjectStore)fObjectStore).getFile();
+    return ((DataStore)fDataStore).getFile();
   }
   
   protected LastWrittenBlockInfo getLastBlockInfo() {
-    return fStore.getHeader().getLastWrittenBlockInfo();
+    return fObjectStore.getHeader().getLastWrittenBlockInfo();
   }
   
   protected IObjectInfo getObjectInfo(IObjectId id) {
-    return fStore.getObjectInfoForId(id);
+    return fObjectStore.getObjectInfoForId(id);
   }
 
   protected int getOPF() {
@@ -80,15 +80,15 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected int getOPO() {
-    return FileLayout.getOPO(fStore);
+    return FileLayout.getOPO(fObjectStore);
   }
   
   protected TestMode getTestMode() {
     return TestMode.memory;
   }
   
-  protected final void recreateStore() {
-    fStore.close(); 
+  protected final void recreateDataStore() {
+    closeStores();
     
     CreateConfig config = new CreateConfig();
     configureReopen(config);
@@ -96,33 +96,51 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     if (getTestMode() == TestMode.memory) {
       InMemoryFile file = (InMemoryFile) getFile();
       file.reset();
-      fStore = openFile(file, config);
+      fDataStore = openStoreDataMode(file, config);
     } else {
-      fStore = openFile(new PhysicalFile(PATH), config);
+      fDataStore = openStoreDataMode(new PhysicalFile(PATH), config);
     }
+    fObjectStore = null;
   }
-  
-  
+
+  protected final void recreateObjectStore() {
+    closeStores();
+    
+    CreateConfig config = new CreateConfig();
+    configureReopen(config);
+    
+    if (getTestMode() == TestMode.memory) {
+      InMemoryFile file = (InMemoryFile) getFile();
+      file.reset();
+      fObjectStore = openStore(file, config);
+    } else {
+      fObjectStore = openStore(new PhysicalFile(PATH), config);
+    }
+    fDataStore = null;
+  }
   
   protected final void reopen() {
-    recreateStore(); 
+    recreateObjectStore(); 
+  }
+
+  protected void reopenDataMode() {
+    recreateDataStore();
   }
   
-  protected void reopen(DBMode data) {
-    fReopenDbMode = data;
-    reopen();
+  protected final IObjectId save(IDataObject obj) {
+    return fDataStore.save(obj);
   }
    
   protected final IObjectId save(Object obj) {
-    return fStore.save(obj);
+    return fObjectStore.save(obj);
+  }
+
+  protected final IObjectId saveAll(IDataObject obj) {
+    return fDataStore.saveAll(obj);
   }
   
   protected final IObjectId saveAll(Object obj) {
-    return fStore.saveAll(obj);
-  }
-  
-  protected final void setDBMode(DBMode mode) {
-    fReopenDbMode = mode;
+    return fObjectStore.saveAll(obj);
   }
   
   @Override
@@ -134,19 +152,28 @@ public abstract class AbstractObjectStoreTest extends TestCase {
    configureOpen(config);
    
    if (getTestMode() == TestMode.memory) {
-     fStore = openFile(new InMemoryFile(), config);
+     fObjectStore = openStore(new InMemoryFile(), config);
    } else {
-     fStore = openFile(new PhysicalFile(PATH), config);
+     fObjectStore = openStore(new PhysicalFile(PATH), config);
    }
   }
-
+  
   @Override
   protected void tearDown() {
-    fStore.close();
+    closeStores();
+  }
+
+  private void closeStores() {
+    if(fObjectStore != null) fObjectStore.close();
+    if(fDataStore != null) fDataStore.close();
   }
   
-  private IObjectStoreExt openFile(IMemoriaFile file, CreateConfig config) {
+  private IObjectStoreExt openStore(IMemoriaFile file, CreateConfig config) {
     return (IObjectStoreExt) Memoria.open(config, file);
+  }
+  
+  private IDataStoreExt openStoreDataMode(IMemoriaFile file, CreateConfig config) {
+    return (IDataStoreExt) Memoria.openDataMode(config, file);
   }
   
 }

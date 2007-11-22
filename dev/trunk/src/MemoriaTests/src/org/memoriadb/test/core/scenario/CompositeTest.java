@@ -3,7 +3,6 @@ package org.memoriadb.test.core.scenario;
 import java.util.List;
 
 import org.memoriadb.IFilter;
-import org.memoriadb.core.DBMode;
 import org.memoriadb.core.handler.def.field.*;
 import org.memoriadb.core.handler.list.IListDataObject;
 import org.memoriadb.core.id.IObjectId;
@@ -16,15 +15,15 @@ public class CompositeTest extends AbstractObjectStoreTest {
   public void test_composite_in_db_mode() {
     test_save_composite();
     
-    reopen(DBMode.data);
+    reopenDataMode();
     
-    List<Object> l1_allComposites = fStore.getAll(Composite.class.getName());
+    List<Object> l1_allComposites = fDataStore.getAll(Composite.class.getName());
     assertEquals(3, l1_allComposites.size());
     
-    List<Object> l1_allLeafs = fStore.getAll(Leaf.class.getName());
+    List<Object> l1_allLeafs = fDataStore.getAll(Leaf.class.getName());
     assertEquals(1, l1_allLeafs.size());
     
-    IFieldObject l1_root = (IFieldObject) fStore.getAll(Composite.class.getName(), new IFilter<Object>() {
+    IFieldObject l1_root = (IFieldObject) fDataStore.getAll(Composite.class.getName(), new IFilter<Object>() {
 
       @Override
       public boolean accept(Object object) {
@@ -53,7 +52,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     assertEquals("leaf for comp1", l1_leaf1.get("fData"));
     
     //UPDATE the objects
-    fStore.beginUpdate();
+    fDataStore.beginUpdate();
 
     l1_leaf1.set("fData", "dataModeLeaf");
     save(l1_leaf1);
@@ -70,11 +69,11 @@ public class CompositeTest extends AbstractObjectStoreTest {
     list.add(leaf2);
     save(listDataObject);
     
-    fStore.endUpdate();
+    fDataStore.endUpdate();
     
-    reopen(DBMode.clazz);
+    reopen();
     
-    List<Leaf> l2_allLeafs = fStore.getAll(Leaf.class);
+    List<Leaf> l2_allLeafs = fObjectStore.getAll(Leaf.class);
     assertEquals(2, l2_allLeafs.size());
     
     for(int i =0; i < l2_allLeafs.size(); ++i) {
@@ -82,7 +81,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
       assertEquals("dataModeLeaf", leaf.getData());
     }
     
-    List<Composite> l2_allComposites = fStore.getAll(Composite.class);
+    List<Composite> l2_allComposites = fObjectStore.getAll(Composite.class);
     assertEquals(3, l2_allComposites.size());
     
     assertSame(l2_allLeafs.get(0).getTestObj(), l2_allLeafs.get(1).getTestObj());
@@ -123,7 +122,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     saveAll(root);
     
-    reopen(DBMode.clazz);
+    reopen();
     
     List<Composite> allComposites = getAll(Composite.class);
     assertEquals(3, allComposites.size());

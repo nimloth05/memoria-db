@@ -2,7 +2,6 @@ package org.memoriadb.test.core.query;
 
 import java.util.List;
 
-import org.memoriadb.core.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public class DataModeTest extends QueryTest {
@@ -11,17 +10,10 @@ public class DataModeTest extends QueryTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     
-    reopen();
+    reopenDataMode();
     
-    List<Object> result = fStore.getAll(Object.class);
+    List<Object> result = fDataStore.getAll(Object.class);
     assertEquals(0, result.size()); 
-  }
-  
-  
-  @Override
-  protected void configureReopen(CreateConfig config) {
-    setDBMode(DBMode.data);
-    super.configureReopen(config);
   }
 
 }

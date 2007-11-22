@@ -30,7 +30,7 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
   public void test_revision_for_change_on_original_and_on_l1() {
     OneInt a = new OneInt(0);
     IObjectId a_id = save(a);
-    IObjectInfo info = fStore.getObjectInfo(a);
+    IObjectInfo info = fObjectStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
     assertEquals(0, info.getOldGenerationCount());
 
@@ -43,8 +43,8 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
 
     reopen();
 
-    OneInt a_l1 = fStore.getObject(a_id);
-    info = fStore.getObjectInfo(a_l1);
+    OneInt a_l1 = fObjectStore.getObject(a_id);
+    info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
 
@@ -56,8 +56,8 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
 
     reopen();
 
-    OneInt a_l2 = fStore.getObject(a_id);
-    info = fStore.getObjectInfo(a_l2);
+    OneInt a_l2 = fObjectStore.getObject(a_id);
+    info = fObjectStore.getObjectInfo(a_l2);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 4, info.getRevision());
     assertEquals(2, info.getOldGenerationCount());
   }
@@ -65,11 +65,11 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
   public void test_version_for_many_changes_in_one_transaction_on_original() {
     OneInt a = new OneInt(0);
     IObjectId a_id = save(a);
-    IObjectInfo info = fStore.getObjectInfo(a);
+    IObjectInfo info = fObjectStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
     assertEquals(0, info.getOldGenerationCount());
 
-    fStore.beginUpdate();
+    fObjectStore.beginUpdate();
 
     a.setInt(1);
     save(a);
@@ -81,14 +81,14 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
     assertEquals(0, info.getOldGenerationCount());
 
-    fStore.endUpdate();
+    fObjectStore.endUpdate();
 
     assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
 
     reopen();
-    OneInt a_l1 = fStore.getObject(a_id);
-    info = fStore.getObjectInfo(a_l1);
+    OneInt a_l1 = fObjectStore.getObject(a_id);
+    info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
   }
@@ -100,8 +100,8 @@ public abstract class UpdateTest extends AbstractObjectStoreTest {
 
     reopen();
 
-    OneInt a_l1 = fStore.getObject(a_id);
-    IObjectInfo info = fStore.getObjectInfo(a_l1);
+    OneInt a_l1 = fObjectStore.getObject(a_id);
+    IObjectInfo info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
     assertEquals(0, info.getOldGenerationCount());
   }

@@ -53,8 +53,8 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     assertEquals(getBlock(2), getCurrentBlock(id1));
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
-    assertFalse(fStore.containsId(id1));
-    assertTrue(fStore.containsId(id2));
+    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id2));
     
     reopen();
     
@@ -63,8 +63,8 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     assertEquals(getBlock(2), getCurrentBlock(id1));
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
-    assertFalse(fStore.containsId(id1));
-    assertTrue(fStore.containsId(id2));
+    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id2));
   }
   
   public void test_safing_survivor() {
@@ -90,9 +90,9 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     assertEquals(4, getObjectInfo(id2).getRevision());
     assertEquals(5, getObjectInfo(id3).getRevision());
     
-    assertFalse(fStore.containsId(id1));
-    assertTrue(fStore.containsId(id2));
-    assertTrue(fStore.containsId(id3));
+    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id2));
+    assertTrue(fObjectStore.containsId(id3));
 
     assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(getBlock(1), getCurrentBlock(id3));
@@ -101,9 +101,9 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     
     reopen();
 
-    assertFalse(fStore.containsId(id1));
-    assertTrue(fStore.containsId(id2));
-    assertTrue(fStore.containsId(id3));
+    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id2));
+    assertTrue(fObjectStore.containsId(id3));
 
     assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(getBlock(1), getCurrentBlock(id3));

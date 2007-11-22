@@ -15,12 +15,12 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj();
     IObjectId id = save(obj);
     
-    assertTrue(fStore.contains(obj));
-    assertTrue(fStore.containsId(id));
+    assertTrue(fObjectStore.contains(obj));
+    assertTrue(fObjectStore.containsId(id));
   }
   
   public void test_HeadRevision() {
-    assertEquals(Constants.INITIAL_HEAD_REVISION+1, fStore.getHeadRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION+1, fObjectStore.getHeadRevision());
     save(new Object());
   }
   
@@ -65,12 +65,12 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
   
   public void test_save_object() {
     List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
-    fStore.beginUpdate();
+    fObjectStore.beginUpdate();
     for (int i = 0; i < 5; ++i) {
       objects.add(new SimpleTestObj("Hallo Welt " + i));
       save(objects.get(i));
     }
-    fStore.endUpdate();
+    fObjectStore.endUpdate();
 
     saveAll(objects.toArray());
     reopen();
@@ -102,7 +102,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertTrue(fStore.containsId(id));
+    assertTrue(fObjectStore.containsId(id));
   }
 
   public void test_save_private_inner_scoped_object() {

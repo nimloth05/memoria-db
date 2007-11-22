@@ -18,7 +18,7 @@ public class AppendBlockManager implements IBlockManagerExt {
   }
 
   @Override
-  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
+  public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
     // never recycle a block
     return null;
   }

@@ -41,7 +41,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     inactiveRatioChanged(block);
   }
 
-  public Block findRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
+  public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
     // create a block as search-prototype
     
     long currentSize = blockSize;
