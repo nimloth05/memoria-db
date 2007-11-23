@@ -55,6 +55,20 @@ public abstract class CollectionTest extends AbstractObjectStoreTest {
     
     reopen(collection);
   }
+  
+  public void test_null_reference() {
+    Collection<SimpleTestObj> collection = createCollection();
+    collection.add(new SimpleTestObj("1"));
+    collection.add(null);
+    collection.add(new SimpleTestObj("3"));
+    
+    IObjectId id = saveAll(collection);
+    reopen();
+    
+    Collection<SimpleTestObj> l1_collection = get(id);
+    assertEquals(3, l1_collection.size());
+    
+  }
 
   public void test_object() {
     Collection<SimpleTestObj> collection = getObjectCollection();

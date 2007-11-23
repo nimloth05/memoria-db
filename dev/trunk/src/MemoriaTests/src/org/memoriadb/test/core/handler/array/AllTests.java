@@ -8,6 +8,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.core.handler.array");
     //$JUnit-BEGIN$
     suite.addTestSuite(LongBasicOneDimensionalArrayTest.class);
+    suite.addTestSuite(DataModeOneDimensionalTest.class);
     suite.addTestSuite(ComponentTypeTest.class);
     suite.addTestSuite(GuidBasicOneiDimensionalArrayTest.class);
     suite.addTestSuite(GuidBasicMultiDimensionalArrayTest.class);

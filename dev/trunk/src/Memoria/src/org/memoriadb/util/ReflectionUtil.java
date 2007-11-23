@@ -93,7 +93,10 @@ public final class ReflectionUtil {
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
     for(Field field: fields) {
-      if (field.getName().equals(name)) return field;
+      if (field.getName().equals(name)) {
+        field.setAccessible(true);
+        return field;
+      }
     }
     
     if (clazz.getSuperclass() == null) throw new SchemaException("No such field. Class: "+ clazz+ " field: "+name);

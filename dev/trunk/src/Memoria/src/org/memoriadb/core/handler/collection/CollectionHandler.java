@@ -148,6 +148,10 @@ public abstract class CollectionHandler implements ISerializeHandler {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
+          if (context.isNullReference(objectId)) {
+            fMember.add(null);
+            return;
+          }
           fContext.objectToBind(new CollectionBindable(fMember, objectId));
         }
 
@@ -169,6 +173,10 @@ public abstract class CollectionHandler implements ISerializeHandler {
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     Collection<?> list = getListObject(obj);
     for (Object listEntry : list) {
+      if (listEntry == null) {
+        Type.writeValueWithType(output, listEntry, context, Type.typeClass);
+        continue;
+      }
       Type.writeValueWithType(output, listEntry, context);
     }
   }
@@ -178,6 +186,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
     Collection<?> list = (Collection<?>) obj;
 
     for (Object listEntry : list) {
+      if (listEntry == null) continue;
       if (Type.getType(listEntry) == Type.typeClass) traversal.handle(listEntry);
     }
   }

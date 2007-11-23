@@ -40,6 +40,7 @@ public class EnumSetHandler extends CollectionHandler {
   }
 
 
+  @SuppressWarnings("unchecked")
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     EnumSet<?> enumSet = (EnumSet<?>) obj;
@@ -63,10 +64,10 @@ public class EnumSetHandler extends CollectionHandler {
     return new SetDataObject((Set<Object>) collection, typeId);
   }
   
+  @SuppressWarnings("unchecked")
   private Class<Enum> getEnumType(EnumSet<?> enumSet) {
     try {
       Field field = ReflectionUtil.getField(enumSet.getClass(), "elementType");
-      field.setAccessible(true);
       return (Class<Enum>) field.get(enumSet);
     } 
     catch (Exception e) {
