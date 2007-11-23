@@ -15,11 +15,12 @@ import org.memoriadb.util.ReflectionUtil;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
+ * 
  * @author msc
- *
+ * 
  */
 public abstract class CollectionHandler implements ISerializeHandler {
-  
+
   public static class ArrayListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
@@ -28,7 +29,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
 
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new ListDataObject((List<Object>) collection, typeId);
     }
   }
 
@@ -37,25 +38,48 @@ public abstract class CollectionHandler implements ISerializeHandler {
     public String getClassName() {
       return ConcurrentSkipListSet.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new ListDataObject((List<Object>) collection, typeId);
     }
   }
-  
+
   public static class CopyOnWriteListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return CopyOnWriteArrayList.class.getName();
     }
+
+    @Override
+    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
+      return new ListDataObject((List<Object>) collection, typeId);
+    }
+  }
+
+  public static class EnumSetHandler extends CollectionHandler {
+
+    @Override
+    public String getClassName() {
+      return "java.util.RegularEnumSet";
+    }
+
+    @Override
+    protected Collection<Object> createCollection() {
+      try {
+        return EnumSet.noneOf(Object.class);
+      }
+      catch (Exception e) {
+        throw new MemoriaException(e);
+      }
+    }
     
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new SetDataObject((Set<Object>) collection, typeId);
     }
   }
-  
+
   public static class HashSetHandler extends CollectionHandler {
 
     @Override
@@ -65,84 +89,84 @@ public abstract class CollectionHandler implements ISerializeHandler {
 
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new SetDataObject((Set<Object>)collection, typeId);
+      return new SetDataObject((Set<Object>) collection, typeId);
     }
-  
+
   }
-  
+
   public static class LinkedHashSetHandler extends CollectionHandler {
-    
+
     @Override
     public String getClassName() {
       return LinkedHashSet.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new SetDataObject((Set<Object>)collection, typeId);
+      return new SetDataObject((Set<Object>) collection, typeId);
     }
   }
-  
+
   public static class LinkedListHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return LinkedList.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new ListDataObject((List<Object>) collection, typeId);
     }
   }
-  
+
   public static class StackHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return Stack.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new ListDataObject((List<Object>) collection, typeId);
     }
   }
-  
+
   public static class TreeSetHandler extends CollectionHandler {
-    
+
     @Override
     public String getClassName() {
       return TreeSet.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new SetDataObject((Set<Object>)collection, typeId);
+      return new SetDataObject((Set<Object>) collection, typeId);
     }
   }
-  
+
   public static class VectorHandler extends CollectionHandler {
     @Override
     public String getClassName() {
       return Vector.class.getName();
     }
-    
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>)collection, typeId);
+      return new ListDataObject((List<Object>) collection, typeId);
     }
   }
-  
-  
+
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() +" but I was called for " + className);
+    if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for "
+        + className);
   }
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     Collection<Object> collection = createCollection();
     while (input.available() > 0) {
-      
+
       Type.readValueWithType(input, context, new TypeVisitorHelper<Void, Collection<Object>>(collection, context) {
 
         @Override
@@ -156,10 +180,10 @@ public abstract class CollectionHandler implements ISerializeHandler {
         }
       });
     }
-    
+
     Object result = collection;
     if (context.isInDataMode()) {
-      result = createDataObject(collection, typeId); 
+      result = createDataObject(collection, typeId);
     }
     return result;
   }
@@ -167,7 +191,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     Collection<?> list = getListObject(obj);
-    for(Object listEntry: list) {
+    for (Object listEntry : list) {
       Type.writeValueWithType(output, listEntry, context);
     }
   }
@@ -175,8 +199,8 @@ public abstract class CollectionHandler implements ISerializeHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     Collection<?> list = (Collection<?>) obj;
-    
-    for(Object listEntry: list) {
+
+    for (Object listEntry : list) {
       if (Type.getType(listEntry) == Type.typeClass) traversal.handle(listEntry);
     }
   }
@@ -191,9 +215,9 @@ public abstract class CollectionHandler implements ISerializeHandler {
   }
 
   protected abstract IDataObject createDataObject(Collection<Object> collection, IObjectId typeId);
-  
+
   private Collection<?> getListObject(Object obj) {
-    if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject)obj).getCollection();
+    if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject) obj).getCollection();
     return (Collection<?>) obj;
   }
 

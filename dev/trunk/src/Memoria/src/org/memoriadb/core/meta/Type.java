@@ -427,36 +427,11 @@ public enum Type {
       context.getObjectId(value).writeTo(output);
     }
 
-  },
-  
-  typeEnum {
-    
-    @Override
-    public Class<?> getClassLiteral() {
-      throw new MemoriaException("Not supported");
-    }
-    
-    @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitEnum(this, input.readInt());
-    }
-
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value == null) {
-        output.writeInt(Constants.NO_ENUM_REF);
-        return;
-      }
-      Enum<?> enumValue = (Enum<?>) value;
-      output.writeInt(enumValue.ordinal());
-    }
   };
 
   private static final Map<Class<?>, Type> sPrimitiveTypeMap = createTypeMap();
 
   public static Type getType(Class<?> javaType) {
-    if (javaType.isEnum()) return typeEnum;
-    
     Type type = sPrimitiveTypeMap.get(javaType);
     if (type == null) return typeClass;
     return type;
@@ -475,7 +450,7 @@ public enum Type {
    */
   public static boolean isPrimitive(Object object) {
     Type type = getType(object);
-    return (type != Type.typeClass) && (type != Type.typeEnum);
+    return type.isPrimitive();
   }
 
   public static <T extends ITypeVisitor> T readValueWithType(DataInput input, IReaderContext context, T visitor) {
@@ -544,7 +519,7 @@ public enum Type {
   public abstract Class<?> getClassLiteral();
 
   public boolean isPrimitive() {
-    return (this != Type.typeClass) && (this != Type.typeEnum);
+    return (this != Type.typeClass);
   }
 
   public void readValue(DataInput input, IReaderContext context, ITypeVisitor visitor) {

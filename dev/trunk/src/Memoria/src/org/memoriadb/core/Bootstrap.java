@@ -43,6 +43,7 @@ public class Bootstrap {
     registerHandler(trxHansdler, new CollectionHandler.LinkedHashSetHandler());
     registerHandler(trxHansdler, new CollectionHandler.TreeSetHandler());
     registerHandler(trxHansdler, new CollectionHandler.ConcurrentSkipListSetHandler());
+    registerHandler(trxHansdler, new CollectionHandler.EnumSetHandler());
     
     addCustomHandlers(trxHansdler, customHandlers);
   }

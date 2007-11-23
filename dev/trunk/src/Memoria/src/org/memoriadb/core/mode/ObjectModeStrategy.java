@@ -37,8 +37,12 @@ public class ObjectModeStrategy implements IModeStrategy {
     return false;
   }
 
+  //FIXME: Kommentar review
   /**
+   * 
    * @param transactionHandler 
+   * 
+   * @return The id of the classObject for the given javaClass.   <--- mein Vorschlag, so  
    * @return The id of the first (most derived) class in the hierarchy, because this is the
    * typeId of the object.
    * 
@@ -55,7 +59,7 @@ public class ObjectModeStrategy implements IModeStrategy {
     if (javaClass.isEnum()) {
       IMemoriaClassConfig enumClassObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
       IObjectId result = transactionHandler.internalSave(enumClassObject);
-      recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+      recursiveAddTypeHierarchy(transactionHandler, javaClass, enumClassObject);
       return result;
     }
 
@@ -73,7 +77,7 @@ public class ObjectModeStrategy implements IModeStrategy {
     Class<?> javaClass = superClass.getSuperclass();
     if(javaClass == null) return;
 
-    // the super-class may already be there (bootstrapped, other hierarchy-branch)
+    // the super-class may already be there (bootstrapped or other hierarchy-branch)
     IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
     if(classObject != null){
       subClassconfig.setSuperClass(classObject);

@@ -137,15 +137,7 @@ public final class ReflectionUtil {
       Field declaredField = getField(owner.getClass(), fieldName);
       declaredField.setAccessible(true);
       
-      Object valueToSet = value;
-      
-      Class<?> type = declaredField.getType();
-      if (type.isEnum()) {
-        int ordinal = ((Integer)value).intValue();
-        valueToSet = type.getEnumConstants()[ordinal];
-      }
-      
-      declaredField.set(owner, valueToSet);
+      declaredField.set(owner, value);
     }
     catch (Exception e) {
       throw new MemoriaException(e);  
