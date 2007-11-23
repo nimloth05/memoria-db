@@ -20,7 +20,7 @@ public interface IObjectInfo {
 
   public IObjectId getMemoriaClassId();
 
-  public Object getObj();
+  public Object getObject();
 
   public int getOldGenerationCount();
 

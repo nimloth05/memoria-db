@@ -3,6 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
@@ -14,7 +15,8 @@ import org.memoriadb.util.Constants;
  * @author msc
  * 
  */
-public class ObjectSerializer implements ISerializeContext {
+//FIXME: Kann man hier diese Schnittstelle entfernen und sie "private" (inner class) implementieren?
+public final class ObjectSerializer implements ISerializeContext {
 
   private final IObjectRepo fObjectRepo;
   private final ByteArrayOutputStream fBuffer;
@@ -69,9 +71,10 @@ public class ObjectSerializer implements ISerializeContext {
     }
   }
 
+  //FIXME: Aussen hat man bereits das ObjectInfo, es könnte direkt übergeben werden.
   public void serialize(Object obj) {
     try {
-      serializeObject(fStream, fObjectRepo.getObjectInfo(obj));
+      serializeObject(fObjectRepo.getObjectInfo(obj));
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -80,18 +83,19 @@ public class ObjectSerializer implements ISerializeContext {
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
     fStream.writeInt(2*fObjectRepo.getIdFactory().getIdSize());
-    IObjectId typeId = fObjectRepo.isMemoriaClass(info.getObj()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
+    IObjectId typeId = fObjectRepo.isMemoriaClass(info.getObject()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
     typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
   }
 
-  private void serializeObject(DataOutput dataStream, IObjectInfo info) throws Exception {
-    IMemoriaClass metaClass = (IMemoriaClass) fObjectRepo.getObject(info.getMemoriaClassId());
-    serializeObject(metaClass, dataStream, info);
+  private void serializeObject(IObjectInfo info) throws Exception {
+    //FIXME: Hier muss getExistingObject aufgerufen werden, da es die MemoriaClass geben muss!
+    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(info.getMemoriaClassId());
+    serializeObject(memoriaClass.getHandler(), info);
   }
 
-  private void serializeObject(IMemoriaClass memoriaClass, DataOutput dataStream, IObjectInfo info) throws Exception {
-    IObjectId typeId = fObjectRepo.getObjectId(memoriaClass);
+  private void serializeObject(ISerializeHandler handler, IObjectInfo info) throws Exception {
+    IObjectId typeId = info.getMemoriaClassId();
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(Constants.DEFAULT_OBJECT_SIZE);
     DataOutputStream objectStream = new DataOutputStream(buffer);
@@ -99,11 +103,11 @@ public class ObjectSerializer implements ISerializeContext {
     typeId.writeTo(objectStream);
     info.getId().writeTo(objectStream);
     
-    memoriaClass.getHandler().serialize(info.getObj(), objectStream, this);
+    handler.serialize(info.getObject(), objectStream, this);
 
     byte[] objectData = buffer.toByteArray();
-    dataStream.writeInt(objectData.length);
-    dataStream.write(objectData);
+    fStream.writeInt(objectData.length);
+    fStream.write(objectData);
   }
 
 }

@@ -7,7 +7,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.util.MemoriaCRC32;
 
-public class TransactionWriter implements ITransactionWriter {
+public final class TransactionWriter implements ITransactionWriter {
  
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
@@ -99,12 +99,13 @@ public class TransactionWriter implements ITransactionWriter {
     
     ObjectSerializer serializer = new ObjectSerializer(fRepo);
     
+    //FIXME: Auslagern! (Extract method)
     for(ObjectInfo info: add) {
-      serializer.serialize(info.getObj());
+      serializer.serialize(info.getObject());
       tabooBlocks.add(info.getCurrentBlock());
     }
     for(ObjectInfo info: update) {
-      serializer.serialize(info.getObj());
+      serializer.serialize(info.getObject());
       tabooBlocks.add(info.getCurrentBlock());
     }
     for(ObjectInfo info: delete){

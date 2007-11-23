@@ -70,7 +70,7 @@ public class ObjectInfo implements IObjectInfo {
     return fMemoriaClassId;
   }
 
-  public Object getObj() {
+  public Object getObject() {
     return fObj;
   }
 

@@ -207,10 +207,10 @@ public class ObjectStore implements IObjectStoreExt  {
     if(obj instanceof IDataObject) throw new MemoriaException("IDataObjects are for data-mode only: " + obj);
     
     if (ReflectionUtil.isNonStaticInnerClass(obj.getClass())) {
-      throw new SchemaException("Can not save non-static inner classes " + obj.getClass());
+      throw new SchemaException("cannot save non-static inner classes " + obj.getClass());
     }
     
-    if(Type.isPrimitive(obj)) throw new MemoriaException("can not save primitive");
+    if(Type.isPrimitive(obj)) throw new MemoriaException("cannot save primitive");
     
   }
 

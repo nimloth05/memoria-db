@@ -25,7 +25,7 @@ public class DataModeQueryStrategy implements IQueryStrategy {
     List<Object> result = new ArrayList<Object>();
     for (IObjectInfo objectInfo : objectRepo.getAllObjectInfos()) {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectRepo.getObject(objectInfo.getMemoriaClassId());
-      if (memoriaClass.isTypeFor(clazz)) result.add(objectInfo.getObj());
+      if (memoriaClass.isTypeFor(clazz)) result.add(objectInfo.getObject());
     }
     return result;
   }
@@ -38,7 +38,7 @@ public class DataModeQueryStrategy implements IQueryStrategy {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectRepo.getObject(objectInfo.getMemoriaClassId());
 
       if (memoriaClass.isTypeFor(clazz)) {
-        if (filter.accept(objectInfo.getObj())) result.add(objectInfo.getObj());
+        if (filter.accept(objectInfo.getObject())) result.add(objectInfo.getObject());
       }
     }
     return result;

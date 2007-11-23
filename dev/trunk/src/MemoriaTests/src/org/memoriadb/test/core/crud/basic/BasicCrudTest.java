@@ -9,7 +9,7 @@ import org.memoriadb.testutil.*;
 
 public abstract class BasicCrudTest extends AbstractObjectStoreTest {
 
-  public void test_can_not_save_an_object_with_no_default_ctor() {
+  public void test_cannot_save_an_object_with_no_default_ctor() {
     try {
       fObjectStore.save(new NoDefault("1"));
       fail("InstantiationCheckException expected");
@@ -58,16 +58,6 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertEquals(c1_l2, c3.getC1());
   }
   
-  public void test_Object() {
-    Object o = new Object();
-    IObjectId id = save(o);
-    
-    reopen();
-    
-    Object o_l1 = fObjectStore.getObject(id);
-    assertSame(Object.class, o_l1.getClass());
-  }
-  
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fObjectStore.save(b);
@@ -107,7 +97,6 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertNull(l1_b.getName());
   }
   
-
   public void test_save_null_reference() {
     A a = new A();
     
@@ -119,6 +108,16 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     A l1_a = (A) fObjectStore.getObject(id);
     assertNull("b", l1_a.getB());
+  }
+  
+  public void test_save_object() {
+    Object o = new Object();
+    IObjectId id = save(o);
+    
+    reopen();
+    
+    Object o_l1 = fObjectStore.getObject(id);
+    assertSame(Object.class, o_l1.getClass());
   }
   
   public void test_save_object_with_static_field() {

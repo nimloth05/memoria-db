@@ -14,7 +14,6 @@ import org.memoriadb.exception.MemoriaException;
 public final class ObjectLoader implements IReaderContext {
 
   private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
- 
   private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();

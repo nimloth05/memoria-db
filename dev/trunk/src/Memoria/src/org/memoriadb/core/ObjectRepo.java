@@ -16,6 +16,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
+//FIXME: ObjectRepo -> ObjectRepository
 public class ObjectRepo implements IObjectRepo {
 
   /**
@@ -67,7 +68,7 @@ public class ObjectRepo implements IObjectRepo {
 
   public void checkIndexConsistancy() {
     for (IObjectId id : fIdMap.keySet()) {
-      Object object = fIdMap.get(id).getObj();
+      Object object = fIdMap.get(id).getObject();
 
       IObjectId idInObjectMap = fObjectMap.get(object).getId();
       if (!id.equals(idInObjectMap)) throw new MemoriaException("diffrent IDs for object: id in id-Map " + id + " id in adress map "
@@ -101,7 +102,7 @@ public class ObjectRepo implements IObjectRepo {
   public Collection<Object> getAllObjects() {
     List<Object> result = new ArrayList<Object>(fObjectMap.size());
     for (IObjectInfo info : fObjectMap.values()) {
-      result.add(info.getObj());
+      result.add(info.getObject());
     }
     return result;
   }
@@ -151,7 +152,7 @@ public class ObjectRepo implements IObjectRepo {
   public Object getObject(IObjectId objectId) {
     IObjectInfo objectInfo = fIdMap.get(objectId);
     if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
-    return objectInfo.getObj();
+    return objectInfo.getObject();
   }
 
   @Override
@@ -266,14 +267,14 @@ public class ObjectRepo implements IObjectRepo {
     // adjustId here for bootstrapped objects
     fIdFactory.adjustId(info.getId());
     
-    Object previousMapped = fObjectMap.put(info.getObj(), info);
+    Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
 
     previousMapped = fIdMap.put(info.getId(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in id-Map " + info);
 
-    if (info.getObj() instanceof IMemoriaClass) {
-      IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObj();
+    if (info.getObject() instanceof IMemoriaClass) {
+      IMemoriaClassConfig metaObject = (IMemoriaClassConfig) info.getObject();
       previousMapped = fMemoriaClasses.put(metaObject.getJavaClassName(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of memoria class: " + metaObject);
     }

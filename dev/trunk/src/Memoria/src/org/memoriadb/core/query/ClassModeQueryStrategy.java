@@ -13,7 +13,7 @@ public class ClassModeQueryStrategy implements IQueryStrategy {
   public <T> List<T> getAll(IObjectRepo objectRepo, Class<T> clazz) {
     List<T> result = new ArrayList<T>(10);
     for(IObjectInfo info: objectRepo.getAllObjectInfos()) {
-      if (clazz.isInstance(info.getObj())) result.add((T)info.getObj());
+      if (clazz.isInstance(info.getObject())) result.add((T)info.getObject());
     }
     return result;
   }
@@ -23,8 +23,8 @@ public class ClassModeQueryStrategy implements IQueryStrategy {
   public <T> List<T> getAll(IObjectRepo objectRepo, Class<T> clazz, IFilter<T> filter) {
     List<T> result = new ArrayList<T>(10);
     for(IObjectInfo info: objectRepo.getAllObjectInfos()) {
-      if (clazz.isInstance(info.getObj())) {
-        T t = (T) info.getObj();
+      if (clazz.isInstance(info.getObject())) {
+        T t = (T) info.getObject();
         if (filter.accept(t)) result.add(t);
       }
     }

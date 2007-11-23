@@ -7,8 +7,8 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 
-public interface ISerializeHandler {
 
+public interface ISerializeHandler {
   /**
    * @param className the name of the java class
    * @param defaultInstantiator

@@ -145,15 +145,15 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   
   @Override
   protected void setUp() {
-   File file = new File(PATH);
-   file.delete(); 
-   
    CreateConfig config = new CreateConfig();
    configureOpen(config);
    
    if (getTestMode() == TestMode.memory) {
      fObjectStore = openStore(new InMemoryFile(), config);
-   } else {
+   } 
+   else {
+     File file = new File(PATH);
+     file.delete(); 
      fObjectStore = openStore(new PhysicalFile(PATH), config);
    }
   }

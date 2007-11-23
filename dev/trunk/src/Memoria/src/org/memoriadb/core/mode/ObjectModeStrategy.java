@@ -10,17 +10,10 @@ public class ObjectModeStrategy implements IModeStrategy {
   
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
-    
     if (obj.getClass().isArray()) {
       TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
-      if(typeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(transactionHandler, typeInfo.getJavaClass());
+      if(typeInfo.getComponentType() == Type.typeClass) addTypeHierarchy(transactionHandler, typeInfo.getJavaClass());
       return transactionHandler.getIdFactory().getArrayMemoriaClass();
-    }
-    
-    if (obj.getClass().isEnum()) {
-      Class<?> enumClass = obj.getClass();
-      if (enumClass.getSuperclass().isEnum()) enumClass = enumClass.getSuperclass();
-      return addTypeHierarchy(transactionHandler, enumClass);
     }
     
     return addTypeHierarchy(transactionHandler, obj.getClass());
@@ -57,12 +50,13 @@ public class ObjectModeStrategy implements IModeStrategy {
     }
     
     if (javaClass.isEnum()) {
-      IMemoriaClassConfig enumClassObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
-      IObjectId result = transactionHandler.internalSave(enumClassObject);
-      recursiveAddTypeHierarchy(transactionHandler, javaClass, enumClassObject);
+      if (javaClass.getSuperclass().isEnum()) javaClass = javaClass.getSuperclass();
+      classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
+      IObjectId result = transactionHandler.internalSave(classObject);
+      recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
       return result;
     }
-
+    
     // add the current class and all its superclasses to the store
     classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
