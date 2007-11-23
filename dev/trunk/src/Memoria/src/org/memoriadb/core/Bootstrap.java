@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.handler.ISerializeHandler;
-import org.memoriadb.core.handler.list.CollectionHandler;
+import org.memoriadb.core.handler.collection.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
@@ -43,7 +43,8 @@ public class Bootstrap {
     registerHandler(trxHansdler, new CollectionHandler.LinkedHashSetHandler());
     registerHandler(trxHansdler, new CollectionHandler.TreeSetHandler());
     registerHandler(trxHansdler, new CollectionHandler.ConcurrentSkipListSetHandler());
-    registerHandler(trxHansdler, new CollectionHandler.EnumSetHandler());
+    registerHandler(trxHansdler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
+    registerHandler(trxHansdler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
     
     addCustomHandlers(trxHansdler, customHandlers);
   }

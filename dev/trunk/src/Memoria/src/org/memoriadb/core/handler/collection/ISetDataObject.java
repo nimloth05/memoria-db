@@ -1,4 +1,4 @@
-package org.memoriadb.core.handler.list;
+package org.memoriadb.core.handler.collection;
 
 import java.util.Set;
 

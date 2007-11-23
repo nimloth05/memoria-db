@@ -3,8 +3,8 @@ package org.memoriadb.test.core.scenario;
 import java.util.List;
 
 import org.memoriadb.IFilter;
+import org.memoriadb.core.handler.collection.IListDataObject;
 import org.memoriadb.core.handler.field.*;
-import org.memoriadb.core.handler.list.IListDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;

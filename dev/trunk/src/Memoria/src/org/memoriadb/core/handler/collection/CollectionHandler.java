@@ -1,4 +1,4 @@
-package org.memoriadb.core.handler.list;
+package org.memoriadb.core.handler.collection;
 
 import java.io.*;
 import java.util.*;
@@ -54,29 +54,6 @@ public abstract class CollectionHandler implements ISerializeHandler {
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
       return new ListDataObject((List<Object>) collection, typeId);
-    }
-  }
-
-  public static class EnumSetHandler extends CollectionHandler {
-
-    @Override
-    public String getClassName() {
-      return "java.util.RegularEnumSet";
-    }
-
-    @Override
-    protected Collection<Object> createCollection() {
-      try {
-        return EnumSet.noneOf(Object.class);
-      }
-      catch (Exception e) {
-        throw new MemoriaException(e);
-      }
-    }
-    
-    @Override
-    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new SetDataObject((Set<Object>) collection, typeId);
     }
   }
 

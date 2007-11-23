@@ -3,7 +3,7 @@ package org.memoriadb.test.core.handler.collection;
 import java.util.List;
 
 import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.handler.list.IListDataObject;
+import org.memoriadb.core.handler.collection.IListDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 

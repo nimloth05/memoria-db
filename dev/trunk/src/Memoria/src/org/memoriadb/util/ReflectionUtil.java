@@ -83,6 +83,13 @@ public final class ReflectionUtil {
     return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
   }
   
+  @SuppressWarnings("unchecked")
+  public static Class<Enum> getCorrectEnumClass(Class<Enum> enumType) {
+    Class result = enumType;
+    if (result.getSuperclass().isEnum()) result = result.getSuperclass();
+    return result;
+  }
+
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
     for(Field field: fields) {
@@ -97,7 +104,7 @@ public final class ReflectionUtil {
     if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
     return getComponentTypeInfo(array.getClass());
   }
-
+  
   public static Object getValueFromField(Object owner, String fieldName) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
@@ -123,7 +130,7 @@ public final class ReflectionUtil {
   public static boolean isMemoriaTransient(Field field) {
     return Modifier.isTransient(field.getModifiers());
   }
-  
+
   public static boolean isNonStaticInnerClass(Class<?> javaClass) {
     return javaClass.getEnclosingClass() != null && !Modifier.isStatic(javaClass.getModifiers());
   }
