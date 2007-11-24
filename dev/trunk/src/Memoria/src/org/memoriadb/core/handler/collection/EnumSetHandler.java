@@ -1,7 +1,6 @@
 package org.memoriadb.core.handler.collection;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.file.ISerializeContext;
@@ -13,18 +12,19 @@ import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.ReflectionUtil;
 
 public class EnumSetHandler extends CollectionHandler {
-  
+
+  private static final String FIElD_NAME_FOR_ENUM_TYPE_INFO = "elementType";
   public static final String sRegularEnumSet = "java.util.RegularEnumSet";
   public static final String sJumboEnumSet = "java.util.JumboEnumSet";
-  
+
   private IMemoriaClass fEnumClass;
-  
+
   private final String fClassName;
-  
+
   public EnumSetHandler(String className) {
     fClassName = className;
   }
-  
+
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
     IObjectId enumClassId = context.readObjectId(input);
@@ -32,13 +32,10 @@ public class EnumSetHandler extends CollectionHandler {
     return super.deserialize(input, context, typeId);
   }
 
-
-
   @Override
   public String getClassName() {
     return fClassName;
   }
-
 
   @SuppressWarnings("unchecked")
   @Override
@@ -47,7 +44,7 @@ public class EnumSetHandler extends CollectionHandler {
     Class<Enum> enumType = getEnumType(enumSet);
     IObjectId memoriaClassId = context.getMemoriaClassId(ReflectionUtil.getCorrectEnumClass(enumType).getName());
     memoriaClassId.writeTo(output);
-    
+
     super.serialize(obj, output, context);
   }
 
@@ -63,13 +60,12 @@ public class EnumSetHandler extends CollectionHandler {
   protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
     return new SetDataObject((Set<Object>) collection, typeId);
   }
-  
+
   @SuppressWarnings("unchecked")
   private Class<Enum> getEnumType(EnumSet<?> enumSet) {
     try {
-      Field field = ReflectionUtil.getField(enumSet.getClass(), "elementType");
-      return (Class<Enum>) field.get(enumSet);
-    } 
+      return (Class<Enum>) ReflectionUtil.getFieldValue(enumSet, FIElD_NAME_FOR_ENUM_TYPE_INFO);
+    }
     catch (Exception e) {
       throw new MemoriaException(e);
     }

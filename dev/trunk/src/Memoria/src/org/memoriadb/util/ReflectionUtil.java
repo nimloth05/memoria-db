@@ -103,6 +103,16 @@ public final class ReflectionUtil {
     return getField(clazz.getSuperclass(), name);
   }
 
+  public static Object getFieldValue(Object object, String string) {
+    try {
+      Field field = ReflectionUtil.getField(object.getClass(), string);
+      return field.get(object);
+    }
+    catch(IllegalAccessException e) {
+      throw new MemoriaException(e);
+    }
+  }
+  
   public static TypeInfo getTypeInfo(Object array) {
     if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
     return getComponentTypeInfo(array.getClass());
@@ -129,7 +139,7 @@ public final class ReflectionUtil {
       return false;
     }
   }
-  
+
   public static boolean isMemoriaTransient(Field field) {
     return Modifier.isTransient(field.getModifiers());
   }
@@ -145,8 +155,6 @@ public final class ReflectionUtil {
   public static void setValueForField(final Object owner, final String fieldName, final Object value) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
-      declaredField.setAccessible(true);
-      
       declaredField.set(owner, value);
     }
     catch (Exception e) {

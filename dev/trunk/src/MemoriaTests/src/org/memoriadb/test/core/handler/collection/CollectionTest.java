@@ -105,7 +105,7 @@ public abstract class CollectionTest extends AbstractObjectStoreTest {
     return collection;
   }
 
-  private void reopen(Collection<?> collection) {
+  protected void reopen(Collection<?> collection) {
     IObjectId id = saveAll(collection);
     reopen();
     assertEquals(collection, get(id));
