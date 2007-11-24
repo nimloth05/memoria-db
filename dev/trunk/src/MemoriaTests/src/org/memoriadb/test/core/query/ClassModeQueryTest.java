@@ -8,7 +8,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 /**
  * Nothing to do, because the default is {@link DBMode#clazz}
- * @author nienor
+ * @author sandro
  *
  */
 public class ClassModeQueryTest extends QueryTest {

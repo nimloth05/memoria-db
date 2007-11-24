@@ -11,7 +11,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public class ObjectRepoTest extends TestCase {
   
-  private ObjectRepo fRepo;
+  private ObjectRepository fRepo;
   
   public void test_deleted_object_is_not_contained() {
     SimpleTestObj obj = new SimpleTestObj();
@@ -66,7 +66,7 @@ public class ObjectRepoTest extends TestCase {
   
   @Override
   protected void setUp() {
-    fRepo = new ObjectRepo(new LongIdFactory());
+    fRepo = new ObjectRepository(new LongIdFactory());
   }
   
 }

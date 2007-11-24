@@ -4,14 +4,14 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.ObjectRepo;
+import org.memoriadb.core.ObjectRepository;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.id.def.*;
 import org.memoriadb.test.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {
   
-  private ObjectRepo fRepo;
+  private ObjectRepository fRepo;
   
   /**
    * Tests, if the identityHashMap mapping survives a GC. Reason: Some people in the internet claim that System.identityHashCode
@@ -74,7 +74,7 @@ public class ObjectRepoTest extends TestCase {
   
   @Override
   protected void setUp() {
-    fRepo = new ObjectRepo(new LongIdFactory());
+    fRepo = new ObjectRepository(new LongIdFactory());
   }
   
 }

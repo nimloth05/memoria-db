@@ -44,6 +44,7 @@ public final class ReflectionUtil {
     }
   }
   
+  @SuppressWarnings("unchecked")
   public static <T> T createInstanceWithDefaultOrStringCtor(String className, String arg) {
     try {
       Class<?> clazz = getClass(className);

@@ -17,7 +17,7 @@ public interface ITransactionWriter {
 
   public long getHeadRevision();
 
-  public IObjectRepo getRepo();
+  public IObjectRepository getRepo();
   
   public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete)  throws IOException;
   

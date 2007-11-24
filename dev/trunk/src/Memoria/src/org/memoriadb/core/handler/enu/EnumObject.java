@@ -22,6 +22,7 @@ public class EnumObject implements IEnumObject {
     return fMemoriaClassId;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Object getObject(IMemoriaClass memoriaClass) {
     Class<Enum<?>> enumClass = (Class<Enum<?>>) ReflectionUtil.getClass(memoriaClass.getJavaClassName());

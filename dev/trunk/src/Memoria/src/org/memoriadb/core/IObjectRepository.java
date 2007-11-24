@@ -13,7 +13,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-public interface IObjectRepo extends IDefaultObjectIdProvider {
+public interface IObjectRepository extends IDefaultObjectIdProvider {
 
   /**
    * Adds an object to the container. A new objectId is generated.
@@ -74,7 +74,6 @@ public interface IObjectRepo extends IDefaultObjectIdProvider {
   /**
    * @return true, if the given obj is a metaclass
    */
-  //FIXME: METACLASS
   public boolean isMemoriaClass(Object obj);
 
 

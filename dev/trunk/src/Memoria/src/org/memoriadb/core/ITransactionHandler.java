@@ -59,8 +59,6 @@ public interface ITransactionHandler {
    */
   public void endUpdate();
 
-  // wird später ersetzt durch die typenbasierte Queries, msc...
-  //FIXME: Auf eine Test-Schnittstelle verschieben
   public Collection<Object> getAllObjects();
   
   public IBlockManager getBlockManager();

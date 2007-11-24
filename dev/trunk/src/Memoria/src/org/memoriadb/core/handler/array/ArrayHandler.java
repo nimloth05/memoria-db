@@ -118,11 +118,6 @@ public class ArrayHandler implements ISerializeHandler {
       }
 
       @Override
-      public void visitEnum(Type type, int enumOrdinal) {
-      // FIXME muss noch implementiert werden
-      }
-
-      @Override
       public void visitPrimitive(Type type, Object value) {
         array.set(index, value);
       }
@@ -141,11 +136,6 @@ public class ArrayHandler implements ISerializeHandler {
 
       @Override
       public void visitClass(Type type, IObjectId objectId) {
-        throw new MemoriaException("primitive expected");
-      }
-
-      @Override
-      public void visitEnum(Type type, int enumOrdinal) {
         throw new MemoriaException("primitive expected");
       }
 

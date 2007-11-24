@@ -18,7 +18,7 @@ public interface ISerializeHandler {
   /**
    * @param input
    * @param context TODO
-   * @param typeId TODO
+   * @param typeId the typeId of the object
    * @return the new object
    */
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
@@ -30,7 +30,7 @@ public interface ISerializeHandler {
   /**
    * @param obj - object to serialize
    * @param output - the stream
-   * @param context TODO
+   * @param context 
    */
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
 

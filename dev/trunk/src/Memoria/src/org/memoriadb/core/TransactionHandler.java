@@ -13,7 +13,7 @@ import org.memoriadb.util.IdentityHashSet;
 
 public class TransactionHandler implements ITransactionHandler {
 
-  private final IObjectRepo fObjectRepo;
+  private final IObjectRepository fObjectRepository;
   
   private final ITransactionWriter fTransactionWriter;
 
@@ -31,7 +31,7 @@ public class TransactionHandler implements ITransactionHandler {
     fTransactionWriter = writer;
     fHeader = header;
     fStore = store;
-    fObjectRepo = writer.getRepo();
+    fObjectRepository = writer.getRepo();
   }
 
   @Override
@@ -41,7 +41,7 @@ public class TransactionHandler implements ITransactionHandler {
 
   @Override
   public void checkIndexConsistancy() {
-    fObjectRepo.checkIndexConsistancy();
+    fObjectRepository.checkIndexConsistancy();
   }
 
   @Override
@@ -51,12 +51,12 @@ public class TransactionHandler implements ITransactionHandler {
 
   @Override
   public boolean contains(Object obj) {
-    return fObjectRepo.contains(obj);
+    return fObjectRepository.contains(obj);
   }
 
   @Override
   public boolean containsId(IObjectId id) {
-    return fObjectRepo.contains(id);
+    return fObjectRepository.contains(id);
   }
 
   @Override
@@ -81,12 +81,12 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   public Collection<IObjectInfo> getAllObjectInfos() {
-    return fObjectRepo.getAllObjectInfos();
+    return fObjectRepository.getAllObjectInfos();
   }
 
   @Override
   public Collection<Object> getAllObjects() {
-    return fObjectRepo.getAllObjects();
+    return fObjectRepository.getAllObjects();
   }
 
   @Override
@@ -110,17 +110,17 @@ public class TransactionHandler implements ITransactionHandler {
 
   @Override
   public IDefaultObjectIdProvider getIdFactory() {
-    return fObjectRepo.getIdFactory();
+    return fObjectRepository.getIdFactory();
   }
 
   @Override
   public int getIdSize() {
-    return fObjectRepo.getIdFactory().getIdSize();
+    return fObjectRepository.getIdFactory().getIdSize();
   }
 
   @Override
   public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fObjectRepo.getMemoriaClass(clazz.getName());
+    return fObjectRepository.getMemoriaClass(clazz.getName());
   }
 
   @Override
@@ -135,37 +135,37 @@ public class TransactionHandler implements ITransactionHandler {
 
   @Override
   public IObjectId getMemoriaFieldMetaClass() {
-    return fObjectRepo.getMemoriaMetaClass();
+    return fObjectRepository.getMemoriaMetaClass();
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(IObjectId id) {
-    return (T) fObjectRepo.getObject(id);
+    return (T) fObjectRepository.getObject(id);
   }
 
   @Override
   public IObjectId getObjectId(Object obj) {
-    return fObjectRepo.getObjectId(obj);
+    return fObjectRepository.getObjectId(obj);
   }
 
   @Override
   public ObjectInfo getObjectInfo(Object obj) {
-    return fObjectRepo.getObjectInfo(obj);
+    return fObjectRepository.getObjectInfo(obj);
   }
 
   @Override
   public IObjectInfo getObjectInfoForId(IObjectId id) {
-    return fObjectRepo.getObjectInfoForId(id);
+    return fObjectRepository.getObjectInfoForId(id);
   }
 
-  public IObjectRepo getObjectRepo() {
-    return fObjectRepo;
+  public IObjectRepository getObjectRepo() {
+    return fObjectRepository;
   }
 
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
-    SurvivorAgent agent = new SurvivorAgent(fObjectRepo, fTransactionWriter.getFile());
+    SurvivorAgent agent = new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile());
     return agent.getSurvivors(block);
   }
 
@@ -175,19 +175,19 @@ public class TransactionHandler implements ITransactionHandler {
 
     if (fAdd.remove(info)) {
       // object was added in current transaction, remove it from add-list and from the repo
-      fObjectRepo.delete(obj);
+      fObjectRepository.delete(obj);
       return;
     }
 
     // if object was previously updated in current transaction, remove it from update-list
     fUpdate.remove(info);
 
-    fObjectRepo.delete(obj);
+    fObjectRepository.delete(obj);
     fDelete.add(info);
   }
 
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
-    return fObjectRepo.getMemoriaClass(klass);
+    return fObjectRepository.getMemoriaClass(klass);
   }
 
   /**
@@ -199,7 +199,7 @@ public class TransactionHandler implements ITransactionHandler {
     if (info != null) {
       if (fAdd.contains(info)) {
         // added in same transaction, don't add it again
-        return fObjectRepo.getObjectId(obj);
+        return fObjectRepository.getObjectId(obj);
       }
 
       // object already in the store, perform update. info is replaced if several updates occur in same transaction.
@@ -211,7 +211,7 @@ public class TransactionHandler implements ITransactionHandler {
 
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
     fStore.checkCanInstantiateObject(this, memoriaClassId, fDefaultInstantiator);
-    ObjectInfo result = fObjectRepo.add(obj, memoriaClassId);
+    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(getObjectInfo(obj));
     return result.getId();
   }
@@ -261,6 +261,6 @@ public class TransactionHandler implements ITransactionHandler {
   private IObjectId internalSaveAll(Object root) {
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(root);
-    return fObjectRepo.getObjectId(root);
+    return fObjectRepository.getObjectId(root);
   }
 }

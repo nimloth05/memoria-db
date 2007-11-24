@@ -10,7 +10,6 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
-import org.memoriadb.util.Constants;
 
 public class DefaultHandler implements ISerializeHandler {
 
@@ -59,23 +58,21 @@ public class DefaultHandler implements ISerializeHandler {
   public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
     final IFieldObject fFieldObject = getFieldObject(obj);
     
-    new MetaClassInheritanceTraverser(fClassObject) {
-      
-      @Override
-      protected void handle(IMemoriaClass metaObject) {
-        for(MemoriaField field: ((MemoriaFieldClass) metaObject).getFields()) {
-          if(field.getFieldType() != Type.typeClass) continue;
-          Object referencee = fFieldObject.get(field.getName());
-          if(referencee == null) continue;
-          try {
-            traversal.handle(referencee);
-          }
-          catch (Exception e) {
-            throw new MemoriaException("Exception during object traversel. Java Class: '"+metaObject.getJavaClassName()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
-          }
-        }
+    for(MemoriaField field: fClassObject.getFields()) {
+      if(field.getFieldType() != Type.typeClass) continue;
+      Object referencee = fFieldObject.get(field.getName());
+      if(referencee == null) continue;
+      try {
+        traversal.handle(referencee);
       }
-    };
+      catch (Exception e) {
+        throw new MemoriaException("Exception during object traversel. Java Class: '"+fClassObject.getJavaClassName()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
+      }
+    }
+    IMemoriaClass superClass = fClassObject.getSuperClass();
+    if (superClass != null) {
+      superClass.getHandler().traverseChildren(obj, traversal);
+    }
   }
 
   private IFieldObject createObject(IReaderContext context, IObjectId typeId) {
@@ -105,12 +102,6 @@ public class DefaultHandler implements ISerializeHandler {
         public void visitClass(Type type, IObjectId objectId) {
           if (fContext.isNullReference(objectId)) return;
           fContext.objectToBind(new ObjectFieldReference(fMember, field.getName(), objectId));
-        }
-
-        @Override
-        public void visitEnum(Type type, int enumOrdinal) {
-          if (enumOrdinal == Constants.NO_ENUM_REF) return;
-          fMember.set(field.getName(), enumOrdinal);
         }
 
         @Override

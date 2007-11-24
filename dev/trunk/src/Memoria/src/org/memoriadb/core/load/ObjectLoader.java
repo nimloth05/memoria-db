@@ -17,7 +17,7 @@ public final class ObjectLoader implements IReaderContext {
   private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
   private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
-  private final ObjectRepo fRepo;
+  private final ObjectRepository fRepo;
   private final FileReader fFileReader;
   private final IBlockManager fBlockManager;
   private Block fCurrentBlock;
@@ -25,11 +25,11 @@ public final class ObjectLoader implements IReaderContext {
   private final IObjectIdFactory fIdFactory;
   private final IModeStrategy fStore;
 
-  public static long readIn(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
+  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
     return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, store).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepo repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
+  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
     if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");

@@ -15,66 +15,66 @@ import org.memoriadb.util.Constants;
  * @author msc
  * 
  */
-//FIXME: Kann man hier diese Schnittstelle entfernen und sie "private" (inner class) implementieren?
-public final class ObjectSerializer implements ISerializeContext {
+public final class ObjectSerializer {
+  
+  private class SerializeContext implements ISerializeContext {
 
-  private final IObjectRepo fObjectRepo;
+    @Override
+    public boolean contains(Object obj) {
+      return fObjectRepository.contains(obj);
+    }
+
+    @Override
+    public IObjectId getMemoriaClassId(String javaClassName) {
+      IMemoriaClassConfig memoriaClass = fObjectRepository.getMemoriaClass(javaClassName);
+      return fObjectRepository.getObjectId(memoriaClass);
+    }
+
+    @Override
+    public IObjectId getNullReference() {
+      return fObjectRepository.getNullReference();
+    }
+
+    @Override
+    public IObjectId getObjectId(Object obj) {
+      return fObjectRepository.getObjectId(obj);
+    }
+
+    @Override
+    public IObjectId getRootClassId() {
+      return fObjectRepository.getRootClassId();
+    }
+  }
+
+  private final IObjectRepository fObjectRepository;
   private final ByteArrayOutputStream fBuffer;
   private final DataOutput fStream;
 
   /**
    * @param repo
    */
-  public ObjectSerializer(IObjectRepo repo) {
-    fObjectRepo = repo;
+  public ObjectSerializer(IObjectRepository repo) {
+    fObjectRepository = repo;
     fBuffer = new ByteArrayOutputStream();
     fStream = new DataOutputStream(fBuffer);
-  }
-
-  @Override
-  public boolean contains(Object obj) {
-    return fObjectRepo.contains(obj);
   }
 
   public byte[] getBytes() {
     return fBuffer.toByteArray();
   }
 
-  
-  @Override
-  public IObjectId getMemoriaClassId(String className) {
-    IMemoriaClassConfig memoriaClass = fObjectRepo.getMemoriaClass(className);
-    return fObjectRepo.getObjectId(memoriaClass);
-  }
-
-  @Override
-  public IObjectId getNullReference() {
-    return fObjectRepo.getNullReference();
-  }
-
-  @Override
-  public IObjectId getObjectId(Object obj) {
-    return fObjectRepo.getObjectId(obj);
-  }
-
-  @Override
-  public IObjectId getRootClassId() {
-    return fObjectRepo.getRootClassId();
-  }
-
-  public void markAsDeleted(IObjectId id) {
+  public void markAsDeleted(IObjectInfo info) {
     try {
-      internalMarkObjectAsDeleted(fObjectRepo.getObjectInfoForId(id));
+      internalMarkObjectAsDeleted(info);
     }
     catch (IOException e) {
       throw new MemoriaException(e);
     }
   }
 
-  //FIXME: Aussen hat man bereits das ObjectInfo, es könnte direkt übergeben werden.
-  public void serialize(Object obj) {
+  public void serialize(ObjectInfo info) {
     try {
-      serializeObject(fObjectRepo.getObjectInfo(obj));
+      serializeObject(info);
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -82,15 +82,15 @@ public final class ObjectSerializer implements ISerializeContext {
   }
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
-    fStream.writeInt(2*fObjectRepo.getIdFactory().getIdSize());
-    IObjectId typeId = fObjectRepo.isMemoriaClass(info.getObject()) ? fObjectRepo.getMemoriaClassDeletionMarker() : fObjectRepo.getObjectDeletionMarker();
+    fStream.writeInt(2*fObjectRepository.getIdFactory().getIdSize());
+    IObjectId typeId = fObjectRepository.isMemoriaClass(info.getObject()) ? fObjectRepository.getMemoriaClassDeletionMarker() : fObjectRepository.getObjectDeletionMarker();
     typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
   }
 
   private void serializeObject(IObjectInfo info) throws Exception {
     //FIXME: Hier muss getExistingObject aufgerufen werden, da es die MemoriaClass geben muss!
-    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepo.getObject(info.getMemoriaClassId());
+    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getObject(info.getMemoriaClassId());
     serializeObject(memoriaClass.getHandler(), info);
   }
 
@@ -103,7 +103,7 @@ public final class ObjectSerializer implements ISerializeContext {
     typeId.writeTo(objectStream);
     info.getId().writeTo(objectStream);
     
-    handler.serialize(info.getObject(), objectStream, this);
+    handler.serialize(info.getObject(), objectStream, new SerializeContext());
 
     byte[] objectData = buffer.toByteArray();
     fStream.writeInt(objectData.length);

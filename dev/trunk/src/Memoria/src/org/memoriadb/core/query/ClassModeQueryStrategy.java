@@ -10,9 +10,9 @@ public class ClassModeQueryStrategy implements IQueryStrategy {
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> List<T> getAll(IObjectRepo objectRepo, Class<T> clazz) {
+  public <T> List<T> getAll(IObjectRepository objectRepository, Class<T> clazz) {
     List<T> result = new ArrayList<T>(10);
-    for(IObjectInfo info: objectRepo.getAllObjectInfos()) {
+    for(IObjectInfo info: objectRepository.getAllObjectInfos()) {
       if (clazz.isInstance(info.getObject())) result.add((T)info.getObject());
     }
     return result;
@@ -20,9 +20,9 @@ public class ClassModeQueryStrategy implements IQueryStrategy {
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> List<T> getAll(IObjectRepo objectRepo, Class<T> clazz, IFilter<T> filter) {
+  public <T> List<T> getAll(IObjectRepository objectRepository, Class<T> clazz, IFilter<T> filter) {
     List<T> result = new ArrayList<T>(10);
-    for(IObjectInfo info: objectRepo.getAllObjectInfos()) {
+    for(IObjectInfo info: objectRepository.getAllObjectInfos()) {
       if (clazz.isInstance(info.getObject())) {
         T t = (T) info.getObject();
         if (filter.accept(t)) result.add(t);
@@ -33,14 +33,14 @@ public class ClassModeQueryStrategy implements IQueryStrategy {
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object> getAll(IObjectRepo objectRepo, String clazz) {
-    return getAll(objectRepo, (Class<Object>)ReflectionUtil.getClass(clazz));
+  public List<Object> getAll(IObjectRepository objectRepository, String clazz) {
+    return getAll(objectRepository, (Class<Object>)ReflectionUtil.getClass(clazz));
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<Object> getAll(IObjectRepo objectRepo, String clazz, IFilter<Object> filter) {
-    return getAll(objectRepo, (Class<Object>)ReflectionUtil.getClass(clazz), filter);
+  public List<Object> getAll(IObjectRepository objectRepository, String clazz, IFilter<Object> filter) {
+    return getAll(objectRepository, (Class<Object>)ReflectionUtil.getClass(clazz), filter);
   }
 
 }

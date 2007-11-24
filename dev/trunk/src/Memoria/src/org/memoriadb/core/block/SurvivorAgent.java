@@ -18,10 +18,10 @@ import org.memoriadb.util.IOUtil;
 public class SurvivorAgent implements IFileReaderHandler  {
   
   private Set<ObjectInfo> fSurvivors;
-  private final IObjectRepo fRepo;
+  private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
   
-  public SurvivorAgent(IObjectRepo repo, IMemoriaFile file) {
+  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file) {
     fFile = file;
     fRepo = repo;
   }

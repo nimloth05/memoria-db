@@ -30,14 +30,11 @@ public class ObjectModeStrategy implements IModeStrategy {
     return false;
   }
 
-  //FIXME: Kommentar review
   /**
    * 
    * @param transactionHandler 
    * 
-   * @return The id of the classObject for the given javaClass.   <--- mein Vorschlag, so  
-   * @return The id of the first (most derived) class in the hierarchy, because this is the
-   * typeId of the object.
+   * @return The id of the classObject for the given javaClass.  
    * 
    * Idempotent, already stored classes are ignored.
    */

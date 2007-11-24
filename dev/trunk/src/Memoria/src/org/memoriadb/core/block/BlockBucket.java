@@ -20,10 +20,9 @@ public class BlockBucket implements Comparable<BlockBucket> {
     fBlocks.add(block);
   }
   
-  //FIXME: !!! Dieser art des Long-vergleich ist sehr gefährlich, siehe Java Puzzler 65.
   @Override
   public int compareTo(BlockBucket o) {
-    return (int)(fSize - o.fSize);
+    return (fSize < o.fSize ? -1 : (fSize == o.fSize ? 0 : 1));
   }
 
   public int getBlockCount() {

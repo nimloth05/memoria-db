@@ -20,6 +20,7 @@ public class DataModeStrategy implements IModeStrategy {
   @Override
   public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
     // FIXME was muss hier überprüft werden?
+    // --> Hier müss überprüft werden, ob zum Beispiel die memoriaClassId vorhanden ist oder ähnliches.
   }
 
 

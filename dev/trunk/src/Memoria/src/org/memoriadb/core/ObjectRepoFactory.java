@@ -8,13 +8,13 @@ import org.memoriadb.core.meta.*;
 
 public final class ObjectRepoFactory {
 
-  public static ObjectRepo create(IObjectIdFactory idFactory) {
-    ObjectRepo repo = new ObjectRepo(idFactory);
+  public static ObjectRepository create(IObjectIdFactory idFactory) {
+    ObjectRepository repo = new ObjectRepository(idFactory);
     registerMetaClasses(repo, idFactory);
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepo repo, IDefaultObjectIdProvider factory) {
+  private static void registerMetaClasses(ObjectRepository repo, IDefaultObjectIdProvider factory) {
     IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
 

@@ -16,8 +16,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-//FIXME: ObjectRepo -> ObjectRepository
-public class ObjectRepo implements IObjectRepo {
+public class ObjectRepository implements IObjectRepository {
 
   /**
    * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null. 
@@ -42,7 +41,7 @@ public class ObjectRepo implements IObjectRepo {
   private final IObjectIdFactory fIdFactory;
   
 
-  public ObjectRepo(IObjectIdFactory idFactory) {
+  public ObjectRepository(IObjectIdFactory idFactory) {
     fIdFactory = idFactory;
   }
 

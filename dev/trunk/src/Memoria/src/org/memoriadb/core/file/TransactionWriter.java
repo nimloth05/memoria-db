@@ -12,11 +12,11 @@ public final class TransactionWriter implements ITransactionWriter {
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
   private long fHeadRevision;
-  private final IObjectRepo fRepo;
+  private final IObjectRepository fRepo;
   private final SurvivorAgent fSurvivorAgent;
   private final OpenConfig fConfig;
 
-  public TransactionWriter(IObjectRepo repo, OpenConfig config, IMemoriaFile file, long headRevision) {
+  public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision) {
     fConfig = config;
     if (repo == null) throw new IllegalArgumentException("objectRepo is null");
     if (config == null) throw new IllegalArgumentException("config is null");
@@ -83,7 +83,7 @@ public final class TransactionWriter implements ITransactionWriter {
   }
 
   @Override
-  public IObjectRepo getRepo() {
+  public IObjectRepository getRepo() {
     return fRepo;
   }
 
@@ -99,19 +99,9 @@ public final class TransactionWriter implements ITransactionWriter {
     
     ObjectSerializer serializer = new ObjectSerializer(fRepo);
     
-    //FIXME: Auslagern! (Extract method)
-    for(ObjectInfo info: add) {
-      serializer.serialize(info.getObject());
-      tabooBlocks.add(info.getCurrentBlock());
-    }
-    for(ObjectInfo info: update) {
-      serializer.serialize(info.getObject());
-      tabooBlocks.add(info.getCurrentBlock());
-    }
-    for(ObjectInfo info: delete){
-      serializer.markAsDeleted(info.getId());
-      tabooBlocks.add(info.getCurrentBlock());
-    }
+    writeAddOrUpdate(add, tabooBlocks, serializer);
+    writeAddOrUpdate(update, tabooBlocks, serializer);
+    writeDelete(delete, tabooBlocks, serializer);
     Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks);
 
     updateInfoForAdd(add, block);
@@ -141,7 +131,7 @@ public final class TransactionWriter implements ITransactionWriter {
       info.changeCurrentBlock(block);
       info.setRevision(fHeadRevision);
     }
-  } 
+  }
 
   private void updateInfoForDelete(Set<ObjectInfo> infos, Block block) {
     for(ObjectInfo info: infos){
@@ -157,7 +147,7 @@ public final class TransactionWriter implements ITransactionWriter {
       info.setRevision(fHeadRevision);
       info.incrememntOldGenerationCount();
     }
-  }
+  } 
 
   private void write(Block block, byte[] trxData) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -193,6 +183,20 @@ public final class TransactionWriter implements ITransactionWriter {
     
     write(block, trxData);
     return block;    
+  }
+
+  private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) {
+    for(ObjectInfo info: add) {
+      serializer.serialize(info);
+      tabooBlocks.add(info.getCurrentBlock());
+    }
+  }
+
+  private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) {
+    for(ObjectInfo info: delete){
+      serializer.markAsDeleted(info);
+      tabooBlocks.add(info.getCurrentBlock());
+    }
   }
 
   private void writeTransaction(byte[] trxData, DataOutputStream stream, MemoriaCRC32 crc32) throws IOException {

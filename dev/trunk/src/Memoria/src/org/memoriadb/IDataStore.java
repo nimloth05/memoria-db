@@ -69,8 +69,6 @@ public interface IDataStore {
   
   public List<Object> getAll(String clazz, IFilter<Object> filter);
   
-  // wird später ersetzt durch die typenbasierte Queries, msc...
-  //FIXME: Auf eine Test-Schnittstelle verschieben
   public Collection<Object> getAllObjects();
 
   /**

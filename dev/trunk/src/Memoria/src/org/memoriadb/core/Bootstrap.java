@@ -69,7 +69,7 @@ public class Bootstrap {
     FileHeader header = readHeader(fileReader);
 
     IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
-    ObjectRepo repo = ObjectRepoFactory.create(header.loadIdFactory());
+    ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), defaultInstantiator, strategy);
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
