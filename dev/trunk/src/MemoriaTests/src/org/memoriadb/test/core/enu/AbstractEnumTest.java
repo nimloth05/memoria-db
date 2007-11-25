@@ -23,8 +23,32 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     assertEquals(TestEnum.b.ordinal(), l1_enumObjet.getOrdinal());
   }
   
+  public void test_derived_enum() {
+    EnumUse obj = new EnumUse();
+    obj.setEnum(TestEnum.c);
+    IObjectId id = saveAll(obj);
+    
+    reopen();
+    
+    EnumUse l1_obj = get(id);
+    assertEquals(TestEnum.c, l1_obj.getEnum());
+  }
+  
+  public void test_enum_array() {
+    TestEnum[] enumArray = new TestEnum[2];
+    enumArray[0] = TestEnum.a;
+    enumArray[1] = TestEnum.c;
+    IObjectId id = saveAll(enumArray);
+    
+    reopen();
+    TestEnum[] l1_enumArray = get(id);
+    assertTrue(Arrays.deepEquals(enumArray, l1_enumArray));
+  }
+  
   public void test_enum_set() {
-    EnumSet<TestEnum> enumSet = EnumSet.allOf(TestEnum.class);
+    EnumSet<TestEnum> enumSet = EnumSet.noneOf(TestEnum.class);
+    enumSet.add(TestEnum.a);
+    enumSet.add(TestEnum.b);
     IObjectId id = saveAll(enumSet);
     
     reopen();
@@ -60,6 +84,20 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     reopen();
     EnumUse l1_obj = fObjectStore.getObject(objId);
     assertEquals(null, l1_obj.getEnum());
+  }
+  
+  public void test_save_derived_enum() {
+    IObjectId id = save(TestEnum.c);
+    reopen();
+    TestEnum l1_enum = get(id);
+    assertEquals(TestEnum.c, l1_enum);
+  }
+  
+  public void test_save_enum() {
+    IObjectId id = save(TestEnum.a);
+    reopen();
+    TestEnum l1_enum = get(id);
+    assertEquals(TestEnum.a, l1_enum);
   }
   
   public void test_scenario() {

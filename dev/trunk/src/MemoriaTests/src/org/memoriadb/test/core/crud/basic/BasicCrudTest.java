@@ -3,7 +3,7 @@ package org.memoriadb.test.core.crud.basic;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.*;
 import org.memoriadb.test.core.crud.testclass.*;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
 import org.memoriadb.testutil.*;
 
@@ -58,6 +58,16 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertEquals(c1_l2, c3.getC1());
   }
   
+  public void test_save_aggregate_with_dataObject_in_objectMode() {
+    ObjectReferencer ref = new ObjectReferencer();
+    ref.setObject(new DataObjectStub());
+    try {
+      saveAll(ref);
+      fail("It's not possible to save a dataObject");
+    } 
+    catch (MemoriaException e) {}
+  }
+  
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fObjectStore.save(b);
@@ -85,6 +95,14 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     assertSame(l1_c1.getC2(), l1_c2);
     assertSame(l1_c2.getC1(), l1_c1);
+  }
+  
+  public void test_save_dataObject_in_objectMode() {
+    try {
+      save((Object)new DataObjectStub());
+      fail("It's not possible to save a dataObject");
+    } 
+    catch (MemoriaException e) {}
   }
   
   public void test_save_null_attribute() {

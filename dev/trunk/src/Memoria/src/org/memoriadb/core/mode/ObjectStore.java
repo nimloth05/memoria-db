@@ -211,7 +211,6 @@ public class ObjectStore implements IObjectStoreExt  {
     }
     
     if(Type.isPrimitive(obj)) throw new MemoriaException("cannot save primitive");
-    
   }
 
 }

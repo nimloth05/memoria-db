@@ -30,6 +30,14 @@ public class ObjectModeStrategy implements IModeStrategy {
     return false;
   }
 
+  private IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass) {
+    IMemoriaClassConfig classObject;
+    classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
+    IObjectId result = transactionHandler.internalSave(classObject);
+    recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+    return result;
+  }
+
   /**
    * 
    * @param transactionHandler 
@@ -39,6 +47,10 @@ public class ObjectModeStrategy implements IModeStrategy {
    * Idempotent, already stored classes are ignored.
    */
   private IObjectId addTypeHierarchy(TransactionHandler transactionHandler, Class<?> javaClass) {
+    if (javaClass.getSuperclass() != null && javaClass.getSuperclass().isEnum()) {
+      javaClass = javaClass.getSuperclass();
+    }
+    
     IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
 
     // if the class is already in the store, all it's superclasses must also be known. Do nothing.
@@ -47,12 +59,9 @@ public class ObjectModeStrategy implements IModeStrategy {
     }
     
     if (javaClass.isEnum()) {
-      if (javaClass.getSuperclass().isEnum()) javaClass = javaClass.getSuperclass();
-      classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
-      IObjectId result = transactionHandler.internalSave(classObject);
-      recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
-      return result;
+      return addEnumClass(transactionHandler, javaClass);
     }
+    
     
     // add the current class and all its superclasses to the store
     classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
