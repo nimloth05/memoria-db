@@ -44,6 +44,7 @@ public class TransactionHandler implements ITransactionHandler {
     if (Type.isPrimitive(type)) throw new MemoriaException("primitive can not be added " + clazz);
 
     IObjectId result = ObjectModeStrategy.addMemoriaClassIfNecessary(this, clazz);
+    
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
@@ -113,6 +114,11 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @Override
+  public IDefaultIdProvider getDefaultIdProvider() {
+    return fObjectRepository.getIdFactory();
+  }
+
+  @Override
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
   }
@@ -137,11 +143,6 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @Override
-  public IDefaultObjectIdProvider getIdFactory() {
-    return fObjectRepository.getIdFactory();
-  }
-
-  @Override
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
@@ -152,29 +153,28 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @Override
-  public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fObjectRepository.getMemoriaClass(clazz.getName());
+  public IMemoriaClass getMemoriaClass(Object object) {
+    IObjectId id = getMemoriaClassId(object);
+    if(id == null) return null;
+    return (IMemoriaClass) fObjectRepository.getObject(id); 
+  }
+  
+  public IMemoriaClass getMemoriaClass(String className) {
+    return fObjectRepository.getMemoriaClass(className);
   }
 
   @Override
-  public IMemoriaClass getMemoriaClass(Object obj) {
-    return getObject(getMemoriaClassId(obj));
+  public IObjectId getMemoriaClassId(Object object) {
+    ObjectInfo info = getObjectInfo(object);
+    if(info == null) return null;
+    return info.getMemoriaClassId();
   }
 
-  public IObjectId getMemoriaClassId(Class<?> clazz) {
-    IMemoriaClass memoriaClass = getMemoriaClass(clazz);
-    if (memoriaClass == null) return null;
-    return fObjectRepository.getExistingId(memoriaClass);
-  }
-
-  @Override
-  public IObjectId getMemoriaClassId(Object obj) {
-    return getObjectInfo(obj).getMemoriaClassId();
-  }
-
-  @Override
-  public IObjectId getMemoriaFieldMetaClass() {
-    return fObjectRepository.getFieldMetaClass();
+  /**
+   * @return The Class for the given <tt>obj</tt> or null.
+   */
+  public IObjectId getMemoriaClassId(String className) {
+    return fObjectRepository.getId(getMemoriaClass(className));
   }
 
   @SuppressWarnings("unchecked")
@@ -201,6 +201,10 @@ public class TransactionHandler implements ITransactionHandler {
   public Set<ObjectInfo> getSurvivors(Block block) {
     SurvivorAgent agent = new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile());
     return agent.getSurvivors(block);
+  }
+
+  public TypeInfo getTypeInfo() {
+    return new TypeInfo(this);
   }
 
   public void internalDelete(Object obj) {

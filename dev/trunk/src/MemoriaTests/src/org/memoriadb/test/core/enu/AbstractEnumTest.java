@@ -6,9 +6,21 @@ import org.memoriadb.core.handler.enu.IEnumObject;
 import org.memoriadb.core.handler.field.IFieldObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.enums.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.Collections;
 
 public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
+  
+  public void test_add_enum_in_data_mode() {
+    
+    save(TestEnum.c);
+    
+    reopenDataMode();
+    
+    fDataStore.save(fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 2));
+    
+    reopen();
+  }
   
   public void test_data_mode() {
     EnumUse obj = new EnumUse();
@@ -98,6 +110,17 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     reopen();
     TestEnum l1_enum = get(id);
     assertEquals(TestEnum.a, l1_enum);
+  }
+  
+  public void test_save_enum_twice() {
+    save(TestEnum.a);
+    save(TestEnum.a);
+    save(TestEnum.c);
+    save(TestEnum.c);
+    
+    reopen();
+    
+    Collections.containsAll(fObjectStore.query(TestEnum.class), TestEnum.a, TestEnum.c);
   }
   
   public void test_scenario() {

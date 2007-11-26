@@ -15,16 +15,23 @@ public interface ITypeInfo {
   public IObjectId getMemoriaArrayClass();
   
   /**
-   * @return The Class for the given <tt>clazz</tt> or null.
+   * @return The MemoriaClass for the given <tt>clazz</tt> or null.
    */
   public IMemoriaClass getMemoriaClass(Class<?> clazz);
+  
+  /**
+   * @return The MemoriaClass for the given <tt>obj</tt> or null.
+   */
+  public IMemoriaClass getMemoriaClass(Object object);
 
   /**
-   * @return The Class for the given <tt>obj</tt>.
+   * @return The MemoriaClass for the given <tt>className</tt> or null.
    */
-  public IMemoriaClass getMemoriaClass(Object obj);
+  public IMemoriaClass getMemoriaClass(String className);
   
   public IObjectId getMemoriaClassId(Class<?> clazz);
   
-  public IObjectId getMemoriaClassId(Object obj);
+  public IObjectId getMemoriaClassId(Object object);
+  
+  public IObjectId getMemoriaClassId(String className);
 }

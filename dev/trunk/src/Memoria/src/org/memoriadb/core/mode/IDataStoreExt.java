@@ -23,7 +23,7 @@ public interface IDataStoreExt extends IDataStore {
 
   public FileHeader getHeader();  
   
-  public IDefaultObjectIdProvider getIdFactory();
+  public IDefaultIdProvider getIdFactory();
 
   public int getIdSize();
 

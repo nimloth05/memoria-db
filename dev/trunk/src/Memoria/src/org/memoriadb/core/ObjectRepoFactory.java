@@ -14,7 +14,7 @@ public final class ObjectRepoFactory {
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepository repo, IDefaultObjectIdProvider factory) {
+  private static void registerMetaClasses(ObjectRepository repo, IDefaultIdProvider factory) {
     IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
 

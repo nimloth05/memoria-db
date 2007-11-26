@@ -6,23 +6,23 @@ import java.util.UUID;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ByteUtil;
 
-public class GUIDObjectId implements IObjectId {
+public class GuidId implements IObjectId {
 
   private final UUID fUUID;
   
   public static IObjectId random() {
-    return new GUIDObjectId(UUID.randomUUID());
+    return new GuidId(UUID.randomUUID());
   }
 
-  public static GUIDObjectId readFrom(DataInput input) throws IOException {
-    return new GUIDObjectId(ByteUtil.readUUID(input));
+  public static GuidId readFrom(DataInput input) throws IOException {
+    return new GuidId(ByteUtil.readUUID(input));
   }
   
-  public GUIDObjectId(String string) {
+  public GuidId(String string) {
     this(UUID.fromString(string));
   }
   
-  private GUIDObjectId(UUID uuid) {
+  private GuidId(UUID uuid) {
     fUUID = uuid;
   }
 
@@ -31,7 +31,7 @@ public class GUIDObjectId implements IObjectId {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    final GUIDObjectId other = (GUIDObjectId) obj;
+    final GuidId other = (GuidId) obj;
     if (fUUID == null) {
       if (other.fUUID != null) return false;
     }

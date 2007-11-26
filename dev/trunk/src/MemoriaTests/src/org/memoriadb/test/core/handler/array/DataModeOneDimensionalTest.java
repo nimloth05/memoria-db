@@ -1,12 +1,37 @@
 package org.memoriadb.test.core.handler.array;
 
+import java.util.Arrays;
+
 import org.memoriadb.core.handler.array.*;
-import org.memoriadb.core.handler.field.FieldObject;
+import org.memoriadb.core.handler.enu.EnumDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.core.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
+  
+  public void test_add_enum_array() {
+    reopenDataMode();
+    
+    fDataStore.getTypeInfo().addMemoriaClass(TestEnum.class);
+    
+    IArray arr = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
+    
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(TestEnum.class);
+    arr.set(0, new EnumDataObject(memoriaClassId, 0));
+    arr.set(1, new EnumDataObject(memoriaClassId, 1));
+    arr.set(2, new EnumDataObject(memoriaClassId, 2));
+    
+    IObjectId id = saveAll(arr);
+    
+    reopen();
+    
+    TestEnum[] l1_arr = get(id);
+    
+    assertEquals(3, l1_arr.length);
+    assertTrue(Arrays.equals(TestEnum.values(), l1_arr)); 
+  }
   
   public void test_create_int_array() {
     reopenDataMode();
@@ -34,10 +59,8 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
     
     IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj[].class, 2);
     
-    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(SimpleTestObj.class);
-    fDataStore.getRefactorApi().arraySet(0, new SimpleTestObj("0"));
-    arr.set(0, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
-    arr.set(1, new FieldObject(new SimpleTestObj("1"), memoriaClassId));
+    arr.set(0, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("0")));
+    arr.set(1, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("1")));
     
     IObjectId id = saveAll(arr);
     
@@ -56,10 +79,8 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
     
     IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj.class.getName(), 1, 2);
      
-    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(SimpleTestObj.class);
-    
-    arr.set(0, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
-    arr.set(1, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
+    arr.set(0, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("0")));
+    arr.set(1, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("1")));
     
     IObjectId id = saveAll(arr);
     
@@ -69,7 +90,7 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
     
     assertEquals(2, l1_arr.length);
   }
-  
+
   public void test_int_array() {
     int[] arr = new int[]{0,1};
     IObjectId id = save(arr);
@@ -92,6 +113,31 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
     assertEquals(-1, l2_arr[0]);
     assertEquals(1, l2_arr[1]);
     assertEquals(2, l2_arr[2]);
+  }
+  
+  public void test_modify_enum_in_data_mode() {
+    
+    TestEnum[] arr = new TestEnum[]{TestEnum.c};
+    saveAll(arr);
+    
+    reopenDataMode();
+    
+    //fDataStore.getTypeInfo().addMemoriaClass(TestEnum.class);
+    
+    IArray dataArray = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
+
+    dataArray.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 0));
+    dataArray.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 1));
+    dataArray.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 2));
+    
+    IObjectId id = saveAll(dataArray);
+    
+    reopen();
+    
+    TestEnum[] l1_arr = get(id);
+    
+    assertEquals(3, l1_arr.length);
+    assertTrue(Arrays.equals(TestEnum.values(), l1_arr)); 
   }
   
 }

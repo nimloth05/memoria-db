@@ -12,8 +12,8 @@ public class ClassModeQueryStrategy {
 
   private static Method findMethod(Class<?> klazz) {
     for (Method method : klazz.getMethods()) {
-      if (!method.getName().equals("include")) continue;
-      if (method.getParameterTypes().length != 1) continue;
+      if (!method.getName().equals("accept")) continue;
+      if (method.getParameterTypes().length != 2) continue;
       return method;
     }
     throw new MemoriaException("assumed to be unreachable");

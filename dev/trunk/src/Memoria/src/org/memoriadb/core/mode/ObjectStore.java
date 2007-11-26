@@ -98,8 +98,8 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public IDefaultObjectIdProvider getIdFactory() {
-    return fTransactionHandler.getIdFactory();
+  public IDefaultIdProvider getIdFactory() {
+    return fTransactionHandler.getDefaultIdProvider();
   }
 
   @Override
@@ -124,9 +124,8 @@ public class ObjectStore implements IObjectStoreExt  {
 
   @Override
   public ITypeInfo getTypeInfo() {
-    return new TypeInfo(fTransactionHandler);
+    return fTransactionHandler.getTypeInfo();
   }
-
 
   @Override
   public boolean isInUpdateMode() {
@@ -161,7 +160,6 @@ public class ObjectStore implements IObjectStoreExt  {
   public IObjectId saveAll(Object root) {
     return fTransactionHandler.saveAll(root);
   }
-
 
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();

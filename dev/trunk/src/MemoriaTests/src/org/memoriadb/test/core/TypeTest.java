@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.easymock.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.id.def.LongObjectId;
+import org.memoriadb.core.id.def.LongId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.test.core.testclasses.*;
@@ -160,13 +160,13 @@ public class TypeTest extends TestCase {
   private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock) throws Exception {
     Object obj = new SimpleTestObj("1");
     
-    EasyMock.expect(fSerializeContext.getExistingtId(obj)).andStubReturn(new LongObjectId(1));
+    EasyMock.expect(fSerializeContext.getExistingtId(obj)).andStubReturn(new LongId(1));
     outputMock.writeLong(1);
     
-    EasyMock.expect(fReaderContext.readObjectId(inputMock)).andReturn(new LongObjectId(1));
+    EasyMock.expect(fReaderContext.readObjectId(inputMock)).andReturn(new LongId(1));
     
     ITypeVisitor visitorMock = control.createMock(ITypeVisitor.class);
-    visitorMock.visitClass(Type.typeClass, new LongObjectId(1));
+    visitorMock.visitClass(Type.typeClass, new LongId(1));
     
     EasyMock.expect(fSerializeContext.contains(EasyMock.anyObject())).andReturn(true);
     

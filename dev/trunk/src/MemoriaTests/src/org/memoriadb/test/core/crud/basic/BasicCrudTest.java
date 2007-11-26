@@ -1,5 +1,6 @@
 package org.memoriadb.test.core.crud.basic;
 
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.*;
 import org.memoriadb.test.core.crud.testclass.*;
@@ -55,6 +56,15 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertNotSame(c3, c3_l1);
     assertEquals(c3, c3_l1);
     assertEquals(c1_l2, c3.getC1());
+  }
+  
+  public void test_get_memoria_class_data_mode() {
+    IObjectId id = save(new SimpleTestObj("1"));
+    reopenDataMode();
+    
+    IDataObject l1_obj = fDataStore.get(id);
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(l1_obj);
+    assertNotNull(memoriaClassId);
   }
   
   public void test_getId() {

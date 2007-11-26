@@ -23,7 +23,7 @@ public interface IObjectStoreExt extends IObjectStore {
   
   public FileHeader getHeader();
 
-  public IDefaultObjectIdProvider getIdFactory();  
+  public IDefaultIdProvider getIdFactory();  
   
   public int getIdSize();
 

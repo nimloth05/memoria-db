@@ -12,10 +12,10 @@ public class LongIdFactoryTest extends AbstractObjectStoreTest {
    * 
    */
   public void test_id_factory() {
-    LongObjectId id1 = (LongObjectId) save(new Object());
+    LongId id1 = (LongId) save(new Object());
     delete(get(id1));
     reopen();
-    LongObjectId id2 = (LongObjectId) save(new Object());
+    LongId id2 = (LongId) save(new Object());
     assertEquals(id1.getLong()+1, id2.getLong());
   }
   

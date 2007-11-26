@@ -14,7 +14,7 @@ public class ObjectModeStrategy implements IModeStrategy {
     if (clazz.isArray()) {
       ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getComponentTypeInfo(clazz);
       if(!arrayTypeInfo.getComponentType().isPrimitive()) addTypeHierarchy(transactionHandler, arrayTypeInfo.getJavaClass());
-      return transactionHandler.getIdFactory().getArrayMemoriaClass();
+      return transactionHandler.getDefaultIdProvider().getArrayMemoriaClass();
     }
 
     return addTypeHierarchy(transactionHandler, clazz);
@@ -22,7 +22,7 @@ public class ObjectModeStrategy implements IModeStrategy {
   
   private static IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass) {
     IMemoriaClassConfig classObject;
-    classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
+    classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     return result;
@@ -55,7 +55,7 @@ public class ObjectModeStrategy implements IModeStrategy {
     
     
     // add the current class and all its superclasses to the store
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
+    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
@@ -74,7 +74,7 @@ public class ObjectModeStrategy implements IModeStrategy {
       return;
     }
     
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getMemoriaFieldMetaClass());
+    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     transactionHandler.internalSave(classObject);
     subClassconfig.setSuperClass(classObject);
     

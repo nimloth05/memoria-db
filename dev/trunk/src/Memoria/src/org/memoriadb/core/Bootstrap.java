@@ -29,7 +29,7 @@ public class Bootstrap {
 
   private static void addDefaultMetaClasses(TransactionHandler trxHansdler, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
-    IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, trxHansdler.getMemoriaFieldMetaClass());
+    IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, trxHansdler.getDefaultIdProvider().getFieldMetaClass());
     //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
     trxHansdler.save(objectMemoriaClass);
 
@@ -94,7 +94,7 @@ public class Bootstrap {
    *          Name of the class the given <tt>handler</tt> can deal with.
    */
   private static void registerHandler(TransactionHandler transactionHandler, ISerializeHandler handler) {
-    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, transactionHandler.getIdFactory().getHandlerMetaClass());
+    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     transactionHandler.save(classConfig);
   }
   

@@ -54,7 +54,7 @@ public class ObjectRepoTest extends TestCase {
   }
 
   public void test_put_a_lot_of_objects() {
-    IObjectId memoriaClassId = new LongObjectId(1);
+    IObjectId memoriaClassId = new LongId(1);
     
     List<Object> objects = new ArrayList<Object>();
     for(int i = 0; i < 10000; ++i) {

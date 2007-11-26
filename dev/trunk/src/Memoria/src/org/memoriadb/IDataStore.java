@@ -3,7 +3,7 @@ package org.memoriadb;
 import java.util.*;
 
 import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.id.*;
 import org.memoriadb.exception.MemoriaException;
 
 /**
@@ -40,7 +40,6 @@ public interface IDataStore extends IStore {
    */
   public void deleteAll(IDataObject root);
 
-
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
    *         or not.
@@ -49,6 +48,8 @@ public interface IDataStore extends IStore {
   
   public Collection<IDataObject> getAllObjects();
   
+  public IDefaultIdProvider getDefaultIdProvider();
+  
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
@@ -56,11 +57,11 @@ public interface IDataStore extends IStore {
    */
   public IObjectId getId(IDataObject obj);
   
+  public IRefactor getRefactorApi();
+  
   public <T extends IDataObject> List<T> query(String clazz);
   
   public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter);
-  
-  public IRefactor getRefactorApi();
   
   /**
    * Adds the given object to the store or performs an update if the given object is already contained.
@@ -71,7 +72,7 @@ public interface IDataStore extends IStore {
    * @return The objectId of the added or updated object.
    */
   public IObjectId save(IDataObject obj);
-  
+
   /**
    * Saves the given <tt>root</tt> object and all referenced objects.
    * 

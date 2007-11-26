@@ -69,6 +69,7 @@ public class DefaultHandler implements ISerializeHandler {
         throw new MemoriaException("Exception during object traversel. Java Class: '"+fClassObject.getJavaClassName()+"' Java-Field: '"+field+"' type of the field: '"+field.getFieldType()+"'", e);
       }
     }
+    
     IMemoriaClass superClass = fClassObject.getSuperClass();
     if (superClass != null) {
       superClass.getHandler().traverseChildren(obj, traversal);

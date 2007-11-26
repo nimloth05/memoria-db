@@ -7,7 +7,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public class DataModeQueryTest extends QueryTest {
 
-  public void test_polymorph_query_does_not_work() {
+  public void test_polymorph_query() {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     

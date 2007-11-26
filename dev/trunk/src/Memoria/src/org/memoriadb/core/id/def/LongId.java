@@ -4,11 +4,11 @@ import java.io.*;
 
 import org.memoriadb.core.id.IObjectId;
 
-public final class LongObjectId implements IObjectId {
+public final class LongId implements IObjectId {
 
   private final long fValue;
 
-  public LongObjectId(long value) {
+  public LongId(long value) {
     fValue = value;
   }
 
@@ -17,7 +17,7 @@ public final class LongObjectId implements IObjectId {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    final LongObjectId other = (LongObjectId) obj;
+    final LongId other = (LongId) obj;
     return fValue == other.fValue;
   }
 

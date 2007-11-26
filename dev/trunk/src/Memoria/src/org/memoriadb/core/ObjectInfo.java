@@ -108,7 +108,7 @@ public class ObjectInfo implements IObjectInfo {
   
   @Override
   public String toString() {
-    return fId + ":" + fObj + " in revision " + fRevision;
+    return fId + ": " + fObj + " revision: " + fRevision;
   }
   
 }

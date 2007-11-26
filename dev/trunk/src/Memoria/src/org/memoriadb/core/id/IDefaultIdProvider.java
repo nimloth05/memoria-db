@@ -1,6 +1,6 @@
 package org.memoriadb.core.id;
 
-public interface IDefaultObjectIdProvider {
+public interface IDefaultIdProvider {
 
   public IObjectId getArrayMemoriaClass();
 

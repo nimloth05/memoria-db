@@ -7,33 +7,33 @@ import org.memoriadb.util.Constants;
 
 public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory {
   
-  private static final IObjectId MEMORIA_META_CLASS_ID =          new LongObjectId(1);
-  private static final IObjectId HANDLER_MEMORIA_CLASS_OBJECT_ID = new LongObjectId(2);
-  private static final IObjectId ARRAY_MEMORIA_CLASS =             new LongObjectId(3);
+  private static final IObjectId MEMORIA_META_CLASS_ID =          new LongId(1);
+  private static final IObjectId HANDLER_MEMORIA_CLASS_OBJECT_ID = new LongId(2);
+  private static final IObjectId ARRAY_MEMORIA_CLASS =             new LongId(3);
   
-  private static final IObjectId ROOT_CLASS_ID =    new LongObjectId(-1);
-  private static final IObjectId MEMORIA_CLASS_DELETED = new LongObjectId(-2);
-  private static final IObjectId OBJECT_DELETED =    new LongObjectId(-3);
-  private static final IObjectId NULL_REFERENCE_ID =    new LongObjectId(-4);
-  private static final IObjectId PRIMITIVE_CLASS_ID =    new LongObjectId(-5);
+  private static final IObjectId ROOT_CLASS_ID =    new LongId(-1);
+  private static final IObjectId MEMORIA_CLASS_DELETED = new LongId(-2);
+  private static final IObjectId OBJECT_DELETED =    new LongId(-3);
+  private static final IObjectId NULL_REFERENCE_ID =    new LongId(-4);
+  private static final IObjectId PRIMITIVE_CLASS_ID =    new LongId(-5);
   
   private long fCurrentObjectId = 0;
 
   @Override
   public void adjustId(IObjectId id) {
-    LongObjectId longValue = (LongObjectId) id;
+    LongId longValue = (LongId) id;
     fCurrentObjectId = Math.max(fCurrentObjectId, longValue.getLong()); 
   }
 
   @Override
   public IObjectId createFrom(DataInput input) throws IOException {
     long id = input.readLong();
-    return new LongObjectId(id);
+    return new LongId(id);
   }
 
   @Override
   public IObjectId createNextId() {
-    return new LongObjectId(++fCurrentObjectId);
+    return new LongId(++fCurrentObjectId);
   }
 
   @Override

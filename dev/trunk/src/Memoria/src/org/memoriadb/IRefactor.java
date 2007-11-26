@@ -1,16 +1,17 @@
 package org.memoriadb;
 
-import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.handler.array.IArray;
+import org.memoriadb.core.handler.enu.IEnumObject;
+import org.memoriadb.core.handler.field.IFieldObject;
 
 public interface IRefactor {
 
   /**
-   * changes the content of an array
-   * @param index 
-   * @param simpleTestObj object of a type which is known to the db.
+   * Creates 
+   * @param object TODO
+   * @return
    */
-  public void arraySet(int i, Object obj);
+  public IFieldObject asFieldDataObject(Object object);
   
   /**
    * 
@@ -19,13 +20,13 @@ public interface IRefactor {
    * @return
    */
   public IArray createArray(Class<?> klass, int length);
-  
+
   public IArray createArray(String componentType, int dimension, int length);
 
   /**
-   * Creates 
-   * @return
+   * @return the wrappend enum-object, if it is found in the repo. else, a new EnumDataObject
+   * is created which is not yet saved.
    */
-  public IDataObject createObject();
+  public IEnumObject getEnum(String name, int i);
 
 }

@@ -13,7 +13,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-public interface IObjectRepo extends IDefaultObjectIdProvider {
+public interface IObjectRepo extends IDefaultIdProvider {
 
   /**
    * Adds an object to the container. A new objectId is generated.

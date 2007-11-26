@@ -2,7 +2,7 @@ package org.memoriadb.core.id;
 
 import java.io.*;
 
-public interface IObjectIdFactory extends IDefaultObjectIdProvider {
+public interface IObjectIdFactory extends IDefaultIdProvider {
   
   public void adjustId(IObjectId id);
 

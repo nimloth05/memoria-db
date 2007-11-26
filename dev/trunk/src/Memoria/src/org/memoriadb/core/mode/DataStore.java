@@ -79,6 +79,11 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.getBlockManager();
   }
 
+  @Override
+  public IDefaultIdProvider getDefaultIdProvider() {
+    return fTransactionHandler.getDefaultIdProvider();
+  }
+
   public IMemoriaFile getFile() {
     return fTransactionHandler.getFile();
   }
@@ -99,8 +104,8 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IDefaultObjectIdProvider getIdFactory() {
-    return fTransactionHandler.getIdFactory();
+  public IDefaultIdProvider getIdFactory() {
+    return fTransactionHandler.getDefaultIdProvider();
   }
 
   @Override
@@ -120,20 +125,19 @@ public class DataStore implements IDataStoreExt {
 
   @Override
   public IRefactor getRefactorApi() {
-    return new RefactorApi(fTransactionHandler); 
+    return new RefactorApi(this); 
   }
+
 
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
     return fTransactionHandler.getSurvivors(block);
   }
-
-
+  
   @Override
   public ITypeInfo getTypeInfo() {
-    return new TypeInfo(fTransactionHandler);
+    return fTransactionHandler.getTypeInfo();
   }
-  
   
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
@@ -143,16 +147,15 @@ public class DataStore implements IDataStoreExt {
   public boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
   }
-  
+
   public <T extends IDataObject> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   }
-
-
+ 
   public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
- 
+
   public IObjectId save(IDataObject obj) {
     return fTransactionHandler.save(obj);
   }
@@ -161,11 +164,9 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.saveAll(root);
   }
 
-
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
-
 
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);

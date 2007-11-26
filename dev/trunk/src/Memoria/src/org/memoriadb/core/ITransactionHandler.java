@@ -72,13 +72,15 @@ public interface ITransactionHandler {
   public IBlockManager getBlockManager();
   
   
+  public IDefaultIdProvider getDefaultIdProvider();
+
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
    *           If the given object can not be found.
    */
   public IObjectId getExistingId(Object obj);
-
+  
   public FileHeader getHeader();
   
   /**
@@ -86,33 +88,40 @@ public interface ITransactionHandler {
    */
   public long getHeadRevision();
   
+
   /**
    * @return The objectId or null.
    */
   public IObjectId getId(Object obj);
-  
-
-  public IDefaultObjectIdProvider getIdFactory();
   
   public int getIdSize();
   
   public IObjectId getMemoriaArrayClass();
 
   /**
-   * @return The Class for the given <tt>obj</tt> or null.
+   * Works in either data or object mode.
+   * 
+   * @return IMemoriaClass for the given <tt>object</tt>.
    */
-  public IMemoriaClass getMemoriaClass(Class<?> clazz);  
+  public IMemoriaClass getMemoriaClass(Object object);
   
   /**
-   * @return The Class for the given <tt>obj</tt>.
+   * @return The MemoriaClass for the given <tt>className</tt> or null.
    */
-  public IMemoriaClass getMemoriaClass(Object obj);
+  public IMemoriaClass getMemoriaClass(String className);
   
-  public IObjectId getMemoriaClassId(Class<?> clazz);
-
-  public IObjectId getMemoriaClassId(Object obj);
+  /**
+   * Works in either data or object mode.
+   * 
+   * @return IObjectId of the MemoriaClass for the given <tt>object</tt>.
+   */
+  public IObjectId getMemoriaClassId(Object object);
+ 
   
-  public IObjectId getMemoriaFieldMetaClass();
+  /**
+   * @return The Class for the given <tt>obj</tt> or null.
+   */
+  public IObjectId getMemoriaClassId(String className);
   
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
