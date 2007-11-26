@@ -14,8 +14,7 @@ import org.memoriadb.util.*;
 public class ObjectArray extends AbstractArray {
 
   private final Object fArray;
-  private final IObjectId fComponentTypeId;
-  private final TypeInfo fTypeInfo;
+  private final ArrayTypeInfo fComponentTypeInfo;
 
   /**
    * @param arrayClassId
@@ -27,26 +26,24 @@ public class ObjectArray extends AbstractArray {
    * @param dimension
    * @param length
    */
-  public ObjectArray(IObjectId arrayClassId, IObjectId componentTypeId, TypeInfo typeInfo, int length) {
+  public ObjectArray(IObjectId arrayClassId, ArrayTypeInfo componentTypeInfo, int length) {
     super(arrayClassId);
-    fComponentTypeId = componentTypeId;
-    fTypeInfo = typeInfo;
+    fComponentTypeInfo = componentTypeInfo;
 
-    int[] dimensions = new int[typeInfo.getDimension()];
+    int[] dimensions = new int[componentTypeInfo.getDimension()];
     // The first int gives the size of the array created here.
     dimensions[0] = length;
 
-    fArray = Array.newInstance(typeInfo.getJavaClass(), dimensions);
+    fArray = Array.newInstance(componentTypeInfo.getJavaClass(), dimensions);
   }
 
   public ObjectArray(Object array) {
     // type-info never used.....
     super(null);
-    fComponentTypeId = null;
 
     if (!array.getClass().isArray()) throw new MemoriaException("Object is not an array: " + array);
     fArray = array;
-    fTypeInfo = ReflectionUtil.getComponentTypeInfo(array.getClass());
+    fComponentTypeInfo = ReflectionUtil.getComponentTypeInfo(array.getClass());
   }
 
   @Override
@@ -55,13 +52,8 @@ public class ObjectArray extends AbstractArray {
   }
 
   @Override
-  public IObjectId getComponentTypeId() {
-    return fComponentTypeId;
-  }
-
-  @Override
-  public TypeInfo getComponentTypeInfo() {
-    return fTypeInfo;
+  public ArrayTypeInfo getComponentTypeInfo() {
+    return fComponentTypeInfo;
   }
 
   @Override

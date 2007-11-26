@@ -25,7 +25,7 @@ public class HydratedObject {
   }
 
   public Object dehydrate(IReaderContext context) throws Exception {
-    IMemoriaClass classObject = (IMemoriaClass) context.getObjectById(fTypeId);
+    IMemoriaClass classObject = (IMemoriaClass) context.getExistingObject(fTypeId);
     if (classObject == null) throw new MemoriaException("ClassObject for typeId not found: " + fTypeId);
     
     return instantiate(context, classObject);
@@ -42,7 +42,7 @@ public class HydratedObject {
   
   private Object instantiate(IReaderContext context, IMemoriaClass classObject) throws Exception {
     Object deserializedObject = classObject.getHandler().deserialize(fInput, context, fTypeId);
-    if (context.isInDataMode() && !(deserializedObject instanceof IDataObject)) throw new MemoriaException("ISerializeHandler must return a IDataObject in DBMode.data. Implementaiton error in Handler for Java-Type: " + classObject.getJavaClassName()); 
+    if (context.isInDataMode() && !(deserializedObject instanceof IDataObject)) throw new MemoriaException("ISerializeHandler must return a IDataObject in DBMode.data. Handler for " + classObject.getJavaClassName() + " returned " + deserializedObject); 
     return deserializedObject;
   }
   

@@ -7,14 +7,14 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.mode.IModeStrategy;
+import org.memoriadb.core.mode.*;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IdentityHashSet;
+import org.memoriadb.util.*;
 
 public class TransactionHandler implements ITransactionHandler {
 
   private final IObjectRepository fObjectRepository;
-  
+
   private final ITransactionWriter fTransactionWriter;
 
   private final Set<ObjectInfo> fAdd = new IdentityHashSet<ObjectInfo>();
@@ -24,14 +24,28 @@ public class TransactionHandler implements ITransactionHandler {
   private int fUpdateCounter = 0;
   private final IDefaultInstantiator fDefaultInstantiator;
   private final FileHeader fHeader;
-  private final IModeStrategy fStore;
+  private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header, IModeStrategy store) {
+  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header,
+      IModeStrategy modeStrategy) {
     fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = writer;
     fHeader = header;
-    fStore = store;
+    fModeStrategy = modeStrategy;
     fObjectRepository = writer.getRepo();
+  }
+
+  @Override
+  public IObjectId addMemoriaClass(Class<?> clazz) {
+    Class<?> type = clazz;
+    if (clazz.isArray()) {
+      type = ReflectionUtil.getComponentTypeInfo(clazz).getJavaClass();
+    }
+    if (Type.isPrimitive(type)) throw new MemoriaException("primitive can not be added " + clazz);
+
+    IObjectId result = ObjectModeStrategy.addMemoriaClassIfNecessary(this, clazz);
+    if (!isInUpdateMode()) writePendingChanges();
+    return result;
   }
 
   @Override
@@ -89,9 +103,18 @@ public class TransactionHandler implements ITransactionHandler {
     return fObjectRepository.getAllObjects();
   }
 
+  public IObjectId getArrayMemoriaClassId() {
+    return fObjectRepository.getArrayMemoriaClass();
+  }
+
   @Override
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
+  }
+
+  @Override
+  public IObjectId getExistingId(Object obj) {
+    return fObjectRepository.getExistingId(obj);
   }
 
   public IMemoriaFile getFile() {
@@ -109,6 +132,11 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @Override
+  public IObjectId getId(Object obj) {
+    return fObjectRepository.getId(obj);
+  }
+
+  @Override
   public IDefaultObjectIdProvider getIdFactory() {
     return fObjectRepository.getIdFactory();
   }
@@ -116,6 +144,11 @@ public class TransactionHandler implements ITransactionHandler {
   @Override
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
+  }
+
+  @Override
+  public IObjectId getMemoriaArrayClass() {
+    return fObjectRepository.getArrayMemoriaClass();
   }
 
   @Override
@@ -128,6 +161,12 @@ public class TransactionHandler implements ITransactionHandler {
     return getObject(getMemoriaClassId(obj));
   }
 
+  public IObjectId getMemoriaClassId(Class<?> clazz) {
+    IMemoriaClass memoriaClass = getMemoriaClass(clazz);
+    if (memoriaClass == null) return null;
+    return fObjectRepository.getExistingId(memoriaClass);
+  }
+
   @Override
   public IObjectId getMemoriaClassId(Object obj) {
     return getObjectInfo(obj).getMemoriaClassId();
@@ -135,18 +174,13 @@ public class TransactionHandler implements ITransactionHandler {
 
   @Override
   public IObjectId getMemoriaFieldMetaClass() {
-    return fObjectRepository.getMemoriaMetaClass();
+    return fObjectRepository.getFieldMetaClass();
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(IObjectId id) {
     return (T) fObjectRepository.getObject(id);
-  }
-
-  @Override
-  public IObjectId getObjectId(Object obj) {
-    return fObjectRepository.getObjectId(obj);
   }
 
   @Override
@@ -199,7 +233,7 @@ public class TransactionHandler implements ITransactionHandler {
     if (info != null) {
       if (fAdd.contains(info)) {
         // added in same transaction, don't add it again
-        return fObjectRepository.getObjectId(obj);
+        return fObjectRepository.getExistingId(obj);
       }
 
       // object already in the store, perform update. info is replaced if several updates occur in same transaction.
@@ -210,7 +244,7 @@ public class TransactionHandler implements ITransactionHandler {
     // object not already in the store, add it
 
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fStore.checkCanInstantiateObject(this, memoriaClassId, fDefaultInstantiator);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fDefaultInstantiator);
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(getObjectInfo(obj));
     return result.getId();
@@ -226,7 +260,7 @@ public class TransactionHandler implements ITransactionHandler {
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
- 
+
   public IObjectId saveAll(Object root) {
     IObjectId result = internalSaveAll(root);
     if (!isInUpdateMode()) writePendingChanges();
@@ -249,11 +283,11 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   private IObjectId addMemoriaClassIfNecessary(Object obj) {
-    return fStore.addMemoriaClassIfNecessary(this, obj);
+    return fModeStrategy.addMemoriaClassIfNecessary(this, obj);
   }
 
   private void internalDeleteAll(Object root) {
-    if(!contains(root)) return;
+    if (!contains(root)) return;
     DeleteTraversal traversal = new DeleteTraversal(this);
     traversal.handle(root);
   }
@@ -261,6 +295,6 @@ public class TransactionHandler implements ITransactionHandler {
   private IObjectId internalSaveAll(Object root) {
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(root);
-    return fObjectRepository.getObjectId(root);
+    return fObjectRepository.getExistingId(root);
   }
 }

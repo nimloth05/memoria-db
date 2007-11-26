@@ -18,7 +18,7 @@ public class CollectionBindable implements IBindable {
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    fResult.add(context.getObjectById(fObjectId));
+    fResult.add(context.getExistingObject(fObjectId));
   }
 
   @Override

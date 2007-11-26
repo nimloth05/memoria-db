@@ -25,19 +25,19 @@ public final class ObjectSerializer {
     }
 
     @Override
+    public IObjectId getExistingtId(Object obj) {
+      return fObjectRepository.getExistingId(obj);
+    }
+
+    @Override
     public IObjectId getMemoriaClassId(String javaClassName) {
       IMemoriaClassConfig memoriaClass = fObjectRepository.getMemoriaClass(javaClassName);
-      return fObjectRepository.getObjectId(memoriaClass);
+      return fObjectRepository.getId(memoriaClass);
     }
 
     @Override
     public IObjectId getNullReference() {
       return fObjectRepository.getNullReference();
-    }
-
-    @Override
-    public IObjectId getObjectId(Object obj) {
-      return fObjectRepository.getObjectId(obj);
     }
 
     @Override
@@ -64,6 +64,7 @@ public final class ObjectSerializer {
   }
 
   public void markAsDeleted(IObjectInfo info) {
+
     try {
       internalMarkObjectAsDeleted(info);
     }
@@ -89,7 +90,7 @@ public final class ObjectSerializer {
   }
 
   private void serializeObject(IObjectInfo info) throws Exception {
-    //FIXME: Hier muss getExistingObject aufgerufen werden, da es die MemoriaClass geben muss!
+    // FIXME: Hier muss getExistingObject aufgerufen werden, da es die MemoriaClass geben muss!
     IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getObject(info.getMemoriaClassId());
     serializeObject(memoriaClass.getHandler(), info);
   }

@@ -8,33 +8,33 @@ import org.memoriadb.util.*;
 public class ComponentTypeTest extends TestCase {
 
   public void test_multi_dimensional() {
-    TypeInfo typeInfo = ReflectionUtil.getTypeInfo(new int[0][][]);  
-    assertEquals(Type.typeInteger, typeInfo.getComponentType());
-    assertEquals(3, typeInfo.getDimension());
+    ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getTypeInfo(new int[0][][]);  
+    assertEquals(Type.typeInteger, arrayTypeInfo.getComponentType());
+    assertEquals(3, arrayTypeInfo.getDimension());
 
-    typeInfo = ReflectionUtil.getTypeInfo(new Integer[0][][]);
-    assertEquals(Type.typeIntegerC, typeInfo.getComponentType());
-    assertEquals(3, typeInfo.getDimension());
+    arrayTypeInfo = ReflectionUtil.getTypeInfo(new Integer[0][][]);
+    assertEquals(Type.typeIntegerC, arrayTypeInfo.getComponentType());
+    assertEquals(3, arrayTypeInfo.getDimension());
 
-    typeInfo = ReflectionUtil.getTypeInfo(new Object[0][][]);
-    assertEquals(Type.typeClass, typeInfo.getComponentType());
-    assertEquals(3, typeInfo.getDimension());
-    assertEquals(Object.class.getName(), typeInfo.getClassName());
+    arrayTypeInfo = ReflectionUtil.getTypeInfo(new Object[0][][]);
+    assertEquals(Type.typeClass, arrayTypeInfo.getComponentType());
+    assertEquals(3, arrayTypeInfo.getDimension());
+    assertEquals(Object.class.getName(), arrayTypeInfo.getClassName());
   }
 
   public void test_one_dimensional() {
-    TypeInfo typeInfo = ReflectionUtil.getTypeInfo(new int[0]);
-    assertEquals(Type.typeInteger, typeInfo.getComponentType());
-    assertEquals(1, typeInfo.getDimension());
+    ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getTypeInfo(new int[0]);
+    assertEquals(Type.typeInteger, arrayTypeInfo.getComponentType());
+    assertEquals(1, arrayTypeInfo.getDimension());
 
-    typeInfo = ReflectionUtil.getTypeInfo(new Integer[0]);
-    assertEquals(Type.typeIntegerC, typeInfo.getComponentType());
-    assertEquals(1, typeInfo.getDimension()); 
+    arrayTypeInfo = ReflectionUtil.getTypeInfo(new Integer[0]);
+    assertEquals(Type.typeIntegerC, arrayTypeInfo.getComponentType());
+    assertEquals(1, arrayTypeInfo.getDimension()); 
 
-    typeInfo = ReflectionUtil.getTypeInfo(new Object[0]);
-    assertEquals(Type.typeClass, typeInfo.getComponentType());
-    assertEquals(1, typeInfo.getDimension());
-    assertEquals(Object.class.getName(), typeInfo.getClassName());
+    arrayTypeInfo = ReflectionUtil.getTypeInfo(new Object[0]);
+    assertEquals(Type.typeClass, arrayTypeInfo.getComponentType());
+    assertEquals(1, arrayTypeInfo.getDimension());
+    assertEquals(Object.class.getName(), arrayTypeInfo.getClassName());
   }
 
 }

@@ -7,9 +7,15 @@ import org.memoriadb.util.ReflectionUtil;
 public class FieldObject implements IFieldObject {
 
   private final Object fObejct;
+  private IObjectId fMemoriaClassId;
 
   public FieldObject(Object object) {
     fObejct = object;
+  }
+  
+  public FieldObject(Object object, IObjectId memoriaClassId) {
+    fObejct = object;
+    fMemoriaClassId = memoriaClassId;
   }
   
   @Override
@@ -19,7 +25,8 @@ public class FieldObject implements IFieldObject {
 
   @Override
   public IObjectId getMemoriaClassId() {
-    throw new UnsupportedOperationException();
+    if(fMemoriaClassId == null) throw new UnsupportedOperationException();
+    return fMemoriaClassId;
   }
 
   @Override

@@ -424,7 +424,7 @@ public enum Type {
       }
       
       if(!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object: " + value);
-      context.getObjectId(value).writeTo(output);
+      context.getExistingtId(value).writeTo(output);
     }
 
   };
@@ -444,13 +444,19 @@ public enum Type {
   public static Type getType(Object value) {
     return getType(value.getClass());
   }
+  
+  /**
+   * @return true, if the given object is a primitive (int/Integer, etc). Enums are NOT primitives
+   */
+  public static boolean isPrimitive(Class<?> klass) {
+    return getType(klass).isPrimitive();
+  }
 
   /**
    * @return true, if the given object is a primitive (int/Integer, etc). Enums are NOT primitives
    */
   public static boolean isPrimitive(Object object) {
-    Type type = getType(object);
-    return type.isPrimitive();
+    return getType(object).isPrimitive();
   }
 
   public static <T extends ITypeVisitor> T readValueWithType(DataInput input, IReaderContext context, T visitor) {
@@ -469,7 +475,7 @@ public enum Type {
     Type type = getType(value);
     writeValueWithType(output, value, context, type);
   }
-  
+
   public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context, Type type) {
     if (type.ordinal() > Byte.MAX_VALUE) throw new MemoriaException("Can not write back type, type ordinal is bigger than Byte.MAX_VALUE");
 
@@ -483,7 +489,7 @@ public enum Type {
       throw new MemoriaException("could not write value. Type: " + type.name() + " value: " + value, e);
     }
   }
-
+  
   private static Map<Class<?>, Type> createTypeMap() {
     Map<Class<?>, Type> result = new HashMap<Class<?>, Type>();
 

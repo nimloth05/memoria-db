@@ -1,7 +1,9 @@
 package org.memoriadb.core.handler.array;
 
+import java.util.*;
+
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.util.TypeInfo;
+import org.memoriadb.util.ArrayTypeInfo;
 
 /**
  * Implementation for data-mode
@@ -9,48 +11,51 @@ import org.memoriadb.util.TypeInfo;
  * @author msc
  *
  */
-public class DataArray implements IArray {
+public class DataArray extends AbstractArray implements IDataArray {
+
+  private final List<Object> fData = new ArrayList<Object>();
+  private final ArrayTypeInfo fComponentTypeInfo;
+  private int fLength;
+  
+  public DataArray(IObjectId arrayMemoriaClass, ArrayTypeInfo componentTypeInfo, int length) {
+    super(arrayMemoriaClass);
+    fComponentTypeInfo = componentTypeInfo;
+    fLength = length;
+    
+    // make space in the list
+    for(int i = 0; i < length; ++i) fData.add(null);
+    
+  }
+
+  @Override
+  public void add(Object obj) {
+    fData.add(obj);
+    fLength += 1;
+  }
 
   @Override
   public Object get(int index) {
-    // TODO Auto-generated method stub
-    return null;
+    return fData.get(index);
   }
 
   @Override
-  public IObjectId getComponentTypeId() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public TypeInfo getComponentTypeInfo() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public IObjectId getMemoriaClassId() {
-    // TODO Auto-generated method stub
-    return null;
+  public ArrayTypeInfo getComponentTypeInfo() {
+    return fComponentTypeInfo;
   }
 
   @Override
   public Object getResult() {
-    // TODO Auto-generated method stub
-    return null;
+    return this;
   }
 
   @Override
   public int length() {
-    // TODO Auto-generated method stub
-    return 0;
+    return fLength;
   }
 
   @Override
   public void set(int index, Object value) {
-    // TODO Auto-generated method stub
-    
+    fData.set(index, value);
   }
 
 }

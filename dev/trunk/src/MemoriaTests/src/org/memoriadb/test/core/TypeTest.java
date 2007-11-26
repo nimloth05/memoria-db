@@ -160,7 +160,7 @@ public class TypeTest extends TestCase {
   private void classFieldTest(IMocksControl control, DataOutput outputMock, DataInput inputMock) throws Exception {
     Object obj = new SimpleTestObj("1");
     
-    EasyMock.expect(fSerializeContext.getObjectId(obj)).andStubReturn(new LongObjectId(1));
+    EasyMock.expect(fSerializeContext.getExistingtId(obj)).andStubReturn(new LongObjectId(1));
     outputMock.writeLong(1);
     
     EasyMock.expect(fReaderContext.readObjectId(inputMock)).andReturn(new LongObjectId(1));

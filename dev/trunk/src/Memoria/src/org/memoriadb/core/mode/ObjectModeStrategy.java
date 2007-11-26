@@ -8,29 +8,17 @@ import org.memoriadb.util.*;
 
 public class ObjectModeStrategy implements IModeStrategy {
   
-  @Override
-  public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
-    if (obj.getClass().isArray()) {
-      TypeInfo typeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
-      if(typeInfo.getComponentType() == Type.typeClass) addTypeHierarchy(transactionHandler, typeInfo.getJavaClass());
+  public static IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Class<?> clazz) {
+    if (clazz.isArray()) {
+      ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getComponentTypeInfo(clazz);
+      if(!arrayTypeInfo.getComponentType().isPrimitive()) addTypeHierarchy(transactionHandler, arrayTypeInfo.getJavaClass());
       return transactionHandler.getIdFactory().getArrayMemoriaClass();
     }
-    
-    return addTypeHierarchy(transactionHandler, obj.getClass());
-  }
 
-  @Override
-  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
-    IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
-    memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
+    return addTypeHierarchy(transactionHandler, clazz);
   }
   
-  @Override
-  public boolean isDataMode() {
-    return false;
-  }
-
-  private IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass) {
+  private static IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass) {
     IMemoriaClassConfig classObject;
     classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getIdFactory().getHandlerMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
@@ -46,7 +34,7 @@ public class ObjectModeStrategy implements IModeStrategy {
    * 
    * Idempotent, already stored classes are ignored.
    */
-  private IObjectId addTypeHierarchy(TransactionHandler transactionHandler, Class<?> javaClass) {
+  private static IObjectId addTypeHierarchy(TransactionHandler transactionHandler, Class<?> javaClass) {
     if (javaClass.getSuperclass() != null && javaClass.getSuperclass().isEnum()) {
       javaClass = javaClass.getSuperclass();
     }
@@ -55,7 +43,7 @@ public class ObjectModeStrategy implements IModeStrategy {
 
     // if the class is already in the store, all it's superclasses must also be known. Do nothing.
     if (classObject != null) {
-      return transactionHandler.getObjectId(classObject);
+      return transactionHandler.getExistingId(classObject);
     }
     
     if (javaClass.isEnum()) {
@@ -71,9 +59,8 @@ public class ObjectModeStrategy implements IModeStrategy {
     
     return result;
   }
-  
 
-  private void recursiveAddTypeHierarchy(TransactionHandler transactionHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
+  private static void recursiveAddTypeHierarchy(TransactionHandler transactionHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
     Class<?> javaClass = superClass.getSuperclass();
     if(javaClass == null) return;
 
@@ -89,6 +76,36 @@ public class ObjectModeStrategy implements IModeStrategy {
     subClassconfig.setSuperClass(classObject);
     
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+  }
+  
+  @Override
+  public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
+    
+    if (obj.getClass().isArray()) {
+      ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
+      if(arrayTypeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(transactionHandler, arrayTypeInfo.getJavaClass());
+      return transactionHandler.getIdFactory().getArrayMemoriaClass();
+    }
+    
+    if (obj.getClass().isEnum()) {
+      Class<?> enumClass = obj.getClass();
+      if (enumClass.getSuperclass().isEnum()) enumClass = enumClass.getSuperclass();
+      return addTypeHierarchy(transactionHandler, enumClass);
+    }
+    
+    return addTypeHierarchy(transactionHandler, obj.getClass());
+  }
+
+  @Override
+  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator) {
+    IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
+    memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
+  }
+  
+
+  @Override
+  public boolean isDataMode() {
+    return false;
   }
   
   

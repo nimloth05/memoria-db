@@ -1,8 +1,7 @@
 package org.memoriadb.core.handler.array;
 
 import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.util.TypeInfo;
+import org.memoriadb.util.ArrayTypeInfo;
 
 /**
  * Represents the array in a mode-independant way.
@@ -17,12 +16,7 @@ public interface IArray extends IDataObject {
    */
   public Object get(int index);
 
-  /**
-   * @return The id of the component type, 
-   */
-  public IObjectId getComponentTypeId();
-
-  public TypeInfo getComponentTypeInfo();
+  public ArrayTypeInfo getComponentTypeInfo();
 
   /**
    * @return the array-object, depending on the mode either a java-Array or an {@link IArrayDataObject}.

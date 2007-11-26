@@ -57,7 +57,7 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   }
 
   @Override
-  public IObjectId getMemoriaMetaClass() {
+  public IObjectId getFieldMetaClass() {
     return MEMORIA_META_CLASS_ID;
   }
 

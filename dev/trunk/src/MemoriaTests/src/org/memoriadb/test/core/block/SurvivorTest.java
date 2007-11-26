@@ -3,7 +3,7 @@ package org.memoriadb.test.core.block;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 /**
  * Tests the reuse of blocks
@@ -43,7 +43,6 @@ public class SurvivorTest extends AbstractObjectStoreTest {
     
     // deleting the object, waht results in a free block and a  deletionMarker.
     delete(get(id1));
-    FilePrinter.print(getFile());
     
     // let o2 reuse the free block
     IObjectId id2 = save(new Object());

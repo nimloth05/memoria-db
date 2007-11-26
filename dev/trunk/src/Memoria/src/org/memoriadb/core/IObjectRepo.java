@@ -13,7 +13,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-public interface IObjectRepository extends IDefaultObjectIdProvider {
+public interface IObjectRepo extends IDefaultObjectIdProvider {
 
   /**
    * Adds an object to the container. A new objectId is generated.
@@ -21,7 +21,6 @@ public interface IObjectRepository extends IDefaultObjectIdProvider {
    * @return The newly generated id.
    */
   public ObjectInfo add(Object obj, IObjectId memoriaClassId);
-
   
   public void checkIndexConsistancy();
   
@@ -31,7 +30,8 @@ public interface IObjectRepository extends IDefaultObjectIdProvider {
   
   /**
    * Called when an object is deleted in the same transaction as it was added.
-   * @param id
+   * @param obj Object to delete
+   * @throws MemoriaException if the given <tt>obj</tt> is not found.
    */
   public ObjectInfo delete(Object obj);
   
@@ -39,43 +39,52 @@ public interface IObjectRepository extends IDefaultObjectIdProvider {
 
   public Collection<Object> getAllObjects();
 
+  /**
+   * @return The objectId of the given <tt>obj</tt>.
+   * @throws MemoriaException if the given <tt>obj</tt> is not found
+   */
   public IObjectId getExistingId(Object obj);
 
-  public IObjectIdFactory getIdFactory();
-
   /**
-   * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
-   * is an array.
-   * @throws MemoriaException if no MetaClass can be found
+   * @return The object for the given <tt>id</tt>.
+   * @throws MemoriaException if no object is found for the given <tt>id</tt>
    */
-  public IMemoriaClassConfig getMemoriaClass(String klass);
+  public Object getExistingObject(IObjectId id);
+
   
   /**
-   * @return The object or null, if no Object exists for the given id. 
-   *         It is not considered if the object is persistent or not.
-   */
-  public Object getObject(IObjectId id);
-
-  /**
-   * @return The objectId of the given object.
-   * @throws MemoriaException If the given object can not be found.
+   * @return The objectId of the given <tt>obj</tt> or null.
    */
   public IObjectId getId(Object obj);
 
-  /**
-   * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
-   */
-  public ObjectInfo getObjectInfo(Object obj);
+  public IObjectIdFactory getIdFactory();
   
   /**
-   * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
-   * even for deleted objects, if the delete-marker is still present.
+   * @return The MetaClass for the given java-type or null.
+   * Returns array-class if the given <tt>klass</tt> is an array.
    */
-  public ObjectInfo getObjectInfoForId(IObjectId id);
-
+  public IMemoriaClassConfig getMemoriaClass(String klass);
 
   /**
-   * @return true, if the given obj is a metaclass
+   * @return The object for the given <tt>id</tt> or null.
+   */
+  public Object getObject(IObjectId id);
+
+  
+  /**
+   * @return The stored ObjectInfo for the given <tt>obj</tt> or null.
+   */
+  public ObjectInfo getObjectInfo(Object obj);
+
+  /**
+   * @return The stored ObjectInfo for the given <tt>id</tt> or null. 
+   * 
+   * May work for deleted objects, if the delete-marker is still present.
+   */
+  public ObjectInfo getObjectInfoForId(IObjectId id);
+  
+  /**
+   * @return true, if the given obj is a memoria class
    */
   public boolean isMemoriaClass(Object obj);
 
@@ -85,11 +94,11 @@ public interface IObjectRepository extends IDefaultObjectIdProvider {
    */
   public void updateObjectInfoAdded(Object obj, long revision);
 
+
   /**
    * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
    */
   public void updateObjectInfoDeleted(IObjectId id, long headRevision);
-
 
   /**
    * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was

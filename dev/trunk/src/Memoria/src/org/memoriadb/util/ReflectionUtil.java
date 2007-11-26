@@ -74,14 +74,14 @@ public final class ReflectionUtil {
     }
   }
  
-  public static TypeInfo getComponentTypeInfo(Class<?> componentType) {
+  public static ArrayTypeInfo getComponentTypeInfo(Class<?> componentType) {
     int dimension = 1;
     componentType = componentType.getComponentType();
     while (componentType.isArray()) {
       componentType = componentType.getComponentType();
       ++dimension;
     }
-    return new TypeInfo(Type.getType(componentType), dimension, componentType.getName());
+    return new ArrayTypeInfo(Type.getType(componentType), dimension, componentType.getName());
   }
   
   @SuppressWarnings("unchecked")
@@ -114,7 +114,7 @@ public final class ReflectionUtil {
     }
   }
   
-  public static TypeInfo getTypeInfo(Object array) {
+  public static ArrayTypeInfo getTypeInfo(Object array) {
     if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
     return getComponentTypeInfo(array.getClass());
   }

@@ -3,7 +3,7 @@ package org.memoriadb.test.core.scenario;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.MaintenanceFreeBlockManager;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public class BlockReuseTest extends AbstractObjectStoreTest {
   public void test_reusing_one_block() {
@@ -16,12 +16,10 @@ public class BlockReuseTest extends AbstractObjectStoreTest {
     delete(get(id1));
 
     reopen();
-    FilePrinter.print(getFile());
 
     // reuse the free block
     save(new Object());
 
-    FilePrinter.print(getFile());
     reopen();
   }
 

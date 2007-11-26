@@ -28,7 +28,7 @@ public class EnumHandler implements ISerializeHandler {
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
     IEnumObject enumObject = createEnumObject(context, typeId);
     enumObject.setOrdinal(input.readInt());
-    return enumObject.getObject((IMemoriaClass) context.getObjectById(typeId));
+    return enumObject.getObject((IMemoriaClass) context.getExistingObject(typeId));
   }
 
   @Override

@@ -27,10 +27,10 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class, fRepo.getMemoriaMetaClass());
+    IMemoriaClass classObject = new MemoriaFieldClass(SimpleTestObj.class, fRepo.getFieldMetaClass());
     IObjectId id = fRepo.add(classObject, classObject.getMemoriaClassId()).getId();
     
-    assertSame(classObject, fRepo.getObject(id));
+    assertSame(classObject, fRepo.getExistingObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
   
@@ -39,14 +39,14 @@ public class ObjectRepoTest extends TestCase {
     IObjectId id = new LongObjectId(20);
     fRepo.handleAdd(new ObjectInfo(id, new LongObjectId(1), classObject, Block.getDefaultBlock(), 0, 0));
     
-    assertSame(classObject, fRepo.getObject(id));
+    assertSame(classObject, fRepo.getExistingObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
   
   public void test_put_new_object_in_cache() {
     SimpleTestObj obj = new SimpleTestObj();
     IObjectId id = fRepo.add(obj, new LongObjectId(1)).getId();
-    Object obj2 = fRepo.getObject(id);
+    Object obj2 = fRepo.getExistingObject(id);
     assertSame(obj, obj2);
   }
   
@@ -60,8 +60,8 @@ public class ObjectRepoTest extends TestCase {
     IObjectId id = fRepo.add(obj2, new LongObjectId(1)).getId();
     assertEquals(new LongObjectId(21), id);
     
-    assertEquals(obj, fRepo.getObject(objectId));
-    assertEquals(obj2, fRepo.getObject(id));
+    assertEquals(obj, fRepo.getExistingObject(objectId));
+    assertEquals(obj2, fRepo.getExistingObject(id));
   }
   
   @Override

@@ -7,13 +7,11 @@ import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 import org.memoriadb.util.Constants;
 
+import com.sun.org.apache.bcel.internal.generic.FSTORE;
+
 public abstract class DeleteTest extends AbstractObjectStoreTest {
   
   public void test_add_and_delete_in_same_transaction(){
-    
-    for(Object obj: fObjectStore.getAllObjects()) {
-      System.out.println(fObjectStore.getObjectId(obj) + " metaClassId " + fObjectStore.getObjectId(fObjectStore.getMemoriaClass(obj)));
-    }
     
     OneInt a = new OneInt(0);
     beginUpdate();
@@ -51,7 +49,7 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
   public void test_delete_aggregate() {
     A a = new A(new B("b"));
     IObjectId a_id = saveAll(a);
-    IObjectId b_id = fObjectStore.getObjectId(a.getB());
+    IObjectId b_id = fObjectStore.getId(a.getB());
     
     deleteAll(a);
     
@@ -116,6 +114,37 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
     fObjectStore.delete(object);
     
     assertFalse(fObjectStore.contains(object));
+  }
+  
+  public void test_delete_referencee_and_add_it_again() {
+    A a = new A(new B("b"));
+    
+    IObjectId idA = saveAll(a);
+    IObjectId idB = fObjectStore.getId(a.getB());
+    
+    // delete the referenced object
+    delete(a.getB());
+    reopen();
+    
+    A l1_a = get(idA);
+    
+    assertNull(l1_a.getB());
+    
+  }
+  
+  public void test_delete_referencee() {
+    A a = new A(new B("b"));
+    
+    IObjectId id = saveAll(a);
+    
+    // delete the referenced object
+    delete(a.getB());
+    reopen();
+    
+    A l1_a = get(id);
+    
+    assertNull(l1_a.getB());
+    
   }
   
   public void test_save_and_delete_in_same_transaction() {

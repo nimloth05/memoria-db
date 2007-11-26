@@ -11,22 +11,10 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  * 
  */
-public interface IDataStore {
-
-  /**
-   * Starts an update. Changes are immediately refelcted in memory, but not written back to the
-   * persistent store until <tt>endUpdate()</tt> is called.
-   */
-  public void beginUpdate();
-
-  /**
-   * Closes this ObjectStore permanently. Open FileHandles are also closed. 
-   * After calling close() this ObjectStore holds no locks in the FS.
-   */
-  public void close();
+public interface IDataStore extends IStore {
 
   public boolean contains(Object obj);
-
+  
   // query
   public boolean containsId(IObjectId id);
 
@@ -41,7 +29,7 @@ public interface IDataStore {
    * @param obj Object which is deleted.
    */
   public void delete(Object obj);
-  
+
   /**
    * Removes the given object-graph from this ObjectStore. 
    *
@@ -54,27 +42,23 @@ public interface IDataStore {
    */
   public void deleteAll(Object root);
 
-  /**
-   * Commits the changes since the last call to <tt>beginUpdate</tt>. 
-   * Updates can be nested, what increases the update-counter. Changes are only written to the
-   * persistent store if the update-counter is 0. 
-   */
-  public void endUpdate();
-
   public <T> List<T> getAll(Class<T> clazz);
-  
+
+
   public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
 
   public List<Object> getAll(String clazz);
   
   public List<Object> getAll(String clazz, IFilter<Object> filter);
-  
-  public Collection<Object> getAllObjects();
 
+  public Collection<Object> getAllObjects();
+  
   /**
-   * @return The head revision of this database. Is incremented after each transaction.
+   * @return The objectId of the given object.
+   * @throws MemoriaException
+   *           If the given object can not be found.
    */
-  public long getHeadRevision();
+  public IObjectId getId(Object obj);
   
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
@@ -82,18 +66,7 @@ public interface IDataStore {
    */
   public <T> T getObject(IObjectId id);
   
-  
-  /**
-   * @return The objectId of the given object.
-   * @throws MemoriaException
-   *           If the given object can not be found.
-   */
-  public IObjectId getObjectId(Object obj);
-
-  /**
-   * @return true, if the update-counter is > 0.  
-   */
-  public boolean isInUpdateMode();
+  public IRefactor refactorApi();
   
   /**
    * Adds the given object to the store or performs an update if the given object is already contained.

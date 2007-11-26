@@ -2,7 +2,7 @@ package org.memoriadb.util;
 
 import org.memoriadb.core.meta.Type;
 
-public class TypeInfo {
+public class ArrayTypeInfo {
 
   private final Type fComponentType;
   private final int fDimension;
@@ -16,7 +16,7 @@ public class TypeInfo {
    * @param className
    *          Only valid when the given componentType is {@link Type#typeClass}.
    */
-  public TypeInfo(Type componentType, int dimension, String className) {
+  public ArrayTypeInfo(Type componentType, int dimension, String className) {
     fComponentType = componentType;
     fDimension = dimension;
     fClassName = className;

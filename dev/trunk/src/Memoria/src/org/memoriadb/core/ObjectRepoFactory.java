@@ -18,7 +18,7 @@ public final class ObjectRepoFactory {
     IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
 
-    repo.add(factory.getMemoriaMetaClass(), fieldMetaClass.getMemoriaClassId(), fieldMetaClass);
+    repo.add(factory.getFieldMetaClass(), fieldMetaClass.getMemoriaClassId(), fieldMetaClass);
     repo.add(factory.getHandlerMetaClass(), handlerMetaClass.getMemoriaClassId(), handlerMetaClass);
 
     // handlers for specific library-classes

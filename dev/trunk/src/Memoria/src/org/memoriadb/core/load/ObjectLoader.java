@@ -55,8 +55,13 @@ public final class ObjectLoader implements IReaderContext {
   }
   
   @Override
-  public Object getObjectById(IObjectId objectId) {
-    return fRepo.getObject(objectId);
+  public Object getExistingObject(IObjectId id) {
+    return fRepo.getExistingObject(id);
+  }
+
+  @Override
+  public Object getObject(IObjectId id) {
+    return fRepo.getObject(id);
   }
 
   @Override
@@ -68,12 +73,12 @@ public final class ObjectLoader implements IReaderContext {
   public boolean isInDataMode() {
     return fStore.isDataMode();
   }
-
+  
   @Override
   public boolean isNullReference(IObjectId objectId) {
     return fRepo.isNullReference(objectId);
   }
-  
+
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fRepo.isRootClassId(superClassId);

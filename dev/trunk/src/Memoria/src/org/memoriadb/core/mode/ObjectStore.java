@@ -2,7 +2,7 @@ package org.memoriadb.core.mode;
 
 import java.util.*;
 
-import org.memoriadb.IFilter;
+import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
@@ -111,6 +111,11 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
+  public IObjectId getId(Object obj) {
+    return fTransactionHandler.getId(obj);
+  }
+
+  @Override
   public IDefaultObjectIdProvider getIdFactory() {
     return fTransactionHandler.getIdFactory();
   }
@@ -120,35 +125,10 @@ public class ObjectStore implements IObjectStoreExt  {
     return fTransactionHandler.getIdSize();
   }
 
-  @Override
-  public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fTransactionHandler.getMemoriaClass(clazz);
-  }
-
-  @Override
-  public IMemoriaClass getMemoriaClass(Object obj) {
-    return getObject(getMemoriaClassId(obj));
-  }
-
-  @Override
-  public IObjectId getMemoriaClassId(Object obj) {
-    return getObjectInfo(obj).getMemoriaClassId();
-  }
-
-  @Override
-  public IObjectId getMemoriaFieldMetaClass() {
-    return fTransactionHandler.getMemoriaFieldMetaClass();
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(IObjectId id) {
     return (T) fTransactionHandler.getObject(id);
-  }
-
-  @Override
-  public IObjectId getObjectId(Object obj) {
-    return fTransactionHandler.getObjectId(obj);
   }
 
   @Override
@@ -161,16 +141,16 @@ public class ObjectStore implements IObjectStoreExt  {
     return fTransactionHandler.getObjectInfoForId(id);
   }
 
+
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
     return fTransactionHandler.getSurvivors(block);
   }
 
-
   @Override
   public boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
-  }
+  } 
 
   public IObjectId save(Object obj) {
     checkObject(obj);
@@ -181,27 +161,32 @@ public class ObjectStore implements IObjectStoreExt  {
     checkObject(root);
     return fTransactionHandler.saveAll(root);
   }
-
+  
+  
+  @Override
+  public ITypeInfo typeInfo() {
+    return new TypeInfo(fTransactionHandler);
+  }
+  
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
   
-  
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }
-  
+
+
   /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
-  
+
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   IObjectId internalSave(Object obj) {
     return fTransactionHandler.internalSave(obj);
   }
-
 
   private void checkObject(Object obj) {
     if(obj instanceof IDataObject) throw new MemoriaException("IDataObjects are for data-mode only: " + obj);

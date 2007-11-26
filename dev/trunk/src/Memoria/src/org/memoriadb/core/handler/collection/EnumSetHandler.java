@@ -28,7 +28,7 @@ public class EnumSetHandler extends CollectionHandler {
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
     IObjectId enumClassId = context.readObjectId(input);
-    fEnumClass = (IMemoriaClass) context.getObjectById(enumClassId);
+    fEnumClass = (IMemoriaClass) context.getExistingObject(enumClassId);
     return super.deserialize(input, context, typeId);
   }
 

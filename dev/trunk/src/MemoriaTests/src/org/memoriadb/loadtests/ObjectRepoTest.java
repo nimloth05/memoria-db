@@ -65,10 +65,10 @@ public class ObjectRepoTest extends TestCase {
     }
     
     for(Object obj: objects) {
-      IObjectId id = fRepo.getObjectId(obj);
-      Object obj2 = fRepo.getObject(id);
+      IObjectId id = fRepo.getExistingId(obj);
+      Object obj2 = fRepo.getExistingObject(id);
       assertSame(obj, obj2);
-      assertEquals(id, fRepo.getObjectId(obj2));
+      assertEquals(id, fRepo.getExistingId(obj2));
     }
   }
   

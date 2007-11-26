@@ -7,7 +7,6 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.FileHeader;
 import org.memoriadb.core.id.*;
-import org.memoriadb.core.meta.IMemoriaClass;
 
 /**
  * Extended functionality for test-purposes. 
@@ -21,26 +20,12 @@ public interface IDataStoreExt extends IDataStore {
   public void checkIndexConsistancy();
   
   public IBlockManager getBlockManager();
-  
-  public FileHeader getHeader();
 
-  public IDefaultObjectIdProvider getIdFactory();  
+  public FileHeader getHeader();  
   
+  public IDefaultObjectIdProvider getIdFactory();
+
   public int getIdSize();
-
-  /**
-   * @return The Class for the given <tt>obj</tt> or null.
-   */
-  public IMemoriaClass getMemoriaClass(Class<?> clazz);
-  
-  /**
-   * @return The Class for the given <tt>obj</tt>.
-   */
-  public IMemoriaClass getMemoriaClass(Object obj);
-
-  public IObjectId getMemoriaClassId(Object obj);
-  
-  public IObjectId getMemoriaFieldMetaClass();
 
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.

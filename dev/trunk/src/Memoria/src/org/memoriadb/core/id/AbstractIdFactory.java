@@ -10,7 +10,7 @@ public abstract class AbstractIdFactory implements IObjectIdFactory {
   
   @Override
   public boolean isMemoriaFieldClass(IObjectId typeId) {
-    return getMemoriaMetaClass().equals(typeId);
+    return getFieldMetaClass().equals(typeId);
   }
 
   public boolean isMemoriaHandlerClass(IObjectId typeId) {

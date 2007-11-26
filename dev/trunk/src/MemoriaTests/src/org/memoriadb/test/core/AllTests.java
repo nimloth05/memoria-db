@@ -2,8 +2,6 @@ package org.memoriadb.test.core;
 
 import junit.framework.*;
 
-import org.memoriadb.test.core.scenario.CompositeTest;
-
 public class AllTests {
 
   public static Test suite() {
@@ -16,16 +14,14 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.handler.AllTests.suite());
 
     //$JUnit-BEGIN$
-    suite.addTestSuite(CompositeTest.class);
+    suite.addTestSuite(LongIdFactoryTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(TypeTest.class);
-    suite.addTestSuite(LongIdFactoryTest.class);
+    suite.addTestSuite(TypeInfoTest.class);
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
-    suite.addTest(org.memoriadb.test.core.enu.AllTests.suite());
-    suite.addTest(org.memoriadb.test.core.query.AllTests.suite());
     //$JUnit-END$
     return suite;
   }

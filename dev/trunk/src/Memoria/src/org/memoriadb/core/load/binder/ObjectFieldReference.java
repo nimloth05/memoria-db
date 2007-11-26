@@ -3,7 +3,6 @@ package org.memoriadb.core.load.binder;
 import org.memoriadb.core.handler.field.IFieldObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
-import org.memoriadb.exception.MemoriaException;
 
 
 public class ObjectFieldReference implements IBindable {
@@ -17,12 +16,9 @@ public class ObjectFieldReference implements IBindable {
     fFieldName = fieldName;
     fTargetObjectId = targetObjectId;
   }
-  
-  
+
   public void bind(IReaderContext context) throws Exception {
-    Object target = context.getObjectById(fTargetObjectId);
-    if (target == null) throw new MemoriaException("could not bind object: " + fSource + " target: " + fTargetObjectId + " " + fFieldName);
-    fSource.set(fFieldName, target);
+    fSource.set(fFieldName, context.getObject(fTargetObjectId));
   }
   
 }

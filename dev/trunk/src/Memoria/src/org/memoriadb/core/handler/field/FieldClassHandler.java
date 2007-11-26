@@ -49,7 +49,7 @@ public class FieldClassHandler implements ISerializeHandler {
     output.writeUTF(classObject.getClassName());
     
     IObjectId superClassId = context.getRootClassId();
-    if (classObject.getSuperClass() != null) superClassId = context.getObjectId(classObject.getSuperClass());
+    if (classObject.getSuperClass() != null) superClassId = context.getExistingtId(classObject.getSuperClass());
     superClassId.writeTo(output);
     
     for(MemoriaField field: classObject.getFields()) {

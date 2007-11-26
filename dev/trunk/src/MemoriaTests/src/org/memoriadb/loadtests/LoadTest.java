@@ -28,7 +28,7 @@ public class LoadTest extends AbstractObjectStoreTest {
     List<Referencer> allSavedObjects = getAll(Referencer.class);
     for(Referencer ref: allSavedObjects) {
       Object obj = ref.get();
-      IObjectId objectId = fObjectStore.getObjectId(obj);
+      IObjectId objectId = fObjectStore.getId(obj);
       assertSame("id collision: "+objectId, obj, fObjectStore.getObject(objectId));
     }
     

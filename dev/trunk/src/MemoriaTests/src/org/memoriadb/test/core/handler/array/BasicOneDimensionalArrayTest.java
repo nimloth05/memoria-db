@@ -15,7 +15,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     int[] arr = new int[]{1,2,3};
     IObjectId id = save(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -29,7 +29,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     Integer[] arr = new Integer[]{1,2,3};
     IObjectId id = save(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -43,7 +43,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     Integer[] arr = new Integer[]{1,null,3};
     IObjectId id = save(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -68,7 +68,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1"), new SimpleTestObj("2"), new SimpleTestObj("3")};
     IObjectId id = saveAll(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -82,7 +82,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1"), null, new SimpleTestObj("3"), };
     IObjectId id = saveAll(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -102,7 +102,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     save(prototype);
     
     // check hierarchy
-    IMemoriaClass classC = fObjectStore.getMemoriaClass(prototype);
+    IMemoriaClass classC = fObjectStore.typeInfo().getMemoriaClass(prototype);
     assertEquals(C.class.getName(), classC.getJavaClassName());
     IMemoriaClass classB = classC.getSuperClass();
     assertEquals(B.class.getName(), classB.getJavaClassName());
@@ -111,7 +111,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     IMemoriaClass classObject = classA.getSuperClass();
     assertEquals(Object.class.getName(), classObject.getJavaClassName());
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     
@@ -125,7 +125,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTe
     String[] arr = new String[]{"1", "2", "3"};
     IObjectId id = save(arr);
     
-    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getMemoriaClassId(arr));
+    assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.typeInfo().getMemoriaClassId(arr));
     
     reopen();
     

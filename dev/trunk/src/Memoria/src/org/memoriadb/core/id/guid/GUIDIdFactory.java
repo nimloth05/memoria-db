@@ -50,7 +50,7 @@ public class GUIDIdFactory extends AbstractIdFactory implements IObjectIdFactory
   }
 
   @Override
-  public IObjectId getMemoriaMetaClass() {
+  public IObjectId getFieldMetaClass() {
     return MEMORIA_META_CLASS_ID;
   }
 

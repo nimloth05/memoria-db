@@ -16,7 +16,7 @@ import org.memoriadb.exception.MemoriaException;
  * @author msc
  *
  */
-public class ObjectRepository implements IObjectRepository {
+public class ObjectRepo implements IObjectRepo {
 
   /**
    * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null. 
@@ -41,7 +41,7 @@ public class ObjectRepository implements IObjectRepository {
   private final IObjectIdFactory fIdFactory;
   
 
-  public ObjectRepository(IObjectIdFactory idFactory) {
+  public ObjectRepo(IObjectIdFactory idFactory) {
     fIdFactory = idFactory;
   }
 
@@ -111,41 +111,44 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.getArrayMemoriaClass();    
   }
 
-  @Override
-  public IObjectId getExistingId(Object obj) {
-    // FIXME assertion
-    return getId(obj);
-  }
-
-  public Object getExistingObject(IObjectId id) {
-    // FIXME assertion
-    return getObject(id);
-  }
-
-  @Override
-  public IObjectId getFieldMetaClass() {
-    return getIdFactory().getFieldMetaClass();
-  }
-
-  @Override
-  public IObjectId getHandlerMetaClass() {
-    return fIdFactory.getHandlerMetaClass();
-  }
-  
-
   /**
    * @param obj
    * @return
    * @throws MemoriaException
    *           if object can not be found
    */
-  public IObjectId getId(Object obj) {
-    IObjectInfo result = fObjectMap.get(obj);
-    if(result == null) return null;
-    //if (result == null) throw new MemoriaException("Unknown object '" + obj + "' -- using saveAll() instead of save() may solve the problem.");
-    return result.getId();
+  public IObjectId getExistingId(Object obj) {
+    IObjectId result = getId(obj);
+    if (result == null) throw new MemoriaException("Unknown object '" + obj + "' -- using saveAll() instead of save() may solve the problem.");
+    return result;
   }
 
+  /**
+   * 
+   * @param id
+   * @return the object for the given id or null.
+   */
+  public Object getExistingObject(IObjectId id) {
+    Object result = getObject(id);
+    if (result == null) throw new MemoriaException("No Object for id " + id);
+    return result;
+  }
+  
+  @Override
+  public IObjectId getFieldMetaClass() {
+    return fIdFactory.getFieldMetaClass();
+  }
+
+  @Override
+  public IObjectId getHandlerMetaClass() {
+    return fIdFactory.getHandlerMetaClass();
+  }
+
+  public IObjectId getId(Object obj) {
+   ObjectInfo result = fObjectMap.get(obj);
+   return result==null? null : result.getId();
+  }
+  
   @Override
   public IObjectIdFactory getIdFactory() {
     return fIdFactory;
@@ -157,7 +160,7 @@ public class ObjectRepository implements IObjectRepository {
   public IMemoriaClassConfig getMemoriaClass(String klass) {
     return fMemoriaClasses.get(klass);
   }
-  
+
   @Override
   public IObjectId getMemoriaClassDeletionMarker() {
     return fIdFactory.getMemoriaClassDeletionMarker();
@@ -168,18 +171,12 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.getNullReference();
   }
 
-  /**
-   * 
-   * @param objectId
-   * @return the object for the given id or null.
-   */
-  public Object getObject(IObjectId objectId) {
-    IObjectInfo objectInfo = fIdMap.get(objectId);
-    if (objectInfo == null) return null;
-    //if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
-    return objectInfo.getObject();
+  @Override
+  public Object getObject(IObjectId id) {
+    IObjectInfo objectInfo = getObjectInfoForId(id);
+    return objectInfo==null? null : objectInfo.getObject(); 
   }
-
+  
   @Override
   public IObjectId getObjectDeletionMarker() {
     return fIdFactory.getObjectDeletionMarker();
@@ -234,7 +231,7 @@ public class ObjectRepository implements IObjectRepository {
   public boolean isMemoriaFieldClass(IObjectId typeId) {
     return fIdFactory.isMemoriaFieldClass(typeId);
   }
-  
+
   @Override
   public boolean isMemoriaHandlerClass(IObjectId typeId) {
     return fIdFactory.isMemoriaHandlerClass(typeId);
@@ -248,7 +245,7 @@ public class ObjectRepository implements IObjectRepository {
   public boolean isObjectDeletionMarker(IObjectId typeId) {
     return fIdFactory.isObjectDeletionMarker(typeId);
   }
-
+  
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
     return fIdFactory.isRootClassId(superClassId);

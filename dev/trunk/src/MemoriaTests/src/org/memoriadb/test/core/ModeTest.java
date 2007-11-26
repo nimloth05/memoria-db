@@ -11,7 +11,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     
-    IObjectId memoriaClassId = fObjectStore.getObjectId(fObjectStore.getMemoriaClass(obj));
+    IObjectId memoriaClassId = fObjectStore.typeInfo().getMemoriaClassId(obj);
     
     reopenDataMode();
     

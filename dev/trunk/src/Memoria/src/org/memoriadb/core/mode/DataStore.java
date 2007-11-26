@@ -2,13 +2,14 @@ package org.memoriadb.core.mode;
 
 import java.util.*;
 
-import org.memoriadb.IFilter;
+import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.*;
+import org.memoriadb.core.refactor.RefactorApi;
 
 public class DataStore implements IDataStoreExt {
 
@@ -19,11 +20,10 @@ public class DataStore implements IDataStoreExt {
     fTransactionHandler = transactionHandler;
   }
 
-
   @Override
   public void beginUpdate() {
     fTransactionHandler.beginUpdate();
-  }
+  } 
 
   @Override
   public void checkIndexConsistancy() {
@@ -106,6 +106,11 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
+  public IObjectId getId(Object obj) {
+    return fTransactionHandler.getId(obj);
+  }
+
+  @Override
   public IDefaultObjectIdProvider getIdFactory() {
     return fTransactionHandler.getIdFactory();
   }
@@ -115,35 +120,10 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.getIdSize();
   }
 
-  @Override
-  public IMemoriaClass getMemoriaClass(Class<?> clazz) {
-    return fTransactionHandler.getMemoriaClass(clazz);
-  }
-
-  @Override
-  public IMemoriaClass getMemoriaClass(Object obj) {
-    return getObject(getMemoriaClassId(obj));
-  }
-
-  @Override
-  public IObjectId getMemoriaClassId(Object obj) {
-    return getObjectInfo(obj).getMemoriaClassId();
-  }
-
-  @Override
-  public IObjectId getMemoriaFieldMetaClass() {
-    return fTransactionHandler.getMemoriaFieldMetaClass();
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(IObjectId id) {
     return (T) fTransactionHandler.getObject(id);
-  }
-
-  @Override
-  public IObjectId getObjectId(Object obj) {
-    return fTransactionHandler.getObjectId(obj);
   }
 
   @Override
@@ -156,34 +136,46 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.getObjectInfoForId(id);
   }
 
+
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
     return fTransactionHandler.getSurvivors(block);
   }
-
-
+  
+  
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
-  
   
   @Override
   public boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
   }
   
+  @Override
+  public IRefactor refactorApi() {
+    return new RefactorApi(fTransactionHandler); 
+  }
+
+
   public IObjectId save(Object obj) {
     return fTransactionHandler.save(obj);
   }
-  
+
   public IObjectId saveAll(Object root) {
     return fTransactionHandler.saveAll(root);
+  }
+
+  @Override
+  public ITypeInfo typeInfo() {
+    return new TypeInfo(fTransactionHandler);
   }
 
 
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
+
 
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);

@@ -4,14 +4,17 @@ public interface IDefaultObjectIdProvider {
 
   public IObjectId getArrayMemoriaClass();
 
-  public IObjectId getHandlerMetaClass();
-
-  public IObjectId getMemoriaClassDeletionMarker();
-  
   /**
-   * ObjectID for the Meta-MetaClass for the field based MetaClass.
+   * @return ObjectID of the MetaClass for field memoria classes.
    */
-  public IObjectId getMemoriaMetaClass();
+  public IObjectId getFieldMetaClass();
+
+  /**
+   * @return ObjectID of the MetaClass for handler memoria classes.
+   */
+  public IObjectId getHandlerMetaClass();
+  
+  public IObjectId getMemoriaClassDeletionMarker();
 
   public IObjectId getNullReference();
   

@@ -5,7 +5,7 @@ import org.memoriadb.exception.*;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
-import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
 public abstract class BasicCrudTest extends AbstractObjectStoreTest {
 
@@ -27,7 +27,6 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     
     IObjectId idc1 = saveAll(c1);
     
-    FilePrinter.print(getFile());
     reopen();
     
     Cyclic1 c1_l1 = (Cyclic1) fObjectStore.getObject(idc1);
@@ -56,6 +55,26 @@ public abstract class BasicCrudTest extends AbstractObjectStoreTest {
     assertNotSame(c3, c3_l1);
     assertEquals(c3, c3_l1);
     assertEquals(c1_l2, c3.getC1());
+  }
+  
+  public void test_getId() {
+    Object o = new Object();
+    assertNull(fObjectStore.getId(o));
+    
+    IObjectId id = save(o);
+    
+    assertEquals(o, fObjectStore.getObject(id));
+  }
+  
+  public void test_Object() {
+    Object o = new Object();
+    IObjectId id = save(o);
+    
+    reopen();
+    
+    Object o_l1 = fObjectStore.getObject(id);
+    assertSame(Object.class, o_l1.getClass());
+
   }
   
   public void test_save_aggregate_with_dataObject_in_objectMode() {
