@@ -51,17 +51,13 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   }
   
   protected <T> T get(IObjectId id) {
-    return fObjectStore.getObject(id);
-  }
-  
-  protected final <T> List<T> getAll(Class<T> clazz) {
-    return fObjectStore.getAll(clazz);
-  }
-  
-  protected final <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    return fObjectStore.getAll(clazz, filter);
+    return fObjectStore.get(id);
   }
 
+  protected <T> List<T> query(Class<T> clazz) {
+    return fObjectStore.query(clazz);
+  }
+  
   protected IMemoriaFile getFile() {
     if(fObjectStore!=null) return ((ObjectStore)fObjectStore).getFile();
     return ((DataStore)fDataStore).getFile();
@@ -70,11 +66,11 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected LastWrittenBlockInfo getLastBlockInfo() {
     return fObjectStore.getHeader().getLastWrittenBlockInfo();
   }
-  
+
   protected IObjectInfo getObjectInfo(IObjectId id) {
     return fObjectStore.getObjectInfoForId(id);
   }
-
+  
   protected int getOPF() {
     return FileLayout.OPF;
   }
@@ -86,7 +82,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
   protected TestMode getTestMode() {
     return TestMode.memory;
   }
-  
+
   protected final void recreateDataStore() {
     closeStores();
     
@@ -102,7 +98,7 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     }
     fObjectStore = null;
   }
-
+  
   protected final void recreateObjectStore() {
     closeStores();
     
@@ -118,23 +114,23 @@ public abstract class AbstractObjectStoreTest extends TestCase {
     }
     fDataStore = null;
   }
-  
+
   protected final void reopen() {
     recreateObjectStore(); 
   }
-
+  
   protected void reopenDataMode() {
     recreateDataStore();
   }
-  
+   
   protected final IObjectId save(IDataObject obj) {
     return fDataStore.save(obj);
   }
-   
+
   protected final IObjectId save(Object obj) {
     return fObjectStore.save(obj);
   }
-
+  
   protected final IObjectId saveAll(IDataObject obj) {
     return fDataStore.saveAll(obj);
   }
@@ -157,12 +153,12 @@ public abstract class AbstractObjectStoreTest extends TestCase {
      fObjectStore = openStore(new PhysicalFile(PATH), config);
    }
   }
-  
+
   @Override
   protected void tearDown() {
     closeStores();
   }
-
+  
   private void closeStores() {
     if(fObjectStore != null) fObjectStore.close();
     if(fDataStore != null) fDataStore.close();

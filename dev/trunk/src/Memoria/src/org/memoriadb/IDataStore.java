@@ -2,6 +2,7 @@ package org.memoriadb;
 
 import java.util.*;
 
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
@@ -13,10 +14,7 @@ import org.memoriadb.exception.MemoriaException;
  */
 public interface IDataStore extends IStore {
 
-  public boolean contains(Object obj);
-  
-  // query
-  public boolean containsId(IObjectId id);
+  public boolean contains(IDataObject obj);
 
   /**
    * Removes the given object from this ObjectStore. Removed objects can later be added again, resulting in a new id.
@@ -28,7 +26,7 @@ public interface IDataStore extends IStore {
    * 
    * @param obj Object which is deleted.
    */
-  public void delete(Object obj);
+  public void delete(IDataObject obj);
 
   /**
    * Removes the given object-graph from this ObjectStore. 
@@ -40,33 +38,29 @@ public interface IDataStore extends IStore {
    * 
    * @param obj
    */
-  public void deleteAll(Object root);
-
-  public <T> List<T> getAll(Class<T> clazz);
+  public void deleteAll(IDataObject root);
 
 
-  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
-
-  public List<Object> getAll(String clazz);
+  /**
+   * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
+   *         or not.
+   */
+  public <T extends IDataObject> T  get(IObjectId id);
   
-  public List<Object> getAll(String clazz, IFilter<Object> filter);
-
-  public Collection<Object> getAllObjects();
+  public Collection<IDataObject> getAllObjects();
   
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
    *           If the given object can not be found.
    */
-  public IObjectId getId(Object obj);
+  public IObjectId getId(IDataObject obj);
   
-  /**
-   * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
-   *         or not.
-   */
-  public <T> T getObject(IObjectId id);
+  public <T extends IDataObject> List<T> query(String clazz);
   
-  public IRefactor refactorApi();
+  public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter);
+  
+  public IRefactor getRefactorApi();
   
   /**
    * Adds the given object to the store or performs an update if the given object is already contained.
@@ -76,7 +70,7 @@ public interface IDataStore extends IStore {
    * 
    * @return The objectId of the added or updated object.
    */
-  public IObjectId save(Object obj);
+  public IObjectId save(IDataObject obj);
   
   /**
    * Saves the given <tt>root</tt> object and all referenced objects.
@@ -86,6 +80,6 @@ public interface IDataStore extends IStore {
    * 
    * @return objectId of the given <tt>root</tt> object.
    */
-  public IObjectId saveAll(Object root);
+  public IObjectId saveAll(IDataObject root);
 
 }

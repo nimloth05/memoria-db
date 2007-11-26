@@ -2,7 +2,7 @@ package org.memoriadb.test.core.query;
 
 import java.util.List;
 
-import org.memoriadb.IFilter;
+import org.memoriadb.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
@@ -14,7 +14,7 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(1, fObjectStore.getAll(SimpleTestObj.class).size());
+    assertEquals(1, fObjectStore.query(SimpleTestObj.class).size());
   }
   
   public void test_getAll_by_class_name() {
@@ -23,7 +23,7 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(1, fObjectStore.getAll(SimpleTestObj.class.getName()).size());
+    assertEquals(1, fObjectStore.query(SimpleTestObj.class.getName()).size());
   }
   
   public void test_getAll_class_name_with_filter() {
@@ -32,10 +32,10 @@ public abstract class QueryTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    List<Object> result = fObjectStore.getAll(SimpleTestObj.class.getName(), new IFilter<Object>() {
+    List<Object> result = fObjectStore.query(new IFilter<Object>() {
 
       @Override
-      public boolean accept(Object object) {
+      public boolean accept(Object object, IFilterControl control) {
         return false;
       }
     });

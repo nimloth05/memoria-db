@@ -23,7 +23,7 @@ public class ArrayListTest extends AbstractObjectStoreTest {
     IObjectId objId = saveAll(container);
     
     reopen();
-    IArrayListContainer container_l1 = fObjectStore.getObject(objId);
+    IArrayListContainer container_l1 = fObjectStore.get(objId);
     assertEquals(count, container_l1.size());
     assertEquals(container, container_l1);
   }

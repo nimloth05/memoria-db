@@ -15,14 +15,14 @@ public abstract class ListTest extends CollectionTest {
     
     reopenDataMode();
     
-    IListDataObject l1_list = fDataStore.getObject(objectId);
+    IListDataObject l1_list = fDataStore.get(objectId);
     assertEquals(objectList.size(), l1_list.getList().size());
     l1_list.getList().remove(0);
     save(l1_list);
     
     reopen();
     
-    List<SimpleTestObj> l2_list = fObjectStore.getObject(objectId);
+    List<SimpleTestObj> l2_list = fObjectStore.get(objectId);
     assertEquals(objectList.size(), l2_list.size() + 1);
     assertEquals(objectList.get(1), l2_list.get(0));
   }
@@ -33,7 +33,7 @@ public abstract class ListTest extends CollectionTest {
     
     reopenDataMode();
     
-    IListDataObject l1_list = fDataStore.getObject(objectId);
+    IListDataObject l1_list = fDataStore.get(objectId);
     assertEquals(objectList.size(), l1_list.getList().size());
     Object object = l1_list.getList().get(0);
     
@@ -48,7 +48,7 @@ public abstract class ListTest extends CollectionTest {
     
     reopen();
     
-    List<SimpleTestObj> l2_list = fObjectStore.getObject(objectId);
+    List<SimpleTestObj> l2_list = fObjectStore.get(objectId);
     assertEquals(objectList.size(), l2_list.size());
     assertEquals("newObj", l2_list.get(1).getString());
   }

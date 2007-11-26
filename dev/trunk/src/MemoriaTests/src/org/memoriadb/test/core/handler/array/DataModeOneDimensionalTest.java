@@ -11,7 +11,7 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
   public void test_create_int_array() {
     reopenDataMode();
     
-    IArray arr = fDataStore.refactorApi().createArray(int[].class, 2);
+    IArray arr = fDataStore.getRefactorApi().createArray(int[].class, 2);
      
     arr.set(0, 0);
     arr.set(1, 1);
@@ -30,12 +30,12 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
   public void test_create_Object_array_when_java_class_is_known() {
     reopenDataMode();
     
-    fDataStore.typeInfo().addMemoriaClass(SimpleTestObj.class);
+    fDataStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
     
-    IArray arr = fDataStore.refactorApi().createArray(SimpleTestObj[].class, 2);
+    IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj[].class, 2);
     
-    IObjectId memoriaClassId = fDataStore.typeInfo().getMemoriaClassId(SimpleTestObj.class);
-    fDataStore.refactorApi().arraySet(0, new SimpleTestObj("0"));
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(SimpleTestObj.class);
+    fDataStore.getRefactorApi().arraySet(0, new SimpleTestObj("0"));
     arr.set(0, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
     arr.set(1, new FieldObject(new SimpleTestObj("1"), memoriaClassId));
     
@@ -50,13 +50,13 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
   
   public void test_create_Object_array_when_java_class_is_unknown() {
     // add class
-    fObjectStore.typeInfo().addMemoriaClass(SimpleTestObj.class);
+    fObjectStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
     
     reopenDataMode();
     
-    IArray arr = fDataStore.refactorApi().createArray(SimpleTestObj.class.getName(), 1, 2);
+    IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj.class.getName(), 1, 2);
      
-    IObjectId memoriaClassId = fDataStore.typeInfo().getMemoriaClassId(SimpleTestObj.class);
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(SimpleTestObj.class);
     
     arr.set(0, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
     arr.set(1, new FieldObject(new SimpleTestObj("0"), memoriaClassId));
@@ -76,7 +76,7 @@ public class DataModeOneDimensionalTest extends AbstractObjectStoreTest {
     
     reopenDataMode();
     
-    IDataArray l1_arr = fDataStore.getObject(id);
+    IDataArray l1_arr = fDataStore.get(id);
     assertEquals(0, l1_arr.get(0));
     assertEquals(1, l1_arr.get(1));
     

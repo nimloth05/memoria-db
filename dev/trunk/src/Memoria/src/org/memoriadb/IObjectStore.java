@@ -15,9 +15,6 @@ public interface IObjectStore extends IStore {
 
 
   public boolean contains(Object obj);
-
-  // query
-  public boolean containsId(IObjectId id);
   
   /**
    * Removes the given object from this ObjectStore. Removed objects can later be added again, resulting in a new id.
@@ -43,23 +40,13 @@ public interface IObjectStore extends IStore {
    */
   public void deleteAll(Object root);
 
-
-  public <T> List<T> getAll(Class<T> clazz);
-
-  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter);
-  
-  public List<Object> getAll(String clazz);
-
-  public List<Object> getAll(String clazz, IFilter<Object> filter);
-  
-  public Collection<Object> getAllObjects();
-
-
   /**
    * @return The object or null, if no Object exists for the given id. It is not considered if the object is persistent
    *         or not.
    */
-  public <T> T getObject(IObjectId id);
+  public <T> T get(IObjectId id);
+
+  public Collection<Object> getAllObjects();
   
   /**
    * @return The objectId of the given object.
@@ -68,6 +55,13 @@ public interface IObjectStore extends IStore {
    */
   public IObjectId getId(Object obj);
 
+  public <T> List<T> query(Class<T> clazz);
+  
+  public <T> List<T> query(IFilter<T> filter);
+
+  public <T> List<T> query(String clazz);
+  
+  public List<Object> query(String clazz, IFilter<Object> filter);
   
   /**
    * Adds the given object to the store or performs an update if the given object is already contained.

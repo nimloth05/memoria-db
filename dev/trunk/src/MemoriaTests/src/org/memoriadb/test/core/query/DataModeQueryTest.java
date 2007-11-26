@@ -2,6 +2,7 @@ package org.memoriadb.test.core.query;
 
 import java.util.List;
 
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public class DataModeQueryTest extends QueryTest {
@@ -12,8 +13,9 @@ public class DataModeQueryTest extends QueryTest {
     
     reopenDataMode();
     
-    List<Object> result = fDataStore.getAll(Object.class);
-    assertEquals(0, result.size()); 
+    List<IDataObject> result = fDataStore.query(Object.class.getName());
+    
+    assertEquals(1, result.size()); 
   }
 
 }

@@ -7,7 +7,7 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
-public final class MemoriaFieldClass implements IMemoriaClassConfig {
+public final class MemoriaFieldClass extends AbstractMemoriaClass {
 
   private String fClassName;
 
@@ -73,11 +73,6 @@ public final class MemoriaFieldClass implements IMemoriaClassConfig {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  @Override
-  public boolean isTypeFor(String javaClass) {
-    return fClassName.equals(javaClass);
   }
 
   public void setClassName(String name) {

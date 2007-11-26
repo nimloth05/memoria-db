@@ -34,7 +34,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     List<WrongHashCode> expectedObjs = Arrays.asList(obj1, obj2);
     reopen();
 
-    List<WrongHashCode> actualObjs = getAll(WrongHashCode.class);
+    List<WrongHashCode> actualObjs = query(WrongHashCode.class);
 
     Iterator<WrongHashCode> expectedIter = expectedObjs.iterator();
     while (expectedIter.hasNext()) {
@@ -75,7 +75,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     saveAll(objects.toArray());
     reopen();
 
-    List<SimpleTestObj> loadedObjs = getAll(SimpleTestObj.class);
+    List<SimpleTestObj> loadedObjs = query(SimpleTestObj.class);
     loadedObjs.removeAll(objects);
     assertEquals("Save/load mismatch: " + loadedObjs, 0, loadedObjs.size());
   }
@@ -129,7 +129,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     save(obj);
 
     reopen();
-    List<WrongHashCode> objs = getAll(WrongHashCode.class);
+    List<WrongHashCode> objs = query(WrongHashCode.class);
     assertEquals(1, objs.size());
   }
 
@@ -142,7 +142,7 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
     reopen();
 
-    Collections.containsAll(getAll(SimpleTestObj.class), obj1, obj2);
+    Collections.containsAll(query(SimpleTestObj.class), obj1, obj2);
   }
 
   private void internalTestReferenceeInAnotherTransaction(Class<?> referenceeType) throws Exception {
@@ -152,11 +152,11 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     save(referencer);
 
     reopen();
-    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    Referencer loadedReferencer = query(Referencer.class).get(0);
 
     assertEquals(referencer.getStringValueFromReferencee(), loadedReferencer.getStringValueFromReferencee());
 
-    Object loadedObj = getAll(referenceeType).get(0);
+    Object loadedObj = query(referenceeType).get(0);
     assertSame(loadedReferencer.get(), loadedObj);
   }
 
@@ -167,10 +167,12 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
 
     reopen();
 
-    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    System.out.println(fObjectStore.getAllObjects());
+    
+    Referencer loadedReferencer = query(Referencer.class).get(0);
     assertEquals(referencer.getStringValueFromReferencee(), loadedReferencer.getStringValueFromReferencee());
 
-    Object loadedObj = getAll(referenceeType).get(0);
+    Object loadedObj = query(referenceeType).get(0);
     assertSame(loadedReferencer.get(), loadedObj);
   }
   
@@ -180,14 +182,14 @@ public class ObjectContainerTest extends AbstractObjectStoreTest {
     save(referencer.get());
     save(referencer);
 
-    assertEquals(1, getAll(referenceeType).size());
+    assertEquals(1, query(referenceeType).size());
 
     reopen();
-    Referencer loadedReferencer = getAll(Referencer.class).get(0);
+    Referencer loadedReferencer = query(Referencer.class).get(0);
 
     assertEquals(referencer.getStringValueFromReferencee(), loadedReferencer.getStringValueFromReferencee());
 
-    Object loadedObj = getAll(referenceeType).get(0);
+    Object loadedObj = query(referenceeType).get(0);
     assertSame(loadedReferencer.get(), loadedObj);
   }
 

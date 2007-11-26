@@ -11,7 +11,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     SimpleTestObj obj = new SimpleTestObj("1");
     save(obj);
     
-    IObjectId memoriaClassId = fObjectStore.typeInfo().getMemoriaClassId(obj);
+    IObjectId memoriaClassId = fObjectStore.getTypeInfo().getMemoriaClassId(obj);
     
     reopenDataMode();
     
@@ -21,7 +21,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    assertEquals(2, getAll(SimpleTestObj.class).size());
+    assertEquals(2, query(SimpleTestObj.class).size());
   }
   
   public void test_delete_object_in_data_mode() {
@@ -30,7 +30,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     
     reopenDataMode();
     
-    fDataStore.delete(fDataStore.getObject(id));
+    fDataStore.delete(fDataStore.get(id));
     
     reopen();
     
@@ -44,7 +44,7 @@ public class ModeTest extends AbstractObjectStoreTest {
     reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fDataStore.getObject(id);
+    IFieldObject l1_obj = fDataStore.get(id);
     assertEquals(obj.getString(), l1_obj.get("fString"));
   }
   
@@ -55,13 +55,13 @@ public class ModeTest extends AbstractObjectStoreTest {
     reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fDataStore.getObject(id);
+    IFieldObject l1_obj = fDataStore.get(id);
     l1_obj.set("fString", "2");
     save(l1_obj);
     
     reopen();
     
-    SimpleTestObj l2_obj = fObjectStore.getObject(id);
+    SimpleTestObj l2_obj = fObjectStore.get(id);
     assertEquals(l1_obj.get("fString"), l2_obj.getString());
   }
 }

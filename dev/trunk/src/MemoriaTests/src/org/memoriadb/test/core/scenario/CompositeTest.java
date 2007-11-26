@@ -2,7 +2,8 @@ package org.memoriadb.test.core.scenario;
 
 import java.util.List;
 
-import org.memoriadb.IFilter;
+import org.memoriadb.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.handler.collection.IListDataObject;
 import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
@@ -17,17 +18,17 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     reopenDataMode();
     
-    List<Object> l1_allComposites = fDataStore.getAll(Composite.class.getName());
+    List<IDataObject> l1_allComposites = fDataStore.query(Composite.class.getName());
     assertEquals(3, l1_allComposites.size());
     
-    List<Object> l1_allLeafs = fDataStore.getAll(Leaf.class.getName());
+    List<IDataObject> l1_allLeafs = fDataStore.query(Leaf.class.getName());
     assertEquals(1, l1_allLeafs.size());
     
-    IFieldObject l1_root = (IFieldObject) fDataStore.getAll(Composite.class.getName(), new IFilter<Object>() {
+    IFieldObject l1_root = fDataStore.query(Composite.class.getName(), new IFilter<IFieldObject>() {
 
       @Override
-      public boolean accept(Object object) {
-        IFieldObject obj = (IFieldObject)object;
+      public boolean accept(IFieldObject object, IFilterControl control) {
+        IFieldObject obj = object;
         return obj.get("fData").equals("root");     
       }
     }).get(0);
@@ -73,7 +74,7 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    List<Leaf> l2_allLeafs = fObjectStore.getAll(Leaf.class);
+    List<Leaf> l2_allLeafs = fObjectStore.query(Leaf.class);
     assertEquals(2, l2_allLeafs.size());
     
     for(int i =0; i < l2_allLeafs.size(); ++i) {
@@ -81,15 +82,15 @@ public class CompositeTest extends AbstractObjectStoreTest {
       assertEquals("dataModeLeaf", leaf.getData());
     }
     
-    List<Composite> l2_allComposites = fObjectStore.getAll(Composite.class);
+    List<Composite> l2_allComposites = fObjectStore.query(Composite.class);
     assertEquals(3, l2_allComposites.size());
     
     assertSame(l2_allLeafs.get(0).getTestObj(), l2_allLeafs.get(1).getTestObj());
     
-    Composite l2_root = getAll(Composite.class, new IFilter<Composite>() {
+    Composite l2_root = fObjectStore.query(new IFilter<Composite>() {
 
       @Override
-      public boolean accept(Composite object) {
+      public boolean accept(Composite object, IFilterControl control) {
         return object.getData().equals("root");     
       }
       
@@ -124,13 +125,13 @@ public class CompositeTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    List<Composite> allComposites = getAll(Composite.class);
+    List<Composite> allComposites = fObjectStore.query(Composite.class);
     assertEquals(3, allComposites.size());
     
-    Composite loadedRoot = getAll(Composite.class, new IFilter<Composite>() {
+    Composite loadedRoot = fObjectStore.query(new IFilter<Composite>() {
 
       @Override
-      public boolean accept(Composite object) {
+      public boolean accept(Composite object, IFilterControl control) {
         return object.getData().equals("root");     
       }
       

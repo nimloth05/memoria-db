@@ -153,7 +153,7 @@ public abstract class DeleteTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    OneInt a_l1 = fObjectStore.getObject(a_id);
+    OneInt a_l1 = fObjectStore.get(a_id);
     
     a_l1.setInt(1);
     beginUpdate();

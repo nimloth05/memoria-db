@@ -79,11 +79,11 @@ public abstract class BasicMultiDimensionalArrayTest extends AbstractObjectStore
   public void test_Object_array_with_interitance() {
     C[][] arr = new C[][]{new C[]{getC(), getC()}, new C[]{getC()}};
 
-    int classCount = getAll(IMemoriaClass.class).size();
+    int classCount = query(IMemoriaClass.class).size();
     IObjectId id = saveAll(arr);
 
     // plus 3 classes: A, B, C 
-    assertEquals(classCount+3, getAll(IMemoriaClass.class).size());
+    assertEquals(classCount+3, query(IMemoriaClass.class).size());
     
     reopen();
     

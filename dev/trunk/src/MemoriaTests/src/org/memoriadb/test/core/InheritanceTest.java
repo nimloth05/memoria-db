@@ -16,7 +16,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
   }
   
   public void test_memoriaClass_for_Object_exists() {
-    assertEquals(Object.class.getName(), fObjectStore.typeInfo().getMemoriaClass(Object.class).getJavaClassName());
+    assertEquals(Object.class.getName(), fObjectStore.getTypeInfo().getMemoriaClass(Object.class).getJavaClassName());
   }
   
   public void test_save_inheritance_obj() {
@@ -28,7 +28,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     reopen();
     assertMetaObjectHierarchy((B)get(id));
     
-    B loadedB = getAll(B.class).get(0);
+    B loadedB = query(B.class).get(0); 
     assertB(b, loadedB);
   }
 
@@ -40,7 +40,7 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     
     reopen();
     
-    C loadedC = getAll(C.class).get(0);
+    C loadedC = query(C.class).get(0);
     assertEquals(c.fTestObj, loadedC.fTestObj);
   }
 
@@ -59,10 +59,10 @@ public class InheritanceTest extends AbstractObjectStoreTest {
     
     assertMetaObjectHierarchy((B)get(idB));
     
-    B loadedB = getAll(B.class).get(0);
+    B loadedB = query(B.class).get(0);
     assertB(b, loadedB);
   }
-  
+
   private void assertB(B b, B loadedB) {
     assertEquals(b.fBoolean, loadedB.fBoolean);
     assertEquals(b.fString, loadedB.fString);
@@ -71,8 +71,8 @@ public class InheritanceTest extends AbstractObjectStoreTest {
   }
   
   private void assertMetaObjectHierarchy(B b) {
-    IMemoriaClass metaClass = fObjectStore.typeInfo().getMemoriaClass(b);
-    IMemoriaClass objectClass = fObjectStore.typeInfo().getMemoriaClass(Object.class);
+    IMemoriaClass metaClass = fObjectStore.getTypeInfo().getMemoriaClass(b);
+    IMemoriaClass objectClass = fObjectStore.getTypeInfo().getMemoriaClass(Object.class);
     
     assertEquals(metaClass.getJavaClassName(), B.class.getName());
     assertEquals(metaClass.getSuperClass().getJavaClassName(), A.class.getName());

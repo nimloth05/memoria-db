@@ -8,7 +8,7 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.query.*;
+import org.memoriadb.core.query.ClassModeQueryStrategy;
 
 public class ObjectStore implements IObjectStoreExt  {
 
@@ -16,7 +16,7 @@ public class ObjectStore implements IObjectStoreExt  {
   // bringt die Schnittstelle überhaupt etwas?
   private final TransactionHandler fTransactionHandler;
   
-  private final IQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
+  private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
   
   public ObjectStore(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
@@ -64,23 +64,8 @@ public class ObjectStore implements IObjectStoreExt  {
 
   @SuppressWarnings("unchecked")
   @Override
-  public <T> List<T> getAll(Class<T> clazz) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
-  }
-
-  @Override
-  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
-  }
-
-  @Override
-  public List<Object> getAll(String clazz) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
-  }
-
-  @Override
-  public List<Object> getAll(String clazz, IFilter<Object> filter) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
+  public <T> T get(IObjectId id) {
+    return (T) fTransactionHandler.getObject(id);
   }
 
   @Override
@@ -122,12 +107,6 @@ public class ObjectStore implements IObjectStoreExt  {
     return fTransactionHandler.getIdSize();
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getObject(IObjectId id) {
-    return (T) fTransactionHandler.getObject(id);
-  }
-
   @Override
   public ObjectInfo getObjectInfo(Object obj) {
     return fTransactionHandler.getObjectInfo(obj);
@@ -138,39 +117,59 @@ public class ObjectStore implements IObjectStoreExt  {
     return fTransactionHandler.getObjectInfoForId(id);
   }
 
-
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
     return fTransactionHandler.getSurvivors(block);
   }
 
   @Override
+  public ITypeInfo getTypeInfo() {
+    return new TypeInfo(fTransactionHandler);
+  }
+
+
+  @Override
   public boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> List<T> query(Class<T> clazz) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   } 
 
+  @Override
+  public <T> List<T> query(IFilter<T> filter) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), filter);
+  }
+
+  @Override
+  public <T> List<T> query(String clazz) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
+  }
+  
+  @Override
+  public List<Object> query(String clazz, IFilter<Object> filter) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
+  }
+  
   public IObjectId save(Object obj) {
     return fTransactionHandler.save(obj);
   }
-
+  
   public IObjectId saveAll(Object root) {
     return fTransactionHandler.saveAll(root);
   }
-  
-  
-  @Override
-  public ITypeInfo typeInfo() {
-    return new TypeInfo(fTransactionHandler);
-  }
-  
+
+
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
-  
+
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }
-
 
   /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);

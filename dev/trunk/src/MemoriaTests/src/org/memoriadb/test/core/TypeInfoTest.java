@@ -14,10 +14,10 @@ public class TypeInfoTest extends AbstractObjectStoreTest {
   
   public void test_add_class() {
     beginUpdate();
-    IObjectId id = fObjectStore.typeInfo().addMemoriaClass(SimpleTestObj.class);
+    IObjectId id = fObjectStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
     endUpdate();
     
-    IMemoriaClass memoriaClass = fObjectStore.getObject(id);
+    IMemoriaClass memoriaClass = fObjectStore.get(id);
     
     assertEquals(id, typeInfo().getMemoriaClassId(SimpleTestObj.class));
     assertEquals(memoriaClass, typeInfo().getMemoriaClass(SimpleTestObj.class));
@@ -28,7 +28,7 @@ public class TypeInfoTest extends AbstractObjectStoreTest {
     
     reopenDataMode();
     
-    assertEquals(id, fDataStore.typeInfo().getMemoriaClassId(SimpleTestObj.class));
+    assertEquals(id, fDataStore.getTypeInfo().getMemoriaClassId(SimpleTestObj.class));
   }
   
   public void test_add_memoria_class() {
@@ -84,7 +84,7 @@ public class TypeInfoTest extends AbstractObjectStoreTest {
 
   
   private void addClass(Class<?> klass) {
-    fObjectStore.typeInfo().addMemoriaClass(klass);
+    fObjectStore.getTypeInfo().addMemoriaClass(klass);
   }
 
   private void checkAddFails(Class<?> clazz) {
@@ -98,11 +98,11 @@ public class TypeInfoTest extends AbstractObjectStoreTest {
   }
 
   private int getMemoriaClassCount() {
-    return getAll(IMemoriaClass.class).size();
+    return query(IMemoriaClass.class).size();
   }
 
   private ITypeInfo typeInfo() {
-    return fObjectStore.typeInfo();
+    return fObjectStore.getTypeInfo();
   }
   
 }

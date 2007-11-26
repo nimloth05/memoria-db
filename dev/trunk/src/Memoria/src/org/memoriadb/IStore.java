@@ -1,6 +1,9 @@
 package org.memoriadb;
 
+import org.memoriadb.core.id.IObjectId;
+
 public interface IStore {
+  
   /**
    * Starts an update. Changes are immediately refelcted in memory, but not written back to the
    * persistent store until <tt>endUpdate()</tt> is called.
@@ -12,6 +15,8 @@ public interface IStore {
    * After calling close() this ObjectStore holds no locks in the FS.
    */
   public void close();
+  
+  public boolean containsId(IObjectId id);
   
   /**
    * Commits the changes since the last call to <tt>beginUpdate</tt>. 
@@ -26,14 +31,14 @@ public interface IStore {
   public long getHeadRevision();
   
   /**
-   * Clients which need information about the stored java class hierarchy or want to add new memoria
-   * classes should work with ghe returned ITypeInfo interface. 
-   */
-  public ITypeInfo typeInfo();
-  
-  /**
    * @return true, if the update-counter is > 0.  
    */
   public boolean isInUpdateMode();
+  
+  /**
+   * Clients which need information about the stored java class hierarchy or want to add new memoria
+   * classes should work with ghe returned ITypeInfo interface. 
+   */
+  public ITypeInfo getTypeInfo();
   
 }

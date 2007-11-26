@@ -4,7 +4,7 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
-public final class MemoriaHandlerClass implements IMemoriaClassConfig {
+public final class MemoriaHandlerClass extends AbstractMemoriaClass {
 
   private final ISerializeHandler fSerializeHandler;
   private IMemoriaClass fSuperClass;
@@ -40,11 +40,6 @@ public final class MemoriaHandlerClass implements IMemoriaClassConfig {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  @Override
-  public boolean isTypeFor(String javaClass) {
-    return getJavaClassName().equals(javaClass);
   }
 
   @Override

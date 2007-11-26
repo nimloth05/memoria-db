@@ -96,7 +96,7 @@ public class ArrayTest extends AbstractObjectStoreTest {
     reopen();
 
     IArrayContainer l1_Container = get(id);
-    SimpleTestObj loadedObj = getAll(SimpleTestObj.class).get(0);
+    SimpleTestObj loadedObj = query(SimpleTestObj.class).get(0);
 
     l1_Container.assertSame(loadedObj);
     assertEquals(container, l1_Container);

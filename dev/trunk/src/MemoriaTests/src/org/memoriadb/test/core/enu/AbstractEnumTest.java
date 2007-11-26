@@ -18,7 +18,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     
     reopenDataMode();
     
-    IFieldObject l1_obj = fDataStore.getObject(objId);
+    IFieldObject l1_obj = fDataStore.get(objId);
     IEnumObject l1_enumObjet = (IEnumObject) l1_obj.get("fEnum");
     assertEquals(TestEnum.b.ordinal(), l1_enumObjet.getOrdinal());
   }
@@ -71,7 +71,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fObjectStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.get(objId);
     assertEquals(TestEnum.b, l1_obj.getEnum());
   }
   
@@ -82,7 +82,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fObjectStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.get(objId);
     assertEquals(null, l1_obj.getEnum());
   }
   
@@ -107,21 +107,21 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     obj = null;
     
     reopen();
-    EnumUse l1_obj = fObjectStore.getObject(objId);
+    EnumUse l1_obj = fObjectStore.get(objId);
     assertEquals(null, l1_obj.getEnum());
     
     l1_obj.setEnum(TestEnum.a);
     saveAll(l1_obj);
     
     reopen();
-    EnumUse l2_obj = fObjectStore.getObject(objId);
+    EnumUse l2_obj = fObjectStore.get(objId);
     assertEquals(l1_obj.getEnum(), l2_obj.getEnum());
     
     l2_obj.setEnum(TestEnum.b);
     saveAll(l2_obj);
     
     reopen();
-    EnumUse l3_obj = fObjectStore.getObject(objId);
+    EnumUse l3_obj = fObjectStore.get(objId);
     assertEquals(l2_obj.getEnum(), l3_obj.getEnum());
   }
   
@@ -143,7 +143,7 @@ public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
     
     reopen();
     List<Object> l1_list = get(id);
-    assertEquals(1, fObjectStore.getAll(TestEnum.class).size());
+    assertEquals(1, fObjectStore.query(TestEnum.class).size());
     assertFalse(l1_list.isEmpty());
     assertEquals(TestEnum.a, l1_list.get(0));
   }

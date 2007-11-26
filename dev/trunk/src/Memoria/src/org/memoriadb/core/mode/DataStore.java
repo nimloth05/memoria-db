@@ -6,15 +6,16 @@ import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.query.*;
+import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
 
 public class DataStore implements IDataStoreExt {
 
   private final TransactionHandler fTransactionHandler;
-  private final IQueryStrategy fQueryStrategy = new DataModeQueryStrategy();
+  private final DataModeQueryStrategy fQueryStrategy = new DataModeQueryStrategy();
   
   public DataStore(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
@@ -36,7 +37,7 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public boolean contains(Object obj) {
+  public boolean contains(IDataObject obj) {
     return fTransactionHandler.contains(obj);
   }
 
@@ -46,12 +47,12 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public void delete(Object obj) {
+  public void delete(IDataObject obj) {
     fTransactionHandler.delete(obj);
   }
 
   @Override
-  public void deleteAll(Object root) {
+  public void deleteAll(IDataObject root) {
     fTransactionHandler.deleteAll(root);
   }
 
@@ -59,31 +60,18 @@ public class DataStore implements IDataStoreExt {
   public void endUpdate() {
     fTransactionHandler.endUpdate();
   }
-
+  
   @SuppressWarnings("unchecked")
   @Override
-  public <T> List<T> getAll(Class<T> clazz) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
+  public <T extends IDataObject> T  get(IObjectId id) {
+    return (T) fTransactionHandler.getObject(id);
   }
-
+  
+  @SuppressWarnings("unchecked")
   @Override
-  public <T> List<T> getAll(Class<T> clazz, IFilter<T> filter) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
-  }
-
-  @Override
-  public List<Object> getAll(String clazz) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz);
-  }
-
-  @Override
-  public List<Object> getAll(String clazz, IFilter<Object> filter) {
-    return fQueryStrategy.getAll(fTransactionHandler.getObjectRepo(), clazz, filter);
-  }
-
-  @Override
-  public Collection<Object> getAllObjects() {
-    return fTransactionHandler.getAllObjects();
+  public Collection<IDataObject> getAllObjects() {
+    Collection<?> result= fTransactionHandler.getAllObjects();
+    return (Collection<IDataObject>) result;
   }
 
   @Override
@@ -106,7 +94,7 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IObjectId getId(Object obj) {
+  public IObjectId getId(IDataObject obj) {
     return fTransactionHandler.getId(obj);
   }
 
@@ -120,12 +108,6 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.getIdSize();
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getObject(IObjectId id) {
-    return (T) fTransactionHandler.getObject(id);
-  }
-
   @Override
   public ObjectInfo getObjectInfo(Object obj) {
     return fTransactionHandler.getObjectInfo(obj);
@@ -136,10 +118,20 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.getObjectInfoForId(id);
   }
 
+  @Override
+  public IRefactor getRefactorApi() {
+    return new RefactorApi(fTransactionHandler); 
+  }
 
   @Override
   public Set<ObjectInfo> getSurvivors(Block block) {
     return fTransactionHandler.getSurvivors(block);
+  }
+
+
+  @Override
+  public ITypeInfo getTypeInfo() {
+    return new TypeInfo(fTransactionHandler);
   }
   
   
@@ -152,23 +144,21 @@ public class DataStore implements IDataStoreExt {
     return fTransactionHandler.isInUpdateMode();
   }
   
-  @Override
-  public IRefactor refactorApi() {
-    return new RefactorApi(fTransactionHandler); 
+  public <T extends IDataObject> List<T> query(String clazz) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   }
 
 
-  public IObjectId save(Object obj) {
+  public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
+  }
+ 
+  public IObjectId save(IDataObject obj) {
     return fTransactionHandler.save(obj);
   }
 
-  public IObjectId saveAll(Object root) {
+  public IObjectId saveAll(IDataObject root) {
     return fTransactionHandler.saveAll(root);
-  }
-
-  @Override
-  public ITypeInfo typeInfo() {
-    return new TypeInfo(fTransactionHandler);
   }
 
 

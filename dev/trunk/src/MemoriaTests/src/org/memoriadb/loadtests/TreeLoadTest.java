@@ -29,7 +29,7 @@ public class TreeLoadTest extends AbstractObjectStoreTest {
     writeFootprint();
 
     System.out.println();
-    root = fObjectStore.getObject(id);
+    root = fObjectStore.get(id);
     System.out.println("Nodes  :" + root.countDescendants());
     System.out.println("objects: " + fObjectStore.getAllObjects().size());
   }

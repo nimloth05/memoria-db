@@ -25,16 +25,16 @@ public class LoadTest extends AbstractObjectStoreTest {
     
     endUpdate();
     
-    List<Referencer> allSavedObjects = getAll(Referencer.class);
+    List<Referencer> allSavedObjects = query(Referencer.class);
     for(Referencer ref: allSavedObjects) {
       Object obj = ref.get();
       IObjectId objectId = fObjectStore.getId(obj);
-      assertSame("id collision: "+objectId, obj, fObjectStore.getObject(objectId));
+      assertSame("id collision: "+objectId, obj, fObjectStore.get(objectId));
     }
     
     reopen();
     
-    Referencer composite = getAll(Referencer.class).get(0);
+    Referencer composite = query(Referencer.class).get(0);
     assertNotNull("1", composite.getStringValueFromReferencee());
   }
   
