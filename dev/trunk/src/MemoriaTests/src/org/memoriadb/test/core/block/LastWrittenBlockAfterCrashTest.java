@@ -5,9 +5,9 @@ import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.listener.IWriteListener;
 import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class LastWrittenBlockAfterCrashTest extends AbstractObjectStoreTest {
+public class LastWrittenBlockAfterCrashTest extends AbstractMemoriaTest {
 
   public void test_crash_after_safing_survivors() {
     

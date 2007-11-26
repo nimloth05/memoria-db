@@ -9,7 +9,7 @@ import org.memoriadb.test.core.testclasses.enums.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 
-public abstract class AbstractEnumTest extends AbstractObjectStoreTest {
+public abstract class AbstractEnumTest extends AbstractMemoriaTest {
   
   public void test_add_enum_in_data_mode() {
     

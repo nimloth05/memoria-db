@@ -6,9 +6,9 @@ import junit.framework.Assert;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class ArrayTest extends AbstractObjectStoreTest {
+public class ArrayTest extends AbstractMemoriaTest {
   
   public static interface IArrayContainer {
     public void assertSame(SimpleTestObj obj);

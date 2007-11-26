@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.TestMode;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
 /**
  * save and read a tree of Nodes. Depth and width of the tree are configurable 
@@ -12,7 +12,7 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
  * @author msc
  * 
  */
-public class TreeLoadTest extends AbstractObjectStoreTest {
+public class TreeLoadTest extends AbstractMemoriaTest {
 
   public void test() {
     System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);

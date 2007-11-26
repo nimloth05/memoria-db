@@ -4,7 +4,7 @@ import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.testutil.*;
 
-public class BlockManagerTest extends AbstractObjectStoreTest {
+public class BlockManagerTest extends AbstractMemoriaTest {
   
   /**
    * Test that the Blocks are created properly, 

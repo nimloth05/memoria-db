@@ -8,9 +8,9 @@ import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.C;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class TypeInfoTest extends AbstractObjectStoreTest {
+public class TypeInfoTest extends AbstractMemoriaTest {
   
   public void test_add_class() {
     beginUpdate();

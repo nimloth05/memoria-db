@@ -6,9 +6,9 @@ import org.memoriadb.exception.*;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public abstract class BasicCrudTest extends AbstractObjectStoreTest {
+public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
   public void test_cannot_save_an_object_with_no_default_ctor() {
     try {

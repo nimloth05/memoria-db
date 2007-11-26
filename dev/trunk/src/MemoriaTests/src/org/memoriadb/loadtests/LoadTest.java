@@ -5,9 +5,9 @@ import java.util.*;
 import org.memoriadb.TestMode;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class LoadTest extends AbstractObjectStoreTest {
+public class LoadTest extends AbstractMemoriaTest {
   
   
   @SuppressWarnings("nls")

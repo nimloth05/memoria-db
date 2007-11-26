@@ -3,9 +3,9 @@ package org.memoriadb.test.core.block;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.MaintenanceFreeBlockManager;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class LastWrittenBlockTest extends AbstractObjectStoreTest {
+public class LastWrittenBlockTest extends AbstractMemoriaTest {
 
   public void test_reusing_one_block() {
     Object o1 = new Object();

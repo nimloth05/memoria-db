@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public abstract class CollectionTest extends AbstractObjectStoreTest {
+public abstract class CollectionTest extends AbstractMemoriaTest {
   
   public void test_empty_collection() {
     Collection<Object> collection = createCollection();

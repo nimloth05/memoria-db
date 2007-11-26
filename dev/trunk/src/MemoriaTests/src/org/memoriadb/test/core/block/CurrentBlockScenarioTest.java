@@ -3,9 +3,9 @@ package org.memoriadb.test.core.block;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class CurrentBlockScenarioTest extends AbstractObjectStoreTest {
+public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
 
   public void test_current_block() {
     assertTrue(getLastBlockInfo().isAppend());

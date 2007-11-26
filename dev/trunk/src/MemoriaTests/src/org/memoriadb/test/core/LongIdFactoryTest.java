@@ -2,9 +2,9 @@ package org.memoriadb.test.core;
 
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.id.def.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class LongIdFactoryTest extends AbstractObjectStoreTest {
+public class LongIdFactoryTest extends AbstractMemoriaTest {
   
   /**
    * Because of a bug in the id-factory-handling, the ids of deleted objects were not 

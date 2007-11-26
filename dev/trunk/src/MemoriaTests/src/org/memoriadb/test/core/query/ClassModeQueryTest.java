@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
 
 /**
@@ -11,7 +12,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
  * @author sandro
  *
  */
-public class ClassModeQueryTest extends BasicQueryTest {
+public class ClassModeQueryTest extends AbstractMemoriaTest {
   
   public void test_getAll_class_literal_with_filter() {
     SimpleTestObj obj = new SimpleTestObj("1");

@@ -7,9 +7,9 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public abstract class BasicOneDimensionalArrayTest extends AbstractObjectStoreTest {
+public abstract class BasicOneDimensionalArrayTest extends AbstractMemoriaTest {
   
   public void test_int_array() {
     int[] arr = new int[]{1,2,3};

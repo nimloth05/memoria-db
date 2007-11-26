@@ -5,9 +5,9 @@ import java.util.HashSet;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class SurvivorAgentTest extends AbstractObjectStoreTest {
+public class SurvivorAgentTest extends AbstractMemoriaTest {
   
   public void test() {
     beginUpdate();

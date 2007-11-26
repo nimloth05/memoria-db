@@ -9,9 +9,9 @@ import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class CompositeTest extends AbstractObjectStoreTest {
+public class CompositeTest extends AbstractMemoriaTest {
   
   public void test_composite_in_db_mode() {
     test_save_composite();

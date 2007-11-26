@@ -13,7 +13,7 @@ import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.mode.*;
 
-public abstract class AbstractObjectStoreTest extends TestCase {
+public abstract class AbstractMemoriaTest extends TestCase {
   
   private static final String PATH = "file.mia";
   

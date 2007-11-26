@@ -2,9 +2,9 @@ package org.memoriadb.test.core.handler;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.handler.testclassses.*;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class ArrayListTest extends AbstractObjectStoreTest {
+public class ArrayListTest extends AbstractMemoriaTest {
 
   //FIXME Sollten wir hier mit wrongHashCode testen? so
   public void test_object_arrayList() {

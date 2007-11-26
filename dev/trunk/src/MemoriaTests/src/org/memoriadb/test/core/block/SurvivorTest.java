@@ -3,7 +3,7 @@ package org.memoriadb.test.core.block;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
 /**
  * Tests the reuse of blocks
@@ -11,7 +11,7 @@ import org.memoriadb.testutil.AbstractObjectStoreTest;
  * @author msc
  * 
  */
-public class SurvivorTest extends AbstractObjectStoreTest {
+public class SurvivorTest extends AbstractMemoriaTest {
 
   public void test_current_block_from_updatee_is_not_recycled() {
     beginUpdate();

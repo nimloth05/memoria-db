@@ -9,7 +9,7 @@ import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 import org.memoriadb.util.Constants;
 
-public class ObjectContainerTest extends AbstractObjectStoreTest {
+public class ObjectContainerTest extends AbstractMemoriaTest {
 
   public void test_contains() {
     SimpleTestObj obj = new SimpleTestObj();

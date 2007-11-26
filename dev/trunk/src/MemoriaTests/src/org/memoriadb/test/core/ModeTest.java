@@ -3,9 +3,9 @@ package org.memoriadb.test.core;
 import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class ModeTest extends AbstractObjectStoreTest {
+public class ModeTest extends AbstractMemoriaTest {
 
   public void test_add_obejct() {
     SimpleTestObj obj = new SimpleTestObj("1");

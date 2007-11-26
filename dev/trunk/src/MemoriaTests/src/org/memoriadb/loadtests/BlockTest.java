@@ -2,9 +2,9 @@ package org.memoriadb.loadtests;
 
 import org.memoriadb.TestMode;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class BlockTest extends AbstractObjectStoreTest {
+public class BlockTest extends AbstractMemoriaTest {
 
   private static final int COUNT = 10000;
 

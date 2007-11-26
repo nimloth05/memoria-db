@@ -6,7 +6,7 @@ import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.FileStructure.ObjectInfo;
 
-public class TransactionWriterTest extends AbstractObjectStoreTest {
+public class TransactionWriterTest extends AbstractMemoriaTest {
 
   public void test_object_info(){
     Object obj = new Object();

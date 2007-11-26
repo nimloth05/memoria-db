@@ -4,9 +4,9 @@ import java.util.LinkedList;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class LinkedListTest extends AbstractObjectStoreTest {
+public class LinkedListTest extends AbstractMemoriaTest {
   
   public void test_int() {
     LinkedList<Integer> list = new LinkedList<Integer>();

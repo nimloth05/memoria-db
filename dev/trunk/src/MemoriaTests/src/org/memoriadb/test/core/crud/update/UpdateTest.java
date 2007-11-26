@@ -3,10 +3,10 @@ package org.memoriadb.test.core.crud.update;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.test.core.testclasses.OneInt;
-import org.memoriadb.testutil.AbstractObjectStoreTest;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 import org.memoriadb.util.Constants;
 
-public abstract class UpdateTest extends AbstractObjectStoreTest {
+public abstract class UpdateTest extends AbstractMemoriaTest {
 
   public void test_basic_revision_handling() {
     Object o1 = new Object();
