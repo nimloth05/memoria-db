@@ -1,9 +1,11 @@
 package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.handler.enu.EnumHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.exception.*;
 import org.memoriadb.util.*;
 
 public class ObjectModeStrategy implements IModeStrategy {
@@ -35,8 +37,9 @@ public class ObjectModeStrategy implements IModeStrategy {
    * Idempotent, already stored classes are ignored.
    */
   private static IObjectId addTypeHierarchy(TransactionHandler transactionHandler, Class<?> javaClass) {
-    if (javaClass.getSuperclass() != null && javaClass.getSuperclass().isEnum()) {
-      javaClass = javaClass.getSuperclass();
+    Class<?> enumClass = ReflectionUtil.getEnumClass(javaClass);
+    if (enumClass != null) {
+      javaClass = enumClass;
     }
     
     IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
@@ -80,20 +83,7 @@ public class ObjectModeStrategy implements IModeStrategy {
   
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
-    
-    if (obj.getClass().isArray()) {
-      ArrayTypeInfo arrayTypeInfo = ReflectionUtil.getComponentTypeInfo(obj.getClass());
-      if(arrayTypeInfo.getComponentType()==Type.typeClass) addTypeHierarchy(transactionHandler, arrayTypeInfo.getJavaClass());
-      return transactionHandler.getIdFactory().getArrayMemoriaClass();
-    }
-    
-    if (obj.getClass().isEnum()) {
-      Class<?> enumClass = obj.getClass();
-      if (enumClass.getSuperclass().isEnum()) enumClass = enumClass.getSuperclass();
-      return addTypeHierarchy(transactionHandler, enumClass);
-    }
-    
-    return addTypeHierarchy(transactionHandler, obj.getClass());
+    return addMemoriaClassIfNecessary(transactionHandler, obj.getClass());
   }
 
   @Override
@@ -102,6 +92,17 @@ public class ObjectModeStrategy implements IModeStrategy {
     memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), defaultInstantiator);
   }
   
+
+  @Override
+  public void checkObject(Object obj) {
+    if(obj instanceof IDataObject && !(obj instanceof IMemoriaClass)) throw new MemoriaException("IDataObjects are for data-mode only: " + obj);
+    
+    if (ReflectionUtil.isNonStaticInnerClass(obj.getClass())) {
+      throw new SchemaException("cannot save non-static inner classes " + obj.getClass());
+    }
+    
+    if(Type.isPrimitive(obj)) throw new MemoriaException("cannot save primitive"); 
+  }
 
   @Override
   public boolean isDataMode() {

@@ -91,6 +91,12 @@ public final class ReflectionUtil {
     return result;
   }
 
+  public static Class<?> getEnumClass(Class<?> javaClass) {
+    if (javaClass.isEnum()) return javaClass;
+    if (javaClass.getSuperclass() != null && javaClass.getSuperclass().isEnum()) return javaClass.getSuperclass();
+    return null;
+  }
+
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
     for(Field field: fields) {
@@ -103,7 +109,7 @@ public final class ReflectionUtil {
     if (clazz.getSuperclass() == null) throw new SchemaException("No such field. Class: "+ clazz+ " field: "+name);
     return getField(clazz.getSuperclass(), name);
   }
-
+  
   public static Object getFieldValue(Object object, String string) {
     try {
       Field field = ReflectionUtil.getField(object.getClass(), string);
@@ -129,7 +135,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);  
     }
   }
-  
+
   public static boolean hasNoArgCtor(String className) {
     try {
       Class<?> clazz = getClass(className);
@@ -140,12 +146,17 @@ public final class ReflectionUtil {
       return false;
     }
   }
+  
+  public static boolean isEnum(Class<?> javaClass) {
+    return getEnumClass(javaClass) != null;
+  }
 
   public static boolean isMemoriaTransient(Field field) {
     return Modifier.isTransient(field.getModifiers());
   }
 
   public static boolean isNonStaticInnerClass(Class<?> javaClass) {
+    if (isEnum(javaClass)) return false;
     return javaClass.getEnclosingClass() != null && !Modifier.isStatic(javaClass.getModifiers());
   }
 

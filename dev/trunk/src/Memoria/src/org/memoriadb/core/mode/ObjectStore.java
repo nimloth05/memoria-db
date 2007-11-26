@@ -6,12 +6,9 @@ import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.*;
-import org.memoriadb.exception.*;
-import org.memoriadb.util.ReflectionUtil;
 
 public class ObjectStore implements IObjectStoreExt  {
 
@@ -153,12 +150,10 @@ public class ObjectStore implements IObjectStoreExt  {
   } 
 
   public IObjectId save(Object obj) {
-    checkObject(obj);
     return fTransactionHandler.save(obj);
   }
 
   public IObjectId saveAll(Object root) {
-    checkObject(root);
     return fTransactionHandler.saveAll(root);
   }
   
@@ -186,16 +181,6 @@ public class ObjectStore implements IObjectStoreExt  {
    */
   IObjectId internalSave(Object obj) {
     return fTransactionHandler.internalSave(obj);
-  }
-
-  private void checkObject(Object obj) {
-    if(obj instanceof IDataObject) throw new MemoriaException("IDataObjects are for data-mode only: " + obj);
-    
-    if (ReflectionUtil.isNonStaticInnerClass(obj.getClass())) {
-      throw new SchemaException("cannot save non-static inner classes " + obj.getClass());
-    }
-    
-    if(Type.isPrimitive(obj)) throw new MemoriaException("cannot save primitive");
   }
 
 }

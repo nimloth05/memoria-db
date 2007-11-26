@@ -25,6 +25,9 @@ public class DataModeStrategy implements IModeStrategy {
 
 
   @Override
+  public void checkObject(Object obj) {}
+
+  @Override
   public boolean isDataMode() {
     return true;
   }

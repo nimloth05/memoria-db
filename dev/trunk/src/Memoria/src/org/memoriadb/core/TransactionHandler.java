@@ -228,6 +228,8 @@ public class TransactionHandler implements ITransactionHandler {
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
   public IObjectId internalSave(Object obj) {
+    fModeStrategy.checkObject(obj);
+    
     ObjectInfo info = getObjectInfo(obj);
 
     if (info != null) {
