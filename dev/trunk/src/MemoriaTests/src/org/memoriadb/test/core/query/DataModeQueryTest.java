@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.testutil.AbstractObjectStoreTest;
 
-public class DataModeQueryTest extends QueryTest {
+public class DataModeQueryTest extends AbstractObjectStoreTest {
 
   public void test_polymorph_query() {
     SimpleTestObj obj = new SimpleTestObj("1");

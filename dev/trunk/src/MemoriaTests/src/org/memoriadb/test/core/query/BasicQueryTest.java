@@ -6,7 +6,7 @@ import org.memoriadb.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractObjectStoreTest;
 
-public abstract class QueryTest extends AbstractObjectStoreTest {
+public class BasicQueryTest extends AbstractObjectStoreTest {
   
   public void test_getAll_by_class_literal() {
     SimpleTestObj obj = new SimpleTestObj("1");

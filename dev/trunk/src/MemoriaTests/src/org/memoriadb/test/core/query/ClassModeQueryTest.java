@@ -11,7 +11,7 @@ import org.memoriadb.test.core.testclasses.SimpleTestObj;
  * @author sandro
  *
  */
-public class ClassModeQueryTest extends QueryTest {
+public class ClassModeQueryTest extends BasicQueryTest {
   
   public void test_getAll_class_literal_with_filter() {
     SimpleTestObj obj = new SimpleTestObj("1");
