@@ -4,12 +4,12 @@ import java.util.*;
 
 import org.memoriadb.core.id.IObjectId;
 
-public class FieldMapDataObject implements IFieldObject {
+public class FieldDataObject implements IFieldbasedObject {
   
   private final Map<String, Object> fData = new HashMap<String, Object>();
   private final IObjectId fMemoriaClassId;
   
-  public FieldMapDataObject(IObjectId memoriaClassId) {
+  public FieldDataObject(IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
   }
 

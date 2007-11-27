@@ -4,16 +4,16 @@ import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
 
-public class FieldObject implements IFieldObject {
+public class FieldbasedObject implements IFieldbasedObject {
 
   private final Object fObejct;
   private IObjectId fMemoriaClassId;
 
-  public FieldObject(Object object) {
+  public FieldbasedObject(Object object) {
     fObejct = object;
   }
   
-  public FieldObject(Object object, IObjectId memoriaClassId) {
+  public FieldbasedObject(Object object, IObjectId memoriaClassId) {
     fObejct = object;
     fMemoriaClassId = memoriaClassId;
   }

@@ -4,18 +4,18 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ObjectFieldReference;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
 
-public class DefaultHandler implements ISerializeHandler {
+public class FieldbasedObjectHandler implements IHandler {
 
   private final FieldbasedMemoriaClass fClassObject;
 
-  public DefaultHandler(FieldbasedMemoriaClass classObject) {
+  public FieldbasedObjectHandler(FieldbasedMemoriaClass classObject) {
     fClassObject = classObject;
   }
 
@@ -26,7 +26,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public Object deserialize(final DataInputStream input, final IReaderContext context, IObjectId typeId) throws IOException {
-    final IFieldObject result = createObject(context, typeId);
+    final IFieldbasedObject result = createObject(context, typeId);
     
     superDeserialize(result, input, context);
     if (input.available() > 0) throw new MemoriaException("Object not fully deserialized: " + result);
@@ -41,7 +41,7 @@ public class DefaultHandler implements ISerializeHandler {
 
   @Override
   public void serialize(final Object obj, final DataOutputStream output, final ISerializeContext context) throws Exception {
-    IFieldObject fieldObject = getFieldObject(obj);
+    IFieldbasedObject fieldObject = getFieldObject(obj);
     
     for(MemoriaField metaField: (fClassObject).getFields()) {
       output.writeInt(metaField.getId());
@@ -50,13 +50,13 @@ public class DefaultHandler implements ISerializeHandler {
     }
     
     if (fClassObject.getSuperClass() == null) return;
-    DefaultHandler superHandler = (DefaultHandler) fClassObject.getSuperClass().getHandler();
+    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fClassObject.getSuperClass().getHandler();
     superHandler.serialize(obj, output, context);
   }
 
   @Override
   public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
-    final IFieldObject fFieldObject = getFieldObject(obj);
+    final IFieldbasedObject fFieldObject = getFieldObject(obj);
     
     for(MemoriaField field: fClassObject.getFields()) {
       if(field.getFieldType() != Type.typeClass) continue;
@@ -76,28 +76,28 @@ public class DefaultHandler implements ISerializeHandler {
     }
   }
 
-  private IFieldObject createObject(IReaderContext context, IObjectId typeId) {
+  private IFieldbasedObject createObject(IReaderContext context, IObjectId typeId) {
     if (context.isInDataMode()) {
-      return new FieldMapDataObject(typeId);
+      return new FieldDataObject(typeId);
     }
-    return new FieldObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
+    return new FieldbasedObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
   }
 
-  private IFieldObject getFieldObject(Object obj) {
-    if (obj instanceof IFieldObject) {
-      return (IFieldObject) obj;
+  private IFieldbasedObject getFieldObject(Object obj) {
+    if (obj instanceof IFieldbasedObject) {
+      return (IFieldbasedObject) obj;
     }
     
-    return new FieldObject(obj);
+    return new FieldbasedObject(obj);
   }
 
   private void superDeserialize(Object object, DataInputStream input, IReaderContext context) throws IOException {
-    IFieldObject result = getFieldObject(object);
+    IFieldbasedObject result = getFieldObject(object);
     
     for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
       int fieldId = input.readInt();
       final MemoriaField field = (fClassObject).getField(fieldId);
-      field.getFieldType().readValue(input, context, new TypeVisitorHelper<Void, IFieldObject>(result, context){
+      field.getFieldType().readValue(input, context, new TypeVisitorHelper<Void, IFieldbasedObject>(result, context){
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
@@ -114,7 +114,7 @@ public class DefaultHandler implements ISerializeHandler {
     }
     
     if (fClassObject.getSuperClass() == null) return;
-    DefaultHandler superHandler = (DefaultHandler) fClassObject.getSuperClass().getHandler();
+    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fClassObject.getSuperClass().getHandler();
     superHandler.superDeserialize(object, input, context);
   }
 

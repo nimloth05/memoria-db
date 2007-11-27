@@ -4,14 +4,14 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.load.binder.ClassInheritanceBinder;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.*;
 
-public class FieldClassHandler implements ISerializeHandler {
+public class FieldbasedClassHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
