@@ -1,4 +1,4 @@
-package org.memoriadb.core.id.def;
+package org.memoriadb.core.id.loong;
 
 import java.io.*;
 

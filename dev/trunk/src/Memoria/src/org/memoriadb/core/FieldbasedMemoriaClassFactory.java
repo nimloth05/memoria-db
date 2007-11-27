@@ -3,8 +3,8 @@ package org.memoriadb.core;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 
-public final class MemoriaFieldClassFactory {
-  
+public final class FieldbasedMemoriaClassFactory {
+
   /**
    * @return creates the metaclass for the given <tt>obj</tt>
    */
@@ -14,7 +14,7 @@ public final class MemoriaFieldClassFactory {
     FieldbasedMemoriaClass memoriaFieldClass = new FieldbasedMemoriaClass(klass, memoriaClassId);
     return memoriaFieldClass;
   }
-  
-  private MemoriaFieldClassFactory() {}
+
+  private FieldbasedMemoriaClassFactory() {}
 
 }

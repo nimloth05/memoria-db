@@ -1,7 +1,7 @@
 package org.memoriadb.test.core;
 
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.id.def.*;
+import org.memoriadb.core.id.loong.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class LongIdFactoryTest extends AbstractMemoriaTest {

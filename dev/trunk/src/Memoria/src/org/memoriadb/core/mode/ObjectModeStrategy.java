@@ -32,7 +32,7 @@ public class ObjectModeStrategy implements IModeStrategy {
       return;
     }
     
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = FieldbasedMemoriaClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     transactionHandler.internalSave(classObject);
     subClassconfig.setSuperClass(classObject);
     
@@ -73,7 +73,7 @@ public class ObjectModeStrategy implements IModeStrategy {
     }
     
     // add the current class and all its superclasses to the store
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = FieldbasedMemoriaClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);

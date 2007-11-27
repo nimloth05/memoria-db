@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.core.ObjectRepository;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.id.def.*;
+import org.memoriadb.core.id.loong.*;
 import org.memoriadb.test.core.testclasses.*;
 
 public class ObjectRepoTest extends TestCase {

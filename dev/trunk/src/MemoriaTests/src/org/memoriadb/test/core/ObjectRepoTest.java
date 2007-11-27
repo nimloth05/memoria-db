@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.core.id.def.*;
+import org.memoriadb.core.id.loong.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 

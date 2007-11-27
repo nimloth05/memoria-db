@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.easymock.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.id.def.LongId;
+import org.memoriadb.core.id.loong.LongId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.Constants;

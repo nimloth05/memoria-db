@@ -3,7 +3,7 @@ package org.memoriadb.core;
 import java.util.*;
 
 import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.id.def.LongIdFactory;
+import org.memoriadb.core.id.loong.LongIdFactory;
 import org.memoriadb.instantiator.DefaultInstantiator;
 
 public class CreateConfig extends OpenConfig {

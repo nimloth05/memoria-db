@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.crud.basic;
 
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.id.def.LongIdFactory;
+import org.memoriadb.core.id.loong.LongIdFactory;
 
 public class LongCrudTest extends BasicCrudTest {
 
