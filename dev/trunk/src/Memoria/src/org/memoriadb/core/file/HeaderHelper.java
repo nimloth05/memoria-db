@@ -9,11 +9,11 @@ import org.memoriadb.core.block.Block;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.*;
 
-public class FileHeaderHelper {
+public class HeaderHelper {
 
   public static final long NO_CURRENT_BLOCK = -1;
   
-  public static FileHeader getHeader(DataInputStream stream) throws IOException {
+  public static Header getHeader(DataInputStream stream) throws IOException {
     checkMemoriaTag(stream);
 
     LastWrittenBlockInfo readCurrentBlockInfo = readLastWrittenBlockInfo(stream);
@@ -85,7 +85,7 @@ public class FileHeaderHelper {
     return byteArrayOutputStream.toByteArray();
   }
 
-  private static FileHeader readHeaderInfo(LastWrittenBlockInfo readCurrentBlockInfo, int headerInfoSize, byte[] headerInfo)
+  private static Header readHeaderInfo(LastWrittenBlockInfo readCurrentBlockInfo, int headerInfoSize, byte[] headerInfo)
       throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(headerInfo));
     UUID thisUuid = readUuid(stream);
@@ -97,7 +97,7 @@ public class FileHeaderHelper {
     String idFactoryClassName = stream.readUTF();
     String defaultInstantiatorClassName = stream.readUTF();
     
-    return new FileHeader(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
+    return new Header(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
         defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo);
   }
 

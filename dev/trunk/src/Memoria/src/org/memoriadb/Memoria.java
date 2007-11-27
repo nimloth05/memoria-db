@@ -60,7 +60,7 @@ public final class Memoria {
   public static IDataStore openDataMode(CreateConfig config, String path) {
     return openDataMode(config, new PhysicalFile(path));
   }
-
+  
   private Memoria() {}
 
 }

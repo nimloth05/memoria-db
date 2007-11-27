@@ -1,6 +1,7 @@
 package org.memoriadb.core.load;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.IOException;
 
 import org.memoriadb.core.IDefaultInstantiator;
 import org.memoriadb.core.id.IObjectId;

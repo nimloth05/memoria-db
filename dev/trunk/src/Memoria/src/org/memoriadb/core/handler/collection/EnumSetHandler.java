@@ -13,9 +13,9 @@ import org.memoriadb.util.ReflectionUtil;
 
 public class EnumSetHandler extends CollectionHandler {
 
-  private static final String FIElD_NAME_FOR_ENUM_TYPE_INFO = "elementType";
   public static final String sRegularEnumSet = "java.util.RegularEnumSet";
   public static final String sJumboEnumSet = "java.util.JumboEnumSet";
+  private static final String FIElD_NAME_FOR_ENUM_TYPE_INFO = "elementType";
 
   private IMemoriaClass fEnumClass;
 

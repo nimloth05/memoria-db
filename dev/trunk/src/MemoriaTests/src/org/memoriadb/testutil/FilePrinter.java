@@ -50,7 +50,7 @@ public class FilePrinter {
   private static void internalPrint(IMemoriaFile file) throws IOException {
     FileReader reader = new FileReader(file);
     
-    FileHeader header = reader.readHeader();
+    Header header = reader.readHeader();
     
     System.out.println("------------------------");
 

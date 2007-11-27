@@ -83,7 +83,7 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public FileHeader getHeader() {
+  public Header getHeader() {
     return fTransactionHandler.getHeader();
   }
 

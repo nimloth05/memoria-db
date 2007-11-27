@@ -123,7 +123,7 @@ public final class TransactionWriter implements ITransactionWriter {
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
-    FileHeaderHelper.updateBlockInfo(getFile(), block, writeMode);
+    HeaderHelper.updateBlockInfo(getFile(), block, writeMode);
   }
 
   private void updateInfoForAdd(Set<ObjectInfo> infos, Block block) {

@@ -23,10 +23,10 @@ public class TransactionHandler implements ITransactionHandler {
 
   private int fUpdateCounter = 0;
   private final IDefaultInstantiator fDefaultInstantiator;
-  private final FileHeader fHeader;
+  private final Header fHeader;
   private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, FileHeader header,
+  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, Header header,
       IModeStrategy modeStrategy) {
     fDefaultInstantiator = defaultInstantiator;
     fTransactionWriter = writer;
@@ -128,7 +128,7 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @Override
-  public FileHeader getHeader() {
+  public Header getHeader() {
     return fHeader;
   }
 

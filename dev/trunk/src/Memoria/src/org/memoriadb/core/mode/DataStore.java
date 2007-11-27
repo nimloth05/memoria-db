@@ -89,7 +89,7 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public FileHeader getHeader() {
+  public Header getHeader() {
     return fTransactionHandler.getHeader();
   }
 

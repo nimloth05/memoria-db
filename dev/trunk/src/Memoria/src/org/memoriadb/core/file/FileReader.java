@@ -55,13 +55,13 @@ public class FileReader {
     return fHeadRevision;
   }
 
-  public FileHeader readHeader() throws IOException {
+  public Header readHeader() throws IOException {
     checkState(State.created, State.headerRead);
     
     // FIXME sollte hier ein Buffered Reader instantiiert werden? msc
     fStream = new DataInputStream(fFile.getInputStream());
     
-    FileHeader result = FileHeaderHelper.getHeader(fStream);
+    Header result = HeaderHelper.getHeader(fStream);
     fPosition = result.getHeaderSize();
     
     return result;

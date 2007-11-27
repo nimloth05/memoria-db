@@ -92,7 +92,7 @@ public class FileStructure {
 
   }
 
-  private FileHeader fHeader;
+  private Header fHeader;
 
   private final List<BlockInfo> fBlocks = new ArrayList<BlockInfo>();
   private BlockInfo fCurrentBlock;

@@ -7,8 +7,6 @@ import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 import org.memoriadb.util.Constants;
 
-import com.sun.org.apache.bcel.internal.generic.FSTORE;
-
 public abstract class DeleteTest extends AbstractMemoriaTest {
   
   public void test_add_and_delete_in_same_transaction(){

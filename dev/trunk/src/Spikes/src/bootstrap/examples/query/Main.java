@@ -19,18 +19,32 @@ public class Main {
     List list = new ArrayList<Number>();
     ArrayList<Object> s = (ArrayList<Object>) list;
         
-    query(new IFilter<String>() {
+    query(String.class);
+    
+//    query(new IFilter<String>() {
+//
+//      @Override
+//      public boolean include(String obj) {
+//        // TODO Auto-generated method stub
+//        return false;
+//      }
+//      
+//    });
+//
+//    
+//    System.out.println("run");
+    
+  }
+  
+  public static <T extends CharSequence> void query(Class<T> t) {
+    query(new IFilter<T>() {
 
       @Override
-      public boolean include(String obj) {
-        // TODO Auto-generated method stub
-        return false;
+      public boolean include(T obj) {
+        return true;
       }
       
     });
-
-    
-    System.out.println("run");
     
   }
   

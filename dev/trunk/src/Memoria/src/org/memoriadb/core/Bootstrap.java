@@ -65,7 +65,7 @@ public class Bootstrap {
 
   private static TransactionHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
     FileReader fileReader = new FileReader(file);
-    FileHeader header = readHeader(fileReader);
+    Header header = readHeader(fileReader);
 
     IDefaultInstantiator defaultInstantiator = header.loadDefaultInstantiator();
     ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
@@ -77,7 +77,7 @@ public class Bootstrap {
     return transactionHandler;
   }
 
-  private static FileHeader readHeader(FileReader fileReader) {
+  private static Header readHeader(FileReader fileReader) {
     try {
       return fileReader.readHeader();
     }
@@ -100,7 +100,7 @@ public class Bootstrap {
   
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
     try {
-      FileHeaderHelper.writeHeader(file, config);
+      HeaderHelper.writeHeader(file, config);
     }
     catch (IOException e) {
       throw new MemoriaException("error writing header " + file);

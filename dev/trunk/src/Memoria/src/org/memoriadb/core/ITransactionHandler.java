@@ -3,7 +3,7 @@ package org.memoriadb.core;
 import java.util.*;
 
 import org.memoriadb.core.block.*;
-import org.memoriadb.core.file.FileHeader;
+import org.memoriadb.core.file.Header;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.exception.MemoriaException;
@@ -81,7 +81,7 @@ public interface ITransactionHandler {
    */
   public IObjectId getExistingId(Object obj);
   
-  public FileHeader getHeader();
+  public Header getHeader();
   
   /**
    * @return The head revision of this database. Is incremented after each transaction.

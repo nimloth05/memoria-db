@@ -17,7 +17,7 @@ public class LastWrittenBlockInfo {
    * @return false, if the file has no blocks
    */
   public boolean hasLastWrittenBlock() {
-    return fPosition != FileHeaderHelper.NO_CURRENT_BLOCK;
+    return fPosition != HeaderHelper.NO_CURRENT_BLOCK;
   }
 
   /**

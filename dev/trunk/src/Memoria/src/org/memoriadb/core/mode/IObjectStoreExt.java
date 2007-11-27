@@ -5,7 +5,7 @@ import java.util.Set;
 import org.memoriadb.IObjectStore;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
-import org.memoriadb.core.file.FileHeader;
+import org.memoriadb.core.file.Header;
 import org.memoriadb.core.id.*;
 
 /**
@@ -21,7 +21,7 @@ public interface IObjectStoreExt extends IObjectStore {
   
   public IBlockManager getBlockManager();
   
-  public FileHeader getHeader();
+  public Header getHeader();
 
   public IDefaultIdProvider getIdFactory();  
   

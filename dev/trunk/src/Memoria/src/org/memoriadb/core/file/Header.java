@@ -11,7 +11,7 @@ import org.memoriadb.util.*;
  * Holds the information stored in the memoria file-header 
  * @author msc
  */
-public class FileHeader {
+public class Header {
 
   private final UUID fThisUuid;
   private final UUID fHostUuid;
@@ -25,7 +25,7 @@ public class FileHeader {
   private final String fDefaultInstantiatorClassName;
   private final LastWrittenBlockInfo fLastWrittenBlockInfo;
 
-  public FileHeader(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo) {
+  public Header(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fHostBranchRevision = hostBranchRevision;
