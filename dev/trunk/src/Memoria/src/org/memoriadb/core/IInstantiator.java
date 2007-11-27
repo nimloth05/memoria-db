@@ -3,7 +3,7 @@ package org.memoriadb.core;
 /**
  * Instantiates objects which are saved by the DefaultHandler.
  */
-public interface IDefaultInstantiator {
+public interface IInstantiator {
   
   /**
    * 

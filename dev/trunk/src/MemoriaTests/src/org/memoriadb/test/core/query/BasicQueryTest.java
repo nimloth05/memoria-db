@@ -32,7 +32,7 @@ public class BasicQueryTest extends AbstractMemoriaTest {
     
     reopen();
     
-    List<Object> result = fObjectStore.query(new IFilter<Object>() {
+    List<Object> result = fObjectStore.query(Object.class, new IFilter<Object>() {
 
       @Override
       public boolean accept(Object object, IFilterControl control) {

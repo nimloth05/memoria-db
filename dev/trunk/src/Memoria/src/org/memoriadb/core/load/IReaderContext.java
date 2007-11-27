@@ -1,9 +1,8 @@
 package org.memoriadb.core.load;
 
-import java.io.DataInput;
-import java.io.IOException;
+import java.io.*;
 
-import org.memoriadb.core.IDefaultInstantiator;
+import org.memoriadb.core.IInstantiator;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.exception.MemoriaException;
 
@@ -12,7 +11,7 @@ public interface IReaderContext {
 
   public IObjectId getArrayMemoriaClass();
 
-  public IDefaultInstantiator getDefaultInstantiator();
+  public IInstantiator getDefaultInstantiator();
   
   /**
    * @return the object for the given <tt>id</tt>

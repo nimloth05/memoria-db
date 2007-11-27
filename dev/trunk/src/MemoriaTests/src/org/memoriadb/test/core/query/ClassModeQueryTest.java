@@ -22,7 +22,7 @@ public class ClassModeQueryTest extends AbstractMemoriaTest {
     
     reopen();
     
-    List<SimpleTestObj> result = fObjectStore.query(new IFilter<SimpleTestObj>() {
+    List<SimpleTestObj> result = fObjectStore.query(SimpleTestObj.class, new IFilter<SimpleTestObj>() {
 
       @Override
       public boolean accept(SimpleTestObj object, IFilterControl control) {

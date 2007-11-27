@@ -134,7 +134,7 @@ public abstract class CollectionHandler implements ISerializeHandler {
   }
 
   @Override
-  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+  public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
     if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for "
         + className);
   }

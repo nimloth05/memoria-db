@@ -22,7 +22,7 @@ public class EnumHandler implements ISerializeHandler {
   }
 
   @Override
-  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {}
+  public void checkCanInstantiateObject(String className, IInstantiator instantiator) {}
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {

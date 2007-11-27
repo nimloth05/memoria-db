@@ -16,7 +16,7 @@ public interface IModeStrategy {
   /**
    * Before an object is added to the ObjectRepository, it is checked for instantiability.
    */
-  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IDefaultInstantiator defaultInstantiator);
+  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator);
 
   public void checkObject(Object obj);
 

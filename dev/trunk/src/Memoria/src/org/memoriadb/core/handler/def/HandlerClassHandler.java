@@ -14,7 +14,7 @@ import org.memoriadb.util.ReflectionUtil;
 public class HandlerClassHandler implements ISerializeHandler {
 
   @Override
-  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
+  public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
     if (!HandlerbasedMemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + HandlerbasedMemoriaClass.class.getName() +" but I was called for " + className);
   }
 

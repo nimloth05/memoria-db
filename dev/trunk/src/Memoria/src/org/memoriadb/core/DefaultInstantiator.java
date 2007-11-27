@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import org.memoriadb.util.ReflectionUtil;
 
-public class DefaultDefaultInstantiator implements IDefaultInstantiator {
+public class DefaultInstantiator implements IInstantiator {
 
   public boolean canInstantiateObject(String className) {
     return ReflectionUtil.hasNoArgCtor(className);

@@ -139,8 +139,8 @@ public class ObjectStore implements IObjectStoreExt  {
   } 
 
   @Override
-  public <T> List<T> query(IFilter<T> filter) {
-    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), filter);
+  public <FILTER, T extends FILTER> List<T> query(Class<T> clazz, IFilter<FILTER> filter) {
+    return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
 
   @Override

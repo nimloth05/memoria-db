@@ -21,18 +21,18 @@ public class Main {
         
     query(String.class);
     
-//    query(new IFilter<String>() {
-//
-//      @Override
-//      public boolean include(String obj) {
-//        // TODO Auto-generated method stub
-//        return false;
-//      }
-//      
-//    });
-//
-//    
-//    System.out.println("run");
+    query(new IFilter<String>() {
+
+      @Override
+      public boolean include(String obj) {
+        // TODO Auto-generated method stub
+        return false;
+      }
+      
+    });
+
+    
+    System.out.println("run");
     
   }
   

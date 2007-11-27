@@ -11,9 +11,9 @@ import org.memoriadb.core.load.IReaderContext;
 public interface ISerializeHandler {
   /**
    * @param className the name of the java class
-   * @param defaultInstantiator
+   * @param instantiator
    */
-  public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator);
+  public void checkCanInstantiateObject(String className, IInstantiator instantiator);
   
   /**
    * @param input

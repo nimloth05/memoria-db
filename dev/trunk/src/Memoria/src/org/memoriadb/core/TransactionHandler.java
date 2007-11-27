@@ -22,13 +22,13 @@ public class TransactionHandler implements ITransactionHandler {
   private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
 
   private int fUpdateCounter = 0;
-  private final IDefaultInstantiator fDefaultInstantiator;
+  private final IInstantiator fInstantiator;
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(IDefaultInstantiator defaultInstantiator, ITransactionWriter writer, Header header,
+  public TransactionHandler(IInstantiator instantiator, ITransactionWriter writer, Header header,
       IModeStrategy modeStrategy) {
-    fDefaultInstantiator = defaultInstantiator;
+    fInstantiator = instantiator;
     fTransactionWriter = writer;
     fHeader = header;
     fModeStrategy = modeStrategy;
@@ -250,7 +250,7 @@ public class TransactionHandler implements ITransactionHandler {
     // object not already in the store, add it
 
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fDefaultInstantiator);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(getObjectInfo(obj));
     return result.getId();

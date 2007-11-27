@@ -87,7 +87,7 @@ public class CompositeTest extends AbstractMemoriaTest {
     
     assertSame(l2_allLeafs.get(0).getTestObj(), l2_allLeafs.get(1).getTestObj());
     
-    Composite l2_root = fObjectStore.query(new IFilter<Composite>() {
+    Composite l2_root = fObjectStore.query(Composite.class, new IFilter<Composite>() {
 
       @Override
       public boolean accept(Composite object, IFilterControl control) {
@@ -128,7 +128,7 @@ public class CompositeTest extends AbstractMemoriaTest {
     List<Composite> allComposites = fObjectStore.query(Composite.class);
     assertEquals(3, allComposites.size());
     
-    Composite loadedRoot = fObjectStore.query(new IFilter<Composite>() {
+    Composite loadedRoot = fObjectStore.query(Composite.class, new IFilter<Composite>() {
 
       @Override
       public boolean accept(Composite object, IFilterControl control) {

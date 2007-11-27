@@ -15,7 +15,7 @@ public class CreateConfig extends OpenConfig {
   public CreateConfig() {
     super();
     fIdFactoryClassName = LongIdFactory.class.getName();
-    fDefaultInstantiatorClassName = DefaultDefaultInstantiator.class.getName();
+    fDefaultInstantiatorClassName = DefaultInstantiator.class.getName();
   }
 
   public CreateConfig(IBlockManager blockManager, String IdFactoryClassName, String defaultInstantiatorClassName) {

@@ -21,16 +21,16 @@ public final class ObjectLoader implements IReaderContext {
   private final FileReader fFileReader;
   private final IBlockManager fBlockManager;
   private Block fCurrentBlock;
-  private final IDefaultInstantiator fDefaultInstantiator;
+  private final IInstantiator fInstantiator;
   private final IObjectIdFactory fIdFactory;
   private final IModeStrategy fStore;
 
-  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
-    return new ObjectLoader(fileReader, repo, blockManager, defaultInstantiator, store).read();
+  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store) {
+    return new ObjectLoader(fileReader, repo, blockManager, instantiator, store).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IDefaultInstantiator defaultInstantiator, IModeStrategy store) {
-    if (defaultInstantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
+  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store) {
+    if (instantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
@@ -40,7 +40,7 @@ public final class ObjectLoader implements IReaderContext {
     fFileReader = fileReader;
     fRepo = repo;
     fBlockManager = blockManager;
-    fDefaultInstantiator = defaultInstantiator;
+    fInstantiator = instantiator;
     fIdFactory = repo.getIdFactory();
   } 
 
@@ -50,8 +50,8 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
-  public IDefaultInstantiator getDefaultInstantiator() {
-    return fDefaultInstantiator;
+  public IInstantiator getDefaultInstantiator() {
+    return fInstantiator;
   }
   
   @Override

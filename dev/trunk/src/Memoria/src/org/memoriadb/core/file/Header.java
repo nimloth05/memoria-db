@@ -2,7 +2,7 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
-import org.memoriadb.core.IDefaultInstantiator;
+import org.memoriadb.core.IInstantiator;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.util.*;
 
@@ -69,7 +69,7 @@ public class Header {
     return fVersion;
   }
 
-  public IDefaultInstantiator loadDefaultInstantiator() {
+  public IInstantiator loadDefaultInstantiator() {
     return ReflectionUtil.createInstance(getDefaultInstantiatorClassName());
   }
 

@@ -57,7 +57,7 @@ public interface IObjectStore extends IStore {
 
   public <T> List<T> query(Class<T> clazz);
   
-  public <T> List<T> query(IFilter<T> filter);
+  public <FILTER, T extends FILTER> List<T> query(Class<T> clazz, IFilter<FILTER> filter);
 
   public <T> List<T> query(String clazz);
   
