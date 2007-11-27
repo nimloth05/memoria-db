@@ -4,8 +4,8 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
 /**

@@ -3,8 +3,8 @@
  */
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.id.IObjectId;
 
 //FIXME: Diese Klasse ist leider nicht so cool geworden wie ich es mir gehofft habe... )-: Sie sollte entfernt werden.
 public abstract class TypeVisitorHelper<R, M> implements ITypeVisitor {

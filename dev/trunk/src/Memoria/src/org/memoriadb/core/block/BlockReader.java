@@ -5,9 +5,9 @@ import java.io.*;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.core.util.MemoriaCRC32;
+import org.memoriadb.id.*;
 
 /**
  * Reads in a block, assuming that the given stream is consistent with the given position in the file.

@@ -1,8 +1,8 @@
 package org.memoriadb.handler.enu;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.id.IObjectId;
 
 public class EnumObject implements IEnumObject {
   

@@ -6,11 +6,11 @@ import org.memoriadb.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.id.*;
 
 public class DataStore implements IDataStoreExt {
 

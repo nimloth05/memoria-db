@@ -1,6 +1,6 @@
 package org.memoriadb;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 public interface IStore {
   

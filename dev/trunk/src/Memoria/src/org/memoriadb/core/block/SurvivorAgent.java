@@ -7,9 +7,9 @@ import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
 import org.memoriadb.core.util.IOUtil;
+import org.memoriadb.id.IObjectId;
 
 /**
  * Computes the survivors in a block.

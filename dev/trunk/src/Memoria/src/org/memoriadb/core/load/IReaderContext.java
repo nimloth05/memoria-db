@@ -3,7 +3,7 @@ package org.memoriadb.core.load;
 import java.io.*;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
 

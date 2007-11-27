@@ -2,8 +2,8 @@ package org.memoriadb.handler.array;
 
 import java.util.*;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.util.ArrayTypeInfo;
+import org.memoriadb.id.IObjectId;
 
 /**
  * Implementation for data-mode

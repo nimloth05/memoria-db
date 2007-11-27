@@ -5,10 +5,10 @@ import java.io.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.handler.*;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
 public class EnumHandler implements IHandler {

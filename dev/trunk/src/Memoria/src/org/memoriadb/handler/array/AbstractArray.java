@@ -1,6 +1,6 @@
 package org.memoriadb.handler.array;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 public abstract class AbstractArray implements IArray {
   

@@ -7,9 +7,9 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.ClassModeQueryStrategy;
+import org.memoriadb.id.*;
 
 public class ObjectStore implements IObjectStoreExt  {
 

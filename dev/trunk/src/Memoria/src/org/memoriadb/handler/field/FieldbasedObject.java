@@ -1,7 +1,7 @@
 package org.memoriadb.handler.field;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.id.IObjectId;
 
 
 public class FieldbasedObject implements IFieldbasedObject {

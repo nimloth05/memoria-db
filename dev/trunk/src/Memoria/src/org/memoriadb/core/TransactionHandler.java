@@ -7,10 +7,10 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
 import org.memoriadb.core.util.*;
+import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
 
 public class TransactionHandler {
@@ -56,38 +56,31 @@ public class TransactionHandler {
     ++fUpdateCounter;
   }
 
-  
   public void checkIndexConsistancy() {
     fObjectRepository.checkIndexConsistancy();
   }
 
-  
   public void close() {
     fTransactionWriter.close();
   }
 
-  
   public boolean contains(Object obj) {
     return fObjectRepository.contains(obj);
   }
-
   
   public boolean containsId(IObjectId id) {
     return fObjectRepository.contains(id);
   }
-
   
   public void delete(Object obj) {
     internalDelete(obj);
     if (!isInUpdateMode()) writePendingChanges();
   }
 
-  
   public void deleteAll(Object root) {
     internalDeleteAll(root);
     if (!isInUpdateMode()) writePendingChanges();
   }
-
   
   public void endUpdate() {
     if (fUpdateCounter == 0) throw new MemoriaException("ObjectStore is not in update-mode");
@@ -101,7 +94,6 @@ public class TransactionHandler {
     return fObjectRepository.getAllObjectInfos();
   }
 
-  
   public Collection<Object> getAllObjects() {
     return fObjectRepository.getAllObjects();
   }
@@ -109,17 +101,14 @@ public class TransactionHandler {
   public IObjectId getArrayMemoriaClassId() {
     return fObjectRepository.getArrayMemoriaClass();
   }
-
   
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
-
   
   public IDefaultIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
-
   
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
@@ -128,32 +117,26 @@ public class TransactionHandler {
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
-
   
   public Header getHeader() {
     return fHeader;
   }
 
-  
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
   }
-
   
   public IObjectId getId(Object obj) {
     return fObjectRepository.getId(obj);
   }
-
   
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
-
   
   public IObjectId getMemoriaArrayClass() {
     return fObjectRepository.getArrayMemoriaClass();
   }
-
   
   public IMemoriaClass getMemoriaClass(Object object) {
     IObjectId id = getMemoriaClassId(object);
@@ -164,7 +147,6 @@ public class TransactionHandler {
   public IMemoriaClass getMemoriaClass(String className) {
     return fObjectRepository.getMemoriaClass(className);
   }
-
   
   public IObjectId getMemoriaClassId(Object object) {
     ObjectInfo info = getObjectInfo(object);
@@ -185,11 +167,9 @@ public class TransactionHandler {
     return (T) fObjectRepository.getObject(id);
   }
 
-  
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectRepository.getObjectInfo(obj);
   }
-
   
   public IObjectInfo getObjectInfoForId(IObjectId id) {
     return fObjectRepository.getObjectInfoForId(id);
@@ -199,7 +179,6 @@ public class TransactionHandler {
     return fObjectRepository;
   }
 
-  
   public Set<ObjectInfo> getSurvivors(Block block) {
     SurvivorAgent agent = new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile());
     return agent.getSurvivors(block);
@@ -258,7 +237,6 @@ public class TransactionHandler {
     return result.getId();
   }
 
-  
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
   }

@@ -1,6 +1,6 @@
 package org.memoriadb.handler;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 /**
  * This Interface will returned if you perform a query in DBMode.data.

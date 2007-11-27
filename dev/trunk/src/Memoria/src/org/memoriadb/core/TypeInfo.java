@@ -1,8 +1,8 @@
 package org.memoriadb.core;
 
 import org.memoriadb.ITypeInfo;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.id.IObjectId;
 
 public class TypeInfo implements ITypeInfo {
  

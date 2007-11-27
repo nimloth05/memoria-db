@@ -4,10 +4,10 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.id.IObjectId;
 
 /**
  * Call serialize(Object) for each object, then call getBytes(). After this, the ObjectSerializer is gone.

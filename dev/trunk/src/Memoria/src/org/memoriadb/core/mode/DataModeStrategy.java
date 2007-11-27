@@ -2,8 +2,8 @@ package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
 public class DataModeStrategy implements IModeStrategy {

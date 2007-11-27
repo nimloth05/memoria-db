@@ -2,7 +2,7 @@ package org.memoriadb.core.load;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 /**
  * 

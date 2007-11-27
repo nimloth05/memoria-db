@@ -3,8 +3,8 @@ package org.memoriadb.handler.array;
 import java.lang.reflect.Array;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.id.*;
 import org.memoriadb.core.util.*;
+import org.memoriadb.id.*;
 
 /**
  * Implementation for class-mode

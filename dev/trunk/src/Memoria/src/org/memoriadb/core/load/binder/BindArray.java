@@ -1,8 +1,8 @@
 package org.memoriadb.core.load.binder;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 import org.memoriadb.handler.array.IArray;
+import org.memoriadb.id.IObjectId;
 
 public class BindArray implements IBindable {
   

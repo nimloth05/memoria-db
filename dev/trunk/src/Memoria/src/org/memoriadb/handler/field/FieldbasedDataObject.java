@@ -2,7 +2,7 @@ package org.memoriadb.handler.field;
 
 import java.util.*;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 public class FieldbasedDataObject implements IFieldbasedObject {
   

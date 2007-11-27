@@ -2,7 +2,7 @@ package org.memoriadb.handler.collection;
 
 import java.util.*;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 
 public class SetDataObject implements ISetDataObject {
 

@@ -1,7 +1,7 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.id.IObjectId;
 
 public final class FieldbasedMemoriaClassFactory {
 
