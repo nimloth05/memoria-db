@@ -2,9 +2,9 @@ package org.memoriadb.test.core.crud.update;
 
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.core.util.Constants;
 import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.AbstractMemoriaTest;
-import org.memoriadb.util.Constants;
 
 public abstract class UpdateTest extends AbstractMemoriaTest {
 

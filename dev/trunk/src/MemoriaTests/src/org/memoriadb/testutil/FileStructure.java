@@ -3,11 +3,11 @@ package org.memoriadb.testutil;
 import java.io.IOException;
 import java.util.*;
 
-import org.memoriadb.core.block.Block;
+import org.memoriadb.block.Block;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.exception.MemoriaException;
 
 /**
  * Stores the structure of a IMemoriaFile for test and debug reasons.

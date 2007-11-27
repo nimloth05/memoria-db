@@ -2,9 +2,9 @@ package org.memoriadb.core.file;
 
 import java.util.UUID;
 
-import org.memoriadb.core.IInstantiator;
 import org.memoriadb.core.id.IObjectIdFactory;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
+import org.memoriadb.instantiator.IInstantiator;
 
 
 /**

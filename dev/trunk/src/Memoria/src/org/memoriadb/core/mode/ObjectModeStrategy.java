@@ -1,12 +1,13 @@
 package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.handler.enu.EnumHandler;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.*;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.enu.EnumHandler;
+import org.memoriadb.instantiator.IInstantiator;
 
 public class ObjectModeStrategy implements IModeStrategy {
   
@@ -71,7 +72,6 @@ public class ObjectModeStrategy implements IModeStrategy {
       return addEnumClass(transactionHandler, javaClass);
     }
     
-    
     // add the current class and all its superclasses to the store
     classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
@@ -87,7 +87,7 @@ public class ObjectModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
     IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
     memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), instantiator);
   }

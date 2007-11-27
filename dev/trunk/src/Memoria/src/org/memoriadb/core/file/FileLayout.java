@@ -3,9 +3,9 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.util.Arrays;
 
+import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.mode.IObjectStoreExt;
-import org.memoriadb.exception.FileCorruptException;
-import org.memoriadb.util.Constants;
+import org.memoriadb.core.util.Constants;
 
 /**
  * Sizes are always gross-values. The BlockSize for example includes it's data as well as its block-tag and size. 

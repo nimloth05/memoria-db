@@ -1,7 +1,7 @@
 package org.memoriadb.core.file;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.MemoriaException;
 
 public interface ISerializeContext {
   

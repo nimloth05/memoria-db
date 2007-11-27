@@ -1,7 +1,7 @@
 package org.memoriadb.core.listener;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.util.disposable.IDisposable;
+import org.memoriadb.core.util.disposable.IDisposable;
 
 public interface IMemoriaListeners {
   public IDisposable add(IWriteListener listener);

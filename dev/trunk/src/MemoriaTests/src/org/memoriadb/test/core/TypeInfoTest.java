@@ -3,9 +3,9 @@ package org.memoriadb.test.core;
 import java.util.ArrayList;
 
 import org.memoriadb.ITypeInfo;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractMemoriaTest;

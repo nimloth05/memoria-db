@@ -2,6 +2,7 @@ package org.memoriadb.test.core.block;
 
 import java.util.HashSet;
 
+import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectId;

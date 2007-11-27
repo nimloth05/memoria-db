@@ -3,7 +3,7 @@ package org.memoriadb;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.*;
-import org.memoriadb.util.Version;
+import org.memoriadb.core.util.Version;
 
 /**
  * 

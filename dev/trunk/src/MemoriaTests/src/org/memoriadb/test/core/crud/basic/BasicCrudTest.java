@@ -1,8 +1,8 @@
 package org.memoriadb.test.core.crud.basic;
 
-import org.memoriadb.core.handler.IDataObject;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.*;
+import org.memoriadb.handler.IDataObject;
 import org.memoriadb.test.core.crud.testclass.*;
 import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.core.testclasses.ctor.NoDefault;

@@ -2,6 +2,7 @@ package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.instantiator.IInstantiator;
 
 /**
  * @author msc
@@ -16,7 +17,7 @@ public interface IModeStrategy {
   /**
    * Before an object is added to the ObjectRepository, it is checked for instantiability.
    */
-  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator);
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator);
 
   public void checkObject(Object obj);
 

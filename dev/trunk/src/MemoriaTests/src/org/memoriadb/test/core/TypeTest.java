@@ -9,8 +9,8 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.def.LongId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.util.Constants;
 import org.memoriadb.test.core.testclasses.*;
-import org.memoriadb.util.Constants;
 
 public class TypeTest extends TestCase {
   

@@ -1,6 +1,6 @@
 package org.memoriadb.core.load;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public class BindingException extends MemoriaException {
   

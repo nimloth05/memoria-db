@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.UUID;
 
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.util.ByteUtil;
+import org.memoriadb.core.util.ByteUtil;
 
 public class GuidId implements IObjectId {
 

@@ -2,10 +2,10 @@ package org.memoriadb.core.load;
 
 import java.io.DataInputStream;
 
-import org.memoriadb.core.handler.IDataObject;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.handler.IDataObject;
 
 /**
  * Stores all information needed to dehydrate the object. References to other entities are

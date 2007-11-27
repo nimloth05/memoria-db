@@ -2,6 +2,8 @@ package org.memoriadb.test.core.block;
 
 import java.util.HashSet;
 
+import org.memoriadb.block.*;
+import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.block.*;
 
 public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {

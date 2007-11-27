@@ -3,7 +3,7 @@ package bootstrap.examples.query;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 import bootstrap.examples.query.subb.Y;
 

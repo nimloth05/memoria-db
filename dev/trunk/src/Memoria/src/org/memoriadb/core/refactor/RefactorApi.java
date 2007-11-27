@@ -3,14 +3,15 @@ package org.memoriadb.core.refactor;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.handler.array.*;
-import org.memoriadb.core.handler.enu.*;
-import org.memoriadb.core.handler.field.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.handler.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.Type;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.array.*;
+import org.memoriadb.handler.enu.*;
+import org.memoriadb.handler.field.*;
 
 public class RefactorApi implements IRefactor {
 

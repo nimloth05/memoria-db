@@ -3,7 +3,7 @@ package org.memoriadb.core.id.def;
 import java.io.*;
 
 import org.memoriadb.core.id.*;
-import org.memoriadb.util.Constants;
+import org.memoriadb.core.util.Constants;
 
 public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory {
   

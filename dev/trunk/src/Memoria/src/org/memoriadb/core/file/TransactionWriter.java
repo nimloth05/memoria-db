@@ -6,7 +6,7 @@ import java.util.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.*;
-import org.memoriadb.util.MemoriaCRC32;
+import org.memoriadb.core.util.MemoriaCRC32;
 
 public final class TransactionWriter implements ITransactionWriter {
  

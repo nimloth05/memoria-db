@@ -3,11 +3,11 @@ package org.memoriadb.core.block;
 import java.io.*;
 
 import org.memoriadb.block.Block;
+import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.exception.FileCorruptException;
-import org.memoriadb.util.MemoriaCRC32;
+import org.memoriadb.core.util.MemoriaCRC32;
 
 /**
  * Reads in a block, assuming that the given stream is consistent with the given position in the file.

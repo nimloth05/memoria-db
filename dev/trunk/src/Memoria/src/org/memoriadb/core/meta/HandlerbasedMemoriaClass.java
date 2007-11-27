@@ -1,8 +1,8 @@
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.handler.IHandler;
 
 public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
 

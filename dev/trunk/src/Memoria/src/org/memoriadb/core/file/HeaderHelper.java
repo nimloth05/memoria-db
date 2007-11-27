@@ -6,8 +6,8 @@ import java.util.*;
 import org.memoriadb.Memoria;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.util.*;
 
 public class HeaderHelper {
 

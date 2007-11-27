@@ -4,8 +4,10 @@ import java.util.TreeSet;
 
 import junit.framework.*;
 
+import org.memoriadb.block.Block;
+import org.memoriadb.block.maintenancefree.BlockBucket;
 import org.memoriadb.core.block.*;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public class BlockTest extends TestCase {
   

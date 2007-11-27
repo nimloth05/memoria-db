@@ -1,6 +1,6 @@
 package org.memoriadb.test.core.block;
 
-import org.memoriadb.core.block.Block;
+import org.memoriadb.block.Block;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.testutil.*;
 

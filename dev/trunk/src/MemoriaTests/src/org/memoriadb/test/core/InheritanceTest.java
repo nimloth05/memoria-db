@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
-import org.memoriadb.util.ReflectionUtil;
 
 
 public class InheritanceTest extends AbstractMemoriaTest {

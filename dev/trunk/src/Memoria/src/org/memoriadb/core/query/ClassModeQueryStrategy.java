@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.core.*;
-import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.core.util.ReflectionUtil;
 
 public class ClassModeQueryStrategy {
 

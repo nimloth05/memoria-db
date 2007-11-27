@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
-import org.memoriadb.util.IdentityHashSet;
+import org.memoriadb.core.util.IdentityHashSet;
 
 /**
  * 

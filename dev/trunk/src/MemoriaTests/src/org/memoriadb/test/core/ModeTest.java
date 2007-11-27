@@ -1,7 +1,7 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.handler.field.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -15,7 +15,7 @@ public class ModeTest extends AbstractMemoriaTest {
     
     reopenDataMode();
     
-    IFieldObject obj2 = new FieldMapDataObject(memoriaClassId);
+    IFieldbasedObject obj2 = new FieldbasedDataObject(memoriaClassId);
     obj2.set("fString", 2);
     save(obj2);
     
@@ -44,7 +44,7 @@ public class ModeTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fDataStore.get(id);
+    IFieldbasedObject l1_obj = fDataStore.get(id);
     assertEquals(obj.getString(), l1_obj.get("fString"));
   }
   
@@ -55,7 +55,7 @@ public class ModeTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     //We get a special object, because we are in the data mode
-    IFieldObject l1_obj = fDataStore.get(id);
+    IFieldbasedObject l1_obj = fDataStore.get(id);
     l1_obj.set("fString", "2");
     save(l1_obj);
     

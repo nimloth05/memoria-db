@@ -2,14 +2,16 @@ package org.memoriadb.core;
 
 import java.io.IOException;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.IHandler;
-import org.memoriadb.core.handler.collection.*;
+import org.memoriadb.core.handler.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.ReflectionUtil;
+import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.collection.*;
+import org.memoriadb.instantiator.IInstantiator;
 
 public class Bootstrap {
 

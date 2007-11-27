@@ -2,9 +2,9 @@ package org.memoriadb.core.load;
 
 import java.io.*;
 
-import org.memoriadb.core.IInstantiator;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.instantiator.IInstantiator;
 
 
 public interface IReaderContext {

@@ -3,7 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.nio.channels.FileLock;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public class PhysicalFile extends AbstractMemoriaFile {
 

@@ -3,10 +3,10 @@ package org.memoriadb.test.core.scenario;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.core.handler.collection.IListDataObject;
-import org.memoriadb.core.handler.field.*;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.collection.IListDataObject;
+import org.memoriadb.handler.field.*;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
@@ -24,11 +24,11 @@ public class CompositeTest extends AbstractMemoriaTest {
     List<IDataObject> l1_allLeafs = fDataStore.query(Leaf.class.getName());
     assertEquals(1, l1_allLeafs.size());
     
-    IFieldObject l1_root = fDataStore.query(Composite.class.getName(), new IFilter<IFieldObject>() {
+    IFieldbasedObject l1_root = fDataStore.query(Composite.class.getName(), new IFilter<IFieldbasedObject>() {
 
       @Override
-      public boolean accept(IFieldObject object, IFilterControl control) {
-        IFieldObject obj = object;
+      public boolean accept(IFieldbasedObject object, IFilterControl control) {
+        IFieldbasedObject obj = object;
         return obj.get("fData").equals("root");     
       }
     }).get(0);
@@ -39,8 +39,8 @@ public class CompositeTest extends AbstractMemoriaTest {
     List<Object> list = listDataObject.getList();
     assertEquals(2, list.size());
     
-    IFieldObject fieldObject1 = (IFieldObject) list.get(0);
-    IFieldObject fieldObject2 = (IFieldObject) list.get(1);
+    IFieldbasedObject fieldObject1 = (IFieldbasedObject) list.get(0);
+    IFieldbasedObject fieldObject2 = (IFieldbasedObject) list.get(1);
     
     assertEquals("comp1", fieldObject1.get("fData"));
     assertEquals("comp2", fieldObject2.get("fData"));
@@ -49,7 +49,7 @@ public class CompositeTest extends AbstractMemoriaTest {
     list = listDataObject.getList();
     assertEquals(1, list.size());
     
-    IFieldObject l1_leaf1 = (IFieldObject) list.get(0);
+    IFieldbasedObject l1_leaf1 = (IFieldbasedObject) list.get(0);
     assertEquals("leaf for comp1", l1_leaf1.get("fData"));
     
     //UPDATE the objects
@@ -60,7 +60,7 @@ public class CompositeTest extends AbstractMemoriaTest {
     
     IObjectId memoriaClassIdForLeafObject = l1_leaf1.getMemoriaClassId();
     
-    IFieldObject leaf2 = new FieldMapDataObject(memoriaClassIdForLeafObject);
+    IFieldbasedObject leaf2 = new FieldbasedDataObject(memoriaClassIdForLeafObject);
     leaf2.set("fData", "dataModeLeaf");
     leaf2.set("fTestObj", l1_leaf1.get("fTestObj"));
     save(leaf2);

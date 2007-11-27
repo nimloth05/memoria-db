@@ -5,11 +5,11 @@ import java.util.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.IOUtil;
+import org.memoriadb.core.util.IOUtil;
 
 /**
  * Computes the survivors in a block.

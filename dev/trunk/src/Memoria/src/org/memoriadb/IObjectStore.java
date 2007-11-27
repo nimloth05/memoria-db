@@ -2,8 +2,8 @@ package org.memoriadb;
 
 import java.util.*;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.MemoriaException;
 
 /**
  * Facade to a memoria DB

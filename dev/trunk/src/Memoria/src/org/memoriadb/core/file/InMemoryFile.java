@@ -2,7 +2,7 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public class InMemoryFile extends AbstractMemoriaFile {
   

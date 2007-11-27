@@ -6,9 +6,9 @@ import org.memoriadb.core.meta.IMemoriaClass;
 
 public class TypeInfo implements ITypeInfo {
  
-  private final ITransactionHandler fTransactionHandler;
+  private final TransactionHandler fTransactionHandler;
 
-  public TypeInfo(ITransactionHandler transactionHandler) {
+  public TypeInfo(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
   }
 

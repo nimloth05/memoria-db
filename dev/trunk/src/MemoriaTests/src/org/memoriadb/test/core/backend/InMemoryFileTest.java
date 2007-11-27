@@ -3,7 +3,7 @@ package org.memoriadb.test.core.backend;
 import java.io.*;
 
 import org.memoriadb.core.file.InMemoryFile;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
 
 import junit.framework.TestCase;
 

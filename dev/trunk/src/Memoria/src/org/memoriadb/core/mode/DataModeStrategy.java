@@ -1,9 +1,10 @@
 package org.memoriadb.core.mode;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.IDataObject;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.instantiator.IInstantiator;
 
 public class DataModeStrategy implements IModeStrategy {
  
@@ -18,7 +19,7 @@ public class DataModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public void checkCanInstantiateObject(ITransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
     // FIXME was muss hier überprüft werden?
     // --> Hier müss überprüft werden, ob zum Beispiel die memoriaClassId vorhanden ist oder ähnliches.
   }

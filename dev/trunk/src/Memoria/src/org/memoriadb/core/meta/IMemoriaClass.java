@@ -1,6 +1,6 @@
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.handler.*;
+import org.memoriadb.handler.*;
 
 public interface IMemoriaClass extends IDataObject {
 

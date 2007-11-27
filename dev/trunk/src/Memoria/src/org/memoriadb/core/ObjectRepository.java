@@ -4,9 +4,9 @@ import java.util.*;
 
 import org.java.patched.PIdentityHashMap;
 import org.memoriadb.block.Block;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
 
 /**
  * Holds the main-indexes. 

@@ -2,8 +2,8 @@ package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
 
+import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.Block;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.id.def.*;
 import org.memoriadb.core.meta.*;

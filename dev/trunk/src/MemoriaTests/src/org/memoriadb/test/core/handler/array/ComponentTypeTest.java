@@ -3,7 +3,7 @@ package org.memoriadb.test.core.handler.array;
 import junit.framework.TestCase;
 
 import org.memoriadb.core.meta.Type;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
 
 public class ComponentTypeTest extends TestCase {
 

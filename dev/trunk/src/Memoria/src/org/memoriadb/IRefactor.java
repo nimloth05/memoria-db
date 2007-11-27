@@ -1,8 +1,8 @@
 package org.memoriadb;
 
-import org.memoriadb.core.handler.array.IArray;
-import org.memoriadb.core.handler.enu.IEnumObject;
-import org.memoriadb.core.handler.field.IFieldbasedObject;
+import org.memoriadb.handler.array.IArray;
+import org.memoriadb.handler.enu.IEnumObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 
 public interface IRefactor {
 

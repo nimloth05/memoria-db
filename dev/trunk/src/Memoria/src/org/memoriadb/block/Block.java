@@ -1,7 +1,7 @@
 package org.memoriadb.block;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.exception.MemoriaException;
 
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to

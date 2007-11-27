@@ -2,9 +2,9 @@ package org.memoriadb.core;
 
 import java.util.Collection;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.exception.MemoriaException;
 
 /**
  * This interfaces encapsulates the indexes to the ObjectInfos. The methods are only intended 

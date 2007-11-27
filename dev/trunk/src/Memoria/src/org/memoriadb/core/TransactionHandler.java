@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.block.*;
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.SurvivorAgent;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
+import org.memoriadb.instantiator.IInstantiator;
 
-public class TransactionHandler implements ITransactionHandler {
+public class TransactionHandler {
 
   private final IObjectRepository fObjectRepository;
 
@@ -36,7 +37,7 @@ public class TransactionHandler implements ITransactionHandler {
     fObjectRepository = writer.getRepo();
   }
 
-  @Override
+  
   public IObjectId addMemoriaClass(Class<?> clazz) {
     Class<?> type = clazz;
     if (clazz.isArray()) {
@@ -50,44 +51,44 @@ public class TransactionHandler implements ITransactionHandler {
     return result;
   }
 
-  @Override
+  
   public void beginUpdate() {
     ++fUpdateCounter;
   }
 
-  @Override
+  
   public void checkIndexConsistancy() {
     fObjectRepository.checkIndexConsistancy();
   }
 
-  @Override
+  
   public void close() {
     fTransactionWriter.close();
   }
 
-  @Override
+  
   public boolean contains(Object obj) {
     return fObjectRepository.contains(obj);
   }
 
-  @Override
+  
   public boolean containsId(IObjectId id) {
     return fObjectRepository.contains(id);
   }
 
-  @Override
+  
   public void delete(Object obj) {
     internalDelete(obj);
     if (!isInUpdateMode()) writePendingChanges();
   }
 
-  @Override
+  
   public void deleteAll(Object root) {
     internalDeleteAll(root);
     if (!isInUpdateMode()) writePendingChanges();
   }
 
-  @Override
+  
   public void endUpdate() {
     if (fUpdateCounter == 0) throw new MemoriaException("ObjectStore is not in update-mode");
     --fUpdateCounter;
@@ -100,7 +101,7 @@ public class TransactionHandler implements ITransactionHandler {
     return fObjectRepository.getAllObjectInfos();
   }
 
-  @Override
+  
   public Collection<Object> getAllObjects() {
     return fObjectRepository.getAllObjects();
   }
@@ -109,17 +110,17 @@ public class TransactionHandler implements ITransactionHandler {
     return fObjectRepository.getArrayMemoriaClass();
   }
 
-  @Override
+  
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
 
-  @Override
+  
   public IDefaultIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
 
-  @Override
+  
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
   }
@@ -128,32 +129,32 @@ public class TransactionHandler implements ITransactionHandler {
     return fTransactionWriter.getFile();
   }
 
-  @Override
+  
   public Header getHeader() {
     return fHeader;
   }
 
-  @Override
+  
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
   }
 
-  @Override
+  
   public IObjectId getId(Object obj) {
     return fObjectRepository.getId(obj);
   }
 
-  @Override
+  
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
 
-  @Override
+  
   public IObjectId getMemoriaArrayClass() {
     return fObjectRepository.getArrayMemoriaClass();
   }
 
-  @Override
+  
   public IMemoriaClass getMemoriaClass(Object object) {
     IObjectId id = getMemoriaClassId(object);
     if(id == null) return null;
@@ -164,7 +165,7 @@ public class TransactionHandler implements ITransactionHandler {
     return fObjectRepository.getMemoriaClass(className);
   }
 
-  @Override
+  
   public IObjectId getMemoriaClassId(Object object) {
     ObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
@@ -179,17 +180,17 @@ public class TransactionHandler implements ITransactionHandler {
   }
 
   @SuppressWarnings("unchecked")
-  @Override
+  
   public <T> T getObject(IObjectId id) {
     return (T) fObjectRepository.getObject(id);
   }
 
-  @Override
+  
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectRepository.getObjectInfo(obj);
   }
 
-  @Override
+  
   public IObjectInfo getObjectInfoForId(IObjectId id) {
     return fObjectRepository.getObjectInfoForId(id);
   }
@@ -198,7 +199,7 @@ public class TransactionHandler implements ITransactionHandler {
     return fObjectRepository;
   }
 
-  @Override
+  
   public Set<ObjectInfo> getSurvivors(Block block) {
     SurvivorAgent agent = new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile());
     return agent.getSurvivors(block);
@@ -257,7 +258,7 @@ public class TransactionHandler implements ITransactionHandler {
     return result.getId();
   }
 
-  @Override
+  
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
   }

@@ -4,9 +4,9 @@ import java.io.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.*;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectIdFactory;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.Constants;
+import org.memoriadb.core.util.Constants;
 
 /**
  * Reads the content of a {@link IMemoriaFile}.

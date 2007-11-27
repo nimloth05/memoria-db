@@ -1,7 +1,7 @@
 package org.memoriadb.core.listener;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.util.disposable.*;
+import org.memoriadb.core.util.disposable.*;
 
 public class MemoriaListeners implements IMemoriaListeners {
 

@@ -3,7 +3,7 @@ package org.memoriadb.test.core.backend;
 import java.io.*;
 
 import org.memoriadb.core.file.*;
-import org.memoriadb.util.*;
+import org.memoriadb.core.util.*;
 
 public class PhysicalFileTest extends junit.framework.TestCase {
   

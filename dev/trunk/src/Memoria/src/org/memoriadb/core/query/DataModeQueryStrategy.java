@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.handler.IDataObject;
 
 public class DataModeQueryStrategy {
 

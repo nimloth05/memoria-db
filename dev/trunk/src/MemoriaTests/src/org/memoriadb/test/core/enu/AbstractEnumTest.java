@@ -2,9 +2,9 @@ package org.memoriadb.test.core.enu;
 
 import java.util.*;
 
-import org.memoriadb.core.handler.enu.IEnumObject;
-import org.memoriadb.core.handler.field.IFieldObject;
 import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.handler.enu.IEnumObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.test.core.testclasses.enums.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
@@ -30,7 +30,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     
     reopenDataMode();
     
-    IFieldObject l1_obj = fDataStore.get(objId);
+    IFieldbasedObject l1_obj = fDataStore.get(objId);
     IEnumObject l1_enumObjet = (IEnumObject) l1_obj.get("fEnum");
     assertEquals(TestEnum.b.ordinal(), l1_enumObjet.getOrdinal());
   }

@@ -2,7 +2,7 @@ package org.memoriadb.core.file;
 
 import java.io.InputStream;
 
-import org.memoriadb.exception.MemoriaException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public abstract class AbstractMemoriaFile implements IMemoriaFile {
 

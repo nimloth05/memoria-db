@@ -4,10 +4,10 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.Constants;
+import org.memoriadb.core.util.Constants;
 
 public enum Type {
 

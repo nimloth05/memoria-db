@@ -5,17 +5,18 @@ import java.util.*;
 import org.memoriadb.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.IDataObject;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
+import org.memoriadb.handler.IDataObject;
 
 public class DataStore implements IDataStoreExt {
 
+  // FIXME Die Schnittstelle wäre besser, dann wird sie aber unglaublich gross!
   private final TransactionHandler fTransactionHandler;
+  
   private final DataModeQueryStrategy fQueryStrategy = new DataModeQueryStrategy();
   
   public DataStore(TransactionHandler transactionHandler) {

@@ -3,11 +3,11 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.IHandler;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.exception.MemoriaException;
-import org.memoriadb.util.Constants;
+import org.memoriadb.core.util.Constants;
+import org.memoriadb.handler.IHandler;
 
 /**
  * Call serialize(Object) for each object, then call getBytes(). After this, the ObjectSerializer is gone.

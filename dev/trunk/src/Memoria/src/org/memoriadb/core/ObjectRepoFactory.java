@@ -1,9 +1,9 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.handler.array.ArrayHandler;
-import org.memoriadb.core.handler.field.FieldbasedClassHandler;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.handler.array.ArrayHandler;
+import org.memoriadb.handler.field.FieldbasedClassHandler;
 
 public final class ObjectRepoFactory {
 

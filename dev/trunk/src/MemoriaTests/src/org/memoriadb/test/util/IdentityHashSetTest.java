@@ -4,8 +4,8 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.memoriadb.core.util.IdentityHashSet;
 import org.memoriadb.test.core.testclasses.WrongHashCode;
-import org.memoriadb.util.IdentityHashSet;
 
 public class IdentityHashSetTest extends TestCase {
   
