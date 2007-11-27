@@ -1,7 +1,8 @@
-package org.memoriadb.core.load.binder;
+package org.memoriadb.handler.field;
 
 import org.memoriadb.core.load.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
 public class ClassInheritanceBinder implements IBindable {

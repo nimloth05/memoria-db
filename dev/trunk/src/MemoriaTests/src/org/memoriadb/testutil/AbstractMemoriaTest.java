@@ -9,9 +9,9 @@ import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.mode.*;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.id.IObjectId;
 
 public abstract class AbstractMemoriaTest extends TestCase {
   

@@ -2,9 +2,9 @@ package org.memoriadb.test.core.handler.collection;
 
 import java.util.List;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.collection.IListDataObject;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 
 public abstract class ListTest extends CollectionTest {

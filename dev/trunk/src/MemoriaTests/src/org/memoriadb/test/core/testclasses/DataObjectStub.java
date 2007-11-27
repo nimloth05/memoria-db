@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.testclasses;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.id.IObjectId;
 
 public class DataObjectStub implements IDataObject {
   

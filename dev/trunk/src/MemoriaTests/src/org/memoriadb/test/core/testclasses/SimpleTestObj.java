@@ -1,8 +1,8 @@
 package org.memoriadb.test.core.testclasses;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.mode.*;
 import org.memoriadb.handler.field.*;
+import org.memoriadb.id.IObjectId;
 
 public class SimpleTestObj implements Comparable<SimpleTestObj> {
   

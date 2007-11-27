@@ -3,7 +3,7 @@ package org.memoriadb.test.core.block;
 import org.memoriadb.block.*;
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.block.*;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class CurrentBlockScenarioTest extends AbstractMemoriaTest {

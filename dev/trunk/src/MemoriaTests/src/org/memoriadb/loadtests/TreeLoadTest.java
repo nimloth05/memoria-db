@@ -3,7 +3,7 @@ package org.memoriadb.loadtests;
 import java.util.*;
 
 import org.memoriadb.TestMode;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 /**

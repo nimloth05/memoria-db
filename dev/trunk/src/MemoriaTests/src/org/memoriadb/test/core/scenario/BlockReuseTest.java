@@ -2,7 +2,7 @@ package org.memoriadb.test.core.scenario;
 
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class BlockReuseTest extends AbstractMemoriaTest {

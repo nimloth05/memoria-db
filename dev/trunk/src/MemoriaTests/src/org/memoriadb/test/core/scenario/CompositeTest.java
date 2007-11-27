@@ -3,10 +3,10 @@ package org.memoriadb.test.core.scenario;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.collection.IListDataObject;
 import org.memoriadb.handler.field.*;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.composite.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;

@@ -2,7 +2,7 @@ package org.memoriadb.test.core.handler.collection;
 
 import java.util.Collection;
 
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 

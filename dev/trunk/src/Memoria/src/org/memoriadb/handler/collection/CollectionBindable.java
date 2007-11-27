@@ -3,6 +3,7 @@ package org.memoriadb.handler.collection;
 import java.util.Collection;
 
 import org.memoriadb.core.load.*;
+import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
 

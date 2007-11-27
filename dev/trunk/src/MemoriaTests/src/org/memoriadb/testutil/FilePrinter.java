@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.id.IObjectId;
 
 public class FilePrinter {
   

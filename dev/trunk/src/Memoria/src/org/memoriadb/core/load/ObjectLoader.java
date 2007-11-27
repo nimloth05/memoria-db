@@ -10,6 +10,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.mode.IModeStrategy;
+import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
 

@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.block;
 
 import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.OneInt;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.FileStructure.ObjectInfo;

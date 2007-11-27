@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.block;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.id.IObjectId;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.*;
 
 public class BlockManagerTest extends AbstractMemoriaTest {

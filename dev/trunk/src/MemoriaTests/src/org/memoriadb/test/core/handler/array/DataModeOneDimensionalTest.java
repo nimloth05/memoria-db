@@ -2,9 +2,9 @@ package org.memoriadb.test.core.handler.array;
 
 import java.util.Arrays;
 
-import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.handler.array.*;
 import org.memoriadb.handler.enu.EnumDataObject;
+import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractMemoriaTest;

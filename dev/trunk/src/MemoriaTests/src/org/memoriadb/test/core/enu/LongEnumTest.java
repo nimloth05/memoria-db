@@ -1,7 +1,7 @@
 package org.memoriadb.test.core.enu;
 
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.id.loong.LongIdFactory;
+import org.memoriadb.id.loong.LongIdFactory;
 
 public class LongEnumTest extends AbstractEnumTest {
 

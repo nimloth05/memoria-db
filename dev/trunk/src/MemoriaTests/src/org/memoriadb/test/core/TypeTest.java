@@ -6,10 +6,10 @@ import junit.framework.TestCase;
 
 import org.easymock.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.id.loong.LongId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.Constants;
+import org.memoriadb.id.loong.LongId;
 import org.memoriadb.test.core.testclasses.*;
 
 public class TypeTest extends TestCase {
