@@ -423,7 +423,7 @@ public enum Type {
         return;
       }
       
-      if(!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object: " + value);
+      if(!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object (use saveAll): " + value);
       context.getExistingtId(value).writeTo(output);
     }
 

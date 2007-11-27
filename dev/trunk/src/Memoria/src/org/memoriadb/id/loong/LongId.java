@@ -6,8 +6,10 @@ import org.memoriadb.id.IObjectId;
 
 public final class LongId implements IObjectId {
 
-  private final long fValue;
+  private long fValue;
 
+  public LongId(){}
+  
   public LongId(long value) {
     fValue = value;
   }
@@ -41,5 +43,13 @@ public final class LongId implements IObjectId {
   @Override
   public void writeTo(DataOutput output) throws IOException {
     output.writeLong(fValue);
+  }
+
+  public long getMostSignificantBits() {
+    return 0;
+  }
+
+  public long getLeastSignificantBits() {
+    return 0;
   }
 }

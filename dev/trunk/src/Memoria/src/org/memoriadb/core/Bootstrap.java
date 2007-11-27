@@ -8,7 +8,7 @@ import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
 import org.memoriadb.core.util.ReflectionUtil;
-import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.*;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -28,25 +28,27 @@ public class Bootstrap {
     }
   }
 
-  private static void addDefaultMetaClasses(TransactionHandler trxHansdler, Iterable<String> customHandlers) {
+  private static void addDefaultMetaClasses(TransactionHandler trxHandler, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
-    IMemoriaClassConfig objectMemoriaClass = FieldbasedMemoriaClassFactory.createMetaClass(Object.class, trxHansdler.getDefaultIdProvider().getFieldMetaClass());
-    trxHansdler.save(objectMemoriaClass);
+    IMemoriaClassConfig objectMemoriaClass = FieldbasedMemoriaClassFactory.createMetaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
+    trxHandler.save(objectMemoriaClass);
 
-    registerHandler(trxHansdler, new CollectionHandler.ArrayListHandler());
-    registerHandler(trxHansdler, new CollectionHandler.LinkedListHandler());
-    registerHandler(trxHansdler, new CollectionHandler.CopyOnWriteListHandler());
-    registerHandler(trxHansdler, new CollectionHandler.VectorHandler());
-    registerHandler(trxHansdler, new CollectionHandler.StackHandler());
-
-    registerHandler(trxHansdler, new CollectionHandler.HashSetHandler());
-    registerHandler(trxHansdler, new CollectionHandler.LinkedHashSetHandler());
-    registerHandler(trxHansdler, new CollectionHandler.TreeSetHandler());
-    registerHandler(trxHansdler, new CollectionHandler.ConcurrentSkipListSetHandler());
-    registerHandler(trxHansdler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
-    registerHandler(trxHansdler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
+    registerHandler(trxHandler, new GuidIdHandler());
     
-    addCustomHandlers(trxHansdler, customHandlers);
+    registerHandler(trxHandler, new CollectionHandler.ArrayListHandler());
+    registerHandler(trxHandler, new CollectionHandler.LinkedListHandler());
+    registerHandler(trxHandler, new CollectionHandler.CopyOnWriteListHandler());
+    registerHandler(trxHandler, new CollectionHandler.VectorHandler());
+    registerHandler(trxHandler, new CollectionHandler.StackHandler());
+
+    registerHandler(trxHandler, new CollectionHandler.HashSetHandler());
+    registerHandler(trxHandler, new CollectionHandler.LinkedHashSetHandler());
+    registerHandler(trxHandler, new CollectionHandler.TreeSetHandler());
+    registerHandler(trxHandler, new CollectionHandler.ConcurrentSkipListSetHandler());
+    registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
+    registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
+    
+    addCustomHandlers(trxHandler, customHandlers);
   }
 
   private static TransactionHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {

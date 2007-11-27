@@ -87,6 +87,18 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
   }
   
+  public void test_ObjectId() {
+    Object obj = new Object();
+    IObjectId objId = save(obj);
+    IObjectId idId = saveAll(objId);
+    
+    reopen();
+    
+    IObjectId l1_objId = get(idId);
+    
+    assertEquals(objId, l1_objId);
+  }
+  
   public void test_save_aggregate_with_dataObject_in_objectMode() {
     ObjectReferencer ref = new ObjectReferencer();
     ref.setObject(new DataObjectStub());
@@ -289,7 +301,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     B b_l1 = (B) fObjectStore.get(idbb);
     assertEquals("bb", b_l1.getName());
   }
-  
+
   public void test_update_unsaved_reference() {
     A a = new A(null); // b is not saved
     IObjectId id = fObjectStore.save(a);
@@ -317,6 +329,5 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l3_a = fObjectStore.get(id);
     assertNotNull(l3_a.getB());
   }
-  
   
 }

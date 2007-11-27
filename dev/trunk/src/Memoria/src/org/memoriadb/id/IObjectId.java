@@ -17,4 +17,8 @@ public interface IObjectId {
   
   public void writeTo(DataOutput output) throws IOException;
 
+  public long getLeastSignificantBits();
+
+  public long getMostSignificantBits();
+
 }

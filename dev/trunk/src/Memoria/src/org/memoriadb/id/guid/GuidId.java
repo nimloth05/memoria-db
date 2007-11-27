@@ -8,20 +8,24 @@ import org.memoriadb.id.IObjectId;
 
 public class GuidId implements IObjectId {
 
-  private final UUID fUUID;
-  
+  public UUID fUUID;
+
   public static IObjectId random() {
     return new GuidId(UUID.randomUUID());
   }
 
-  public static GuidId readFrom(DataInput input) throws IOException {
+  public static IObjectId readFrom(DataInput input) throws IOException {
     return new GuidId(ByteUtil.readUUID(input));
   }
-  
+
+  public GuidId(long mostSignificiantBits, long leastSignificiantBits) {
+    fUUID = new UUID(mostSignificiantBits, leastSignificiantBits);
+  }
+
   public GuidId(String string) {
     this(UUID.fromString(string));
   }
-  
+
   private GuidId(UUID uuid) {
     fUUID = uuid;
   }
@@ -39,6 +43,14 @@ public class GuidId implements IObjectId {
     return true;
   }
 
+  public long getLeastSignificantBits() {
+    return fUUID.getLeastSignificantBits();
+  }
+
+  public long getMostSignificantBits() {
+    return fUUID.getMostSignificantBits();
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -46,7 +58,7 @@ public class GuidId implements IObjectId {
     result = prime * result + ((fUUID == null) ? 0 : fUUID.hashCode());
     return result;
   }
-
+  
   @Override
   public String toString() {
     return fUUID.toString();
