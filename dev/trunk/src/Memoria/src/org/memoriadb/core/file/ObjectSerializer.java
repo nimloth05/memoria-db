@@ -3,7 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.exception.MemoriaException;
@@ -94,7 +94,7 @@ public final class ObjectSerializer {
     serializeObject(memoriaClass.getHandler(), info);
   }
 
-  private void serializeObject(ISerializeHandler handler, IObjectInfo info) throws Exception {
+  private void serializeObject(IHandler handler, IObjectInfo info) throws Exception {
     IObjectId typeId = info.getMemoriaClassId();
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream(Constants.DEFAULT_OBJECT_SIZE);

@@ -1,6 +1,6 @@
 package org.memoriadb.core.load.binder;
 
-import org.memoriadb.core.handler.field.IFieldObject;
+import org.memoriadb.core.handler.field.IFieldbasedObject;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.*;
 
@@ -8,10 +8,10 @@ import org.memoriadb.core.load.*;
 public class ObjectFieldReference implements IBindable {
   
   private final String fFieldName;
-  private final IFieldObject fSource;
+  private final IFieldbasedObject fSource;
   private final IObjectId fTargetObjectId;
 
-  public ObjectFieldReference(IFieldObject source, String fieldName, IObjectId targetObjectId){
+  public ObjectFieldReference(IFieldbasedObject source, String fieldName, IObjectId targetObjectId){
     fSource = source;
     fFieldName = fieldName;
     fTargetObjectId = targetObjectId;

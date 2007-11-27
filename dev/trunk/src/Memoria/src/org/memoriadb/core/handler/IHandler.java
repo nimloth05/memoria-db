@@ -7,8 +7,15 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 
+/**
+ * 
+ * Knows how to serialize/deserialize objects of a particular type.
+ * 
+ * @author msc
+ *
+ */
+public interface IHandler {
 
-public interface ISerializeHandler {
   /**
    * @param className the name of the java class
    * @param instantiator

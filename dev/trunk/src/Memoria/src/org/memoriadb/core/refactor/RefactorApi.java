@@ -21,11 +21,11 @@ public class RefactorApi implements IRefactor {
   }
 
   @Override
-  public IFieldObject asFieldDataObject(Object object) {
-    if (object instanceof IFieldObject) return (IFieldObject) object;
+  public IFieldbasedObject asFieldDataObject(Object object) {
+    if (object instanceof IFieldbasedObject) return (IFieldbasedObject) object;
     if (object instanceof IDataObject) throw new MemoriaException("no a field object " + object);
     IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(object.getClass());
-    return new FieldObject(object, memoriaClassId);
+    return new FieldbasedObject(object, memoriaClassId);
   }
 
   public IArray createArray(Class<?> klass, int length) {

@@ -1,7 +1,8 @@
-package org.memoriadb.core.block;
+package org.memoriadb.block;
 
 import java.util.*;
 
+import org.memoriadb.core.block.*;
 import org.memoriadb.exception.MemoriaException;
 
 public class MaintenanceFreeBlockManager implements IBlockManagerExt {

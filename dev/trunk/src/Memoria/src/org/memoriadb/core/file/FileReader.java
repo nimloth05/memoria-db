@@ -2,6 +2,7 @@ package org.memoriadb.core.file;
 
 import java.io.*;
 
+import org.memoriadb.block.Block;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.id.IObjectIdFactory;
 import org.memoriadb.exception.MemoriaException;

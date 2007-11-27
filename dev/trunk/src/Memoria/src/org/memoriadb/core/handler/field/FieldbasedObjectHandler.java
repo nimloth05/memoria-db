@@ -78,7 +78,7 @@ public class FieldbasedObjectHandler implements IHandler {
 
   private IFieldbasedObject createObject(IReaderContext context, IObjectId typeId) {
     if (context.isInDataMode()) {
-      return new FieldDataObject(typeId);
+      return new FieldbasedDataObject(typeId);
     }
     return new FieldbasedObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
   }

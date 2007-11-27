@@ -1,6 +1,6 @@
 package org.memoriadb.core.listener;
 
-import org.memoriadb.core.block.Block;
+import org.memoriadb.block.Block;
 
 public interface IWriteListener {
 

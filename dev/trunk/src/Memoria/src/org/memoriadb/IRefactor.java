@@ -2,7 +2,7 @@ package org.memoriadb;
 
 import org.memoriadb.core.handler.array.IArray;
 import org.memoriadb.core.handler.enu.IEnumObject;
-import org.memoriadb.core.handler.field.IFieldObject;
+import org.memoriadb.core.handler.field.IFieldbasedObject;
 
 public interface IRefactor {
 
@@ -11,7 +11,7 @@ public interface IRefactor {
    * @param object TODO
    * @return
    */
-  public IFieldObject asFieldDataObject(Object object);
+  public IFieldbasedObject asFieldDataObject(Object object);
   
   /**
    * 

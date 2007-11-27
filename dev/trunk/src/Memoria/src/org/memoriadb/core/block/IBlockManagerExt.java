@@ -1,5 +1,7 @@
 package org.memoriadb.core.block;
 
+import org.memoriadb.block.*;
+
 /**
  * Additional methods for test purposes.
  * 

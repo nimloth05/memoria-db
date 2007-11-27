@@ -2,6 +2,7 @@ package org.memoriadb.core;
 
 import java.util.*;
 
+import org.memoriadb.block.*;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.Header;
 import org.memoriadb.core.id.*;

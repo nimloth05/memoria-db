@@ -2,6 +2,7 @@ package org.memoriadb.core.block;
 
 import java.util.*;
 
+import org.memoriadb.block.Block;
 import org.memoriadb.exception.MemoriaException;
 
 public class BlockBucket implements Comparable<BlockBucket> {

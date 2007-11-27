@@ -1,7 +1,7 @@
 package org.memoriadb.core;
 
 /**
- * Instantiates objects which are saved by the DefaultHandler.
+ * Instantiates objects which are saved by the FieldbasedObjectHandler.
  */
 public interface IInstantiator {
   

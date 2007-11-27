@@ -3,7 +3,7 @@ package org.memoriadb.core;
 import java.io.IOException;
 
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.handler.collection.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
@@ -23,7 +23,7 @@ public class Bootstrap {
   
   private static void addCustomHandlers(TransactionHandler transactionHandler, Iterable<String> customHandlers) {
     for (String className : customHandlers) {
-      registerHandler(transactionHandler, (ISerializeHandler)ReflectionUtil.createInstance(className));
+      registerHandler(transactionHandler, (IHandler)ReflectionUtil.createInstance(className));
     }
   }
 
@@ -92,7 +92,7 @@ public class Bootstrap {
    * @param className
    *          Name of the class the given <tt>handler</tt> can deal with.
    */
-  private static void registerHandler(TransactionHandler transactionHandler, ISerializeHandler handler) {
+  private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
     IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     transactionHandler.save(classConfig);
     

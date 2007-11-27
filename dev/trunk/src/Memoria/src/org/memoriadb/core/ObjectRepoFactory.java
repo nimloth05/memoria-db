@@ -1,8 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.handler.array.ArrayHandler;
-import org.memoriadb.core.handler.def.HandlerClassHandler;
-import org.memoriadb.core.handler.field.FieldClassHandler;
+import org.memoriadb.core.handler.field.FieldbasedClassHandler;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.meta.*;
 
@@ -19,7 +18,7 @@ public final class ObjectRepoFactory {
     IMemoriaClassConfig handlerMetaClass = new HandlerbasedMemoriaClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     repo.add(factory.getHandlerMetaClass(), handlerMetaClass);
 
-    IMemoriaClassConfig fieldMetaClass = new HandlerbasedMemoriaClass(new FieldClassHandler(), factory.getHandlerMetaClass());
+    IMemoriaClassConfig fieldMetaClass = new HandlerbasedMemoriaClass(new FieldbasedClassHandler(), factory.getHandlerMetaClass());
     repo.add(factory.getFieldMetaClass(), fieldMetaClass);
 
     // array-handler

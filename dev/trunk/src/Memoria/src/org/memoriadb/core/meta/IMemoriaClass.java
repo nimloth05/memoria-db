@@ -4,7 +4,7 @@ import org.memoriadb.core.handler.*;
 
 public interface IMemoriaClass extends IDataObject {
 
-  public ISerializeHandler getHandler();
+  public IHandler getHandler();
 
   public String getJavaClassName();
   

@@ -3,7 +3,7 @@ package org.memoriadb.core.meta;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
@@ -56,8 +56,8 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
   }
 
   @Override
-  public ISerializeHandler getHandler() {
-    return new org.memoriadb.core.handler.field.DefaultHandler(this);
+  public IHandler getHandler() {
+    return new org.memoriadb.core.handler.field.FieldbasedObjectHandler(this);
   }
 
   @Override

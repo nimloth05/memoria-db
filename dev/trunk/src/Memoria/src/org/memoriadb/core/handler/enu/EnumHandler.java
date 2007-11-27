@@ -4,12 +4,12 @@ import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.IMemoriaClass;
 
-public class EnumHandler implements ISerializeHandler {
+public class EnumHandler implements IHandler {
 
   private final String fName;
 

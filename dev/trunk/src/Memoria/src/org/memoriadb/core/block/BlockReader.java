@@ -2,6 +2,7 @@ package org.memoriadb.core.block;
 
 import java.io.*;
 
+import org.memoriadb.block.Block;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.*;
 import org.memoriadb.core.load.HydratedObject;

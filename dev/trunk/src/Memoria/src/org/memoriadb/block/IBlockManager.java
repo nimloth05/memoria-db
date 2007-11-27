@@ -1,6 +1,7 @@
-package org.memoriadb.core.block;
+package org.memoriadb.block;
 
 import java.util.Set;
+
 
 public interface IBlockManager {
   

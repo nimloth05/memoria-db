@@ -19,7 +19,7 @@ import org.memoriadb.util.ReflectionUtil;
  * @author msc
  * 
  */
-public abstract class CollectionHandler implements ISerializeHandler {
+public abstract class CollectionHandler implements IHandler {
 
   public static class ArrayListHandler extends CollectionHandler {
     @Override

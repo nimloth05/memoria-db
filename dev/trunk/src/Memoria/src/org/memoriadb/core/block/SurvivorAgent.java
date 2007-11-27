@@ -3,6 +3,7 @@ package org.memoriadb.core.block;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.id.IObjectId;

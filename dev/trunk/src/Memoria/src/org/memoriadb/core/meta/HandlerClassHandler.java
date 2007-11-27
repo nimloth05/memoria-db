@@ -1,17 +1,16 @@
-package org.memoriadb.core.handler.def;
+package org.memoriadb.core.meta;
 
 import java.io.*;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.core.load.IReaderContext;
-import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
 import org.memoriadb.exception.*;
 import org.memoriadb.util.ReflectionUtil;
 
-public class HandlerClassHandler implements ISerializeHandler {
+public class HandlerClassHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
@@ -23,7 +22,7 @@ public class HandlerClassHandler implements ISerializeHandler {
     String javaClassName = input.readUTF();
     String handlerName = input.readUTF();
     try {
-      ISerializeHandler handler = instantiateHandler(handlerName, javaClassName);
+      IHandler handler = instantiateHandler(handlerName, javaClassName);
       return new HandlerbasedMemoriaClass(handler, typeId);
     }
     catch (Exception e) {
@@ -49,7 +48,7 @@ public class HandlerClassHandler implements ISerializeHandler {
     throw new MemoriaException("has no children");
   }
 
-  private ISerializeHandler instantiateHandler(String handlerName, String javaClassName) {
+  private IHandler instantiateHandler(String handlerName, String javaClassName) {
     return ReflectionUtil.createInstanceWithDefaultOrStringCtor(handlerName, javaClassName);
   }
 

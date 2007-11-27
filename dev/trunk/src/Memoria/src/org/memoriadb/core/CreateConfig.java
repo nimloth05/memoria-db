@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.core.block.IBlockManager;
+import org.memoriadb.block.IBlockManager;
 import org.memoriadb.core.id.def.LongIdFactory;
 
 public class CreateConfig extends OpenConfig {
@@ -32,7 +32,7 @@ public class CreateConfig extends OpenConfig {
 
   /**
    * @param handlerClass
-   *          The ISerializeHandler subclass.
+   *          The IHandler subclass.
    * @param objectClass
    *          java-type which is handled by the given handler.
    */

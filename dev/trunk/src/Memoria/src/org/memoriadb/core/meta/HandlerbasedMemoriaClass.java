@@ -1,35 +1,35 @@
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.handler.ISerializeHandler;
+import org.memoriadb.core.handler.IHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
 public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
 
-  private final ISerializeHandler fSerializeHandler;
+  private final IHandler fHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
 
-  public HandlerbasedMemoriaClass(ISerializeHandler handler, IObjectId memoriaClassId) {
-    fSerializeHandler = handler;
+  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId) {
+    fHandler = handler;
     fMemoriaClassId = memoriaClassId;
   }
 
   public HandlerbasedMemoriaClass(String handlerName, IObjectId memoriaClassId) throws Exception {
-    this(ReflectionUtil.<ISerializeHandler> createInstance(handlerName), memoriaClassId);
+    this(ReflectionUtil.<IHandler> createInstance(handlerName), memoriaClassId);
   }
 
   @Override
-  public ISerializeHandler getHandler() {
-    return fSerializeHandler;
+  public IHandler getHandler() {
+    return fHandler;
   }
 
   public String getHandlerName() {
-    return fSerializeHandler.getClass().getName();
+    return fHandler.getClass().getName();
   }
 
   public String getJavaClassName() {
-    return fSerializeHandler.getClassName();
+    return fHandler.getClassName();
   }
 
   @Override
