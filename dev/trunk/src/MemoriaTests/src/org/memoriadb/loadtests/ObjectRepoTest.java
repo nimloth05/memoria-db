@@ -5,7 +5,6 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.memoriadb.core.ObjectRepository;
-import org.memoriadb.core.id.*;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.loong.*;
 import org.memoriadb.test.core.testclasses.*;

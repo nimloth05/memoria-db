@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.handler.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
