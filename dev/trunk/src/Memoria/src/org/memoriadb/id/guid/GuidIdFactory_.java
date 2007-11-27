@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.memoriadb.id.*;
 
-public class GUIDIdFactory extends AbstractIdFactory implements IObjectIdFactory {
+public class GuidIdFactory_ extends AbstractIdFactory implements IObjectIdFactory {
   
   private static final IObjectId MEMORIA_META_CLASS_ID = new GuidId("0476643a-da48-4381-b5e7-d8c5028e20d8");
   private static final IObjectId HANDLER_MEMORIA_CLASS_OBJECT_ID = new GuidId("edd0143e-6b74-4a27-8095-9f6c9c264008");
