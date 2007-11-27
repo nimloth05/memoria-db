@@ -7,7 +7,7 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
-public final class MemoriaFieldClass extends AbstractMemoriaClass {
+public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
 
   private String fClassName;
 
@@ -22,14 +22,14 @@ public final class MemoriaFieldClass extends AbstractMemoriaClass {
    * given type enters the memoria-reference-space.
    * 
    */
-  public MemoriaFieldClass(Class<?> klass, IObjectId memoriaClassId) {
+  public FieldbasedMemoriaClass(Class<?> klass, IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
     fClassName = klass.getName();
 
     addFields(klass);
   }
 
-  public MemoriaFieldClass(String className, IObjectId memoriaClassId) {
+  public FieldbasedMemoriaClass(String className, IObjectId memoriaClassId) {
     fClassName = className;
     fMemoriaClassId = memoriaClassId;
   }

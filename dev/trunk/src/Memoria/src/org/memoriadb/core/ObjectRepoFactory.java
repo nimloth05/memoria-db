@@ -16,14 +16,14 @@ public final class ObjectRepoFactory {
 
   private static void registerMetaClasses(ObjectRepository repo, IDefaultIdProvider factory) {
     // super meta mega class.
-    IMemoriaClassConfig handlerMetaClass = new MemoriaHandlerClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
+    IMemoriaClassConfig handlerMetaClass = new HandlerbasedMemoriaClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     repo.add(factory.getHandlerMetaClass(), handlerMetaClass);
 
-    IMemoriaClassConfig fieldMetaClass = new MemoriaHandlerClass(new FieldClassHandler(), factory.getHandlerMetaClass());
+    IMemoriaClassConfig fieldMetaClass = new HandlerbasedMemoriaClass(new FieldClassHandler(), factory.getHandlerMetaClass());
     repo.add(factory.getFieldMetaClass(), fieldMetaClass);
 
     // array-handler
-    repo.add(factory.getArrayMemoriaClass(), new MemoriaHandlerClass(new ArrayHandler(), factory.getHandlerMetaClass()));
+    repo.add(factory.getArrayMemoriaClass(), new HandlerbasedMemoriaClass(new ArrayHandler(), factory.getHandlerMetaClass()));
   }
 
   private ObjectRepoFactory() {}

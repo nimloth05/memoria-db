@@ -6,10 +6,10 @@ import org.memoriadb.core.meta.*;
 
 public class ClassInheritanceBinder implements IBindable {
 
-  private final MemoriaFieldClass fSubClass;
+  private final FieldbasedMemoriaClass fSubClass;
   private final IObjectId fSuperClassId;
 
-  public ClassInheritanceBinder(MemoriaFieldClass classObject, IObjectId superClassId) {
+  public ClassInheritanceBinder(FieldbasedMemoriaClass classObject, IObjectId superClassId) {
     fSubClass = classObject;
     fSuperClassId = superClassId;
   }

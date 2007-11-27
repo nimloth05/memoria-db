@@ -7,7 +7,7 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.handler.collection.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.mode.IModeStrategy;
+import org.memoriadb.core.mode.*;
 import org.memoriadb.exception.MemoriaException;
 import org.memoriadb.util.ReflectionUtil;
 
@@ -35,8 +35,8 @@ public class Bootstrap {
     registerHandler(trxHansdler, new CollectionHandler.ArrayListHandler());
     registerHandler(trxHansdler, new CollectionHandler.LinkedListHandler());
     registerHandler(trxHansdler, new CollectionHandler.CopyOnWriteListHandler());
-    registerHandler(trxHansdler, new CollectionHandler.StackHandler());
     registerHandler(trxHansdler, new CollectionHandler.VectorHandler());
+    registerHandler(trxHansdler, new CollectionHandler.StackHandler());
 
     registerHandler(trxHansdler, new CollectionHandler.HashSetHandler());
     registerHandler(trxHansdler, new CollectionHandler.LinkedHashSetHandler());
@@ -93,8 +93,11 @@ public class Bootstrap {
    *          Name of the class the given <tt>handler</tt> can deal with.
    */
   private static void registerHandler(TransactionHandler transactionHandler, ISerializeHandler handler) {
-    IMemoriaClassConfig classConfig = new MemoriaHandlerClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
+    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     transactionHandler.save(classConfig);
+    
+    Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());
+    ObjectModeStrategy.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
   }
   
   

@@ -15,14 +15,14 @@ public class FieldClassHandler implements ISerializeHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IDefaultInstantiator defaultInstantiator) {
-    if (!MemoriaFieldClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + MemoriaFieldClass.class.getName() +" but I was called for " + className);
+    if (!FieldbasedMemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + FieldbasedMemoriaClass.class.getName() +" but I was called for " + className);
   }
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
     
-    MemoriaFieldClass classObject = new MemoriaFieldClass(className, typeId);
+    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(className, typeId);
     
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinder(classObject, superClassId)); 
@@ -39,12 +39,12 @@ public class FieldClassHandler implements ISerializeHandler {
   
   @Override
   public String getClassName() {
-    return MemoriaFieldClass.class.getName();
+    return FieldbasedMemoriaClass.class.getName();
   }
 
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
-    MemoriaFieldClass classObject = (MemoriaFieldClass) obj;
+    FieldbasedMemoriaClass classObject = (FieldbasedMemoriaClass) obj;
     
     output.writeUTF(classObject.getClassName());
     

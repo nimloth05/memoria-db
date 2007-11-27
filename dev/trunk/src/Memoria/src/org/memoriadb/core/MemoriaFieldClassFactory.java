@@ -11,7 +11,7 @@ public final class MemoriaFieldClassFactory {
   public static IMemoriaClassConfig createMetaClass(Class<?> klass, IObjectId memoriaClassId) {
     if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
     
-    MemoriaFieldClass memoriaFieldClass = new MemoriaFieldClass(klass, memoriaClassId);
+    FieldbasedMemoriaClass memoriaFieldClass = new FieldbasedMemoriaClass(klass, memoriaClassId);
     return memoriaFieldClass;
   }
   

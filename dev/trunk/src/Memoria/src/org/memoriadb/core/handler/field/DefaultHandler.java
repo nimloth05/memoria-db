@@ -13,9 +13,9 @@ import org.memoriadb.exception.*;
 
 public class DefaultHandler implements ISerializeHandler {
 
-  private final MemoriaFieldClass fClassObject;
+  private final FieldbasedMemoriaClass fClassObject;
 
-  public DefaultHandler(MemoriaFieldClass classObject) {
+  public DefaultHandler(FieldbasedMemoriaClass classObject) {
     fClassObject = classObject;
   }
 

@@ -4,18 +4,18 @@ import org.memoriadb.core.handler.ISerializeHandler;
 import org.memoriadb.core.id.IObjectId;
 import org.memoriadb.util.ReflectionUtil;
 
-public final class MemoriaHandlerClass extends AbstractMemoriaClass {
+public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
 
   private final ISerializeHandler fSerializeHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
 
-  public MemoriaHandlerClass(ISerializeHandler handler, IObjectId memoriaClassId) {
+  public HandlerbasedMemoriaClass(ISerializeHandler handler, IObjectId memoriaClassId) {
     fSerializeHandler = handler;
     fMemoriaClassId = memoriaClassId;
   }
 
-  public MemoriaHandlerClass(String handlerName, IObjectId memoriaClassId) throws Exception {
+  public HandlerbasedMemoriaClass(String handlerName, IObjectId memoriaClassId) throws Exception {
     this(ReflectionUtil.<ISerializeHandler> createInstance(handlerName), memoriaClassId);
   }
 

@@ -20,9 +20,27 @@ public class ObjectModeStrategy implements IModeStrategy {
     return addTypeHierarchy(transactionHandler, clazz);
   }
   
+  public static void recursiveAddTypeHierarchy(TransactionHandler transactionHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
+    Class<?> javaClass = superClass.getSuperclass();
+    if(javaClass == null) return;
+
+    // the super-class may already be there (bootstrapped or other hierarchy-branch)
+    IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
+    if(classObject != null){
+      subClassconfig.setSuperClass(classObject);
+      return;
+    }
+    
+    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    transactionHandler.internalSave(classObject);
+    subClassconfig.setSuperClass(classObject);
+    
+    recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+  }
+
   private static IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass) {
     IMemoriaClassConfig classObject;
-    classObject = new MemoriaHandlerClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
+    classObject = new HandlerbasedMemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     return result;
@@ -61,24 +79,6 @@ public class ObjectModeStrategy implements IModeStrategy {
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     
     return result;
-  }
-
-  private static void recursiveAddTypeHierarchy(TransactionHandler transactionHandler, Class<?> superClass, IMemoriaClassConfig subClassconfig) {
-    Class<?> javaClass = superClass.getSuperclass();
-    if(javaClass == null) return;
-
-    // the super-class may already be there (bootstrapped or other hierarchy-branch)
-    IMemoriaClassConfig classObject = transactionHandler.internalGetMemoriaClass(javaClass.getName());
-    if(classObject != null){
-      subClassconfig.setSuperClass(classObject);
-      return;
-    }
-    
-    classObject = MemoriaFieldClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
-    transactionHandler.internalSave(classObject);
-    subClassconfig.setSuperClass(classObject);
-    
-    recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
   }
   
   @Override
