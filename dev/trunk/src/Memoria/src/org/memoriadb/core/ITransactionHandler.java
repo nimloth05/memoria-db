@@ -116,7 +116,6 @@ public interface ITransactionHandler {
    * @return IObjectId of the MemoriaClass for the given <tt>object</tt>.
    */
   public IObjectId getMemoriaClassId(Object object);
- 
   
   /**
    * @return The Class for the given <tt>obj</tt> or null.

@@ -30,7 +30,6 @@ public class Bootstrap {
   private static void addDefaultMetaClasses(TransactionHandler trxHansdler, Iterable<String> customHandlers) {
     // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = MemoriaFieldClassFactory.createMetaClass(Object.class, trxHansdler.getDefaultIdProvider().getFieldMetaClass());
-    //repo.add(objectMemoriaClass, objectMemoriaClass.getMemoriaClassId());
     trxHansdler.save(objectMemoriaClass);
 
     registerHandler(trxHansdler, new CollectionHandler.ArrayListHandler());

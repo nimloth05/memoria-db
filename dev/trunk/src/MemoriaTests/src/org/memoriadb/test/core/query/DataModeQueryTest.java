@@ -1,22 +1,39 @@
 package org.memoriadb.test.core.query;
 
-import java.util.List;
+import java.util.*;
 
-import org.memoriadb.core.handler.IDataObject;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.core.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class DataModeQueryTest extends AbstractMemoriaTest {
 
+  public void test_abstract_class() {
+    // AbstractList
+  }
+  
+  public void test_empty_user_space() {
+    reopenDataMode();
+    
+    assertEquals(0, fDataStore.query(Object.class.getName()).size());
+  }
+  
   public void test_polymorph_query() {
-    SimpleTestObj obj = new SimpleTestObj("1");
-    save(obj);
+    A a = new A();
+    B b = new B();
+    C c = new C();
+    
+    save(a);
+    save(b);
+    save(c);
+    
+    save(new ArrayList<Object>());
     
     reopenDataMode();
     
-    List<IDataObject> result = fDataStore.query(Object.class.getName());
+    assertEquals(1, fDataStore.query(AbstractList.class.getName()).size());
     
-    assertEquals(1, result.size()); 
+    assertEquals(4, fDataStore.query(Object.class.getName()).size()); 
   }
+  
 
 }

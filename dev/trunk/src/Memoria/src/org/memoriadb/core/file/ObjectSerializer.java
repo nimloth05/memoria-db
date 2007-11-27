@@ -90,8 +90,7 @@ public final class ObjectSerializer {
   }
 
   private void serializeObject(IObjectInfo info) throws Exception {
-    // FIXME: Hier muss getExistingObject aufgerufen werden, da es die MemoriaClass geben muss!
-    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getObject(info.getMemoriaClassId());
+    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getExistingObject(info.getMemoriaClassId());
     serializeObject(memoriaClass.getHandler(), info);
   }
 

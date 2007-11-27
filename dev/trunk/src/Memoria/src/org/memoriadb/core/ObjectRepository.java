@@ -48,8 +48,8 @@ public class ObjectRepository implements IObjectRepository {
   /**
    * This method is only used for bootstrapping
    */
-  public void add(IObjectId id, IObjectId memoriaMetaClassId, IMemoriaClass object) {
-    ObjectInfo result = new ObjectInfo(id, memoriaMetaClassId, object, Block.getDefaultBlock());
+  public void add(IObjectId id, IMemoriaClass object) {
+    ObjectInfo result = new ObjectInfo(id, object.getMemoriaClassId(), object, Block.getDefaultBlock());
     internalPut(result);
   }
 

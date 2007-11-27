@@ -10,4 +10,5 @@ public abstract class AbstractMemoriaClass implements IMemoriaClassConfig {
     if(superClass == null) return false;
     return superClass.isTypeFor(javaClass);
   }
+  
 }
