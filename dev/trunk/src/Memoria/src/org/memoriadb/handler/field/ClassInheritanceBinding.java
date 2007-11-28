@@ -1,16 +1,16 @@
 package org.memoriadb.handler.field;
 
-import org.memoriadb.core.load.*;
+import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
-public class ClassInheritanceBinder implements IBindable {
+public class ClassInheritanceBinding implements IBindable {
 
-  private final FieldbasedMemoriaClass fSubClass;
+  private final IMemoriaClassConfig fSubClass;
   private final IObjectId fSuperClassId;
 
-  public ClassInheritanceBinder(FieldbasedMemoriaClass classObject, IObjectId superClassId) {
+  public ClassInheritanceBinding(IMemoriaClassConfig classObject, IObjectId superClassId) {
     fSubClass = classObject;
     fSuperClassId = superClassId;
   }

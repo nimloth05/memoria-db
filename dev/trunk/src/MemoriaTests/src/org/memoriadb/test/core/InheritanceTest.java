@@ -2,9 +2,6 @@ package org.memoriadb.test.core;
 
 import java.util.ArrayList;
 
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.util.ReflectionUtil;
-import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.core.testclasses.SimpleTestObj;
 import org.memoriadb.test.core.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
@@ -15,24 +12,13 @@ public class InheritanceTest extends AbstractMemoriaTest {
   public void test_create_metaObjects() {
     B b = createB();
     save(b);
-    assertMetaObjectHierarchy(b);
+    assertTypeHierachy(B.class);
   }
   
   public void test_handler_hierachy() {
     assertTypeHierachy(ArrayList.class);
-//    IMemoriaClass arrayListClass = fObjectStore.getTypeInfo().getMemoriaClass(ArrayList.class);
-//    assertNotNull(arrayListClass.getSuperClass());
-//    
-//    IMemoriaClass abstractListClass = arrayListClass.getSuperClass();
-//    assertNotNull(abstractListClass);
-//    assertSame(abstractListClass, fObjectStore.getTypeInfo().getMemoriaClass(AbstractList.class));
-//    assertEquals(ReflectionUtil.getClass(abstractListClass.getJavaClassName()), AbstractList.class);
-//    
-//    IMemoriaClass abstractCollectionClass = abstractListClass.getSuperClass();
-//    assertNotNull(abstractCollectionClass);
-//    
-//    IMemoriaClass objectClass = abstractCollectionClass.getSuperClass();
-//    assertNotNull(objectClass);
+    reopen();
+    assertTypeHierachy(ArrayList.class);
   }
   
   public void test_memoriaClass_for_Object_exists() {
@@ -42,11 +28,11 @@ public class InheritanceTest extends AbstractMemoriaTest {
   public void test_save_inheritance_obj() {
     B b = createB();
     b.fTestObj = new SimpleTestObj();
-    IObjectId id = saveAll(b);
+    saveAll(b);
     
-    assertMetaObjectHierarchy(b);
+    assertTypeHierachy(B.class);
     reopen();
-    assertMetaObjectHierarchy((B)get(id));
+    assertTypeHierachy(B.class);
     
     B loadedB = query(B.class).get(0); 
     assertB(b, loadedB);
@@ -73,11 +59,11 @@ public class InheritanceTest extends AbstractMemoriaTest {
     b.fTestObj = new SimpleTestObj();
     
     save(a);
-    IObjectId idB = saveAll(b);
+    saveAll(b);
     
     reopen();
     
-    assertMetaObjectHierarchy((B)get(idB));
+    assertTypeHierachy(B.class);
     
     B loadedB = query(B.class).get(0);
     assertB(b, loadedB);
@@ -88,32 +74,6 @@ public class InheritanceTest extends AbstractMemoriaTest {
     assertEquals(b.fString, loadedB.fString);
     assertEquals(b.getInt(), loadedB.getInt());
     assertEquals(b.getLong(), loadedB.getLong());
-  }
-  
-  private void assertMetaObjectHierarchy(B b) {
-    IMemoriaClass metaClass = fObjectStore.getTypeInfo().getMemoriaClass(b);
-    IMemoriaClass objectClass = fObjectStore.getTypeInfo().getMemoriaClass(Object.class);
-    
-    assertEquals(metaClass.getJavaClassName(), B.class.getName());
-    assertEquals(metaClass.getSuperClass().getJavaClassName(), A.class.getName());
-    
-    IMemoriaClass javaObjectMetaObject = metaClass.getSuperClass().getSuperClass();
-    IObjectId id = fObjectStore.getId(javaObjectMetaObject);
-    
-    assertEquals(fObjectStore.getId(objectClass), id);
-    assertEquals(javaObjectMetaObject.getJavaClassName(), Object.class.getName());
-  }
-  
-  private void assertTypeHierachy(Class<?> clazz) {
-    if (clazz == null) return;
-    
-    IMemoriaClass memoriaClass = fObjectStore.getTypeInfo().getMemoriaClass(clazz);
-    IMemoriaClass superClass = memoriaClass.getSuperClass();
-    assertNotNull(superClass);
-    assertSame(superClass, fObjectStore.getTypeInfo().getMemoriaClass(clazz.getSuperclass().getName()));
-    assertSame(ReflectionUtil.getClass(superClass.getJavaClassName()), clazz.getSuperclass());
-
-    assertTypeHierachy(clazz.getSuperclass());
   }
   
   private B createB() {

@@ -2,12 +2,13 @@ package org.memoriadb.core.meta;
 
 import java.io.*;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.field.ClassInheritanceBinding;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -22,13 +23,15 @@ public class HandlerClassHandler implements IHandler {
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String javaClassName = input.readUTF();
     String handlerName = input.readUTF();
-    try {
-      IHandler handler = instantiateHandler(handlerName, javaClassName);
-      return new HandlerbasedMemoriaClass(handler, typeId);
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
+    IObjectId superClassId = context.readObjectId(input);
+    
+    IHandler handler = instantiateHandler(handlerName, javaClassName);
+    
+    HandlerbasedMemoriaClass memoriaClass = new HandlerbasedMemoriaClass(handler, typeId);
+    
+    if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinding(memoriaClass, superClassId));
+      
+    return memoriaClass;
   }
 
   @Override
@@ -42,6 +45,12 @@ public class HandlerClassHandler implements IHandler {
     
     output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());
+    
+    IObjectId superClassId = context.getRootClassId();
+    if (classObject.getSuperClass() != null) {
+      superClassId = context.getExistingtId(classObject.getSuperClass());
+    }
+    superClassId.writeTo(output);
   }
 
   @Override

@@ -9,7 +9,9 @@ import org.memoriadb.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.mode.*;
+import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.IObjectId;
 
@@ -24,15 +26,31 @@ public abstract class AbstractMemoriaTest extends TestCase {
     return (IBlockManagerExt)fObjectStore.getBlockManager();
   }
   
+  protected final void assertTypeHierachy(Class<?> clazz) {
+    IMemoriaClass memoriaClass = fObjectStore.getTypeInfo().getMemoriaClass(clazz);
+    assertSame(memoriaClass, fObjectStore.getTypeInfo().getMemoriaClass(clazz.getName()));
+    
+    IMemoriaClass superClass = memoriaClass.getSuperClass();
+    if (superClass == null) {
+      assertEquals(Object.class.getName(), memoriaClass.getJavaClassName());
+      return;
+    }
+    
+    assertSame(superClass, fObjectStore.getTypeInfo().getMemoriaClass(clazz.getSuperclass()));
+    assertSame(ReflectionUtil.getClass(superClass.getJavaClassName()), clazz.getSuperclass());
+
+    assertTypeHierachy(clazz.getSuperclass());
+  }
+  
   protected void beginUpdate() {
     fObjectStore.beginUpdate();
   }
-  
+
   /**
    * Overwrite to change the memoria-configuration for opening a db. 
    */
   protected void configureOpen(CreateConfig config) {}
-
+  
   /**
    * Overwrite to change the memoria-configuration for reopening a db. 
    */
@@ -49,13 +67,9 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected void endUpdate() {
     fObjectStore.endUpdate();
   }
-  
+
   protected <T> T get(IObjectId id) {
     return fObjectStore.get(id);
-  }
-
-  protected <T> List<T> query(Class<T> clazz) {
-    return fObjectStore.query(clazz);
   }
   
   protected IMemoriaFile getFile() {
@@ -83,6 +97,10 @@ public abstract class AbstractMemoriaTest extends TestCase {
     return TestMode.memory;
   }
 
+  protected <T> List<T> query(Class<T> clazz) {
+    return fObjectStore.query(clazz);
+  }
+  
   protected final void recreateDataStore() {
     closeStores();
     
@@ -98,7 +116,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
     fObjectStore = null;
   }
-  
+
   protected final void recreateObjectStore() {
     closeStores();
     
@@ -114,19 +132,19 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
     fDataStore = null;
   }
-
+  
   protected final void reopen() {
     recreateObjectStore(); 
   }
-  
+   
   protected void reopenDataMode() {
     recreateDataStore();
   }
-   
+
   protected final IObjectId save(IDataObject obj) {
     return fDataStore.save(obj);
   }
-
+  
   protected final IObjectId save(Object obj) {
     return fObjectStore.save(obj);
   }
@@ -138,7 +156,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected final IObjectId saveAll(Object obj) {
     return fObjectStore.saveAll(obj);
   }
-  
+
   @Override
   protected void setUp() {
    CreateConfig config = new CreateConfig();
@@ -153,7 +171,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
      fObjectStore = openStore(new PhysicalFile(PATH), config);
    }
   }
-
+  
   @Override
   protected void tearDown() {
     closeStores();
@@ -171,5 +189,6 @@ public abstract class AbstractMemoriaTest extends TestCase {
   private IDataStoreExt openStoreDataMode(IMemoriaFile file, CreateConfig config) {
     return (IDataStoreExt) Memoria.openDataMode(config, file);
   }
+
   
 }
