@@ -84,7 +84,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     Object o_l1 = fObjectStore.get(id);
     assertSame(Object.class, o_l1.getClass());
-
   }
   
   public void test_ObjectId() {
@@ -289,6 +288,26 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(id));
   }
   
+  
+  public void test_transient_ref_with_save_and_saveAll() {
+    TransientClass t1 = new TransientClass(1, new A());
+    TransientClass t2 = new TransientClass(2, new A());
+    
+    IObjectId id1 = save(t1);
+    IObjectId id2 = save(t2);
+    
+    reopen();
+    
+    TransientClass l1_t1 = get(id1);
+    TransientClass l1_t2 = get(id2);
+    
+    assertEquals(0, l1_t1.fInt);
+    assertNull(l1_t1.fA);
+    
+    assertEquals(0, l1_t2.fInt);
+    assertNull(l1_t2.fA);
+  }
+
   public void test_update_attribute() {
     B b = new B("b");
     IObjectId idb = fObjectStore.save(b);
@@ -301,7 +320,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     B b_l1 = (B) fObjectStore.get(idbb);
     assertEquals("bb", b_l1.getName());
   }
-
+  
   public void test_update_unsaved_reference() {
     A a = new A(null); // b is not saved
     IObjectId id = fObjectStore.save(a);

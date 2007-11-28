@@ -83,7 +83,6 @@ public class InheritanceTest extends AbstractMemoriaTest {
     assertB(b, loadedB);
   }
   
-
   private void assertB(B b, B loadedB) {
     assertEquals(b.fBoolean, loadedB.fBoolean);
     assertEquals(b.fString, loadedB.fString);
