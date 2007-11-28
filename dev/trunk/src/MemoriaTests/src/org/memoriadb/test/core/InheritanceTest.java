@@ -2,8 +2,9 @@ package org.memoriadb.test.core;
 
 import java.util.ArrayList;
 
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.test.core.testclasses.inheritance.*;
+import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 

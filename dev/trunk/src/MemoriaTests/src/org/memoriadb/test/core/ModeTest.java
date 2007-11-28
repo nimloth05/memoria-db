@@ -2,7 +2,7 @@ package org.memoriadb.test.core;
 
 import org.memoriadb.handler.field.*;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class ModeTest extends AbstractMemoriaTest {

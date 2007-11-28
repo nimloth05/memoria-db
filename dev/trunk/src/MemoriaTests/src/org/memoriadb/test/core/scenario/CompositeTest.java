@@ -7,8 +7,9 @@ import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.collection.IListDataObject;
 import org.memoriadb.handler.field.*;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
-import org.memoriadb.test.core.testclasses.composite.*;
+import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.composite.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class CompositeTest extends AbstractMemoriaTest {

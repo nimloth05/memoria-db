@@ -1,7 +1,7 @@
 package org.memoriadb.loadtests;
 
 import org.memoriadb.TestMode;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class BlockTest extends AbstractMemoriaTest {

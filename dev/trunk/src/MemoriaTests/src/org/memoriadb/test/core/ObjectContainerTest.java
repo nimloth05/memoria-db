@@ -5,7 +5,7 @@ import java.util.*;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 

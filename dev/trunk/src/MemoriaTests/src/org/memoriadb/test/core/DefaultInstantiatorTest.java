@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.instantiator.*;
-import org.memoriadb.test.core.testclasses.ctor.*;
+import org.memoriadb.test.testclasses.ctor.*;
 
 public class DefaultInstantiatorTest extends TestCase {
   

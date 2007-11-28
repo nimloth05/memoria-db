@@ -5,7 +5,7 @@ import java.util.*;
 import org.memoriadb.handler.enu.IEnumObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.enums.*;
+import org.memoriadb.test.testclasses.enums.*;
 import org.memoriadb.testutil.*;
 import org.memoriadb.testutil.Collections;
 

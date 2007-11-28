@@ -8,10 +8,10 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.core");
 
     suite.addTest(org.memoriadb.test.core.backend.AllTests.suite());
-    suite.addTest(org.memoriadb.test.core.crud.AllTests.suite());
-    suite.addTest(org.memoriadb.test.core.block.AllTests.suite());
+    suite.addTest(org.memoriadb.test.crud.AllTests.suite());
+    suite.addTest(org.memoriadb.test.block.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.scenario.AllTests.suite());
-    suite.addTest(org.memoriadb.test.core.handler.AllTests.suite());
+    suite.addTest(org.memoriadb.test.handler.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.enu.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.query.AllTests.suite());
 

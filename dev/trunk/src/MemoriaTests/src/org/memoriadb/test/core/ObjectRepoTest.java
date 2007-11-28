@@ -7,7 +7,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.loong.*;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.SimpleTestObj;
 
 public class ObjectRepoTest extends TestCase {
   

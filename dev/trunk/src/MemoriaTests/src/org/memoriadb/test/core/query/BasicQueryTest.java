@@ -3,7 +3,7 @@ package org.memoriadb.test.core.query;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.test.core.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class BasicQueryTest extends AbstractMemoriaTest {

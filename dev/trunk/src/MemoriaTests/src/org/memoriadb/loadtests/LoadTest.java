@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.TestMode;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class LoadTest extends AbstractMemoriaTest {

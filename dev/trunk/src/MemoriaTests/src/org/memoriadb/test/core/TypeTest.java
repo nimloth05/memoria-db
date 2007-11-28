@@ -10,7 +10,7 @@ import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.loong.LongId;
-import org.memoriadb.test.core.testclasses.*;
+import org.memoriadb.test.testclasses.*;
 
 public class TypeTest extends TestCase {
   

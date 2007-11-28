@@ -2,7 +2,7 @@ package org.memoriadb.test.core.query;
 
 import java.util.*;
 
-import org.memoriadb.test.core.testclasses.inheritance.*;
+import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class DataModeQueryTest extends AbstractMemoriaTest {
