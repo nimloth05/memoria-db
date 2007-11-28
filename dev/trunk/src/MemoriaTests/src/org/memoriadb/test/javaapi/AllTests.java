@@ -9,7 +9,6 @@ public class AllTests {
     //$JUnit-BEGIN$
     suite.addTestSuite(FileTest.class);
     suite.addTestSuite(ListTest.class);
-    suite.addTestSuite(PrimitiveClassTest.class);
     suite.addTestSuite(LinkedSet.class);
     suite.addTestSuite(EnumTest.class);
     suite.addTestSuite(CrcTest.class);

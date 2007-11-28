@@ -37,6 +37,7 @@ public interface IObjectRepository {
   
   public Collection<IObjectInfo> getAllObjectInfos();
 
+  //FIXME unterscheiden UserSpace/ nicht UserSpace mit FilteredIterator
   public Collection<Object> getAllObjects();
 
   public IObjectId getExistingId(Object obj);

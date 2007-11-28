@@ -14,7 +14,7 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
  * @author sandro
  *
  */
-public class ClassModeQueryTest extends AbstractMemoriaTest {
+public class ObjectModeQueryTest extends AbstractMemoriaTest {
   
   public void test_getAll_class_literal_with_filter() {
     SimpleTestObj obj = new SimpleTestObj("1");
@@ -59,6 +59,7 @@ public class ClassModeQueryTest extends AbstractMemoriaTest {
         
   }
   
+  @SuppressWarnings("unchecked")
   public void test_query_abstract_classes() {
     fObjectStore.save(new ArrayList<Object>());
     List<AbstractList> query = fObjectStore.query(AbstractList.class);

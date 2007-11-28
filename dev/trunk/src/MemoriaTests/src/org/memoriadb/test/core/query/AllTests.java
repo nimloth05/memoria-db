@@ -8,7 +8,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.core.query");
     //$JUnit-BEGIN$
     suite.addTestSuite(BasicQueryTest.class);
-    suite.addTestSuite(ClassModeQueryTest.class);
+    suite.addTestSuite(ObjectModeQueryTest.class);
     suite.addTestSuite(DataModeQueryTest.class);
     //$JUnit-END$
     return suite;

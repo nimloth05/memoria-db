@@ -8,5 +8,6 @@ public class ListTest extends TestCase {
 
   public void test() {
     ArrayList<Object> list = new ArrayList<Object>(6);
-    }
+    assertEquals(0, list.size());
+  }
 }

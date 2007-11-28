@@ -114,22 +114,6 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.contains(object));
   }
   
-  public void test_delete_referencee_and_add_it_again() {
-    A a = new A(new B("b"));
-    
-    IObjectId idA = saveAll(a);
-    IObjectId idB = fObjectStore.getId(a.getB());
-    
-    // delete the referenced object
-    delete(a.getB());
-    reopen();
-    
-    A l1_a = get(idA);
-    
-    assertNull(l1_a.getB());
-    
-  }
-  
   public void test_delete_referencee() {
     A a = new A(new B("b"));
     
@@ -142,7 +126,20 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     A l1_a = get(id);
     
     assertNull(l1_a.getB());
+  }
+  
+  public void test_delete_referencee_and_add_it_again() {
+    A a = new A(new B("b"));
     
+    IObjectId idA = saveAll(a);
+    
+    // delete the referenced object
+    delete(a.getB());
+    reopen();
+    
+    A l1_a = get(idA);
+    
+    assertNull(l1_a.getB());
   }
   
   public void test_save_and_delete_in_same_transaction() {

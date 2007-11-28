@@ -1,4 +1,4 @@
-package org.memoriadb.test.javaapi;
+package bootstrap.examples.array;
 
 import java.lang.reflect.Array;
 
