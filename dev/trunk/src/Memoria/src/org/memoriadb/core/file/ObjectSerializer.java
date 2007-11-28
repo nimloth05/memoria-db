@@ -37,12 +37,12 @@ public final class ObjectSerializer {
 
     @Override
     public IObjectId getNullReference() {
-      return fObjectRepository.getNullReference();
+      return fObjectRepository.getIdFactory().getNullReference();
     }
 
     @Override
     public IObjectId getRootClassId() {
-      return fObjectRepository.getRootClassId();
+      return fObjectRepository.getIdFactory().getRootClassId();
     }
   }
 
@@ -84,14 +84,9 @@ public final class ObjectSerializer {
 
   private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
     fStream.writeInt(2*fObjectRepository.getIdFactory().getIdSize());
-    IObjectId typeId = fObjectRepository.isMemoriaClass(info.getObject()) ? fObjectRepository.getMemoriaClassDeletionMarker() : fObjectRepository.getObjectDeletionMarker();
+    IObjectId typeId = fObjectRepository.isMemoriaClass(info.getObject()) ? fObjectRepository.getIdFactory().getMemoriaClassDeletionMarker() : fObjectRepository.getIdFactory().getObjectDeletionMarker();
     typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
-  }
-
-  private void serializeObject(IObjectInfo info) throws Exception {
-    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getExistingObject(info.getMemoriaClassId());
-    serializeObject(memoriaClass.getHandler(), info);
   }
 
   private void serializeObject(IHandler handler, IObjectInfo info) throws Exception {
@@ -108,6 +103,11 @@ public final class ObjectSerializer {
     byte[] objectData = buffer.toByteArray();
     fStream.writeInt(objectData.length);
     fStream.write(objectData);
+  }
+
+  private void serializeObject(IObjectInfo info) throws Exception {
+    IMemoriaClass memoriaClass = (IMemoriaClass) fObjectRepository.getExistingObject(info.getMemoriaClassId());
+    serializeObject(memoriaClass.getHandler(), info);
   }
 
 }

@@ -10,6 +10,13 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
+  public void test_as_string() {
+    IObjectId id = save(new Object());
+    String asString = id.asString();
+    IObjectId fromString = fObjectStore.getIdFactory().fromString(asString);
+    assertEquals(id, fromString);
+  }
+  
   public void test_cannot_save_an_object_with_no_default_ctor() {
     try {
       fObjectStore.save(new NoDefault("1"));
@@ -287,7 +294,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     assertFalse(fObjectStore.containsId(id));
   }
-  
+
   
   public void test_transient_ref_with_save_and_saveAll() {
     TransientClass t1 = new TransientClass(1, new A());
@@ -348,5 +355,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l3_a = fObjectStore.get(id);
     assertNotNull(l3_a.getB());
   }
+
   
 }

@@ -11,14 +11,12 @@ import java.io.*;
  */
 public interface IObjectId {
 
+  public String asString();
+  
   public boolean equals(Object object);
   
   public int hashCode();
   
   public void writeTo(DataOutput output) throws IOException;
-
-  public long getLeastSignificantBits();
-
-  public long getMostSignificantBits();
 
 }

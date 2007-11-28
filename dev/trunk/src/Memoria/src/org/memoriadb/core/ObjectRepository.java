@@ -107,11 +107,6 @@ public class ObjectRepository implements IObjectRepository {
   }
 
   @Override
-  public IObjectId getArrayMemoriaClass() {
-    return fIdFactory.getArrayMemoriaClass();    
-  }
-
-  @Override
   public IObjectId getExistingId(Object obj) {
     // FIXME assertion
     return getId(obj);
@@ -121,17 +116,6 @@ public class ObjectRepository implements IObjectRepository {
     // FIXME assertion
     return getObject(id);
   }
-
-  @Override
-  public IObjectId getFieldMetaClass() {
-    return getIdFactory().getFieldMetaClass();
-  }
-
-  @Override
-  public IObjectId getHandlerMetaClass() {
-    return fIdFactory.getHandlerMetaClass();
-  }
-  
 
   /**
    * @param obj
@@ -158,16 +142,6 @@ public class ObjectRepository implements IObjectRepository {
     return fMemoriaClasses.get(klass);
   }
   
-  @Override
-  public IObjectId getMemoriaClassDeletionMarker() {
-    return fIdFactory.getMemoriaClassDeletionMarker();
-  }
-
-  @Override
-  public IObjectId getNullReference() {
-    return fIdFactory.getNullReference();
-  }
-
   /**
    * 
    * @param objectId
@@ -180,11 +154,6 @@ public class ObjectRepository implements IObjectRepository {
     return objectInfo.getObject();
   }
 
-  @Override
-  public IObjectId getObjectDeletionMarker() {
-    return fIdFactory.getObjectDeletionMarker();
-  }
-
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }
@@ -193,16 +162,6 @@ public class ObjectRepository implements IObjectRepository {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
     return result;
-  }
-
-  @Override
-  public IObjectId getPrimitiveClassId() {
-    return fIdFactory.getPrimitiveClassId();
-  }
-
-  @Override
-  public IObjectId getRootClassId() {
-    return fIdFactory.getRootClassId();
   }
 
   /**
@@ -225,33 +184,8 @@ public class ObjectRepository implements IObjectRepository {
     return obj instanceof IMemoriaClass;
   }
 
-  @Override
-  public boolean isMemoriaClassDeletionMarker(IObjectId typeId) {
-    return fIdFactory.isMemoriaClassDeletionMarker(typeId);
-  }
-
-  @Override
-  public boolean isMemoriaFieldClass(IObjectId typeId) {
-    return fIdFactory.isMemoriaFieldClass(typeId);
-  }
-  
-  @Override
-  public boolean isMemoriaHandlerClass(IObjectId typeId) {
-    return fIdFactory.isMemoriaHandlerClass(typeId);
-  }
-
   public boolean isNullReference(IObjectId objectId) {
     return fIdFactory.isNullReference(objectId);
-  }
-
-  @Override
-  public boolean isObjectDeletionMarker(IObjectId typeId) {
-    return fIdFactory.isObjectDeletionMarker(typeId);
-  }
-
-  @Override
-  public boolean isRootClassId(IObjectId superClassId) {
-    return fIdFactory.isRootClassId(superClassId);
   }
 
   public void updateObjectInfoAdded(Object obj, long revision) {

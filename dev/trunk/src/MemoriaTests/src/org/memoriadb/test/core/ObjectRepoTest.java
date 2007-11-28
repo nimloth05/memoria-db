@@ -27,7 +27,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMemoriaClass classObject = new FieldbasedMemoriaClass(SimpleTestObj.class, fRepo.getFieldMetaClass());
+    IMemoriaClass classObject = new FieldbasedMemoriaClass(SimpleTestObj.class, fRepo.getIdFactory().getFieldMetaClass());
     IObjectId id = fRepo.add(classObject, classObject.getMemoriaClassId()).getId();
     
     assertSame(classObject, fRepo.getExistingObject(id));

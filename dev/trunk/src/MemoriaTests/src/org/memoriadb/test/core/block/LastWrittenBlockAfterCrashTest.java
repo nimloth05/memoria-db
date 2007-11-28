@@ -1,9 +1,8 @@
 package org.memoriadb.test.core.block;
 
-import org.memoriadb.block.*;
+import org.memoriadb.block.Block;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.listener.IWriteListener;
 import org.memoriadb.id.IObjectId;

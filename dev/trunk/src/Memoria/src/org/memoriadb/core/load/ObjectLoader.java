@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
@@ -49,7 +48,7 @@ public final class ObjectLoader implements IReaderContext {
 
   @Override
   public IObjectId getArrayMemoriaClass() {
-    return fRepo.getArrayMemoriaClass();
+    return fRepo.getIdFactory().getArrayMemoriaClass();
   }
 
   @Override
@@ -69,7 +68,7 @@ public final class ObjectLoader implements IReaderContext {
 
   @Override
   public IObjectId getPrimitiveClassId() {
-    return fRepo.getPrimitiveClassId();
+    return fRepo.getIdFactory().getPrimitiveClassId();
   }
 
   @Override
@@ -84,7 +83,7 @@ public final class ObjectLoader implements IReaderContext {
 
   @Override
   public boolean isRootClassId(IObjectId superClassId) {
-    return fRepo.isRootClassId(superClassId);
+    return fRepo.getIdFactory().isRootClassId(superClassId);
   }
 
   @Override
@@ -196,7 +195,7 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void memoriaClassDeleted(IObjectId id, long version) {
-        addDeletionMarker(fHydratedMetaClasses, id, fRepo.getMemoriaClassDeletionMarker(), version);
+        addDeletionMarker(fHydratedMetaClasses, id, fRepo.getIdFactory().getMemoriaClassDeletionMarker(), version);
       }
 
       @Override
@@ -206,7 +205,7 @@ public final class ObjectLoader implements IReaderContext {
 
       @Override
       public void objectDeleted(IObjectId id, long version) {
-        addDeletionMarker(fHydratedObjects, id, fRepo.getObjectDeletionMarker(), version);
+        addDeletionMarker(fHydratedObjects, id, fRepo.getIdFactory().getObjectDeletionMarker(), version);
       }
 
     });

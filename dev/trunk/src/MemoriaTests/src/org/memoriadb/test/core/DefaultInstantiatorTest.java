@@ -2,7 +2,6 @@ package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.instantiator.*;
 import org.memoriadb.test.core.testclasses.ctor.*;

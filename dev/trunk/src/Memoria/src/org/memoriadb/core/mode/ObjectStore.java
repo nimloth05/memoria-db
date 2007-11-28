@@ -99,7 +99,7 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public IDefaultIdProvider getIdFactory() {
+  public IIdProvider getIdFactory() {
     return fTransactionHandler.getDefaultIdProvider();
   }
 

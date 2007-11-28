@@ -99,14 +99,14 @@ public class TransactionHandler {
   }
 
   public IObjectId getArrayMemoriaClassId() {
-    return fObjectRepository.getArrayMemoriaClass();
+    return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
   
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
   
-  public IDefaultIdProvider getDefaultIdProvider() {
+  public IIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
   
@@ -135,7 +135,7 @@ public class TransactionHandler {
   }
   
   public IObjectId getMemoriaArrayClass() {
-    return fObjectRepository.getArrayMemoriaClass();
+    return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
   
   public IMemoriaClass getMemoriaClass(Object object) {

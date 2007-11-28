@@ -20,7 +20,7 @@ public class ObjectArray extends AbstractArray {
    * @param arrayClassId
    *          id of the generic array class
    * @param componentTypeId
-   *          id of the component-type, {@link IDefaultIdProvider#getPrimitiveClassId()} if the component type is
+   *          id of the component-type, {@link IIdProvider#getPrimitiveClassId()} if the component type is
    *          a primitive (string, int, Integer etc)
    * 
    * @param dimension

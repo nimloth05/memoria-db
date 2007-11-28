@@ -37,6 +37,11 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   }
 
   @Override
+  public IObjectId fromString(String string) {
+    return new LongId(Long.parseLong(string));
+  }
+
+  @Override
   public IObjectId getArrayMemoriaClass() {
     return ARRAY_MEMORIA_CLASS;
   }

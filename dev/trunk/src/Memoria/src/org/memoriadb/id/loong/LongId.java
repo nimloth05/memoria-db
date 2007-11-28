@@ -15,6 +15,11 @@ public final class LongId implements IObjectId {
   }
 
   @Override
+  public String asString() {
+    return Long.toString(fValue);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
@@ -26,7 +31,7 @@ public final class LongId implements IObjectId {
   public long getLong() {
     return fValue;
   }
-
+  
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -34,10 +39,10 @@ public final class LongId implements IObjectId {
     result = prime * result + (int) (fValue ^ (fValue >>> 32));
     return result;
   }
-  
+
   @Override
   public String toString() {
-    return Long.toString(fValue);
+    return asString();
   }
 
   @Override
@@ -45,11 +50,4 @@ public final class LongId implements IObjectId {
     output.writeLong(fValue);
   }
 
-  public long getMostSignificantBits() {
-    return 0;
-  }
-
-  public long getLeastSignificantBits() {
-    return 0;
-  }
 }

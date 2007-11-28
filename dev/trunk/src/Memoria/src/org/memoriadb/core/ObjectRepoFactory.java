@@ -13,7 +13,7 @@ public final class ObjectRepoFactory {
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepository repo, IDefaultIdProvider factory) {
+  private static void registerMetaClasses(ObjectRepository repo, IIdProvider factory) {
     // super meta mega class.
     IMemoriaClassConfig handlerMetaClass = new HandlerbasedMemoriaClass(new HandlerClassHandler(), factory.getHandlerMetaClass());
     repo.add(factory.getHandlerMetaClass(), handlerMetaClass);

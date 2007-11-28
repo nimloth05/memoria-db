@@ -13,7 +13,7 @@ import org.memoriadb.id.*;
  * @author msc
  *
  */
-public interface IObjectRepository extends IDefaultIdProvider {
+public interface IObjectRepository {
 
   /**
    * Adds an object to the container. A new objectId is generated.

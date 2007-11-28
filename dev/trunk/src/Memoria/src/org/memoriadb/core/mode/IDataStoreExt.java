@@ -24,7 +24,7 @@ public interface IDataStoreExt extends IDataStore {
 
   public Header getHeader();  
   
-  public IDefaultIdProvider getIdFactory();
+  public IIdProvider getIdFactory();
 
   public int getIdSize();
 

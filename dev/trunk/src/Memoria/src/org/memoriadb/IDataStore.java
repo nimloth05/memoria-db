@@ -48,7 +48,7 @@ public interface IDataStore extends IStore {
   
   public Collection<IDataObject> getAllObjects();
   
-  public IDefaultIdProvider getDefaultIdProvider();
+  public IIdProvider getDefaultIdProvider();
   
   /**
    * @return The objectId of the given object.

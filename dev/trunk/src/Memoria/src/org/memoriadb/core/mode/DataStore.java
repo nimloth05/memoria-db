@@ -82,7 +82,7 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IDefaultIdProvider getDefaultIdProvider() {
+  public IIdProvider getDefaultIdProvider() {
     return fTransactionHandler.getDefaultIdProvider();
   }
 
@@ -106,7 +106,7 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IDefaultIdProvider getIdFactory() {
+  public IIdProvider getIdFactory() {
     return fTransactionHandler.getDefaultIdProvider();
   }
 
