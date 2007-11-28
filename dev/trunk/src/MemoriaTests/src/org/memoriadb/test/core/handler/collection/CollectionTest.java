@@ -69,12 +69,18 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(3, l1_collection.size());
     
   }
-
+  
   public void test_object() {
     Collection<SimpleTestObj> collection = getObjectCollection();
     reopen(collection);
   }
   
+  public void test_save_all_data_mode() {
+    reopenDataMode();
+    
+    
+  }
+
   public void test_string() {
     Collection<String> collection = createCollection();
     collection.add("one");
