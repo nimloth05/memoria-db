@@ -8,21 +8,19 @@ import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.ReflectionUtil;
-import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.collection.CollectionHandler.SetHandler;
 import org.memoriadb.id.IObjectId;
 
-public class EnumSetHandler extends CollectionHandler {
+public class EnumSetHandler extends SetHandler {
 
   public static final String sRegularEnumSet = "java.util.RegularEnumSet";
   public static final String sJumboEnumSet = "java.util.JumboEnumSet";
   private static final String FIElD_NAME_FOR_ENUM_TYPE_INFO = "elementType";
 
   private IMemoriaClass fEnumClass;
-
-  private final String fClassName;
-
-  public EnumSetHandler(String className) {
-    fClassName = className;
+  
+  public EnumSetHandler(String name) {
+    super(name);
   }
 
   @Override
@@ -30,11 +28,6 @@ public class EnumSetHandler extends CollectionHandler {
     IObjectId enumClassId = context.readObjectId(input);
     fEnumClass = (IMemoriaClass) context.getExistingObject(enumClassId);
     return super.deserialize(input, context, typeId);
-  }
-
-  @Override
-  public String getClassName() {
-    return fClassName;
   }
 
   @SuppressWarnings("unchecked")
@@ -50,15 +43,10 @@ public class EnumSetHandler extends CollectionHandler {
 
   @SuppressWarnings("unchecked")
   @Override
-  protected Collection<Object> createCollection() {
+  protected Collection<Object> createCollectionForObjectMode() {
     Class<Enum> enumClass = (Class<Enum>) ReflectionUtil.getClass(fEnumClass.getJavaClassName());
     EnumSet<?> noneOf = EnumSet.noneOf(enumClass);
     return (Collection<Object>) noneOf;
-  }
-
-  @Override
-  protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-    return new SetDataObject((Set<Object>) collection, typeId);
   }
 
   @SuppressWarnings("unchecked")

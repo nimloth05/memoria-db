@@ -47,4 +47,9 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
     fSuperClass = metaClass;
   }
 
+  @Override
+  public String toString() {
+    return "javaClass: "+ getJavaClassName() + " handler: " + getHandlerName();
+  }
+
 }

@@ -1,6 +1,8 @@
 package org.memoriadb.core;
 
 import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
@@ -36,16 +38,17 @@ public class Bootstrap {
     registerHandler(trxHandler, new GuidIdHandler());
     
     // FIXME den CollectionHandler auf mehr Generizität umschreiben (Ctor mit String-arg)
-    registerHandler(trxHandler, new CollectionHandler.ArrayListHandler());
-    registerHandler(trxHandler, new CollectionHandler.LinkedListHandler());
-    registerHandler(trxHandler, new CollectionHandler.CopyOnWriteListHandler());
-    registerHandler(trxHandler, new CollectionHandler.VectorHandler());
-    registerHandler(trxHandler, new CollectionHandler.StackHandler());
+    registerHandler(trxHandler, new CollectionHandler.ListHandler(ArrayList.class));
+    registerHandler(trxHandler, new CollectionHandler.ListHandler(LinkedList.class));
+    registerHandler(trxHandler, new CollectionHandler.ListHandler(CopyOnWriteArrayList.class));
+    registerHandler(trxHandler, new CollectionHandler.ListHandler(Vector.class));
+    registerHandler(trxHandler, new CollectionHandler.ListHandler(Stack.class));
 
-    registerHandler(trxHandler, new CollectionHandler.HashSetHandler());
-    registerHandler(trxHandler, new CollectionHandler.LinkedHashSetHandler());
     registerHandler(trxHandler, new CollectionHandler.TreeSetHandler());
     registerHandler(trxHandler, new CollectionHandler.ConcurrentSkipListSetHandler());
+    registerHandler(trxHandler, new CollectionHandler.SetHandler(HashSet.class));
+    registerHandler(trxHandler, new CollectionHandler.SetHandler(LinkedHashSet.class));
+    registerHandler(trxHandler, new CollectionHandler.SetHandler(CopyOnWriteArraySet.class));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
     

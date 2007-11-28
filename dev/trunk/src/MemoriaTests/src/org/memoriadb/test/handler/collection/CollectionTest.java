@@ -1,13 +1,52 @@
 package org.memoriadb.test.handler.collection;
 
-import java.util.Collection;
+import java.util.*;
 
+import org.memoriadb.handler.collection.ICollectionDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class CollectionTest extends AbstractMemoriaTest {
   
+  public void test_data_mode() {
+    Collection<SimpleTestObj> objectList = getObjectCollection();
+    IObjectId objectId = saveAll(objectList);
+    
+    reopenDataMode();
+    
+    ICollectionDataObject l1_collection = fDataStore.get(objectId);
+    assertEquals(objectList.size(), l1_collection.getCollection().size());
+    l1_collection.getCollection().clear();
+    save(l1_collection);
+    
+    reopen();
+    
+    Collection<SimpleTestObj> l2_collection = fObjectStore.get(objectId);
+    assertEquals(l1_collection.getCollection(), l2_collection);
+  }
+  
+  public void test_data_mode_scenario() {
+    Collection<SimpleTestObj> objectList = getObjectCollection();
+    IObjectId objectId = saveAll(objectList);
+    
+    reopenDataMode();
+    
+    ICollectionDataObject l1_collection = fDataStore.get(objectId);
+    assertEquals(objectList.size(), l1_collection.getCollection().size());
+    
+    l1_collection.getCollection().clear();
+    l1_collection.getCollection().add(SimpleTestObj.createFieldObject(fDataStore, "newObj"));
+    
+    saveAll(l1_collection);
+    
+    reopen();
+    
+    Collection<SimpleTestObj> l2_collection = fObjectStore.get(objectId);
+    assertEquals(l1_collection.getCollection().size(), l2_collection.size());
+    assertEquals("newObj", ((SimpleTestObj)getElement(0, l2_collection)).getString());
+  }
+
   public void test_empty_collection() {
     Collection<Object> collection = createCollection();
     reopen(collection);
@@ -116,6 +155,13 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     reopen();
     assertEquals(collection, get(id));
   }
-
-
+  
+  private Object getElement(int index, Collection<?> collection) {
+    Iterator<?> iterator = collection.iterator();
+    for(int i = 0; i < index; ++i) {
+      iterator.next();
+    }
+    return iterator.next();
+  }
+  
 }
