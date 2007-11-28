@@ -418,12 +418,12 @@ public enum Type {
 
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if(value == null) {
+      if (value == null) {
         context.getNullReference().writeTo(output);
         return;
       }
-      
-      if(!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object (use saveAll): " + value);
+
+      if (!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object (use saveAll): " + value);
       context.getExistingtId(value).writeTo(output);
     }
 
@@ -444,7 +444,7 @@ public enum Type {
   public static Type getType(Object value) {
     return getType(value.getClass());
   }
-  
+
   /**
    * @return true, if the given object is a primitive (int/Integer, etc). Enums are NOT primitives
    */
@@ -471,25 +471,20 @@ public enum Type {
     }
   }
 
-  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context) {
+  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context) throws IOException {
     Type type = getType(value);
     writeValueWithType(output, value, context, type);
   }
 
-  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context, Type type) {
+  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context, Type type) throws IOException {
     if (type.ordinal() > Byte.MAX_VALUE) throw new MemoriaException("Can not write back type, type ordinal is bigger than Byte.MAX_VALUE");
 
     byte ordinalByte = (byte) type.ordinal();
 
-    try {
-      output.write(ordinalByte);
-      type.internalWriteValue(output, value, context);
-    }
-    catch (Exception e) {
-      throw new MemoriaException("could not write value. Type: " + type.name() + " value: " + value, e);
-    }
+    output.write(ordinalByte);
+    type.internalWriteValue(output, value, context);
   }
-  
+
   private static Map<Class<?>, Type> createTypeMap() {
     Map<Class<?>, Type> result = new HashMap<Class<?>, Type>();
 

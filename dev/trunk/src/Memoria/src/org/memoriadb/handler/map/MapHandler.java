@@ -19,40 +19,20 @@ import org.memoriadb.instantiator.IInstantiator;
  * @author msc
  * 
  */
-public abstract class MapHandler implements IHandler {
+public class MapHandler implements IHandler {
 
-  public interface IObjectResolver {
-    public Object getObject(IReaderContext context);
+  
+  private final String fClassName;
+
+  public <T extends Map<?,?>> MapHandler(Class<T> mapClass) {
+    this(mapClass.getName());
   }
-
-  private class PrimitiveResolver implements IObjectResolver {
-
-    private final Object fObject;
-
-    public PrimitiveResolver(Object object) {
-      fObject = object;
-    }
-
-    @Override
-    public Object getObject(IReaderContext context) {
-      return fObject;
-    }
-
-  }
-
-  private class ReferenceResolver implements IObjectResolver {
-
-    private final IObjectId fId;
-
-    public ReferenceResolver(IObjectId id) {
-      fId = id;
-    }
-
-    @Override
-    public Object getObject(IReaderContext context) {
-      return context.getExistingObject(fId);
-    }
-
+  
+  /**
+   * Called from Memoria 
+   */
+  private MapHandler(String className) {
+    fClassName = className;
   }
 
   @Override
@@ -75,7 +55,12 @@ public abstract class MapHandler implements IHandler {
 
     return context.isInDataMode()? new MapDataObject(map, typeId) : map;
   }
-
+  
+  @Override
+  public String getClassName() {
+    return fClassName;
+  }
+  
   @Override
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);
@@ -85,14 +70,14 @@ public abstract class MapHandler implements IHandler {
       writeListEntry(map.get(key), output, context);
     }
   }
-  
+
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     Map<?,?> map = getMapObject(obj);
     traverse(map.keySet(), traversal);
     traverse(map.values(), traversal);
   }
-  
+
   protected Map<Object, Object> createMap() {
     try {
       return ReflectionUtil.createInstance(getClassName());
@@ -132,7 +117,7 @@ public abstract class MapHandler implements IHandler {
     }
   }
 
-  private void writeListEntry(Object listEntry, DataOutputStream output, ISerializeContext context) {
+  private void writeListEntry(Object listEntry, DataOutputStream output, ISerializeContext context) throws IOException {
     if (listEntry == null) {
       Type.writeValueWithType(output, listEntry, context, Type.typeClass);
       return;

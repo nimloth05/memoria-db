@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.handler.IBindable;
-import org.memoriadb.handler.map.MapHandler.IObjectResolver;
 
 
 public class MapBindable implements IBindable {

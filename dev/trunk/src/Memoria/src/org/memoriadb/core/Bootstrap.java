@@ -12,6 +12,7 @@ import org.memoriadb.core.mode.*;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.*;
 import org.memoriadb.handler.collection.*;
+import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.instantiator.IInstantiator;
 
 public class Bootstrap {
@@ -51,6 +52,14 @@ public class Bootstrap {
     registerHandler(trxHandler, new CollectionHandler.SetHandler(CopyOnWriteArraySet.class));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
+    
+    registerHandler(trxHandler, new MapHandler(HashMap.class));
+    registerHandler(trxHandler, new MapHandler(ConcurrentHashMap.class));
+    registerHandler(trxHandler, new MapHandler(ConcurrentSkipListMap.class));
+    registerHandler(trxHandler, new MapHandler(IdentityHashMap.class));
+    registerHandler(trxHandler, new MapHandler(LinkedHashMap.class));
+    registerHandler(trxHandler, new MapHandler(TreeMap.class));
+    registerHandler(trxHandler, new MapHandler(WeakHashMap.class));
     
     addCustomHandlers(trxHandler, customHandlers);
   }

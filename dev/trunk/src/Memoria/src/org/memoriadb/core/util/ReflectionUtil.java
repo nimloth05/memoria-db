@@ -49,6 +49,7 @@ public final class ReflectionUtil {
     try {
       Class<?> clazz = getClass(className);
       for(Constructor<?> ctor: clazz.getDeclaredConstructors()) {
+        ctor.setAccessible(true);
         Class<?>[] parameterTypes = ctor.getParameterTypes();
         if (parameterTypes.length == 0) {
           return (T) ctor.newInstance();

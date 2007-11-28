@@ -162,8 +162,9 @@ public class ArrayHandler implements IHandler {
 
   /**
    * Stores the content of an one-dimensional array, either primitives or references
+   * @throws IOException 
    */
-  private void storeArrayContent(ISerializeContext context, DataOutputStream output, ArrayTypeInfo componentTypeInfo, IArray array) {
+  private void storeArrayContent(ISerializeContext context, DataOutputStream output, ArrayTypeInfo componentTypeInfo, IArray array) throws IOException {
     if (componentTypeInfo.getDimension() != 1) throw new MemoriaException("one dimensional array expected");
 
     if (componentTypeInfo.getComponentType().isPrimitive()) {
@@ -176,8 +177,9 @@ public class ArrayHandler implements IHandler {
 
   /**
    * Writes the id of the given obj to the given stream or NullReference, if the given obj is null.
+   * @throws IOException 
    */
-  private void writeObject(ISerializeContext context, DataOutputStream output, Object obj) {
+  private void writeObject(ISerializeContext context, DataOutputStream output, Object obj) throws IOException {
     if (obj == null) {
       Type.writeValueWithType(output, null, context, Type.typeClass);
       return;
@@ -186,7 +188,7 @@ public class ArrayHandler implements IHandler {
     Type.writeValueWithType(output, obj, context);
   }
 
-  private void writeObjects(ISerializeContext context, DataOutputStream output, IArray array) {
+  private void writeObjects(ISerializeContext context, DataOutputStream output, IArray array) throws IOException {
     for (int i = 0; i < array.length(); ++i) {
       writeObject(context, output, array.get(i));
     }
