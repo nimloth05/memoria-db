@@ -7,7 +7,7 @@ import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.*;
-import org.memoriadb.testutil.Collections;
+import org.memoriadb.testutil.CollectionUtil;
 
 public class ObjectContainerTest extends AbstractMemoriaTest {
 
@@ -142,7 +142,7 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
 
     reopen();
 
-    Collections.containsAll(query(SimpleTestObj.class), obj1, obj2);
+    CollectionUtil.containsAll(query(SimpleTestObj.class), obj1, obj2);
   }
 
   private void internalTestReferenceeInAnotherTransaction(Class<?> referenceeType) throws Exception {

@@ -7,7 +7,7 @@ import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.enums.*;
 import org.memoriadb.testutil.*;
-import org.memoriadb.testutil.Collections;
+import org.memoriadb.testutil.CollectionUtil;
 
 public abstract class AbstractEnumTest extends AbstractMemoriaTest {
   
@@ -120,7 +120,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     
     reopen();
     
-    Collections.containsAll(fObjectStore.query(TestEnum.class), TestEnum.a, TestEnum.c);
+    CollectionUtil.containsAll(fObjectStore.query(TestEnum.class), TestEnum.a, TestEnum.c);
   }
   
   public void test_scenario() {
