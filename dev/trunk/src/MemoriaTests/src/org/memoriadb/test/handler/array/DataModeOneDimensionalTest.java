@@ -5,8 +5,8 @@ import java.util.Arrays;
 import org.memoriadb.handler.array.*;
 import org.memoriadb.handler.enu.EnumDataObject;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.TestEnum;
 import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class DataModeOneDimensionalTest extends AbstractMemoriaTest {

@@ -4,8 +4,8 @@ import java.util.*;
 
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.core.testclasses.C;
 import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest {
