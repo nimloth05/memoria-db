@@ -188,7 +188,7 @@ public abstract class CollectionHandler implements IHandler {
 
     for (Object listEntry : list) {
       if (listEntry == null) continue;
-      if (Type.getType(listEntry) == Type.typeClass) traversal.handle(listEntry);
+      if (!Type.getType(listEntry).isPrimitive()) traversal.handle(listEntry);
     }
   }
 

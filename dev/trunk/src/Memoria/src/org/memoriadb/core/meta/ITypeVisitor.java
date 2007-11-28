@@ -3,6 +3,8 @@ package org.memoriadb.core.meta;
 import org.memoriadb.id.IObjectId;
 
 
+// FIXME um visitNull ergänzen!
+
 public interface ITypeVisitor {
   
   public class Adapter implements ITypeVisitor {

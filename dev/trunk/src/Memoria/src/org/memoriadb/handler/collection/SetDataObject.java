@@ -15,11 +15,6 @@ public class SetDataObject implements ISetDataObject {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return fSet.equals(obj);
-  }
-
-  @Override
   public Collection<Object> getCollection() {
     return fSet;
   }
@@ -34,11 +29,7 @@ public class SetDataObject implements ISetDataObject {
     return fSet;
   }
 
-  @Override
-  public int hashCode() {
-    return fSet.hashCode();
-  }
-
+  
   @Override
   public String toString() {
     return fSet.toString();

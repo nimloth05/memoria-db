@@ -2,13 +2,11 @@ package org.memoriadb.handler.collection;
 
 import java.util.Collection;
 
-import org.memoriadb.core.load.*;
+import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
-
 public class CollectionBindable implements IBindable {
-
   private final Collection<Object> fResult;
   private final IObjectId fObjectId;
 
@@ -24,7 +22,7 @@ public class CollectionBindable implements IBindable {
 
   @Override
   public String toString() {
-    return "list: "+ fResult + " object to add: " + fObjectId;
+    return "list: " + fResult + " object to add: " + fObjectId;
   }
 
 }

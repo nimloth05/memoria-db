@@ -35,6 +35,7 @@ public class Bootstrap {
 
     registerHandler(trxHandler, new GuidIdHandler());
     
+    // FIXME den CollectionHandler auf mehr Generizität umschreiben (Ctor mit String-arg)
     registerHandler(trxHandler, new CollectionHandler.ArrayListHandler());
     registerHandler(trxHandler, new CollectionHandler.LinkedListHandler());
     registerHandler(trxHandler, new CollectionHandler.CopyOnWriteListHandler());

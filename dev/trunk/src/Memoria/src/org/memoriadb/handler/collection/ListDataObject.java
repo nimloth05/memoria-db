@@ -15,11 +15,6 @@ public class ListDataObject implements IListDataObject {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return fList.equals(obj);
-  }
-
-  @Override
   public Collection<Object> getCollection() {
     return fList;
   }
@@ -34,10 +29,6 @@ public class ListDataObject implements IListDataObject {
     return fId;
   }
 
-  @Override
-  public int hashCode() {
-    return fList.hashCode();
-  }
 
   @Override
   public String toString() {

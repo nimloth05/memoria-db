@@ -295,7 +295,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(id));
   }
 
-  
   public void test_transient_ref_with_save_and_saveAll() {
     TransientClass t1 = new TransientClass(1, new A());
     TransientClass t2 = new TransientClass(2, new A());
