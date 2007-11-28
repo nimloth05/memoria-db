@@ -3,7 +3,7 @@ package org.memoriadb.block.maintenancefree;
 import java.util.*;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.exception.MemoriaException;
 
 public class MaintenanceFreeBlockManager implements IBlockManagerExt {

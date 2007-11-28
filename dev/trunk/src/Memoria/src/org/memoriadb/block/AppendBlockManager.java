@@ -2,7 +2,7 @@ package org.memoriadb.block;
 
 import java.util.*;
 
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.IBlockManagerExt;
 
 /**
  * Never recycles a block. For each transaction, a new block is appended to the file.

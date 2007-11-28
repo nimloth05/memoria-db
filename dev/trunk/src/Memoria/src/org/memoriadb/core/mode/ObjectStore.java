@@ -5,7 +5,6 @@ import java.util.*;
 import org.memoriadb.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.ClassModeQueryStrategy;

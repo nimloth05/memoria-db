@@ -1,6 +1,5 @@
 package org.memoriadb.test.testclasses.inheritance;
 
-import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 
 public class C extends B {

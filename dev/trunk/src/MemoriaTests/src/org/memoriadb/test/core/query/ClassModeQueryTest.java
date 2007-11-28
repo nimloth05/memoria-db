@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.memoriadb.*;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;

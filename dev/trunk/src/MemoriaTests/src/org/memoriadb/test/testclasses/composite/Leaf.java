@@ -1,6 +1,5 @@
 package org.memoriadb.test.testclasses.composite;
 
-import org.memoriadb.test.core.testclasses.*;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 
 public class Leaf extends AbstractComponent {
