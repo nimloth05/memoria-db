@@ -8,6 +8,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.util.Constants;
+import org.memoriadb.id.IObjectId;
 
 public enum Type {
 
@@ -39,9 +40,8 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readBoolean() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readBoolean());
     }
 
     @Override
@@ -85,9 +85,8 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readChar() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readChar());
     }
 
     @Override
@@ -130,9 +129,8 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readByte() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readByte());
     }
 
     @Override
@@ -176,9 +174,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readShort() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readShort());
+
     }
 
     @Override
@@ -222,9 +220,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readInt() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readInt());
+
     }
 
     @Override
@@ -268,9 +266,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readLong() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readLong());
+
     }
 
     @Override
@@ -314,9 +312,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readFloat() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readFloat());
+
     }
 
     @Override
@@ -360,9 +358,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readDouble() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readDouble());
+
     }
 
     @Override
@@ -387,9 +385,9 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      byte nullByte = input.readByte();
-      Object value = nullByte != Constants.NULL_PRIMITIVE_OBJECT ? input.readUTF() : null;
-      visitor.visitPrimitive(this, value);
+      if(isNullValue(input, visitor)) return;
+      visitor.visitPrimitive(this, input.readUTF());
+
     }
 
     @Override
@@ -413,7 +411,12 @@ public enum Type {
 
     @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitClass(this, context.readObjectId(input));
+      IObjectId ref = context.readObjectId(input);
+      if(context.isNullReference(ref)) {
+        visitor.visitNull();
+        return;
+      }
+      visitor.visitClass(this, ref);
     }
 
     @Override
@@ -517,8 +520,16 @@ public enum Type {
     return result;
   }
 
-  public abstract Class<?> getClassLiteral();
+  private static boolean isNullValue(DataInput input, ITypeVisitor visitor) throws IOException {
+    if(input.readByte() == Constants.NULL_PRIMITIVE_OBJECT) {
+      visitor.visitNull();
+      return true;
+    }
+    return false;
+  }
 
+  public abstract Class<?> getClassLiteral();
+  
   public boolean isPrimitive() {
     return (this != Type.typeClass);
   }

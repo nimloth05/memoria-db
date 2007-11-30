@@ -91,23 +91,27 @@ public class FieldbasedObjectHandler implements IHandler {
     return new FieldbasedObject(obj);
   }
 
-  private void superDeserialize(Object object, DataInputStream input, IReaderContext context) throws IOException {
-    IFieldbasedObject result = getFieldObject(object);
+  private void superDeserialize(Object object, DataInputStream input, final IReaderContext context) throws IOException {
+    final IFieldbasedObject result = getFieldObject(object);
     
     for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
       int fieldId = input.readInt();
       final MemoriaField field = (fClassObject).getField(fieldId);
-      field.getFieldType().readValue(input, context, new TypeVisitorHelper<Void, IFieldbasedObject>(result, context){
+      field.getFieldType().readValue(input, context, new ITypeVisitor(){
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          if (fContext.isNullReference(objectId)) return;
-          fContext.objectToBind(new ObjectFieldReference(fMember, field.getName(), objectId));
+          context.objectToBind(new ObjectFieldReference(result, field.getName(), objectId));
+        }
+
+        @Override
+        public void visitNull() {
+          result.set(field.getName(), null);
         }
 
         @Override
         public void visitPrimitive(Type type, Object value) {
-          fMember.set(field.getName(), value);
+          result.set(field.getName(), value);
         }
         
       });

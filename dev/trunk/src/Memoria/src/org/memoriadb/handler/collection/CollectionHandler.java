@@ -21,9 +21,9 @@ import org.memoriadb.instantiator.IInstantiator;
  * 
  */
 public abstract class CollectionHandler implements IHandler {
-  
+
   public static class ConcurrentSkipListSetHandler extends SetHandler {
-    
+
     public ConcurrentSkipListSetHandler() {
       super(ConcurrentSkipListSet.class);
     }
@@ -33,25 +33,25 @@ public abstract class CollectionHandler implements IHandler {
       return new HashSet<Object>();
     }
   }
-  
+
   public static class ListHandler extends CollectionHandler {
-  
+
     public <T extends List<?>> ListHandler(Class<T> clazz) {
       super(clazz);
     }
-  
+
     public ListHandler(String name) {
       super(name);
     }
-  
+
     @Override
     protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
       return new ListDataObject((List<Object>) collection, typeId);
     }
   }
-  
+
   public static class SetHandler extends CollectionHandler {
-    
+
     public <T extends Set<?>> SetHandler(Class<T> clazz) {
       super(clazz);
     }
@@ -65,9 +65,9 @@ public abstract class CollectionHandler implements IHandler {
       return new SetDataObject((Set<Object>) collection, typeId);
     }
   }
-  
+
   public static class TreeSetHandler extends SetHandler {
-    
+
     public TreeSetHandler() {
       super(TreeSet.class);
     }
@@ -76,7 +76,7 @@ public abstract class CollectionHandler implements IHandler {
     protected Collection<Object> createCollectionForDataMode() {
       return new HashSet<Object>();
     }
-    
+
   }
 
   private final String fClassName;
@@ -84,11 +84,11 @@ public abstract class CollectionHandler implements IHandler {
   public <T extends Collection<?>> CollectionHandler(Class<T> clazz) {
     this(clazz.getName());
   }
-  
+
   public CollectionHandler(String className) {
     fClassName = className;
   }
-  
+
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
     if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for "
@@ -97,23 +97,24 @@ public abstract class CollectionHandler implements IHandler {
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
-    Collection<Object> collection = createCollection(context.isInDataMode());
+    final Collection<Object> collection = createCollection(context.isInDataMode());
     while (input.available() > 0) {
 
-      Type.readValueWithType(input, context, new TypeVisitorHelper<Void, Collection<Object>>(collection, context) {
+      Type.readValueWithType(input, context, new ITypeVisitor() {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          if (context.isNullReference(objectId)) {
-            fMember.add(null);
-            return;
-          }
-          fContext.objectToBind(new CollectionBindable(fMember, objectId));
+          context.objectToBind(new CollectionBindable(collection, objectId));
+        }
+
+        @Override
+        public void visitNull() {
+          collection.add(null);
         }
 
         @Override
         public void visitPrimitive(Type type, Object value) {
-          fMember.add(value);
+          collection.add(value);
         }
       });
     }
@@ -155,9 +156,9 @@ public abstract class CollectionHandler implements IHandler {
   protected final Collection<Object> createCollection(boolean isDataMode) {
     return isDataMode ? createCollectionForDataMode() : createCollectionForObjectMode();
   }
-  
+
   protected Collection<Object> createCollectionForDataMode() {
-   return  createCollectionForObjectMode();
+    return createCollectionForObjectMode();
   }
 
   protected Collection<Object> createCollectionForObjectMode() {
@@ -165,7 +166,7 @@ public abstract class CollectionHandler implements IHandler {
   }
 
   protected abstract IDataObject createDataObject(Collection<Object> collection, IObjectId typeId);
-  
+
   private Collection<?> getCollectionObject(Object obj) {
     if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject) obj).getCollection();
     return (Collection<?>) obj;

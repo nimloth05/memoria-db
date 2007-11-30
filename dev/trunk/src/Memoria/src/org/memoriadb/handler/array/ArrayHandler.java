@@ -125,6 +125,11 @@ public class ArrayHandler implements IHandler {
       }
 
       @Override
+      public void visitNull() {
+        array.set(index, null);        
+      }
+
+      @Override
       public void visitPrimitive(Type type, Object value) {
         array.set(index, value);
       }
@@ -144,6 +149,11 @@ public class ArrayHandler implements IHandler {
       @Override
       public void visitClass(Type type, IObjectId objectId) {
         throw new MemoriaException("primitive expected");
+      }
+
+      @Override
+      public void visitNull() {
+        array.set(index, null);        
       }
 
       @Override

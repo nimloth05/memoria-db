@@ -13,11 +13,15 @@ public interface ITypeVisitor {
     public void visitClass(Type type, IObjectId objectId) {}
     
     @Override
-    public void visitPrimitive(Type type, Object value) {}
+    public void visitNull() {}
 
+    @Override
+    public void visitPrimitive(Type type, Object value) {}
+    
   }
   
   public void visitClass(Type type, IObjectId objectId);
+  public void visitNull();
   public void visitPrimitive(Type type, Object value);
   
    

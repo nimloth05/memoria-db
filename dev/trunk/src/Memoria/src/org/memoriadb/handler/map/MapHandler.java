@@ -99,7 +99,12 @@ public class MapHandler implements IHandler {
 
       @Override
       public void visitClass(Type type, IObjectId objectId) {
-        fResult = context.isNullReference(objectId) ? new PrimitiveResolver(null) : new ReferenceResolver(objectId);
+        fResult = new ReferenceResolver(objectId);
+      }
+
+      @Override
+      public void visitNull() {
+        fResult = new PrimitiveResolver(null);        
       }
 
       @Override
