@@ -1,6 +1,5 @@
 package org.memoriadb.core;
 
-import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.block.*;
@@ -259,7 +258,7 @@ public class TransactionHandler {
     try {
       fTransactionWriter.write(fAdd, fUpdate, fDelete);
     }
-    catch (IOException e) {
+    catch (Exception e) {
       throw new MemoriaException(e);
     }
 

@@ -3,7 +3,6 @@ package org.memoriadb.core.file;
 import java.io.*;
 
 import org.memoriadb.core.*;
-import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.handler.IHandler;
@@ -16,7 +15,7 @@ import org.memoriadb.id.IObjectId;
  * 
  */
 public final class ObjectSerializer {
-  
+
   private class SerializeContext implements ISerializeContext {
 
     @Override
@@ -63,30 +62,17 @@ public final class ObjectSerializer {
     return fBuffer.toByteArray();
   }
 
-  public void markAsDeleted(IObjectInfo info) {
-
-    try {
-      internalMarkObjectAsDeleted(info);
-    }
-    catch (IOException e) {
-      throw new MemoriaException(e);
-    }
-  }
-
-  public void serialize(ObjectInfo info) {
-    try {
-      serializeObject(info);
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
-  }
-
-  private void internalMarkObjectAsDeleted(IObjectInfo info) throws IOException {
-    fStream.writeInt(2*fObjectRepository.getIdFactory().getIdSize());
-    IObjectId typeId = fObjectRepository.isMemoriaClass(info.getObject()) ? fObjectRepository.getIdFactory().getMemoriaClassDeletionMarker() : fObjectRepository.getIdFactory().getObjectDeletionMarker();
+  public void markAsDeleted(IObjectInfo info) throws IOException {
+    fStream.writeInt(2 * fObjectRepository.getIdFactory().getIdSize());
+    IObjectId typeId = fObjectRepository.isMemoriaClass(info.getObject()) ? 
+        fObjectRepository.getIdFactory().getMemoriaClassDeletionMarker() : 
+        fObjectRepository.getIdFactory().getObjectDeletionMarker();
     typeId.writeTo(fStream);
     info.getId().writeTo(fStream);
+  }
+
+  public void serialize(ObjectInfo info) throws Exception {
+    serializeObject(info);
   }
 
   private void serializeObject(IHandler handler, IObjectInfo info) throws Exception {
@@ -97,7 +83,7 @@ public final class ObjectSerializer {
 
     typeId.writeTo(objectStream);
     info.getId().writeTo(objectStream);
-    
+
     handler.serialize(info.getObject(), objectStream, new SerializeContext());
 
     byte[] objectData = buffer.toByteArray();

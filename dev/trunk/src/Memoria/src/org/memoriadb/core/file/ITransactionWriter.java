@@ -1,6 +1,5 @@
 package org.memoriadb.core.file;
 
-import java.io.IOException;
 import java.util.Set;
 
 import org.memoriadb.block.IBlockManager;
@@ -19,6 +18,6 @@ public interface ITransactionWriter {
 
   public IObjectRepository getRepo();
   
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete)  throws IOException;
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete)  throws Exception;
   
 }

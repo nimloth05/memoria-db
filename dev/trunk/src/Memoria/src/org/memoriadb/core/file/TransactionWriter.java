@@ -89,14 +89,15 @@ public final class TransactionWriter implements ITransactionWriter {
   }
 
   @Override
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete) throws IOException {
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete) throws Exception {
     write(add, update, delete, new HashSet<Block>());
   }
   
   /**
    * Called recursively
+   * @throws Exception 
    */
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks) throws IOException {
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks) throws Exception {
     
     ObjectSerializer serializer = new ObjectSerializer(fRepo);
     
@@ -115,7 +116,7 @@ public final class TransactionWriter implements ITransactionWriter {
    * 
    * @throws IOException
    */
-  private void freeBlock(Block block, Set<Block> tabooBlocks) throws IOException {
+  private void freeBlock(Block block, Set<Block> tabooBlocks) throws Exception {
     Set<ObjectInfo> survivors = fSurvivorAgent.getSurvivors(block);
     if(survivors.isEmpty()) return;
     
@@ -171,7 +172,7 @@ public final class TransactionWriter implements ITransactionWriter {
     fConfig.getListeners().triggerAfterWrite(block);
   }
 
-  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks) throws IOException {
+  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks) throws Exception {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     // this call may return to this TransactionWriter recursivley
@@ -186,14 +187,14 @@ public final class TransactionWriter implements ITransactionWriter {
     return block;    
   }
 
-  private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) {
+  private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
     for(ObjectInfo info: add) {
       serializer.serialize(info);
       tabooBlocks.add(info.getCurrentBlock());
     }
   }
 
-  private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) {
+  private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) throws IOException {
     for(ObjectInfo info: delete){
       serializer.markAsDeleted(info);
       tabooBlocks.add(info.getCurrentBlock());
