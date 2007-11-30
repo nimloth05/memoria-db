@@ -143,7 +143,7 @@ public class ArrayHandler implements IHandler {
     }
   }
 
-  private void readPrimitive(DataInputStream input, IReaderContext context, final IArray array, final int index, Type componentType) {
+  private void readPrimitive(DataInputStream input, IReaderContext context, final IArray array, final int index, Type componentType) throws IOException {
     componentType.readValue(input, context, new ITypeVisitor() {
 
       @Override
@@ -164,7 +164,7 @@ public class ArrayHandler implements IHandler {
     });
   }
 
-  private void readPrimitives(DataInputStream input, IReaderContext context, IArray array, Type componentType) {
+  private void readPrimitives(DataInputStream input, IReaderContext context, IArray array, Type componentType) throws IOException {
     for (int i = 0; i < array.length(); ++i) {
       readPrimitive(input, context, array, i, componentType);
     }
@@ -190,11 +190,6 @@ public class ArrayHandler implements IHandler {
    * @throws IOException 
    */
   private void writeObject(ISerializeContext context, DataOutputStream output, Object obj) throws IOException {
-    if (obj == null) {
-      Type.writeValueWithType(output, null, context, Type.typeClass);
-      return;
-    }
-
     Type.writeValueWithType(output, obj, context);
   }
 
@@ -204,7 +199,7 @@ public class ArrayHandler implements IHandler {
     }
   }
 
-  private void writePrimitives(ISerializeContext context, DataOutputStream output, ArrayTypeInfo componentTypeInfo, IArray array) {
+  private void writePrimitives(ISerializeContext context, DataOutputStream output, ArrayTypeInfo componentTypeInfo, IArray array) throws IOException {
     for (int i = 0; i < array.length(); ++i) {
       componentTypeInfo.getComponentType().writeValue(output, array.get(i), context);
     }

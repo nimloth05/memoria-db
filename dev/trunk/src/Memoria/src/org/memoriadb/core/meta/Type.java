@@ -20,15 +20,20 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readBoolean());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeBoolean(((Boolean) value).booleanValue());
     }
-
+    
   },
 
   typeBooleanC {
@@ -39,20 +44,18 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readBoolean());
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readBoolean());
+    }
+    
+    @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeBoolean(((Boolean) value).booleanValue());
-        return;
-      }
-
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+      output.writeBoolean(((Boolean) value).booleanValue());
     }
 
   },
@@ -65,10 +68,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return true;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readChar());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeChar(((Character) value).charValue());
@@ -84,20 +92,18 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readChar());
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readChar());
+    }
+    
+    @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeChar(((Character) value).charValue());
-        return;
-      }
-
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+      output.writeChar(((Character) value).charValue());
     }
   },
 
@@ -109,10 +115,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return true;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readByte());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeByte(((Byte) value).byteValue());
@@ -128,20 +139,18 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readByte());
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readByte());
+    }
+    
+    @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeByte(((Byte) value).byteValue());
-        return;
-      }
-
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+      output.writeByte(((Byte) value).byteValue());
     }
 
   },
@@ -154,10 +163,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readShort());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeShort(((Short) value).shortValue());
@@ -173,21 +187,20 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readShort());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeShort(((Short) value).shortValue());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      
+      visitor.visitPrimitive(this, input.readShort());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeShort(((Short) value).shortValue());
     }
 
   },
@@ -200,10 +213,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readInt());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeInt(((Integer) value).intValue());
@@ -219,21 +237,20 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readInt());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeInt(((Integer) value).intValue());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      
+      visitor.visitPrimitive(this, input.readInt());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeInt(((Integer) value).intValue());
     }
 
   },
@@ -246,10 +263,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readLong());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeLong(((Long) value).longValue());
@@ -265,21 +287,19 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readLong());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeLong(((Long) value).longValue());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readLong());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeLong(((Long) value).longValue());
     }
 
   },
@@ -292,10 +312,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readFloat());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeFloat(((Float) value).floatValue());
@@ -311,21 +336,19 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readFloat());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeFloat(((Float) value).floatValue());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readFloat());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeFloat(((Float) value).floatValue());
     }
 
   },
@@ -338,10 +361,15 @@ public enum Type {
     }
 
     @Override
+    protected boolean canBeNull() {
+      return false;
+    }
+
+    @Override
     protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readDouble());
     }
-
+    
     @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
       output.writeDouble(((Double) value).doubleValue());
@@ -357,21 +385,19 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readDouble());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeDouble(((Double) value).doubleValue());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readDouble());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeDouble(((Double) value).doubleValue());
     }
 
   },
@@ -384,21 +410,19 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      if(isNullValue(input, visitor)) return;
-      visitor.visitPrimitive(this, input.readUTF());
-
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value != null) {
-        output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
-        output.writeUTF(value.toString());
-        return;
-      }
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, input.readUTF());
 
-      output.writeByte(Constants.NULL_PRIMITIVE_OBJECT);
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      output.writeUTF(value.toString());
     }
 
   },
@@ -410,22 +434,18 @@ public enum Type {
     }
 
     @Override
-    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      IObjectId ref = context.readObjectId(input);
-      if(context.isNullReference(ref)) {
-        visitor.visitNull();
-        return;
-      }
-      visitor.visitClass(this, ref);
+    protected boolean canBeNull() {
+      return true;
     }
 
     @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      IObjectId ref = context.readObjectId(input);
+      visitor.visitClass(this, ref);
+    }
+    
+    @Override
     protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
-      if (value == null) {
-        context.getNullReference().writeTo(output);
-        return;
-      }
-
       if (!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object (use saveAll): " + value);
       context.getExistingtId(value).writeTo(output);
     }
@@ -463,10 +483,15 @@ public enum Type {
   }
 
   public static <T extends ITypeVisitor> T readValueWithType(DataInput input, IReaderContext context, T visitor) {
-    byte byteOrdinal = -1;
+    byte byteOrdinal = Constants.NULL_VALUE;
     try {
       byteOrdinal = input.readByte();
-      Type.values()[byteOrdinal].readValue(input, context, visitor);
+      if (byteOrdinal == Constants.NULL_VALUE) {
+        visitor.visitNull();
+        return visitor;
+      }
+      
+      Type.values()[byteOrdinal].internalReadValue(input, visitor, context);
       return visitor;
     }
     catch (Exception e) {
@@ -474,17 +499,25 @@ public enum Type {
     }
   }
 
+  /**
+   * 
+   * @param output
+   * @param value can be null
+   * @param context
+   * @throws IOException
+   */
   public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    if (value == null) {
+      output.writeByte(Constants.NULL_VALUE);
+      return;
+    }
+    
     Type type = getType(value);
-    writeValueWithType(output, value, context, type);
-  }
-
-  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context, Type type) throws IOException {
     if (type.ordinal() > Byte.MAX_VALUE) throw new MemoriaException("Can not write back type, type ordinal is bigger than Byte.MAX_VALUE");
-
+    
     byte ordinalByte = (byte) type.ordinal();
-
-    output.write(ordinalByte);
+    
+    output.writeByte(ordinalByte);
     type.internalWriteValue(output, value, context);
   }
 
@@ -520,40 +553,55 @@ public enum Type {
     return result;
   }
 
-  private static boolean isNullValue(DataInput input, ITypeVisitor visitor) throws IOException {
-    if(input.readByte() == Constants.NULL_PRIMITIVE_OBJECT) {
-      visitor.visitNull();
-      return true;
-    }
-    return false;
-  }
-
   public abstract Class<?> getClassLiteral();
   
   public boolean isPrimitive() {
     return (this != Type.typeClass);
   }
 
-  public void readValue(DataInput input, IReaderContext context, ITypeVisitor visitor) {
-    try {
-      internalReadValue(input, visitor, context);
+  /**
+   * performs null check
+   * @param input
+   * @param context
+   * @param visitor
+   * @throws IOException 
+   */
+  public void readValue(DataInput input, IReaderContext context, ITypeVisitor visitor) throws IOException {
+    if (canBeNull()) {
+      byte nullByte = input.readByte();
+      if (nullByte == Constants.NULL_VALUE) {
+        visitor.visitNull();
+        return;
+      }
     }
-    catch (IOException e) {
-      throw new MemoriaException("Could not read value " + name());
-    }
+
+    internalReadValue(input, visitor, context);
   }
 
-  public void writeValue(DataOutput output, Object value, ISerializeContext context) {
-    try {
-      internalWriteValue(output, value, context);
+  /**
+   * performs null check
+   * 
+   * @param output
+   * @param value
+   *          can be null
+   * @param context
+   * @throws IOException 
+   */
+  public void writeValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    if (canBeNull()) {
+      if (value == null) {
+        output.writeByte(Constants.NULL_VALUE);
+        return;
+      }
+      output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
     }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
+    internalWriteValue(output, value, context);
   }
+
+  protected abstract boolean canBeNull();
 
   protected abstract void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException;
-
+  
   protected abstract void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException;
 
 }

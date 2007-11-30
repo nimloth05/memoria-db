@@ -104,17 +104,17 @@ public abstract class CollectionHandler implements IHandler {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          context.objectToBind(new CollectionBindable(collection, objectId));
+          context.objectToBind(new ObjectCollectionBindable(collection, objectId));
         }
 
         @Override
         public void visitNull() {
-          collection.add(null);
+          context.objectToBind(new NullCollectionBindlable(collection));
         }
 
         @Override
         public void visitPrimitive(Type type, Object value) {
-          collection.add(value);
+          context.objectToBind(new CollectionBindable(collection, value));
         }
       });
     }
@@ -135,10 +135,6 @@ public abstract class CollectionHandler implements IHandler {
   public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
     Collection<?> list = getCollectionObject(obj);
     for (Object listEntry : list) {
-      if (listEntry == null) {
-        Type.writeValueWithType(output, listEntry, context, Type.typeClass);
-        continue;
-      }
       Type.writeValueWithType(output, listEntry, context);
     }
   }

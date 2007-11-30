@@ -33,7 +33,7 @@ public final class Constants {
   /**
    * Marker, that a primtive Object such as Integer was null.
    */
-  public static final byte NULL_PRIMITIVE_OBJECT = -1;
+  public static final byte NULL_VALUE = -1;
 
   /**
    * Marker, that a primtive Object such as Integer was not null.

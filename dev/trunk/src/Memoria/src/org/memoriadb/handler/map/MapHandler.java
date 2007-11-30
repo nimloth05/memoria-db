@@ -123,10 +123,6 @@ public class MapHandler implements IHandler {
   }
 
   private void writeListEntry(Object listEntry, DataOutputStream output, ISerializeContext context) throws IOException {
-    if (listEntry == null) {
-      Type.writeValueWithType(output, listEntry, context, Type.typeClass);
-      return;
-    }
     Type.writeValueWithType(output, listEntry, context);
 
   }

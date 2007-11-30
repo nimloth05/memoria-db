@@ -5,19 +5,17 @@ import java.util.Collection;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.handler.IBindable;
 
-public class CollectionBindable implements IBindable {
+public class NullCollectionBindlable implements IBindable {
 
   private final Collection<Object> fCollection;
-  private final Object fValue;
 
-  public CollectionBindable(Collection<Object> collection, Object value) {
+  public NullCollectionBindlable(Collection<Object> collection) {
     fCollection = collection;
-    fValue = value;
   }
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    fCollection.add(fValue);
+    fCollection.add(null);
   }
 
 }
