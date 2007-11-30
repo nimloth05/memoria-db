@@ -6,15 +6,20 @@ import junit.framework.Assert;
 
 public class CollectionUtil {
   
+  /**
+   * 
+   * @param expected
+   * @param actual
+   */
   public static void assertIterable(Iterable<?> expected, Iterable<?> actual) {
-     Iterator<?> iterator1 = expected.iterator();
-     Iterator<?> iterator2 = actual.iterator();
+     Iterator<?> expectations = expected.iterator();
+     Iterator<?> actuals = actual.iterator();
      
-     while (iterator1.hasNext()) {
-       Assert.assertTrue("actualIterator has no more elements.",iterator2.hasNext());
+     while (expectations.hasNext()) {
+       Assert.assertTrue("not enough actuals: " + expected + " != " + actual,actuals.hasNext());
        
-       Object obj1 = iterator1.next();
-       Object obj2 = iterator2.next();
+       Object obj1 = expectations.next();
+       Object obj2 = actuals.next();
        
        if (obj1.getClass().isArray()) {
          Assert.assertTrue(Arrays.deepEquals((Object[])obj1, (Object[])obj2));
@@ -23,6 +28,8 @@ public class CollectionUtil {
        
        Assert.assertEquals(obj1, obj2);
      }
+     
+     Assert.assertFalse("too many actuals: " + expected + " != " + actual, actuals.hasNext());
   }
   
   /**
