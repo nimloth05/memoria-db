@@ -46,7 +46,7 @@ public interface IDataStore extends IStore {
    */
   public <T extends IDataObject> T  get(IObjectId id);
   
-  public Collection<IDataObject> getAllObjects();
+  public Iterable<IDataObject> getAllObjects();
   
   public IIdProvider getDefaultIdProvider();
   

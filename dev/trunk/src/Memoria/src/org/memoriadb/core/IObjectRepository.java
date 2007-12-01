@@ -38,10 +38,12 @@ public interface IObjectRepository {
   public Collection<IObjectInfo> getAllObjectInfos();
 
   //FIXME unterscheiden UserSpace/ nicht UserSpace mit FilteredIterator
-  public Collection<Object> getAllObjects();
+  public Iterable<Object> getAllObjects();
 
-  public IObjectId getExistingId(Object obj);
+  public Iterable<Object> getAllUserSpaceObjects();
   
+  public IObjectId getExistingId(Object obj);
+
   public Object getExistingObject(IObjectId id);
 
   /**
@@ -49,9 +51,9 @@ public interface IObjectRepository {
    * @throws MemoriaException If the given object can not be found.
    */
   public IObjectId getId(Object obj);
-
-  public IObjectIdFactory getIdFactory();
   
+  public IObjectIdFactory getIdFactory();
+
   /**
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
@@ -64,12 +66,13 @@ public interface IObjectRepository {
    *         It is not considered if the object is persistent or not.
    */
   public Object getObject(IObjectId id);
-
+  
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
   public ObjectInfo getObjectInfo(Object obj);
-  
+
+
   /**
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
@@ -82,11 +85,11 @@ public interface IObjectRepository {
    */
   public boolean isMemoriaClass(Object obj);
 
-
   /**
    * Tells the ObjectContainer that an object was added to the persistent store.
    */
   public void updateObjectInfoAdded(Object obj, long revision);
+
 
   /**
    * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 

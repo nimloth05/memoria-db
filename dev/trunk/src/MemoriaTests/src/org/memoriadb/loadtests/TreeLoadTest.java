@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.TestMode;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.*;
 
 /**
  * save and read a tree of Nodes. Depth and width of the tree are configurable 
@@ -31,7 +31,7 @@ public class TreeLoadTest extends AbstractMemoriaTest {
     System.out.println();
     root = fObjectStore.get(id);
     System.out.println("Nodes  :" + root.countDescendants());
-    System.out.println("objects: " + fObjectStore.getAllObjects().size());
+    System.out.println("objects: " + CollectionUtil.count(fObjectStore.getAllObjects()));
   }
 
   @Override

@@ -2,10 +2,9 @@ package org.memoriadb.test.handler.array;
 
 import java.util.*;
 
-import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.test.testclasses.inheritance.C;
+import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest {
@@ -79,11 +78,13 @@ public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest
   public void test_Object_array_with_interitance() {
     C[][] arr = new C[][]{new C[]{getC(), getC()}, new C[]{getC()}};
 
-    int classCount = query(IMemoriaClass.class).size();
     IObjectId id = saveAll(arr);
 
     // plus 3 classes: A, B, C 
-    assertEquals(classCount+3, query(IMemoriaClass.class).size());
+    assertNotNull(fObjectStore.getTypeInfo().getMemoriaClass(A.class));
+    assertNotNull(fObjectStore.getTypeInfo().getMemoriaClass(B.class));
+    assertNotNull(fObjectStore.getTypeInfo().getMemoriaClass(C.class));
+    assertTypeHierachy(C.class);
     
     reopen();
     

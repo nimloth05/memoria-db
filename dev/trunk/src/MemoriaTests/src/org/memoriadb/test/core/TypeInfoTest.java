@@ -7,7 +7,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.test.testclasses.inheritance.C;
+import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class TypeInfoTest extends AbstractMemoriaTest {
@@ -32,22 +32,22 @@ public class TypeInfoTest extends AbstractMemoriaTest {
   }
   
   public void test_add_memoria_class() {
-    int startCount = getMemoriaClassCount();
-
     addClass(Object.class);
     addClass(Object[].class);
     addClass(ArrayList.class);
     
-    assertEquals(startCount, getMemoriaClassCount());
-    
     // plus 1 class
     addClass(SimpleTestObj.class);
-    assertEquals(startCount+1, getMemoriaClassCount());
+    assertNotNull(typeInfo().getMemoriaClass(SimpleTestObj.class));
     
     // plus 3 classes from type hierarchy
     addClass(C[][][][].class);
-    assertEquals(startCount+4, getMemoriaClassCount());
-
+    
+    assertNotNull(typeInfo().getMemoriaClass(A.class));
+    assertNotNull(typeInfo().getMemoriaClass(B.class));
+    assertNotNull(typeInfo().getMemoriaClass(C.class));
+    
+    assertTypeHierachy(C.class);
   }
   
   public void test_class_is_not_found() {

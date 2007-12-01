@@ -93,10 +93,14 @@ public class TransactionHandler {
     return fObjectRepository.getAllObjectInfos();
   }
 
-  public Collection<Object> getAllObjects() {
+  public Iterable<Object> getAllObjects() {
     return fObjectRepository.getAllObjects();
   }
 
+  public Iterable<Object> getAllUserSpaceObjects() {
+    return fObjectRepository.getAllUserSpaceObjects();
+  }
+  
   public IObjectId getArrayMemoriaClassId() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
@@ -108,19 +112,19 @@ public class TransactionHandler {
   public IIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
-  
+
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
   }
-
+  
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
-  
+
   public Header getHeader() {
     return fHeader;
   }
-
+  
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
   }
@@ -146,7 +150,7 @@ public class TransactionHandler {
   public IMemoriaClass getMemoriaClass(String className) {
     return fObjectRepository.getMemoriaClass(className);
   }
-  
+
   public IObjectId getMemoriaClassId(Object object) {
     ObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
@@ -165,11 +169,11 @@ public class TransactionHandler {
   public <T> T getObject(IObjectId id) {
     return (T) fObjectRepository.getObject(id);
   }
-
+  
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectRepository.getObjectInfo(obj);
   }
-  
+
   public IObjectInfo getObjectInfoForId(IObjectId id) {
     return fObjectRepository.getObjectInfoForId(id);
   }
@@ -276,6 +280,7 @@ public class TransactionHandler {
     DeleteTraversal traversal = new DeleteTraversal(this);
     traversal.handle(root);
   }
+
 
   private IObjectId internalSaveAll(Object root) {
     SaveTraversal traversal = new SaveTraversal(this);

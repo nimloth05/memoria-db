@@ -3,10 +3,10 @@ package org.memoriadb.core.query;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectRepository;
 import org.memoriadb.core.util.ReflectionUtil;
 
-public class ClassModeQueryStrategy {
+public class ObjectModeQueryStrategy {
 
   @SuppressWarnings("unchecked")
   public <T> List<T> query(IObjectRepository objectRepository, Class<T> clazz) {
@@ -25,10 +25,10 @@ public class ClassModeQueryStrategy {
     
     FilterControl control = new FilterControl();
 
-    for (IObjectInfo info : objectRepository.getAllObjectInfos()) {
-      if (!clazz.isInstance(info.getObject())) continue;
+    for (Object object : objectRepository.getAllUserSpaceObjects()) {
+      if (!clazz.isInstance(object)) continue;
 
-      T t = (T) info.getObject();
+      T t = (T) object;
       if (filter.accept(t, control)) control.add(t);
       
       if(control.isAbort()) break;

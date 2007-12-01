@@ -46,19 +46,29 @@ public interface IObjectStore extends IStore {
    */
   public <T> T get(IObjectId id);
 
-  public Collection<Object> getAllObjects();
+  /**
+   * 
+   * @return all Objects in the Memoria-Store.
+   */
+  public Iterable<Object> getAllObjects();
   
+  /**
+   * 
+   * @return all Objects in the Memoria-Store <b>except</b> Memoria-Classes.
+   */
+  public Iterable<Object> getAllUserSpaceObjects();
+
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException
    *           If the given object can not be found.
    */
   public IObjectId getId(Object obj);
-
-  public <T> List<T> query(Class<T> clazz);
   
-  public <FILTER, T extends FILTER> List<T> query(Class<T> clazz, IFilter<FILTER> filter);
+  public <T> List<T> query(Class<T> clazz);
 
+  public <FILTER, T extends FILTER> List<T> query(Class<T> clazz, IFilter<FILTER> filter);
+  
   public <T> List<T> query(String clazz);
   
   public List<Object> query(String clazz, IFilter<Object> filter);

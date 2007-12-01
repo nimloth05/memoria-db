@@ -13,7 +13,7 @@ import org.memoriadb.id.*;
  * 
  * Objects can be added with no regard to ongoing transactions. The appropriate indexes are updated.
  * 
- * @author msc
+ * @author sandro & msc
  *
  */
 public class ObjectRepository implements IObjectRepository {
@@ -56,7 +56,7 @@ public class ObjectRepository implements IObjectRepository {
   /**
    * Adds a new object to the repo. A new ObjectInfo is created, with a new id and the version 0.
    * 
-   * @return The new id
+   * @return The ObjectInfo for the newly added Object.
    */
   public ObjectInfo add(Object obj, IObjectId memoriaClassId) {
     IObjectId id = generateId();
@@ -98,12 +98,13 @@ public class ObjectRepository implements IObjectRepository {
     return Collections.<IObjectInfo>unmodifiableCollection(fObjectMap.values());
   }
 
-  public Collection<Object> getAllObjects() {
-    List<Object> result = new ArrayList<Object>(fObjectMap.size());
-    for (IObjectInfo info : fObjectMap.values()) {
-      result.add(info.getObject());
-    }
-    return result;
+  public Iterable<Object> getAllObjects() {
+    return fObjectMap.keySet();
+  }
+
+  @Override
+  public Iterable<Object> getAllUserSpaceObjects() {
+    return new FilterMemoriaClassesIterable(getAllObjects());
   }
 
   @Override
@@ -134,14 +135,14 @@ public class ObjectRepository implements IObjectRepository {
   public IObjectIdFactory getIdFactory() {
     return fIdFactory;
   }
-
+  
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
   public IMemoriaClassConfig getMemoriaClass(String klass) {
     return fMemoriaClasses.get(klass);
   }
-  
+
   /**
    * 
    * @param objectId
@@ -209,10 +210,7 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.createNextId();
   }
 
-  // TODO: Test for this assertions! which assertsion? msc
   private void internalPut(ObjectInfo info) {
-    // adjustId here for bootstrapped objects
-    fIdFactory.adjustId(info.getId());
     
     Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
@@ -225,6 +223,9 @@ public class ObjectRepository implements IObjectRepository {
       previousMapped = fMemoriaClasses.put(metaObject.getJavaClassName(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of memoria class: " + metaObject);
     }
+    
+ // adjustId here for bootstrapped objects
+    fIdFactory.adjustId(info.getId());
   }
 
   private void internalUpdate(ObjectInfo info, long revision) {

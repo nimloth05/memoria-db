@@ -48,4 +48,11 @@ public class CollectionUtil {
     Assert.assertTrue("Unexpected objects: " + set, set.isEmpty());
   }
   
+  @SuppressWarnings("unused") // mein das "obj" in der for-schleife.
+  public static int count(Iterable<?> iterable) {
+    int i = 0;
+    for(Object obj: iterable) ++i;
+    return i;
+  }
+  
 }

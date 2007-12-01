@@ -6,7 +6,7 @@ import org.memoriadb.*;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.test.testclasses.inheritance.*;
-import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.*;
 
 
 /**
@@ -33,6 +33,10 @@ public class ObjectModeQueryTest extends AbstractMemoriaTest {
     assertEquals(0, result.size());
   }
   
+  public void test_getAllUserSpaceObjects() {
+    assertEquals(0, CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()));
+  }
+  
   public void test_memoria_class() {
     List<IMemoriaClass> query = fObjectStore.query(IMemoriaClass.class);
     assertEquals(0, query.size());
@@ -45,7 +49,7 @@ public class ObjectModeQueryTest extends AbstractMemoriaTest {
     reopen();
     
     List<Object> result = fObjectStore.query(Object.class);
-    assertEquals(fObjectStore.getAllObjects().size(), result.size());
+    assertEquals(CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()), result.size());
   }
   
   public void test_polymorph_query_with_field_objects() {

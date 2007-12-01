@@ -7,7 +7,7 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.query.ClassModeQueryStrategy;
+import org.memoriadb.core.query.ObjectModeQueryStrategy;
 import org.memoriadb.id.*;
 
 public class ObjectStore implements IObjectStoreExt  {
@@ -16,7 +16,7 @@ public class ObjectStore implements IObjectStoreExt  {
   // bringt die Schnittstelle überhaupt etwas?
   private final TransactionHandler fTransactionHandler;
   
-  private final ClassModeQueryStrategy fQueryStrategy = new ClassModeQueryStrategy();
+  private final ObjectModeQueryStrategy fQueryStrategy = new ObjectModeQueryStrategy();
   
   public ObjectStore(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
@@ -69,8 +69,13 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public Collection<Object> getAllObjects() {
+  public Iterable<Object> getAllObjects() {
     return fTransactionHandler.getAllObjects();
+  }
+
+  @Override
+  public Iterable<Object> getAllUserSpaceObjects() {
+    return fTransactionHandler.getAllUserSpaceObjects();
   }
 
   @Override
@@ -130,19 +135,19 @@ public class ObjectStore implements IObjectStoreExt  {
   @Override
   public boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
-  }
+  } 
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> query(Class<T> clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
-  } 
+  }
 
   @Override
   public <FILTER, T extends FILTER> List<T> query(Class<T> clazz, IFilter<FILTER> filter) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
-
+  
   @Override
   public <T> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
@@ -156,7 +161,7 @@ public class ObjectStore implements IObjectStoreExt  {
   public IObjectId save(Object obj) {
     return fTransactionHandler.save(obj);
   }
-  
+
   public IObjectId saveAll(Object root) {
     return fTransactionHandler.saveAll(root);
   }

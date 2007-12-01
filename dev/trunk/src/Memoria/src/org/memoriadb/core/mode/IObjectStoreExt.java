@@ -20,23 +20,23 @@ public interface IObjectStoreExt extends IObjectStore {
   public void checkIndexConsistancy();
   
   public IBlockManager getBlockManager();
-  
-  public Header getHeader();
 
-  public IIdProvider getIdFactory();  
+  public Header getHeader();  
   
+  public IIdProvider getIdFactory();
+
   public int getIdSize();
-
+  
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
   public IObjectInfo getObjectInfo(Object obj);
-  
+ 
   /**
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
    */
   public IObjectInfo getObjectInfoForId(IObjectId id);
- 
+
   public Set<ObjectInfo> getSurvivors(Block block);
 }

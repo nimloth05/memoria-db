@@ -71,9 +71,9 @@ public class DataStore implements IDataStoreExt {
   
   @SuppressWarnings("unchecked")
   @Override
-  public Collection<IDataObject> getAllObjects() {
-    Collection<?> result= fTransactionHandler.getAllObjects();
-    return (Collection<IDataObject>) result;
+  public Iterable<IDataObject> getAllObjects() {
+    Iterable<?> result= fTransactionHandler.getAllObjects();
+    return (Iterable<IDataObject>) result;
   }
 
   @Override
