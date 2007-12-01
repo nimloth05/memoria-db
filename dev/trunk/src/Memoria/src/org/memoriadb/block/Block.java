@@ -113,7 +113,7 @@ public class Block {
 
   public void incrementInactiveObjectDataCount() {
     ++fInactiveObjectDataCount;
-    if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException("more inactive("+fInactiveObjectDataCount+") than active("+fObjectDataCount+") ObjectData");
+    if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
 

@@ -185,6 +185,21 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertSame(Object.class, o_l1.getClass());
   }
   
+  public void test_save_object_twice_with_save_all() {
+    ObjectReferencer referencer = new ObjectReferencer();
+    referencer.setObject(new SimpleTestObj());
+    IObjectId id = saveAll(referencer);
+    
+    referencer.setObject(new SimpleTestObj());
+    saveAll(referencer);
+    
+    saveAll(referencer);
+    
+    reopen();
+    
+    assertTrue(fObjectStore.containsId(id));
+  }
+  
   public void test_save_object_with_static_field() {
     StaticFieldObject obj = new StaticFieldObject();
     IObjectId id = save(obj);
@@ -242,6 +257,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     B b_l1 = (B) fObjectStore.get(id);
     assertEquals("b", b_l1.getName());
   }
+  
   
   public void test_save_single_object() {
     Object o = new SimpleTestObj("1");
@@ -323,8 +339,8 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     reopen();
     
-    B b_l1 = (B) fObjectStore.get(idbb);
-    assertEquals("bb", b_l1.getName());
+    B l1_b = (B) fObjectStore.get(idbb);
+    assertEquals("bb", l1_b.getName());
   }
   
   public void test_update_unsaved_reference() {
