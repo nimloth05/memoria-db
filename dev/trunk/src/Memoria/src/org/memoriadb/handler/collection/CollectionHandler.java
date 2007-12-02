@@ -132,7 +132,7 @@ public abstract class CollectionHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     Collection<?> list = getCollectionObject(obj);
     for (Object listEntry : list) {
       Type.writeValueWithType(output, listEntry, context);

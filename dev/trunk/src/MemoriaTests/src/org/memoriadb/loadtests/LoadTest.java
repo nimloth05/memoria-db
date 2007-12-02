@@ -16,7 +16,7 @@ public class LoadTest extends AbstractMemoriaTest {
     
     beginUpdate();
     
-    for(int i = 0; i < 200; ++i) {
+    for(int i = 0; i < 30000; ++i) {
       Referencer composite = new Referencer();
       composite.set(SimpleTestObj.class, "1");
       objects.add(composite);

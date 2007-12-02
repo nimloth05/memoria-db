@@ -40,7 +40,7 @@ public class HandlerClassHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws IOException {
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws IOException {
     HandlerbasedMemoriaClass classObject = (HandlerbasedMemoriaClass) obj;
     
     output.writeUTF(classObject.getJavaClassName());

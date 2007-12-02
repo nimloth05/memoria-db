@@ -38,7 +38,7 @@ public class EnumHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     IEnumObject enumObject = createEnumObject(obj);
     output.writeInt(enumObject.getOrdinal());
   }

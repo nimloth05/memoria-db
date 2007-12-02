@@ -32,7 +32,7 @@ public class EnumSetHandler extends SetHandler {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     EnumSet<?> enumSet = (EnumSet<?>) obj;
     Class<Enum> enumType = getEnumType(enumSet);
     IObjectId memoriaClassId = context.getMemoriaClassId(ReflectionUtil.getCorrectEnumClass(enumType).getName());

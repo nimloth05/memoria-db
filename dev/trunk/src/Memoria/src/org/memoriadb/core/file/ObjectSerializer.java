@@ -1,10 +1,10 @@
 package org.memoriadb.core.file;
 
-import java.io.*;
+import java.io.IOException;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.util.Constants;
+import org.memoriadb.core.util.io.MemoriaObjectOutputStream;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 
@@ -46,20 +46,18 @@ public final class ObjectSerializer {
   }
 
   private final IObjectRepository fObjectRepository;
-  private final ByteArrayOutputStream fBuffer;
-  private final DataOutput fStream;
+    private final MemoriaObjectOutputStream fStream;
 
   /**
    * @param repo
    */
   public ObjectSerializer(IObjectRepository repo) {
     fObjectRepository = repo;
-    fBuffer = new ByteArrayOutputStream();
-    fStream = new DataOutputStream(fBuffer);
+    fStream = new MemoriaObjectOutputStream();
   }
 
   public byte[] getBytes() {
-    return fBuffer.toByteArray();
+    return fStream.toByteArray();
   }
 
   public void markAsDeleted(IObjectInfo info) throws IOException {
@@ -78,17 +76,15 @@ public final class ObjectSerializer {
   private void serializeObject(IHandler handler, IObjectInfo info) throws Exception {
     IObjectId typeId = info.getMemoriaClassId();
 
-    ByteArrayOutputStream buffer = new ByteArrayOutputStream(Constants.DEFAULT_OBJECT_SIZE);
-    DataOutputStream objectStream = new DataOutputStream(buffer);
+    fStream.markObjectSizePosition();
+    int current = fStream.size();
 
-    typeId.writeTo(objectStream);
-    info.getId().writeTo(objectStream);
+    typeId.writeTo(fStream);
+    info.getId().writeTo(fStream);
 
-    handler.serialize(info.getObject(), objectStream, new SerializeContext());
+    handler.serialize(info.getObject(), fStream, new SerializeContext());
 
-    byte[] objectData = buffer.toByteArray();
-    fStream.writeInt(objectData.length);
-    fStream.write(objectData);
+    fStream.writeObjectSizeOnPosition(fStream.size() - current);
   }
 
   private void serializeObject(IObjectInfo info) throws Exception {

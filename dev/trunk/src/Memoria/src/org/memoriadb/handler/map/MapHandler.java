@@ -62,7 +62,7 @@ public class MapHandler implements IHandler {
   }
   
   @Override
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);
     
     for (Object key: map.keySet()) {
@@ -122,7 +122,7 @@ public class MapHandler implements IHandler {
     }
   }
 
-  private void writeListEntry(Object listEntry, DataOutputStream output, ISerializeContext context) throws IOException {
+  private void writeListEntry(Object listEntry, DataOutput output, ISerializeContext context) throws IOException {
     Type.writeValueWithType(output, listEntry, context);
 
   }

@@ -1,4 +1,4 @@
-package org.memoriadb.core.util;
+package org.memoriadb.core.util.io;
 
 import java.io.*;
 
@@ -15,6 +15,7 @@ public final class IOUtil {
     catch (IOException e) {
       throw new MemoriaException(e);
     }
+    
   }
   
   private IOUtil() {}

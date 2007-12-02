@@ -40,7 +40,7 @@ public interface IHandler {
    * @param output - the stream
    * @param context 
    */
-  public void serialize(Object obj, DataOutputStream output, ISerializeContext context) throws Exception;
+  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception;
 
   /**
    * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 

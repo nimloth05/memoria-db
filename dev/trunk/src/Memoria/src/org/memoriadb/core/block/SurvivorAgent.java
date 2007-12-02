@@ -8,7 +8,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.core.util.IOUtil;
+import org.memoriadb.core.util.io.IOUtil;
 import org.memoriadb.id.IObjectId;
 
 /**

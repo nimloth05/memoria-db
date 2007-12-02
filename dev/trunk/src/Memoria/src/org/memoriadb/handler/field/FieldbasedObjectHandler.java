@@ -40,7 +40,7 @@ public class FieldbasedObjectHandler implements IHandler {
   }
 
   @Override
-  public void serialize(final Object obj, final DataOutputStream output, final ISerializeContext context) throws Exception {
+  public void serialize(final Object obj, final DataOutput output, final ISerializeContext context) throws Exception {
     IFieldbasedObject fieldObject = getFieldObject(obj);
     
     for(MemoriaField metaField: (fClassObject).getFields()) {
