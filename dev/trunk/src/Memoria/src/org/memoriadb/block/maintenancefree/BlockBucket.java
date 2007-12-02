@@ -25,7 +25,7 @@ public class BlockBucket implements Comparable<BlockBucket> {
   public int compareTo(BlockBucket o) {
     return (fSize < o.fSize ? -1 : (fSize == o.fSize ? 0 : 1));
   }
-
+  
   public int getBlockCount() {
     return fBlocks.size();
   }

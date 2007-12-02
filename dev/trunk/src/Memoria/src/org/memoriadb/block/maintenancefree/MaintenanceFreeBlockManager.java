@@ -52,7 +52,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
       BlockBucket blockBucket = fRecycleList.ceiling(new BlockBucket(currentSize));
       if(blockBucket==null) return null; // no block with the requested size in the recycle list.
       
-      long ratio = currentSize*100/blockBucket.getSize();
+      long ratio = currentSize * 100 / blockBucket.getSize();
       if(ratio >= fSizeThreshold){
         Block result = getBlock(blockBucket, tabooBlocks);
         if(blockBucket.isEmpty())fRecycleList.remove(blockBucket);
