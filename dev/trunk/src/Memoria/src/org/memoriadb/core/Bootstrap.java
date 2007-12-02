@@ -10,7 +10,7 @@ import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.*;
 import org.memoriadb.core.util.ReflectionUtil;
-import org.memoriadb.handler.*;
+import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.instantiator.IInstantiator;
@@ -36,8 +36,6 @@ public class Bootstrap {
     IMemoriaClassConfig objectMemoriaClass = FieldbasedMemoriaClassFactory.createMetaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
 
-    registerHandler(trxHandler, new GuidIdHandler());
-    
     // FIXME den CollectionHandler auf mehr Generizität umschreiben (Ctor mit String-arg)
     registerHandler(trxHandler, new CollectionHandler.ListHandler(ArrayList.class));
     registerHandler(trxHandler, new CollectionHandler.ListHandler(LinkedList.class));

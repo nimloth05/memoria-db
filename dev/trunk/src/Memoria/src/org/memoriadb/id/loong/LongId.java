@@ -6,10 +6,8 @@ import org.memoriadb.id.IObjectId;
 
 public final class LongId implements IObjectId {
 
-  private long fValue;
+  private final long fValue;
 
-  public LongId(){}
-  
   public LongId(long value) {
     fValue = value;
   }

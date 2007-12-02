@@ -9,6 +9,20 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class CollectionTest extends AbstractMemoriaTest {
   
+  public void test_collection_with_objectIds() {
+    Collection<IObjectId> collection = createCollection();
+    collection.add(save(new Object()));
+    collection.add(save(new Object()));
+    collection.add(save(new Object()));
+    
+    IObjectId collectionId = save(collection);
+    
+    reopen();
+    
+    Collection<IObjectId> l1_collection = fObjectStore.get(collectionId);
+    assertEquals(collection, l1_collection);
+  }
+  
   public void test_data_mode() {
     Collection<SimpleTestObj> objectList = getObjectCollection();
     IObjectId objectId = saveAll(objectList);
@@ -25,7 +39,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     Collection<SimpleTestObj> l2_collection = fObjectStore.get(objectId);
     assertEquals(l1_collection.getCollection(), l2_collection);
   }
-  
+
   public void test_data_mode_scenario() {
     Collection<SimpleTestObj> objectList = getObjectCollection();
     IObjectId objectId = saveAll(objectList);
@@ -51,7 +65,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     Collection<Object> collection = createCollection();
     reopen(collection);
   }
-
+  
   public void test_int_object() {
     Collection<Integer> collection = getIntObjectCollection();
     reopen(collection);
@@ -113,13 +127,13 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     Collection<SimpleTestObj> collection = getObjectCollection();
     reopen(collection);
   }
-  
+
   public void test_save_all_data_mode() {
     reopenDataMode();
     
     
   }
-
+  
   public void test_string() {
     Collection<String> collection = createCollection();
     collection.add("one");
@@ -142,14 +156,14 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     collection.add(1);
     return collection;
   }
-  
+
   protected Collection<SimpleTestObj> getObjectCollection() {
     Collection<SimpleTestObj> collection = createCollection();
     collection.add(new SimpleTestObj("1"));
     collection.add(new SimpleTestObj("2"));
     return collection;
   }
-
+  
   protected void reopen(Collection<?> collection) {
     IObjectId id = saveAll(collection);
     reopen();

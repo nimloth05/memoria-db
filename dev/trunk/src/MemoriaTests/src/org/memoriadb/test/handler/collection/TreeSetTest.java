@@ -7,6 +7,17 @@ import org.memoriadb.test.testclasses.SimpleTestObj;
 public class TreeSetTest extends SetTest {
 
   @Override
+  public void test_collection_with_objectIds() {
+    try {
+      super.test_collection_with_objectIds();
+      fail("The IObjectId is not comparble.");
+    }
+    catch (ClassCastException e) {
+      
+    }
+  }
+
+  @Override
   public void test_list_in_list() {
     try {
       super.test_list_in_list();
@@ -16,7 +27,7 @@ public class TreeSetTest extends SetTest {
       //Its not possible to add a TreeSet to a TreeSet beacuse it does not implement the Comparable
     }
   }
-
+  
   @Override
   public void test_mixed_list() {
     try {
@@ -29,7 +40,7 @@ public class TreeSetTest extends SetTest {
       
     }
   }
-  
+
   @Override
   public void test_null_reference() {
     try {

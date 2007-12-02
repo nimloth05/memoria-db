@@ -6,6 +6,7 @@ import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class BlockReuseTest extends AbstractMemoriaTest {
+  
   public void test_reusing_one_block() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);

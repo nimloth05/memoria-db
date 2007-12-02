@@ -8,6 +8,17 @@ import org.memoriadb.test.testclasses.SimpleTestObj;
 public class ConcurrentSkipListSetTest extends SetTest {
   
   @Override
+  public void test_collection_with_objectIds() {
+    try {
+      super.test_collection_with_objectIds();
+      fail("The IObjectId is not comparble.");
+    }
+    catch (ClassCastException e) {
+      
+    }
+  }
+  
+  @Override
   public void test_list_in_list() {
     try {
       super.test_list_in_list();

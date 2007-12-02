@@ -426,6 +426,32 @@ public enum Type {
     }
 
   },
+  
+  typeObjectId {
+    
+    @Override
+    public Class<?> getClassLiteral() {
+      throw new MemoriaException("Not supported");
+    }
+
+    @Override
+    protected boolean canBeNull() {
+      return true;
+    }
+
+    @Override
+    protected void internalReadValue(DataInput input, ITypeVisitor visitor, IReaderContext context) throws IOException {
+      visitor.visitPrimitive(this, context.readObjectId(input));
+    }
+    
+    @Override
+    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+      IObjectId id = (IObjectId) value;
+      id.writeTo(output);
+    }
+    
+  },
+  
   typeClass {
 
     @Override
@@ -456,8 +482,9 @@ public enum Type {
 
   public static Type getType(Class<?> javaType) {
     Type type = sPrimitiveTypeMap.get(javaType);
-    if (type == null) return typeClass;
-    return type;
+    if (type != null) return type;
+    if (IObjectId.class.isAssignableFrom(javaType)) return typeObjectId;
+    return typeClass;
   }
 
   public static Type getType(Field field) {

@@ -93,16 +93,17 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertSame(Object.class, o_l1.getClass());
   }
   
-  public void test_ObjectId() {
-    Object obj = new Object();
-    IObjectId objId = save(obj);
-    IObjectId idId = saveAll(objId);
+  public void test_objectId() {
+    WeakRef ref = new WeakRef();
+    IObjectId objId = save(new Object());
+    ref.setObjectId(objId);
+    IObjectId refId = save(ref);
     
     reopen();
     
-    IObjectId l1_objId = get(idId);
+    WeakRef l1_ref = fObjectStore.get(refId);
     
-    assertEquals(objId, l1_objId);
+    assertEquals(objId, l1_ref.getObjectId());
   }
   
   public void test_save_aggregate_with_dataObject_in_objectMode() {
