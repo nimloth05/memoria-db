@@ -3,7 +3,7 @@ package org.memoriadb.handler.field;
 import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.meta.*;
@@ -17,7 +17,7 @@ public class FieldbasedClassHandler implements IHandler {
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
     if (!FieldbasedMemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + FieldbasedMemoriaClass.class.getName() +" but I was called for " + className);
   }
-
+  
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
@@ -36,7 +36,7 @@ public class FieldbasedClassHandler implements IHandler {
     }
     return classObject;
   }
-  
+
   @Override
   public String getClassName() {
     return FieldbasedMemoriaClass.class.getName();
@@ -61,7 +61,6 @@ public class FieldbasedClassHandler implements IHandler {
 
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
-    throw new MemoriaException("has no children");
   }
 
 }

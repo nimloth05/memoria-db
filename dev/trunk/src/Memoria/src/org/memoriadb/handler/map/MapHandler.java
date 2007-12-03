@@ -40,7 +40,7 @@ public class MapHandler implements IHandler {
     if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for "
         + className);
   }
-
+  
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     Map<Object, Object> map = createMap();
@@ -60,7 +60,7 @@ public class MapHandler implements IHandler {
   public String getClassName() {
     return fClassName;
   }
-  
+
   @Override
   public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);

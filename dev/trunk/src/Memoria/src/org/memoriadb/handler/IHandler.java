@@ -16,13 +16,13 @@ import org.memoriadb.instantiator.IInstantiator;
  *
  */
 public interface IHandler {
-
+  
   /**
    * @param className the name of the java class
    * @param instantiator
    */
   public void checkCanInstantiateObject(String className, IInstantiator instantiator);
-  
+
   /**
    * @param input
    * @param context TODO
@@ -30,18 +30,19 @@ public interface IHandler {
    * @return the new object
    */
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
-
   /**
    * @return Name of the java-type this handler han deal with.
    */
   public String getClassName();
+
   /**
    * @param obj - object to serialize
    * @param output - the stream
    * @param context 
    */
   public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception;
-
+  
+  
   /**
    * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 
    * For non-Containers, all referenced objects are visited

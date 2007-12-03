@@ -21,9 +21,16 @@ public interface IModeStrategy {
 
   public void checkObject(Object obj);
 
+  public Object createEnum(Enum<?> current, IObjectId memoriaClassId);
+
   /**
    * @return true, if the db is operated in data-mode (the java classes are not required).
    */
   public boolean isDataMode();
+
+  /**
+   * @return true, if the given <tt>obj</tt> is an enum.
+   */
+  public boolean isEnum(Object obj);
 
 }

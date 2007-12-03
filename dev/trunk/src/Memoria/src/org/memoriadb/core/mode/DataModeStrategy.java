@@ -3,10 +3,11 @@ package org.memoriadb.core.mode;
 import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.enu.*;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
-public class DataModeStrategy implements IModeStrategy {
+public final class DataModeStrategy implements IModeStrategy {
  
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
@@ -29,8 +30,18 @@ public class DataModeStrategy implements IModeStrategy {
   public void checkObject(Object obj) {}
 
   @Override
+  public Object createEnum(Enum<?> current, IObjectId memoriaClassId) {
+    return new EnumObject(memoriaClassId, current);
+  }
+
+  @Override
   public boolean isDataMode() {
     return true;
+  }
+
+  @Override
+  public boolean isEnum(Object obj) {
+    return obj instanceof IEnumObject;
   }
   
 }

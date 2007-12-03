@@ -7,7 +7,7 @@ import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 /**
- * Tests the reuse of blocks
+ * Tests the reuse of blocks with a MaintenanceFreeBlockManager.
  * 
  * @author msc
  * 
@@ -33,6 +33,22 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(getBlock(2), getCurrentBlock(id1));
     assertEquals(getBlock(3), getCurrentBlock(id2));
 
+  }
+  
+  public void test_inactiveRatio_when_a_block_is_reused() {
+    Object obj = new Object();
+    save(obj);
+    assertEquals(2, getBlockManager().getBlockCount());
+    assertEquals(0, getBlock(0).getInactiveRatio());
+    
+    delete(obj);
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(100, getBlock(1).getInactiveRatio());
+    
+    save(new Object());
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(00, getBlock(1).getInactiveRatio());
+    
   }
   
   public void test_reusing_one_block() {

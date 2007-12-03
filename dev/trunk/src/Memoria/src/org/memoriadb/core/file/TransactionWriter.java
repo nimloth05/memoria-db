@@ -15,7 +15,6 @@ public final class TransactionWriter implements ITransactionWriter {
   private final IBlockManager fBlockManager;
   private long fHeadRevision;
   private final IObjectRepository fRepo;
-  private final SurvivorAgent fSurvivorAgent;
   private final OpenConfig fConfig;
 
   public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision) {
@@ -28,7 +27,6 @@ public final class TransactionWriter implements ITransactionWriter {
     fFile = file;
     fBlockManager = config.getBlockManager();
     fHeadRevision = headRevision;
-    fSurvivorAgent = new SurvivorAgent(repo, file);
   }
 
   public Block append(byte[] trxData, int numberOfObjects) throws IOException {
@@ -118,7 +116,7 @@ public final class TransactionWriter implements ITransactionWriter {
    * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks) throws Exception {
-    Set<ObjectInfo> survivors = fSurvivorAgent.getSurvivors(block);
+    Set<ObjectInfo> survivors =  new SurvivorAgent(fRepo, fFile).getSurvivors(block);
     if(survivors.isEmpty()) return;
     
     // save survivors recursively
@@ -183,9 +181,8 @@ public final class TransactionWriter implements ITransactionWriter {
 
     freeBlock(block, tabooBlocks);
     
-    // now all objects in the freed block must be inactive
-    if(block.getInactiveRatio() != 100) throw new MemoriaException("");
-    
+    // now all objects in the freed block must be inactive (inactive-ratio == 100%)
+    if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.setNumberOfObjectData(numberOfObjects);
     
     write(block, trxData);

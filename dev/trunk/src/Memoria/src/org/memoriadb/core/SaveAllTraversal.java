@@ -11,24 +11,27 @@ import org.memoriadb.core.util.IdentityHashSet;
  * @author msc
  *
  */
-public class DeleteTraversal implements IObjectTraversal {
+public class SaveAllTraversal implements IObjectTraversal {
 
   private final Set<Object> fVisited = new IdentityHashSet<Object>();
   private final TransactionHandler fTransactionHandler;
   
-  public DeleteTraversal(TransactionHandler transactionHandler) {
+  public SaveAllTraversal(TransactionHandler transactionHandler) {
     fTransactionHandler = transactionHandler;
   }
 
   @Override
   public void handle(Object obj) {
     if(fVisited.contains(obj)) return;
-    if(fTransactionHandler.isEnum(obj)) return;
-    
     fVisited.add(obj);
     
+    if(fTransactionHandler.isEnum(obj)) {
+      fTransactionHandler.addMemoriaClassIfNecessary(obj);
+      return;
+    }
+    
+    fTransactionHandler.internalSave(obj);
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
-    fTransactionHandler.internalDelete(obj);
   }
 
 }

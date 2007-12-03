@@ -10,11 +10,8 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.handler.collection.AllTests.suite());
     suite.addTest(org.memoriadb.test.handler.array.AllTests.suite());
     suite.addTest(org.memoriadb.test.handler.map.AllTests.suite());
-    
-    //$JUnit-BEGIN$
-    suite.addTestSuite(LinkedListTest.class);
-    suite.addTestSuite(ArrayListTest.class);
-    //$JUnit-END$
+    suite.addTest(org.memoriadb.test.handler.enu.AllTests.suite());
+
     return suite;
   }
 

@@ -3,6 +3,7 @@ package org.memoriadb.loadtests;
 import java.util.*;
 
 import org.memoriadb.TestMode;
+import org.memoriadb.core.CreateConfig;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.*;
 
@@ -15,19 +16,19 @@ import org.memoriadb.testutil.*;
 public class TreeLoadTest extends AbstractMemoriaTest {
 
   private int fCounter;
-
+  
   public void test() {
+    
     System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);
-    //Node root = createTree(12, 2);
-    Node root = createTree(9, 2);
     long start1 = System.nanoTime();
+    Node root = createTree(8, 2);
     IObjectId id = save(root);
     long start2 = System.nanoTime();
-    System.out.println("write " + (start2 - start1)/1000000);
+    System.out.println("create ms: " + (start2 - start1)/1000000);
     writeFootprint();
     root = null; 
     reopen();
-    System.out.println("read  " + (System.nanoTime() - start2)/1000000);
+    System.out.println("read ms:  " + (System.nanoTime() - start2)/1000000);
     writeFootprint();
 
     System.out.println();
@@ -37,15 +38,19 @@ public class TreeLoadTest extends AbstractMemoriaTest {
   }
 
   @Override
+  protected void configureOpen(CreateConfig config) {
+    super.configureOpen(config);
+  }
+
+  @Override
   protected TestMode getTestMode() {
-    return TestMode.memory;
+    return TestMode.filesystem;
   }
 
   private void addChildren(Node parent, int currentDepth, int depth, int width) {
     if (currentDepth == depth) return;
     
     for (int i = 0; i < width; ++i) {
-      System.out.println(++fCounter);
       Node child = new Node();
       saveAll(child);
       addChildren(child, currentDepth + 1, depth, width);

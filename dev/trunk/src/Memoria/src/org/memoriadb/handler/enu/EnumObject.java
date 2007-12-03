@@ -8,12 +8,17 @@ public class EnumObject implements IEnumObject {
   
   private IObjectId fMemoriaClassId;
   private int fOrdinal;
-
+  
   public EnumObject(Enum<?> enumObj) {
     fOrdinal = enumObj.ordinal();
   }
 
   public EnumObject(IObjectId memoriaClassId) {
+    fMemoriaClassId = memoriaClassId;
+  }
+  
+  public EnumObject(IObjectId memoriaClassId, Enum<?> enumObj) {
+    this(enumObj);
     fMemoriaClassId = memoriaClassId;
   }
 

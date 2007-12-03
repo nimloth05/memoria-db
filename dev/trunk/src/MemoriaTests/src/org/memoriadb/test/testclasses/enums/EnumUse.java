@@ -4,6 +4,12 @@ public class EnumUse {
   
   private TestEnum fEnum;
   
+  public EnumUse() {}
+  
+  public EnumUse(TestEnum enum1) {
+    fEnum = enum1;
+  }
+
   public TestEnum getEnum() {
     return fEnum;
   }

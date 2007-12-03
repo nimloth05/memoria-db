@@ -16,12 +16,10 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     
   private final TreeSet<BlockBucket> fRecycleList = new TreeSet<BlockBucket>();
   
-  public MaintenanceFreeBlockManager() {
-    // default-value
-    this(50, 50);
-  }
-  
   /**
+   * 
+   * Recommandation: A inactiveRatio equal or below 50% can lead to very poor performance, because
+   * the algorithm may not converge.
    * 
    * @param inactiveThreshold 0..100%. 0 means: at leat on ObjectData must be inactive. 
    *        100 means: all (100%) of the ObjectDatas must be inactive

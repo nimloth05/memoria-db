@@ -3,7 +3,7 @@ package org.memoriadb.core.meta;
 import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.ISerializeContext;
 import org.memoriadb.core.load.IReaderContext;
 import org.memoriadb.core.util.ReflectionUtil;
@@ -55,7 +55,6 @@ public class HandlerClassHandler implements IHandler {
 
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
-    throw new MemoriaException("has no children");
   }
 
   private IHandler instantiateHandler(String handlerName, String javaClassName) {

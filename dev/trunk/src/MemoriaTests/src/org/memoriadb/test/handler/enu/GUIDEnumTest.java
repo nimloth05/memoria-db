@@ -1,4 +1,4 @@
-package org.memoriadb.test.core.enu;
+package org.memoriadb.test.handler.enu;
 
 import org.memoriadb.core.CreateConfig;
 import org.memoriadb.id.guid.GuidIdFactory;

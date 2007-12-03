@@ -3,7 +3,6 @@ package org.memoriadb.test.handler.array;
 import java.util.Arrays;
 
 import org.memoriadb.handler.array.*;
-import org.memoriadb.handler.enu.EnumDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.test.testclasses.enums.TestEnum;
@@ -18,10 +17,9 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     
     IArray arr = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
     
-    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(TestEnum.class);
-    arr.set(0, new EnumDataObject(memoriaClassId, 0));
-    arr.set(1, new EnumDataObject(memoriaClassId, 1));
-    arr.set(2, new EnumDataObject(memoriaClassId, 2));
+    arr.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 0));
+    arr.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 1));
+    arr.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 2));
     
     IObjectId id = saveAll(arr);
     

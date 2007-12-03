@@ -42,10 +42,10 @@ public class EnumHandler implements IHandler {
     IEnumObject enumObject = createEnumObject(obj);
     output.writeInt(enumObject.getOrdinal());
   }
-
+  
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {}
-  
+
   private IEnumObject createEnumObject(IReaderContext context, IObjectId memoriaClassId) {
     if (context.isInDataMode()) return new EnumDataObject(memoriaClassId);
     return new EnumObject(memoriaClassId);

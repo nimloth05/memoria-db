@@ -10,7 +10,7 @@ public class OpenConfig {
   private IBlockManager fBlockManager;
 
   public OpenConfig() {
-    this(new MaintenanceFreeBlockManager());
+    this(new MaintenanceFreeBlockManager(70, 80));
   }
   
   public OpenConfig(IBlockManager blockManager) {

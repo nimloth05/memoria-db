@@ -4,10 +4,10 @@ import java.util.*;
 
 import org.memoriadb.block.*;
 import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.mode.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.*;
 import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
@@ -36,21 +36,24 @@ public class TransactionHandler {
     fObjectRepository = writer.getRepo();
   }
 
-  
   public IObjectId addMemoriaClass(Class<?> clazz) {
     Class<?> type = clazz;
+    
     if (clazz.isArray()) {
       type = ReflectionUtil.getComponentTypeInfo(clazz).getJavaClass();
     }
     if (Type.isPrimitive(type)) throw new MemoriaException("primitive can not be added " + clazz);
 
-    IObjectId result = ObjectModeStrategy.addMemoriaClassIfNecessary(this, clazz);
+    IObjectId result = TypeHierarchyBuilder.addMemoriaClassIfNecessary(this, clazz, fModeStrategy);
     
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
 
-  
+  public IObjectId addMemoriaClassIfNecessary(Object obj) {
+    return fModeStrategy.addMemoriaClassIfNecessary(this, obj);
+  }
+
   public void beginUpdate() {
     ++fUpdateCounter;
   }
@@ -58,15 +61,15 @@ public class TransactionHandler {
   public void checkIndexConsistancy() {
     fObjectRepository.checkIndexConsistancy();
   }
-
+  
   public void close() {
     fTransactionWriter.close();
   }
-
+  
   public boolean contains(Object obj) {
     return fObjectRepository.contains(obj);
   }
-  
+
   public boolean containsId(IObjectId id) {
     return fObjectRepository.contains(id);
   }
@@ -80,7 +83,7 @@ public class TransactionHandler {
     internalDeleteAll(root);
     if (!isInUpdateMode()) writePendingChanges();
   }
-  
+
   public void endUpdate() {
     if (fUpdateCounter == 0) throw new MemoriaException("ObjectStore is not in update-mode");
     --fUpdateCounter;
@@ -92,11 +95,11 @@ public class TransactionHandler {
   public Collection<IObjectInfo> getAllObjectInfos() {
     return fObjectRepository.getAllObjectInfos();
   }
-
+  
   public Iterable<Object> getAllObjects() {
     return fObjectRepository.getAllObjects();
   }
-
+  
   public Iterable<Object> getAllUserSpaceObjects() {
     return fObjectRepository.getAllUserSpaceObjects();
   }
@@ -104,7 +107,7 @@ public class TransactionHandler {
   public IObjectId getArrayMemoriaClassId() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
-  
+
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
@@ -120,7 +123,7 @@ public class TransactionHandler {
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
-
+  
   public Header getHeader() {
     return fHeader;
   }
@@ -140,13 +143,13 @@ public class TransactionHandler {
   public IObjectId getMemoriaArrayClass() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
-  
+
   public IMemoriaClass getMemoriaClass(Object object) {
     IObjectId id = getMemoriaClassId(object);
     if(id == null) return null;
     return (IMemoriaClass) fObjectRepository.getObject(id); 
   }
-  
+
   public IMemoriaClass getMemoriaClass(String className) {
     return fObjectRepository.getMemoriaClass(className);
   }
@@ -156,7 +159,7 @@ public class TransactionHandler {
     if(info == null) return null;
     return info.getMemoriaClassId();
   }
-
+  
   /**
    * @return The Class for the given <tt>obj</tt> or null.
    */
@@ -169,7 +172,7 @@ public class TransactionHandler {
   public <T> T getObject(IObjectId id) {
     return (T) fObjectRepository.getObject(id);
   }
-  
+
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectRepository.getObjectInfo(obj);
   }
@@ -194,7 +197,7 @@ public class TransactionHandler {
   public void internalDelete(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
     if (info == null) return;
-
+    
     if (fAdd.remove(info)) {
       // object was added in current transaction, remove it from add-list and from the repo
       fObjectRepository.delete(obj);
@@ -220,24 +223,12 @@ public class TransactionHandler {
     
     ObjectInfo info = getObjectInfo(obj);
 
-    if (info != null) {
-      if (fAdd.contains(info)) {
-        // added in same transaction, don't add it again
-        return fObjectRepository.getExistingId(obj);
-      }
+    if (info != null)  return handleExistingObject(obj, info);
+    return handleNewObject(obj);
+  }
 
-      // object already in the store, perform update. info is replaced if several updates occur in same transaction.
-      fUpdate.add(info);
-      return info.getId();
-    }
-
-    // object not already in the store, add it
-
-    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
-    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
-    fAdd.add(getObjectInfo(obj));
-    return result.getId();
+  public boolean isEnum(Object obj) {
+    return fModeStrategy.isEnum(obj);
   }
 
   public boolean isInUpdateMode() {
@@ -245,9 +236,11 @@ public class TransactionHandler {
   }
 
   public IObjectId save(Object obj) {
-    IObjectId result = internalSave(obj);
+    if(isEnum(obj)) throw new SchemaException("It is not possible to add enum-instances. They are automatically saved when referenced.");
+    SaveTraversal traversal = new SaveTraversal(this);
+    traversal.handle(obj);
     if (!isInUpdateMode()) writePendingChanges();
-    return result;
+    return fObjectRepository.getExistingId(obj);
   }
 
   public IObjectId saveAll(Object root) {
@@ -271,8 +264,23 @@ public class TransactionHandler {
     fDelete.clear();
   }
 
-  private IObjectId addMemoriaClassIfNecessary(Object obj) {
-    return fModeStrategy.addMemoriaClassIfNecessary(this, obj);
+  private IObjectId handleExistingObject(Object obj, ObjectInfo info) {
+    if (fAdd.contains(info)) {
+      // added in same transaction, don't add it again
+      return fObjectRepository.getExistingId(obj);
+    }
+
+    // object already in the store, perform update. info is replaced if several updates occur in same transaction.
+    fUpdate.add(info);
+    return info.getId();
+  }
+
+  private IObjectId handleNewObject(Object obj) {
+    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
+    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
+    fAdd.add(getObjectInfo(obj));
+    return result.getId();
   }
 
   private void internalDeleteAll(Object root) {
@@ -283,7 +291,7 @@ public class TransactionHandler {
 
 
   private IObjectId internalSaveAll(Object root) {
-    SaveTraversal traversal = new SaveTraversal(this);
+    SaveAllTraversal traversal = new SaveAllTraversal(this);
     traversal.handle(root);
     return fObjectRepository.getExistingId(root);
   }

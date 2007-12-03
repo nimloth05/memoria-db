@@ -8,7 +8,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.ObjectLoader;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.mode.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
@@ -111,7 +111,7 @@ public class Bootstrap {
     transactionHandler.save(classConfig);
     
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());
-    ObjectModeStrategy.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
+    TypeHierarchyBuilder.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
   }
   
   

@@ -37,7 +37,9 @@ public interface IObjectRepository {
   
   public Collection<IObjectInfo> getAllObjectInfos();
 
-  //FIXME unterscheiden UserSpace/ nicht UserSpace mit FilteredIterator
+  /**
+   * @return All objects in the repository, including all bootstrapped or class-objects
+   */
   public Iterable<Object> getAllObjects();
 
   public Iterable<Object> getAllUserSpaceObjects();
