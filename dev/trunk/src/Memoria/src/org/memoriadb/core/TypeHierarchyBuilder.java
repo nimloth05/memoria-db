@@ -44,7 +44,7 @@ public class TypeHierarchyBuilder {
     
     // enum class added, add enum-instances
     for(Enum<?> current: (Enum<?>[]) javaClass.getEnumConstants()) {
-      transactionHandler.internalSave(modeStrategy.createEnum(current, result));
+      transactionHandler.internalAddObject(modeStrategy.createEnum(current, result));
     }
     
     return result;

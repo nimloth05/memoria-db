@@ -223,8 +223,18 @@ public class TransactionHandler {
     
     ObjectInfo info = getObjectInfo(obj);
 
-    if (info != null)  return handleExistingObject(obj, info);
-    return handleNewObject(obj);
+    if (info != null)  return internalUpdateObject(obj, info);
+    return internalAddObject(obj);
+  }
+
+  public IObjectId internalAddObject(Object obj) {
+    if(contains(obj)) throw new MemoriaException("obj already saved: " + obj);
+    
+    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
+    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
+    fAdd.add(getObjectInfo(obj));
+    return result.getId();
   }
 
   public boolean isEnum(Object obj) {
@@ -237,16 +247,20 @@ public class TransactionHandler {
 
   public IObjectId save(Object obj) {
     if(isEnum(obj)) throw new SchemaException("It is not possible to add enum-instances. They are automatically saved when referenced.");
+    
     SaveTraversal traversal = new SaveTraversal(this);
     traversal.handle(obj);
+    
     if (!isInUpdateMode()) writePendingChanges();
     return fObjectRepository.getExistingId(obj);
   }
 
   public IObjectId saveAll(Object root) {
-    IObjectId result = internalSaveAll(root);
+    SaveAllTraversal traversal = new SaveAllTraversal(this);
+    traversal.handle(root);
+    
     if (!isInUpdateMode()) writePendingChanges();
-    return result;
+    return fObjectRepository.getExistingId(root);
   }
 
   public void writePendingChanges() {
@@ -264,7 +278,13 @@ public class TransactionHandler {
     fDelete.clear();
   }
 
-  private IObjectId handleExistingObject(Object obj, ObjectInfo info) {
+  private void internalDeleteAll(Object root) {
+    if (!contains(root)) return;
+    DeleteTraversal traversal = new DeleteTraversal(this);
+    traversal.handle(root);
+  }
+
+  private IObjectId internalUpdateObject(Object obj, ObjectInfo info) {
     if (fAdd.contains(info)) {
       // added in same transaction, don't add it again
       return fObjectRepository.getExistingId(obj);
@@ -273,26 +293,5 @@ public class TransactionHandler {
     // object already in the store, perform update. info is replaced if several updates occur in same transaction.
     fUpdate.add(info);
     return info.getId();
-  }
-
-  private IObjectId handleNewObject(Object obj) {
-    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
-    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
-    fAdd.add(getObjectInfo(obj));
-    return result.getId();
-  }
-
-  private void internalDeleteAll(Object root) {
-    if (!contains(root)) return;
-    DeleteTraversal traversal = new DeleteTraversal(this);
-    traversal.handle(root);
-  }
-
-
-  private IObjectId internalSaveAll(Object root) {
-    SaveAllTraversal traversal = new SaveAllTraversal(this);
-    traversal.handle(root);
-    return fObjectRepository.getExistingId(root);
   }
 }
