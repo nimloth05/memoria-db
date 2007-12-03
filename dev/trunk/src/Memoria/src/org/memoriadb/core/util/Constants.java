@@ -38,7 +38,7 @@ public final class Constants {
   /**
    * Marker, that a primtive Object such as Integer was not null.
    */
-  public static final byte VALID_PRIMTIVE_OBJECT = 1;
+  public static final byte ASSIGNED_VALUE = 1;
 
   public static final long INITIAL_HEAD_REVISION = 0;
 

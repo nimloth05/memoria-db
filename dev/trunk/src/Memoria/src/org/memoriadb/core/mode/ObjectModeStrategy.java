@@ -44,6 +44,9 @@ public class ObjectModeStrategy implements IModeStrategy {
     classObject = new HandlerbasedMemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
+    
+    // add all enum-instances?
+    
     return result;
   }
 

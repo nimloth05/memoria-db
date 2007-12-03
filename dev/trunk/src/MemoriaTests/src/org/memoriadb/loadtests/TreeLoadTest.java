@@ -14,10 +14,12 @@ import org.memoriadb.testutil.*;
  */
 public class TreeLoadTest extends AbstractMemoriaTest {
 
+  private int fCounter;
+
   public void test() {
     System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);
     //Node root = createTree(12, 2);
-    Node root = createTree(15, 2);
+    Node root = createTree(9, 2);
     long start1 = System.nanoTime();
     IObjectId id = save(root);
     long start2 = System.nanoTime();
@@ -36,13 +38,14 @@ public class TreeLoadTest extends AbstractMemoriaTest {
 
   @Override
   protected TestMode getTestMode() {
-    return TestMode.filesystem;
+    return TestMode.memory;
   }
 
   private void addChildren(Node parent, int currentDepth, int depth, int width) {
     if (currentDepth == depth) return;
     
     for (int i = 0; i < width; ++i) {
+      System.out.println(++fCounter);
       Node child = new Node();
       saveAll(child);
       addChildren(child, currentDepth + 1, depth, width);
@@ -89,4 +92,6 @@ class Node {
 
     return result;
   }
+  
+  
 }

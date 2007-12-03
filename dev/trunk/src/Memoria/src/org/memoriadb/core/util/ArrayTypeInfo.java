@@ -1,7 +1,7 @@
 package org.memoriadb.core.util;
 
 import org.memoriadb.core.meta.Type;
-
+// FIXME allenfalls 2 Klassen für primitive und \primitive
 public class ArrayTypeInfo {
 
   private final Type fComponentType;

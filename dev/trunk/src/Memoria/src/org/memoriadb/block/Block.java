@@ -28,12 +28,12 @@ public class Block {
    * Position in the file
    */
   private final long fPosition;
+  private IBlockManager fManager;
   
   private int fObjectDataCount;
   
   private int fInactiveObjectDataCount;
 
-  private IBlockManager fManager;
   
   public static Block getDefaultBlock() {
     sDefaultBlock.setNumberOfObjectData(sDefaultBlock.getObjectDataCount()+1);
@@ -122,6 +122,9 @@ public class Block {
   }
 
   public void setNumberOfObjectData(int numberOfObjects) {
+    // when the number of ObjectData is changed, reset fInactiveObjectDataCount
+    fInactiveObjectDataCount = 0;
+    
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }

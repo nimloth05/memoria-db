@@ -6,6 +6,7 @@ import java.util.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.SurvivorAgent;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.MemoriaCRC32;
 
 public final class TransactionWriter implements ITransactionWriter {
@@ -175,13 +176,17 @@ public final class TransactionWriter implements ITransactionWriter {
   private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks) throws Exception {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
-    // this call may return to this TransactionWriter recursivley
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
     
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);
 
     freeBlock(block, tabooBlocks);
+    
+    // now all objects in the freed block must be inactive
+    if(block.getInactiveRatio() != 100) throw new MemoriaException("");
+    
+    block.setNumberOfObjectData(numberOfObjects);
     
     write(block, trxData);
     return block;    

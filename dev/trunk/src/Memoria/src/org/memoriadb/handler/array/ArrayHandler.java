@@ -27,12 +27,7 @@ public class ArrayHandler implements IHandler {
     IArray array = instantiateArray(input, context, dimension, length, componentType);
 
     if (dimension == 1) {
-      if (componentType.isPrimitive()) {
-        readPrimitives(input, context, array, componentType);
-      }
-      else {
-        readObjects(input, context, array);
-      }
+      readContent(input, context, componentType, array);
     }
     else {
       // multidimensional array, read components, which are also arrays
@@ -55,6 +50,8 @@ public class ArrayHandler implements IHandler {
 
     output.writeInt(componentTypeInfo.getDimension());
     output.writeInt(array.length());
+    
+    // writeTo auf ArrayTypeInfo
     output.writeByte(componentTypeInfo.getComponentType().ordinal());
 
     // if componentType is a class, write MemoriaClassId
@@ -114,6 +111,15 @@ public class ArrayHandler implements IHandler {
   private IArray instantiateArray(IReaderContext context, int length, ArrayTypeInfo arrayTypeInfo) {
     if (context.isInDataMode()) return new DataArray(context.getArrayMemoriaClass(), arrayTypeInfo, length);
     return new ObjectArray(context.getArrayMemoriaClass(), arrayTypeInfo, length);
+  }
+
+  private void readContent(DataInputStream input, IReaderContext context, Type componentType, IArray array) throws IOException {
+    if (componentType.isPrimitive()) {
+      readPrimitives(input, context, array, componentType);
+    }
+    else {
+      readObjects(input, context, array);
+    }
   }
 
   private void readObject(DataInputStream input, final IReaderContext context, final IArray array, final int index) {

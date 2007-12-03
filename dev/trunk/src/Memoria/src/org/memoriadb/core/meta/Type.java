@@ -620,8 +620,10 @@ public enum Type {
         output.writeByte(Constants.NULL_VALUE);
         return;
       }
-      output.writeByte(Constants.VALID_PRIMTIVE_OBJECT);
+      output.writeByte(Constants.ASSIGNED_VALUE);
     }
+    
+    if(value == null) throw new MemoriaException("null not expected for " + this );
     internalWriteValue(output, value, context);
   }
 
