@@ -1,6 +1,5 @@
 package org.memoriadb.block;
 
-import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.FileLayout;
 
 /**
@@ -20,7 +19,7 @@ public class Block {
   /**
    * Number of bytes this block can store.
    * 
-   * Limited to int because arrays can't be bigger than INT_MAX
+   * Limited to int because arrays can't be bigger than INT_MAX (implementation depends on arrays)
    */
   private long fSize;
   
@@ -31,9 +30,7 @@ public class Block {
   private IBlockManager fManager;
   
   private int fObjectDataCount;
-  
   private int fInactiveObjectDataCount;
-
   
   public static Block getDefaultBlock() {
     sDefaultBlock.setNumberOfObjectData(sDefaultBlock.getObjectDataCount()+1);
@@ -113,18 +110,27 @@ public class Block {
 
   public void incrementInactiveObjectDataCount() {
     ++fInactiveObjectDataCount;
-    if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
+    
+    // assertions must be desabled because fObjectDataCount is not set bevor all ObjectData are read in, but
+    // incrementInactiveObjectDataCount() is called during reading the objects.
+    
+    //if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
     if(fManager != null)fManager.inactiveRatioChanged(this);
+  }
+
+  /**
+   * Is called after all survivors were safed.
+   */
+  public void resetBlock(int numberOfObjects) {
+    fInactiveObjectDataCount = 0;
+    setNumberOfObjectData(numberOfObjects);
   }
 
   public void setBlockManager(IBlockManager manager) {
     fManager = manager;
   }
-
+  
   public void setNumberOfObjectData(int numberOfObjects) {
-    // when the number of ObjectData is changed, reset fInactiveObjectDataCount
-    fInactiveObjectDataCount = 0;
-    
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }

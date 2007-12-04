@@ -194,6 +194,16 @@ public class TransactionHandler {
     return new TypeInfo(this);
   }
 
+  public IObjectId internalAddObject(Object obj) {
+    if(contains(obj)) throw new MemoriaException("obj already added: " + obj);
+    
+    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
+    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
+    fAdd.add(getObjectInfo(obj));
+    return result.getId();
+  }
+
   public void internalDelete(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
     if (info == null) return;
@@ -225,16 +235,6 @@ public class TransactionHandler {
 
     if (info != null)  return internalUpdateObject(obj, info);
     return internalAddObject(obj);
-  }
-
-  public IObjectId internalAddObject(Object obj) {
-    if(contains(obj)) throw new MemoriaException("obj already saved: " + obj);
-    
-    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
-    ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
-    fAdd.add(getObjectInfo(obj));
-    return result.getId();
   }
 
   public boolean isEnum(Object obj) {

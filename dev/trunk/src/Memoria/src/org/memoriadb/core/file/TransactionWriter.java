@@ -183,7 +183,7 @@ public final class TransactionWriter implements ITransactionWriter {
     
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
-    block.setNumberOfObjectData(numberOfObjects);
+    block.resetBlock(numberOfObjects);
     
     write(block, trxData);
     return block;    

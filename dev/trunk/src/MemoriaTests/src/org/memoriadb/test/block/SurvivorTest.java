@@ -35,6 +35,25 @@ public class SurvivorTest extends AbstractMemoriaTest {
 
   }
   
+  public void test_inactiveCount() {
+    Object obj = new Object();
+    
+    IObjectId id = save(obj);
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    
+    save(obj);
+    assertEquals(100, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
+    
+    save(obj);
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
+    
+    reopen();
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
+  }
+  
   public void test_inactiveRatio_when_a_block_is_reused() {
     Object obj = new Object();
     save(obj);
@@ -82,6 +101,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
+  
   
   public void test_safing_survivor() {
     

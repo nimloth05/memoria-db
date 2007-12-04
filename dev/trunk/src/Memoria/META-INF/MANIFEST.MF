@@ -3,8 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Memoria Plug-in
 Bundle-SymbolicName: org.memoria
 Bundle-Version: 1.0.0
-Bundle-Activator: org.memoria.Activator
 Bundle-Localization: plugin
+Eclipse-BuddyPolicy: registered
+Eclipse-RegisterBuddy: com.google.guice
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Eclipse-LazyStart: true
@@ -24,11 +25,13 @@ Export-Package: org.java.patched,
  org.memoriadb.core.refactor,
  org.memoriadb.core.util,
  org.memoriadb.core.util.disposable,
+ org.memoriadb.core.util.io,
  org.memoriadb.handler,
  org.memoriadb.handler.array,
  org.memoriadb.handler.collection,
  org.memoriadb.handler.enu,
  org.memoriadb.handler.field,
+ org.memoriadb.handler.map,
  org.memoriadb.id,
  org.memoriadb.id.guid,
  org.memoriadb.id.loong,

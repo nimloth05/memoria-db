@@ -109,13 +109,15 @@ public class ObjectRepository implements IObjectRepository {
 
   @Override
   public IObjectId getExistingId(Object obj) {
-    // FIXME assertion
-    return getId(obj);
+    IObjectId result = getId(obj);
+    if (result == null) throw new MemoriaException("Unknown object: "+ obj);
+    return result;
   }
 
   public Object getExistingObject(IObjectId id) {
-    // FIXME assertion
-    return getObject(id);
+    IObjectInfo objectInfo = fIdMap.get(id);
+    if (objectInfo == null) throw new MemoriaException("Unknown id: " + id);
+    return objectInfo.getObject();
   }
 
   /**
@@ -127,7 +129,6 @@ public class ObjectRepository implements IObjectRepository {
   public IObjectId getId(Object obj) {
     IObjectInfo result = fObjectMap.get(obj);
     if(result == null) return null;
-    //if (result == null) throw new MemoriaException("Unknown object '" + obj + "' -- using saveAll() instead of save() may solve the problem.");
     return result.getId();
   }
 
@@ -151,7 +152,6 @@ public class ObjectRepository implements IObjectRepository {
   public Object getObject(IObjectId objectId) {
     IObjectInfo objectInfo = fIdMap.get(objectId);
     if (objectInfo == null) return null;
-    //if (objectInfo == null) throw new MemoriaException("No Object for ID: " + objectId);
     return objectInfo.getObject();
   }
 
@@ -198,12 +198,12 @@ public class ObjectRepository implements IObjectRepository {
   public void updateObjectInfoDeleted(IObjectId id, long revision) {
     //FIXME: Prüfen, ob das Element wieder aus der Map entfernt werden muss/kann.
     ObjectInfo info = fDeletedMap.get(id);
-    internalUpdate(info, revision);
+    internalUpdateObjectInfo(info, revision);
   }
 
   public void updateObjectInfoUpdated(Object obj, long revision) {
     ObjectInfo info = fObjectMap.get(obj);
-    internalUpdate(info, revision);
+    internalUpdateObjectInfo(info, revision);
   }
 
   private IObjectId generateId() {
@@ -228,7 +228,7 @@ public class ObjectRepository implements IObjectRepository {
     fIdFactory.adjustId(info.getId());
   }
 
-  private void internalUpdate(ObjectInfo info, long revision) {
+  private void internalUpdateObjectInfo(ObjectInfo info, long revision) {
     if (info == null) throw new IllegalArgumentException("Object not found");
     info.setRevision(revision);
     info.incrememntOldGenerationCount();
