@@ -60,6 +60,8 @@ public class FieldbasedObjectHandler implements IHandler {
     
     for(MemoriaField field: fClassObject.getFields()) {
       if(field.getFieldType() != Type.typeClass) continue;
+      if(field.isWeakRef()) continue;
+      
       Object referencee = fFieldObject.get(field.getName());
       if(referencee == null) continue;
       try {

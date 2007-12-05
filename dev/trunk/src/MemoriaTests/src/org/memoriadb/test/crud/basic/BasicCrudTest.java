@@ -6,6 +6,7 @@ import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.*;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.ctor.NoDefault;
+import org.memoriadb.test.testclasses.weakref.WeakOwner;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class BasicCrudTest extends AbstractMemoriaTest {
@@ -94,16 +95,38 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
   
   public void test_objectId() {
-    WeakRef ref = new WeakRef();
+    ObjectIdOwner ref = new ObjectIdOwner();
     IObjectId objId = save(new Object());
     ref.setObjectId(objId);
     IObjectId refId = save(ref);
     
     reopen();
     
-    WeakRef l1_ref = fObjectStore.get(refId);
+    ObjectIdOwner l1_ref = fObjectStore.get(refId);
     
     assertEquals(objId, l1_ref.getObjectId());
+  }
+  
+  public void test_objectId_is_saved_inline() {
+    ObjectIdOwner ref1 = new ObjectIdOwner();
+    IObjectId objId = save(new Object());
+    ref1.setObjectId(objId);
+    
+    ObjectIdOwner ref2 = new ObjectIdOwner();
+    ref2.setObjectId(ref1.getObjectId());
+    
+    // both ObjectIdOwners reference the same ObjectId
+    assertSame(ref1.getObjectId(), ref2.getObjectId());
+    
+    IObjectId id1 = save(ref1);
+    IObjectId id2 = save(ref2);
+    
+    reopen();
+    
+    ref1 = get(id1);
+    ref2 = get(id2);
+    
+    assertNotSame(ref1.getObjectId(), ref2.getObjectId());
   }
   
   public void test_save_aggregate_with_dataObject_in_objectMode() {
@@ -209,6 +232,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     assertTrue(fObjectStore.containsId(id));
   }
+
   
   public void test_save_primitive_fails() {
     
@@ -259,7 +283,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertEquals("b", b_l1.getName());
   }
   
-  
   public void test_save_single_object() {
     Object o = new SimpleTestObj("1");
     IObjectId id = save(o);
@@ -279,6 +302,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l1_a = fObjectStore.get(id);
     assertNull(l1_a.getB());
   }
+  
   
   public void test_self_reference() {
     SelfReference obj = new SelfReference();
@@ -311,7 +335,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     assertFalse(fObjectStore.containsId(id));
   }
-
+  
   public void test_transient_ref_with_save_and_saveAll() {
     TransientClass t1 = new TransientClass(1, new A());
     TransientClass t2 = new TransientClass(2, new A());
@@ -330,7 +354,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertEquals(0, l1_t2.fInt);
     assertNull(l1_t2.fA);
   }
-
+  
   public void test_update_attribute() {
     B b = new B("b");
     IObjectId idb = fObjectStore.save(b);
@@ -343,7 +367,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     B l1_b = (B) fObjectStore.get(idbb);
     assertEquals("bb", l1_b.getName());
   }
-  
+
   public void test_update_unsaved_reference() {
     A a = new A(null); // b is not saved
     IObjectId id = fObjectStore.save(a);
@@ -370,6 +394,47 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     A l3_a = fObjectStore.get(id);
     assertNotNull(l3_a.getB());
+  }
+
+  public void test_weak_ref_deleteAll() {
+    Object obj = new Object();
+    WeakOwner ref = new WeakOwner(obj);
+    
+    IObjectId objId = save(obj);
+    IObjectId refId = saveAll(ref);
+    
+    deleteAll(ref);
+    
+    reopen();
+    
+    assertFalse(fObjectStore.containsId(refId));
+    assertTrue(fObjectStore.containsId(objId));
+  }
+  
+  public void test_weak_ref_saveAll() {
+    Object obj = new Object();
+    WeakOwner ref = new WeakOwner(obj);
+    
+    try{
+      saveAll(ref);
+      fail("because the reference in WeakOwner is annotated with @weakRef, the aggregated object should not be saved.");
+    }
+    catch(MemoriaException e) {
+      // pass
+    }
+    
+  }
+  
+  public void test_weak_ref_saveAll_stops_traversing() {
+    Object obj = new Object();
+    WeakOwner ref = new WeakOwner(obj);
+    
+    save(obj);
+    long expectedRevision = fObjectStore.getObjectInfo(obj).getRevision();
+    
+    saveAll(ref);
+    
+    assertEquals(expectedRevision, fObjectStore.getObjectInfo(obj).getRevision());
   }
 
   

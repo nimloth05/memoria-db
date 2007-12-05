@@ -2,15 +2,18 @@ package org.memoriadb.core.meta;
 
 import java.lang.reflect.Field;
 
+import org.memoriadb.core.util.ReflectionUtil;
+
 
 public final class MemoriaField {
 
   private final int fFieldId;
   private final String fName;
   private final Type fType;
+  private final boolean fIsWeakRef;
 
   public static MemoriaField create(int id, Field field) {
-    MemoriaField result = new MemoriaField(id, field.getName(), Type.getType(field));
+    MemoriaField result = new MemoriaField(id, field.getName(), Type.getType(field), ReflectionUtil.hasWeakRefAnnotation(field));
     return result;
   }
 
@@ -19,10 +22,11 @@ public final class MemoriaField {
    * @param name
    * @param ordinal
    */
-  public MemoriaField(int id, String name, Type type) {
+  public MemoriaField(int id, String name, Type type, boolean isWeakRef) {
     fFieldId = id;
     fType = type;
     fName = name;
+    fIsWeakRef = isWeakRef;
   }
 
   public Type getFieldType() {
@@ -39,6 +43,10 @@ public final class MemoriaField {
   
   public Type getType() {
     return fType;
+  }
+
+  public boolean isWeakRef() {
+    return fIsWeakRef;
   }
 
   @Override

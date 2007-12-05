@@ -31,7 +31,8 @@ public class FieldbasedClassHandler implements IHandler {
       int fieldId = input.readInt();
       String name = input.readUTF();
       int ordinal = input.readInt();
-      MemoriaField metaField = new MemoriaField(fieldId, name, Type.values()[ordinal]);
+      boolean isWeakRef = input.readBoolean();
+      MemoriaField metaField = new MemoriaField(fieldId, name, Type.values()[ordinal], isWeakRef);
       classObject.addMetaField(metaField);
     }
     return classObject;
@@ -56,6 +57,7 @@ public class FieldbasedClassHandler implements IHandler {
       output.writeInt(field.getId());
       output.writeUTF(field.getName());
       output.writeInt(field.getType().ordinal());
+      output.writeBoolean(field.isWeakRef());
     }
   }
 

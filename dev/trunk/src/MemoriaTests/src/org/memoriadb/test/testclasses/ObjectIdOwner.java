@@ -2,7 +2,7 @@ package org.memoriadb.test.testclasses;
 
 import org.memoriadb.id.IObjectId;
 
-public class WeakRef {
+public class ObjectIdOwner {
   
   private IObjectId fObjectId;
 
