@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.meta.*;
-import org.memoriadb.core.util.io.MemoriaObjectOutputStream;
+import org.memoriadb.core.util.io.MemoriaByteArrayOutputStream;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 
@@ -46,14 +46,14 @@ public final class ObjectSerializer {
   }
 
   private final IObjectRepository fObjectRepository;
-    private final MemoriaObjectOutputStream fStream;
+    private final MemoriaByteArrayOutputStream fStream;
 
   /**
    * @param repo
    */
   public ObjectSerializer(IObjectRepository repo) {
     fObjectRepository = repo;
-    fStream = new MemoriaObjectOutputStream();
+    fStream = new MemoriaByteArrayOutputStream();
   }
 
   public byte[] getBytes() {
@@ -76,7 +76,7 @@ public final class ObjectSerializer {
   private void serializeObject(IHandler handler, IObjectInfo info) throws Exception {
     IObjectId typeId = info.getMemoriaClassId();
 
-    fStream.markObjectSizePosition();
+    fStream.setMarker();
     int current = fStream.size();
 
     typeId.writeTo(fStream);
@@ -84,7 +84,7 @@ public final class ObjectSerializer {
 
     handler.serialize(info.getObject(), fStream, new SerializeContext());
 
-    fStream.writeObjectSizeOnPosition(fStream.size() - current);
+    fStream.writeAtMarker(fStream.size() - current);
   }
 
   private void serializeObject(IObjectInfo info) throws Exception {

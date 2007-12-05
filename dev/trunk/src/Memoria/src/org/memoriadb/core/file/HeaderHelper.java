@@ -21,7 +21,7 @@ public class HeaderHelper {
     int headerInfoSize = stream.readInt();
 
     byte[] headerInfo = new byte[headerInfoSize];
-    stream.read(headerInfo);
+    stream.readFully(headerInfo);
     
     long readCrc = stream.readLong();
     

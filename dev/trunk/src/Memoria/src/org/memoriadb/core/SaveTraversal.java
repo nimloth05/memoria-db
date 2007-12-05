@@ -20,7 +20,6 @@ public class SaveTraversal implements IObjectTraversal {
   public void handle(Object obj) {
     fTransactionHandler.internalSave(obj);
     
-    
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, new IObjectTraversal() {
 
       @Override

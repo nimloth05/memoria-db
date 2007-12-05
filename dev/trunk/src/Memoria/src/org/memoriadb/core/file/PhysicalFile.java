@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.channels.FileLock;
 
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.util.io.BufferedRandomInputStream;
 
 public class PhysicalFile extends AbstractMemoriaFile {
 
@@ -50,7 +51,6 @@ public class PhysicalFile extends AbstractMemoriaFile {
     }
   }
 
-
   @Override
   public InputStream doGetInputStream(long position) {
     try {
@@ -60,38 +60,13 @@ public class PhysicalFile extends AbstractMemoriaFile {
       throw new MemoriaException(e);
     }
 
-    InputStream stream = new InputStream() {
-
+    return new BufferedRandomInputStream(fRandomAccessFile, getBufferSize()) {
       @Override
-      public int available() throws IOException {
-        return (int) (fRandomAccessFile.length() - fRandomAccessFile.getFilePointer());
-      }
-
-      @Override
-      public void close() throws IOException {
+      public void close()  {
         streamClosed();
         super.close();
       }
-
-      @Override
-      public int read() throws IOException {
-        return fRandomAccessFile.read();
-      }
-
-      @Override
-      public int read(byte[] b) throws IOException {
-        return fRandomAccessFile.read(b);
-      }
-
-      @Override
-      public int read(byte[] b, int off, int len) throws IOException {
-        return fRandomAccessFile.read(b, off, len);
-      }
-
     };
-
-    // ein 128tel des maximal verfügbaren Speichers wird al grösse angegeben.
-    return new BufferedInputStream(stream, (int) Runtime.getRuntime().freeMemory() / 128);
 
   }
 
@@ -113,6 +88,14 @@ public class PhysicalFile extends AbstractMemoriaFile {
   @Override
   public String toString() {
     return fPath;
+  }
+
+  /**
+   * ATTENION: The buffer must be big enough to avoid the recursive read in the 
+   *           BufferedRandomInputStream to generate a StackoverflowException.
+   */
+  private int getBufferSize() {
+    return (int) Runtime.getRuntime().freeMemory() / 64;
   }
   
   private void internalWrite(byte[] data, long offset) {

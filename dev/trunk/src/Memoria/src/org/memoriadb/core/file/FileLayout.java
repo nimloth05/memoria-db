@@ -39,7 +39,7 @@ public final class FileLayout {
 
   public static void assertBlockTag(DataInputStream stream) throws IOException {
     byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
-    stream.read(tagBuffer);
+    stream.readFully(tagBuffer);
     if (!Arrays.equals(tagBuffer, BLOCK_START_TAG)) throw new FileCorruptException("Could not read block start-tag : " + Arrays.toString(tagBuffer));
   }
   

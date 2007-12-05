@@ -33,7 +33,6 @@ public class Block {
   private int fInactiveObjectDataCount;
   
   public static Block getDefaultBlock() {
-    sDefaultBlock.setNumberOfObjectData(sDefaultBlock.getObjectDataCount()+1);
     return sDefaultBlock;
   }
   
@@ -131,6 +130,8 @@ public class Block {
   }
   
   public void setNumberOfObjectData(int numberOfObjects) {
+    System.out.println("number of objects: " + numberOfObjects);
+    
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }

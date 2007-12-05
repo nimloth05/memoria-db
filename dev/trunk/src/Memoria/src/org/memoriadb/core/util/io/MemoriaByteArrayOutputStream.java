@@ -4,17 +4,17 @@ import java.io.*;
 
 import org.memoriadb.core.exception.MemoriaException;
 
-public class MemoriaObjectOutputStream extends ByteArrayOutputStream implements DataOutput {
+public class MemoriaByteArrayOutputStream extends ByteArrayOutputStream implements DataOutput {
 
   private static final int UNDEFINED_POSITION = -1;
   private int fPosition = UNDEFINED_POSITION;
   private final DataOutputStream fStream;
 
-  public MemoriaObjectOutputStream() {
+  public MemoriaByteArrayOutputStream() {
     fStream = new DataOutputStream(this);
   }
 
-  public void markObjectSizePosition() throws IOException {
+  public void setMarker() throws IOException {
     fPosition = count;
     fStream.writeInt(0);
   }
@@ -55,7 +55,7 @@ public class MemoriaObjectOutputStream extends ByteArrayOutputStream implements 
     fStream.writeLong(v);
   }
 
-  public void writeObjectSizeOnPosition(int data) throws IOException {
+  public void writeAtMarker(int data) throws IOException {
     if (fPosition == UNDEFINED_POSITION) throw new MemoriaException("You have to mark the position first");
     int tempPosition = count;
     count = fPosition;

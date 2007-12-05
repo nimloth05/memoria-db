@@ -20,7 +20,7 @@ import org.memoriadb.instantiator.IInstantiator;
  * @author msc
  * 
  */
-public abstract class CollectionHandler implements IHandler {
+public abstract class CollectionHandler<T extends Collection<Object>> implements IHandler {
 
   public static class ConcurrentSkipListSetHandler extends SetHandler {
 
@@ -29,12 +29,12 @@ public abstract class CollectionHandler implements IHandler {
     }
 
     @Override
-    protected Collection<Object> createCollectionForDataMode() {
+    protected Set<Object> createCollectionForDataMode() {
       return new HashSet<Object>();
     }
   }
 
-  public static class ListHandler extends CollectionHandler {
+  public static class ListHandler extends CollectionHandler<List<Object>> {
 
     public <T extends List<?>> ListHandler(Class<T> clazz) {
       super(clazz);
@@ -45,12 +45,12 @@ public abstract class CollectionHandler implements IHandler {
     }
 
     @Override
-    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new ListDataObject((List<Object>) collection, typeId);
+    protected IDataObject createDataObject(List<Object> collection, IObjectId typeId) {
+      return new ListDataObject(collection, typeId);
     }
   }
 
-  public static class SetHandler extends CollectionHandler {
+  public static class SetHandler extends CollectionHandler<Set<Object>> {
 
     public <T extends Set<?>> SetHandler(Class<T> clazz) {
       super(clazz);
@@ -61,8 +61,8 @@ public abstract class CollectionHandler implements IHandler {
     }
 
     @Override
-    protected IDataObject createDataObject(Collection<Object> collection, IObjectId typeId) {
-      return new SetDataObject((Set<Object>) collection, typeId);
+    protected IDataObject createDataObject(Set<Object> collection, IObjectId typeId) {
+      return new SetDataObject(collection, typeId);
     }
   }
 
@@ -73,7 +73,7 @@ public abstract class CollectionHandler implements IHandler {
     }
 
     @Override
-    protected Collection<Object> createCollectionForDataMode() {
+    protected Set<Object> createCollectionForDataMode() {
       return new HashSet<Object>();
     }
 
@@ -97,7 +97,7 @@ public abstract class CollectionHandler implements IHandler {
 
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
-    final Collection<Object> collection = createCollection(context.isInDataMode());
+    final T collection = createCollection(context.isInDataMode());
     while (input.available() > 0) {
 
       Type.readValueWithType(input, context, new ITypeVisitor() {
@@ -149,19 +149,19 @@ public abstract class CollectionHandler implements IHandler {
     }
   }
 
-  protected final Collection<Object> createCollection(boolean isDataMode) {
+  protected final T createCollection(boolean isDataMode) {
     return isDataMode ? createCollectionForDataMode() : createCollectionForObjectMode();
   }
 
-  protected Collection<Object> createCollectionForDataMode() {
+  protected T createCollectionForDataMode() {
     return createCollectionForObjectMode();
   }
 
-  protected Collection<Object> createCollectionForObjectMode() {
+  protected T createCollectionForObjectMode() {
     return ReflectionUtil.createInstance(getClassName());
   }
 
-  protected abstract IDataObject createDataObject(Collection<Object> collection, IObjectId typeId);
+  protected abstract IDataObject createDataObject(T collection, IObjectId typeId);
 
   private Collection<?> getCollectionObject(Object obj) {
     if (obj instanceof ICollectionDataObject) return ((ICollectionDataObject) obj).getCollection();

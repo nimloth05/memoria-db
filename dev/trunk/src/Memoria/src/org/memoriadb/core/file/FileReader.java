@@ -38,13 +38,16 @@ public class FileReader {
 
   /**
    * Reads all blocks and closes the file
+   * 
+   * @return Headrevision
    */
   public long readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler)  throws IOException {
     checkState(State.headerRead, State.blockRead);
+
+    BlockReader blockReader = new BlockReader();
     
     // read file header
     while (fStream.available() > 0) {
-      BlockReader blockReader = new BlockReader();
       Block block = new Block(fPosition);
       fPosition += blockReader.readBlock(fStream, block, idFactory, handler);
       fHeadRevision = Math.max(fHeadRevision, blockReader.getRevision());

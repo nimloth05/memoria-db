@@ -26,6 +26,11 @@ public class BlockBucket implements Comparable<BlockBucket> {
     return (fSize < o.fSize ? -1 : (fSize == o.fSize ? 0 : 1));
   }
   
+  @Override
+  public boolean equals(Object obj) {
+    throw new UnsupportedOperationException();
+  }
+
   public int getBlockCount() {
     return fBlocks.size();
   }
@@ -36,6 +41,11 @@ public class BlockBucket implements Comparable<BlockBucket> {
 
   public long getSize() {
     return fSize;
+  }
+
+  @Override
+  public int hashCode() {
+    throw new UnsupportedOperationException();
   }
 
   public boolean isEmpty() {
@@ -49,5 +59,7 @@ public class BlockBucket implements Comparable<BlockBucket> {
   public void remove(Block block) {
     if(!fBlocks.remove(block)) throw new MemoriaException("block not found: " + block);
   }
+  
+  
   
 }

@@ -65,9 +65,9 @@ public class MapHandler implements IHandler {
   public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);
     
-    for (Object key: map.keySet()) {
-      writeListEntry(key, output, context);
-      writeListEntry(map.get(key), output, context);
+    for (Map.Entry<?, ?> entry: map.entrySet()) {
+      writeListEntry(entry.getKey(), output, context);
+      writeListEntry(entry.getValue(), output, context);
     }
   }
 
