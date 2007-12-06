@@ -116,11 +116,11 @@ public final class TransactionWriter implements ITransactionWriter {
    * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks) throws Exception {
-    Set<ObjectInfo> survivors =  new SurvivorAgent(fRepo, fFile).getSurvivors(block);
-    if(survivors.isEmpty()) return;
+    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
+    if(survivorAgent.hasNoSurvivors()) return;
     
     // save survivors recursively
-    write(new HashSet<ObjectInfo>(), survivors, new HashSet<ObjectInfo>(), tabooBlocks);
+    write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(), tabooBlocks);
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
@@ -191,6 +191,8 @@ public final class TransactionWriter implements ITransactionWriter {
 
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
     for(ObjectInfo info: add) {
+      if(info.isDeleted()) throw new MemoriaException("object to add is deleted: " + fRepo.getObject(info.getMemoriaClassId()));
+      
       serializer.serialize(info);
       tabooBlocks.add(info.getCurrentBlock());
     }
@@ -198,6 +200,7 @@ public final class TransactionWriter implements ITransactionWriter {
 
   private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) throws IOException {
     for(ObjectInfo info: delete){
+      if(!info.isDeleted()) throw new MemoriaException("trying to delete live object: " + info);
       serializer.markAsDeleted(info);
       tabooBlocks.add(info.getCurrentBlock());
     }

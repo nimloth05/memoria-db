@@ -196,8 +196,7 @@ public class ObjectRepository implements IObjectRepository {
 
   @Override
   public void updateObjectInfoDeleted(IObjectId id, long revision) {
-    //FIXME: Prüfen, ob das Element wieder aus der Map entfernt werden muss/kann.
-    ObjectInfo info = fDeletedMap.get(id);
+    ObjectInfo info = fDeletedMap.remove(id);
     internalUpdateObjectInfo(info, revision);
   }
 

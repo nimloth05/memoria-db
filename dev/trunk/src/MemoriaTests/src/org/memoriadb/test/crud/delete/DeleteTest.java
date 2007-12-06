@@ -95,11 +95,11 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   public void test_delete_and_readd_in_same_trx() {
     beginUpdate();
     
-    Object o1 = new Object();
-    IObjectId id1 = save(o1);
-    delete(o1);
-    IObjectId id2 = save(o1);
-    assertFalse(id1.equals(id2));
+      Object o1 = new Object();
+      IObjectId id1 = save(o1);
+      delete(o1);
+      IObjectId id2 = save(o1);
+      assertFalse(id1.equals(id2));
     
     endUpdate();
   }
@@ -176,6 +176,44 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     
     assertTrue(fObjectStore.contains(object));
     assertTrue(fObjectStore.containsId(id));
+  }
+  
+  public void test_save_twice_and_delete_in_same_transaction() {
+    Object obj = new Object();
+    
+    beginUpdate();
+      IObjectId id = save(obj);
+      save(obj); // update
+      delete(obj); // delete must nihilate update
+    endUpdate();
+
+    assertFalse(fObjectStore.contains(obj));
+    assertFalse(fObjectStore.containsId(id));
+    
+    reopen();
+
+    assertFalse(fObjectStore.contains(obj));
+    assertFalse(fObjectStore.containsId(id));
+  }
+  
+  public void test_update_and_save_in_same_transaction() {
+    Object obj = new Object();
+    IObjectId id = save(obj);
+    
+    beginUpdate();
+      save(obj); // update
+      delete(obj); // delete must nihilate update
+      assertFalse(fObjectStore.contains(obj));
+      assertFalse(fObjectStore.containsId(id));
+    endUpdate();
+    
+    assertFalse(fObjectStore.contains(obj));
+    assertFalse(fObjectStore.containsId(id));
+    
+    reopen();
+
+    assertFalse(fObjectStore.contains(obj));
+    assertFalse(fObjectStore.containsId(id));
   }
   
 }

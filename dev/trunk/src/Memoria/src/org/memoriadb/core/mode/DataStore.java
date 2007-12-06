@@ -5,6 +5,7 @@ import java.util.*;
 import org.memoriadb.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
@@ -130,10 +131,9 @@ public class DataStore implements IDataStoreExt {
     return new RefactorApi(this); 
   }
 
-
   @Override
-  public Set<ObjectInfo> getSurvivors(Block block) {
-    return fTransactionHandler.getSurvivors(block);
+  public SurvivorAgent getSurvivorAgent(Block block) {
+    return fTransactionHandler.getSurvivorAgent(block);
   }
   
   @Override

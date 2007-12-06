@@ -108,7 +108,7 @@ public final class ReflectionUtil {
       }
     }
     
-    if (clazz.getSuperclass() == null) throw new SchemaException("No such field. Class: "+ clazz+ " field: "+name);
+    if (clazz.getSuperclass() == null) throw new SchemaException("No such field: " + name + " in  class: " + clazz);
     return getField(clazz.getSuperclass(), name);
   }
   

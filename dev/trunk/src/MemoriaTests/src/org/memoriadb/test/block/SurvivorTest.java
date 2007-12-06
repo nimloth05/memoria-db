@@ -32,7 +32,31 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(2, getBlock(1).getInactiveObjectDataCount());
     assertEquals(getBlock(2), getCurrentBlock(id1));
     assertEquals(getBlock(3), getCurrentBlock(id2));
-
+  }
+  
+  public void test_deletionMarker_is_survivor() {
+    Object o1 = new Object();
+    IObjectId id1 = save(o1);
+    // |o1|
+    
+    beginUpdate();
+      Object o2 = new Object();
+      IObjectId id2 = save(o2);
+      delete(o1);
+    endUpdate();
+    // |~o1|o2,d1|
+    
+    save(o2);
+    // |o2'|~o2,d1|
+    
+    save(o2);
+    // |d1'|o2 |
+    
+    reopen();
+    
+    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id2));
+        
   }
   
   public void test_inactiveCount() {
@@ -70,6 +94,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     
   }
   
+  
   public void test_reusing_one_block() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);
@@ -101,7 +126,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
-  
   
   public void test_safing_survivor() {
     
@@ -177,4 +201,3 @@ public class SurvivorTest extends AbstractMemoriaTest {
   }
 
 }
-

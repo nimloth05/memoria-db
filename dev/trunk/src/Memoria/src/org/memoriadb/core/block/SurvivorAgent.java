@@ -1,13 +1,14 @@
 package org.memoriadb.core.block;
 
 import java.io.*;
-import java.util.*;
+import java.util.Set;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.util.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;
 import org.memoriadb.id.IObjectId;
 
@@ -18,21 +19,24 @@ import org.memoriadb.id.IObjectId;
  */
 public class SurvivorAgent implements IFileReaderHandler  {
   
-  private Set<ObjectInfo> fSurvivors;
+  // use IdentityHashSet for better performance
+  private final Set<ObjectInfo> fUpdates = new IdentityHashSet<ObjectInfo>();
+  private final Set<ObjectInfo> fDeleteMarkers = new IdentityHashSet<ObjectInfo>();
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
   
-  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file) {
+  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file, Block block) {
     fFile = file;
     fRepo = repo;
+    computeSurvivors(block);
   }
    
   @Override
   public void block(Block block) {
   }
 
-  public Set<ObjectInfo> getSurvivors(Block block) {
-    fSurvivors = new HashSet<ObjectInfo>();
+  public void computeSurvivors(Block block) {
+    
     DataInputStream stream = new DataInputStream(fFile.getInputStream(block.getPosition()));
     BlockReader reader = new BlockReader();
     
@@ -45,36 +49,48 @@ public class SurvivorAgent implements IFileReaderHandler  {
     finally {
       IOUtil.close(stream);
     }
-    
-    return fSurvivors;
+  }
+
+  public Set<ObjectInfo> getDeleteMarkers() {
+    return fDeleteMarkers;
+  }
+
+  public Set<ObjectInfo> getUpdates() {
+    return fUpdates;
+  }
+
+  public boolean hasNoSurvivors() {
+    return fUpdates.isEmpty() && fDeleteMarkers.isEmpty();
   }
 
   @Override
   public void memoriaClass(HydratedObject metaClass, IObjectId id, long revision, int size) {
-    handleObject(id, revision);
+    handleUpdate(fUpdates, id, revision);
   }
-
+  
   @Override
   public void memoriaClassDeleted(IObjectId id, long revision) {
-    handleObject(id, revision);
+    handleUpdate(fDeleteMarkers, id, revision);
   }
 
   @Override
   public void object(HydratedObject object, IObjectId id, long revision, int size) {
-    handleObject(id, revision);
+    handleUpdate(fUpdates, id, revision);
   }
 
   @Override
   public void objectDeleted(IObjectId id, long revision) {
-    handleObject(id, revision);
+    handleUpdate(fDeleteMarkers, id, revision);
   }
-  
-  private void handleObject(IObjectId id, long revision) {
+
+  private void handleUpdate(Set<ObjectInfo> survivors, IObjectId id, long revision) {
     ObjectInfo info = fRepo.getObjectInfoForId(id);
     long revisionFromObjectRepo = info.getRevision();
     if(revision > revisionFromObjectRepo) throw new MemoriaException("ObjectRepo has wrong revision " + revisionFromObjectRepo + " expected " + revision);
     
-    if(revisionFromObjectRepo == revision) fSurvivors.add(info);
+    if(revisionFromObjectRepo == revision) survivors.add(info);
   }
+  
+  
   
 }

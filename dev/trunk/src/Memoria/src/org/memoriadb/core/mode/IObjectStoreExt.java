@@ -1,10 +1,10 @@
 package org.memoriadb.core.mode;
 
-import java.util.Set;
 
 import org.memoriadb.IObjectStore;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.file.Header;
 import org.memoriadb.id.*;
 
@@ -38,5 +38,5 @@ public interface IObjectStoreExt extends IObjectStore {
    */
   public IObjectInfo getObjectInfoForId(IObjectId id);
 
-  public Set<ObjectInfo> getSurvivors(Block block);
+  public SurvivorAgent getSurvivorAgent(Block block);
 }
