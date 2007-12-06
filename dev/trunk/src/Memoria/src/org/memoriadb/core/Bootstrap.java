@@ -107,7 +107,7 @@ public class Bootstrap {
    *          Name of the class the given <tt>handler</tt> can deal with.
    */
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
-    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass());
+    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
     transactionHandler.save(classConfig);
     
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());

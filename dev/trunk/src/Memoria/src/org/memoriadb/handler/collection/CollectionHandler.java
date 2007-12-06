@@ -81,7 +81,7 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
 
   private final String fClassName;
 
-  public <T extends Collection<?>> CollectionHandler(Class<T> clazz) {
+  public <X extends Collection<?>> CollectionHandler(Class<X> clazz) {
     this(clazz.getName());
   }
 
@@ -114,6 +114,11 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
 
         @Override
         public void visitPrimitive(Type type, Object value) {
+          context.objectToBind(new CollectionBindable(collection, value));
+        }
+
+        @Override
+        public void visitValueObject(Object value) {
           context.objectToBind(new CollectionBindable(collection, value));
         }
       });

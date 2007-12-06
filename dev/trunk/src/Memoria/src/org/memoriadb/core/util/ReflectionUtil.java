@@ -2,7 +2,7 @@ package org.memoriadb.core.util;
 
 import java.lang.reflect.*;
 
-import org.memoriadb.WeakRef;
+import org.memoriadb.*;
 import org.memoriadb.core.exception.*;
 import org.memoriadb.core.meta.Type;
 
@@ -149,6 +149,10 @@ public final class ReflectionUtil {
     }
   }
   
+  public static boolean hasValueObjectAnnotation(Class<?> clazz) {
+    return clazz.getAnnotation(ValueObject.class) != null;
+  }
+
   public static boolean hasWeakRefAnnotation(Field field) {
     return field.getAnnotation(WeakRef.class) != null;
   }

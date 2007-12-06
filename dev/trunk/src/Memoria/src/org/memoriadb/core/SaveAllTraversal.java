@@ -30,6 +30,11 @@ public class SaveAllTraversal implements IObjectTraversal {
       return;
     }
     
+    if (fTransactionHandler.isValueObject(obj)) {
+      fTransactionHandler.addMemoriaClassIfNecessary(obj);
+      return;
+    }
+    
     fTransactionHandler.internalSave(obj);
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
   }

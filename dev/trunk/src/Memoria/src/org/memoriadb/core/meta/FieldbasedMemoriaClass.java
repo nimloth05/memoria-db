@@ -10,6 +10,8 @@ import org.memoriadb.id.IObjectId;
 public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
 
   private String fClassName;
+  
+  private final boolean fHasValueObjectAnnotation;
 
   private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
   private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
@@ -25,13 +27,15 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
   public FieldbasedMemoriaClass(Class<?> klass, IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
     fClassName = klass.getName();
+    fHasValueObjectAnnotation = ReflectionUtil.hasValueObjectAnnotation(klass);
 
     addFields(klass);
   }
 
-  public FieldbasedMemoriaClass(String className, IObjectId memoriaClassId) {
+  public FieldbasedMemoriaClass(String className, IObjectId memoriaClassId, boolean hasValueObjectAnnotation) {
     fClassName = className;
     fMemoriaClassId = memoriaClassId;
+    fHasValueObjectAnnotation = hasValueObjectAnnotation;
   }
 
   public void addMetaField(MemoriaField metaField) {
@@ -73,6 +77,11 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
+  }
+
+  @Override
+  public boolean hasValueObjectAnnotation() {
+    return fHasValueObjectAnnotation;
   }
 
   public void setClassName(String name) {

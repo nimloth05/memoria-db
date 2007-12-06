@@ -111,6 +111,11 @@ public class MapHandler implements IHandler {
       public void visitPrimitive(Type type, Object value) {
         fResult = new PrimitiveResolver(value);
       }
+
+      @Override
+      public void visitValueObject(Object value) {
+        fResult = new PrimitiveResolver(value);
+      }
       
     }).fResult;
   }
@@ -122,7 +127,7 @@ public class MapHandler implements IHandler {
     }
   }
 
-  private void writeListEntry(Object listEntry, DataOutput output, ISerializeContext context) throws IOException {
+  private void writeListEntry(Object listEntry, DataOutput output, ISerializeContext context) throws Exception {
     Type.writeValueWithType(output, listEntry, context);
 
   }

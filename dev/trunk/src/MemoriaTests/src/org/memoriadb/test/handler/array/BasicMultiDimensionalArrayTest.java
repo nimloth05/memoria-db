@@ -3,7 +3,7 @@ package org.memoriadb.test.handler.array;
 import java.util.*;
 
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -103,6 +103,25 @@ public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest
     SimpleTestObj[][] l1_arr = get(id);
     assertNotSame(arr, l1_arr);
     assertTrue(Arrays.deepEquals(arr, l1_arr));
+  }
+  
+  public void test_save_valueObject() {
+    TestValueObject[][] array = new TestValueObject[3][3];
+    for(int i = 0; i < 3; ++i) {
+      for (int j = 0; i < 3; ++i) {
+        array[i][j] = new TestValueObject(Integer.toString(i));
+      }
+    }
+    
+    IObjectId id = saveAll(array);
+    
+    assertFalse(fObjectStore.contains(array[0][0]));
+    
+    reopen();
+    
+    TestValueObject[][] l1_array = fObjectStore.get(id);
+    assertTrue(Arrays.deepEquals(array, l1_array));
+    assertFalse(fObjectStore.contains(l1_array[0][0]));
   }
 
   private C getC() {

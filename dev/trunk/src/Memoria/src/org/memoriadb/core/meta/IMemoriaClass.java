@@ -12,4 +12,6 @@ public interface IMemoriaClass extends IDataObject {
 
   public boolean isTypeFor(String javaClass);
 
+  public boolean hasValueObjectAnnotation();
+
 }

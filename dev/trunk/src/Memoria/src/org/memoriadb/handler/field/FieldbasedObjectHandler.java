@@ -25,18 +25,17 @@ public class FieldbasedObjectHandler implements IHandler {
   }
 
   @Override
-  public Object deserialize(final DataInputStream input, final IReaderContext context, IObjectId typeId) throws IOException {
+  public Object deserialize(final DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     final IFieldbasedObject result = createObject(context, typeId);
     
     superDeserialize(result, input, context);
-    if (input.available() > 0) throw new MemoriaException("Object not fully deserialized: " + result);
     
     return result.getObject();
   }
 
   @Override
   public String getClassName() {
-    throw new MemoriaException("not implemented");
+    return fClassObject.getClassName();
   }
 
   @Override
@@ -93,7 +92,7 @@ public class FieldbasedObjectHandler implements IHandler {
     return new FieldbasedObject(obj);
   }
 
-  private void superDeserialize(Object object, DataInputStream input, final IReaderContext context) throws IOException {
+  private void superDeserialize(Object object, DataInputStream input, final IReaderContext context) throws Exception {
     final IFieldbasedObject result = getFieldObject(object);
     
     for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
@@ -113,6 +112,11 @@ public class FieldbasedObjectHandler implements IHandler {
 
         @Override
         public void visitPrimitive(Type type, Object value) {
+          result.set(field.getName(), value);
+        }
+
+        @Override
+        public void visitValueObject(Object value) {
           result.set(field.getName(), value);
         }
         

@@ -1,7 +1,8 @@
 package org.memoriadb.core.mode;
 
-import org.memoriadb.core.TransactionHandler;
+import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.enu.*;
 import org.memoriadb.id.IObjectId;
@@ -32,6 +33,17 @@ public final class DataModeStrategy implements IModeStrategy {
   @Override
   public Object createEnum(Enum<?> current, IObjectId memoriaClassId) {
     return new EnumObject(memoriaClassId, current);
+  }
+
+  @Override
+  public IMemoriaClass getMemoriaClass(Object object, IObjectRepository objectRepository) {
+    IObjectId memoriaClassId = ((IDataObject)object).getMemoriaClassId();
+    return (IMemoriaClass) objectRepository.getObject(memoriaClassId);
+  }
+
+  @Override
+  public boolean hasValueObjectAnnotation(Object object, IObjectRepository objectRepository) {
+    return getMemoriaClass(object, objectRepository).hasValueObjectAnnotation();
   }
 
   @Override

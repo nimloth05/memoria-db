@@ -3,7 +3,7 @@ package org.memoriadb.core;
 import java.util.Collection;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.id.*;
 
 /**
@@ -56,19 +56,22 @@ public interface IObjectRepository {
   
   public IObjectIdFactory getIdFactory();
 
+  public IMemoriaClass getMemoriaClass(Object object);
+
   /**
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
   public IMemoriaClassConfig getMemoriaClass(String klass);
-
+  
   /**
    * @return The object or null, if no Object exists for the given id. 
    *         It is not considered if the object is persistent or not.
    */
   public Object getObject(IObjectId id);
-  
+
+
   /**
    * @return The stored ObjectInfo for the given object or null, if the given obj is unknown or deleted.
    */
@@ -81,11 +84,11 @@ public interface IObjectRepository {
    */
   public ObjectInfo getObjectInfoForId(IObjectId id);
 
-
   /**
    * @return true, if the given obj is a metaclass
    */
   public boolean isMemoriaClass(Object obj);
+
 
   /**
    * Tells the ObjectContainer that an object was added to the persistent store.

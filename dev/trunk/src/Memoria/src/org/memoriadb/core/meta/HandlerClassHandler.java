@@ -23,11 +23,12 @@ public class HandlerClassHandler implements IHandler {
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String javaClassName = input.readUTF();
     String handlerName = input.readUTF();
+    boolean hasValueObjectAnnotation = input.readBoolean();
     IObjectId superClassId = context.readObjectId(input);
     
     IHandler handler = instantiateHandler(handlerName, javaClassName);
     
-    HandlerbasedMemoriaClass memoriaClass = new HandlerbasedMemoriaClass(handler, typeId);
+    HandlerbasedMemoriaClass memoriaClass = new HandlerbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
     
     if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinding(memoriaClass, superClassId));
       
@@ -45,6 +46,7 @@ public class HandlerClassHandler implements IHandler {
     
     output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());
+    output.writeBoolean(classObject.hasValueObjectAnnotation());
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) {

@@ -28,7 +28,7 @@ public class TransactionHandler {
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(IInstantiator instantiator, ITransactionWriter writer, Header header, IModeStrategy modeStrategy) {
+  public TransactionHandler(IInstantiator instantiator, ITransactionWriter writer, Header header,IModeStrategy modeStrategy) {
     fInstantiator = instantiator;
     fTransactionWriter = writer;
     fHeader = header;
@@ -38,14 +38,14 @@ public class TransactionHandler {
 
   public IObjectId addMemoriaClass(Class<?> clazz) {
     Class<?> type = clazz;
-
+    
     if (clazz.isArray()) {
       type = ReflectionUtil.getComponentTypeInfo(clazz).getJavaClass();
     }
     if (Type.isPrimitive(type)) throw new MemoriaException("primitive can not be added " + clazz);
 
     IObjectId result = TypeHierarchyBuilder.addMemoriaClassIfNecessary(this, clazz, fModeStrategy);
-
+    
     if (!isInUpdateMode()) writePendingChanges();
     return result;
   }
@@ -61,11 +61,11 @@ public class TransactionHandler {
   public void checkIndexConsistancy() {
     fObjectRepository.checkIndexConsistancy();
   }
-
+  
   public void close() {
     fTransactionWriter.close();
   }
-
+  
   public boolean contains(Object obj) {
     return fObjectRepository.contains(obj);
   }
@@ -73,7 +73,7 @@ public class TransactionHandler {
   public boolean containsId(IObjectId id) {
     return fObjectRepository.contains(id);
   }
-
+  
   public void delete(Object obj) {
     internalDelete(obj);
     if (!isInUpdateMode()) writePendingChanges();
@@ -95,15 +95,15 @@ public class TransactionHandler {
   public Collection<IObjectInfo> getAllObjectInfos() {
     return fObjectRepository.getAllObjectInfos();
   }
-
+  
   public Iterable<Object> getAllObjects() {
     return fObjectRepository.getAllObjects();
   }
-
+  
   public Iterable<Object> getAllUserSpaceObjects() {
     return fObjectRepository.getAllUserSpaceObjects();
   }
-
+  
   public IObjectId getArrayMemoriaClassId() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
@@ -111,7 +111,7 @@ public class TransactionHandler {
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
-
+  
   public IIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
@@ -119,35 +119,34 @@ public class TransactionHandler {
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
   }
-
+  
   public IMemoriaFile getFile() {
     return fTransactionWriter.getFile();
   }
-
+  
   public Header getHeader() {
     return fHeader;
   }
-
+  
   public long getHeadRevision() {
     return fTransactionWriter.getHeadRevision();
   }
-
+  
   public IObjectId getId(Object obj) {
     return fObjectRepository.getId(obj);
   }
-
+  
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
-
+  
   public IObjectId getMemoriaArrayClass() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
 
+  //FIXME: Testen, wie das mit valueObjects ist.
   public IMemoriaClass getMemoriaClass(Object object) {
-    IObjectId id = getMemoriaClassId(object);
-    if (id == null) return null;
-    return (IMemoriaClass) fObjectRepository.getObject(id);
+    return fObjectRepository.getMemoriaClass(object);
   }
 
   public IMemoriaClass getMemoriaClass(String className) {
@@ -156,10 +155,10 @@ public class TransactionHandler {
 
   public IObjectId getMemoriaClassId(Object object) {
     ObjectInfo info = getObjectInfo(object);
-    if (info == null) return null;
+    if(info == null) return null;
     return info.getMemoriaClassId();
   }
-
+  
   /**
    * @return The Class for the given <tt>obj</tt> or null.
    */
@@ -188,6 +187,7 @@ public class TransactionHandler {
     return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block);
   }
 
+  //FIXME: TypeInfo bereinigen
   public TypeInfo getTypeInfo() {
     return new TypeInfo(this);
   }
@@ -204,7 +204,7 @@ public class TransactionHandler {
 
   public void internalDelete(Object obj) {
     ObjectInfo info = getObjectInfo(obj);
-    if (info == null) { return; }
+    if (info == null) return;
 
     if (fAdd.remove(info)) {
       // object was added in current transaction, remove it from add-list and from the repo
@@ -228,7 +228,7 @@ public class TransactionHandler {
    */
   public IObjectId internalSave(Object obj) {
     fModeStrategy.checkObject(obj);
-
+    
     ObjectInfo info = getObjectInfo(obj);
 
     if (info != null) return internalUpdateObject(obj, info);
@@ -241,6 +241,10 @@ public class TransactionHandler {
 
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
+  }
+
+  public boolean isValueObject(Object object) {
+    return fModeStrategy.hasValueObjectAnnotation(object, fObjectRepository);
   }
 
   public IObjectId save(Object obj) {
@@ -256,7 +260,7 @@ public class TransactionHandler {
   public IObjectId saveAll(Object root) {
     SaveAllTraversal traversal = new SaveAllTraversal(this);
     traversal.handle(root);
-
+    
     if (!isInUpdateMode()) writePendingChanges();
     return fObjectRepository.getExistingId(root);
   }
@@ -265,7 +269,7 @@ public class TransactionHandler {
     if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
 
     try {
-      fTransactionWriter.write(fAdd, fUpdate, fDelete);
+      fTransactionWriter.write(fAdd, fUpdate, fDelete, fModeStrategy);
     }
     catch (Exception e) {
       throw new MemoriaException(e);

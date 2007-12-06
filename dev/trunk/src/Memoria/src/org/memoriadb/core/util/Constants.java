@@ -47,6 +47,16 @@ public final class Constants {
    */
   public static final int NO_ENUM_REF = -1;
 
+  /**
+   * The Object is a value object and will be saved inline.
+   */
+  public static final int VALUE_OBJECT = 1;
+  
+  /**
+   * The object is a normal reference and the objectId will be saved.
+   */
+  public static final int OBJECT_REFERENCE = 2;
+
   private Constants() {}
 
 }

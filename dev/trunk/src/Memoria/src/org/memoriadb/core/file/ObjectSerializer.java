@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.io.MemoriaByteArrayOutputStream;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
@@ -29,6 +30,16 @@ public final class ObjectSerializer {
     }
 
     @Override
+    public IMemoriaClass getMemoriaClass(IObjectId id) {
+      return (IMemoriaClass) fObjectRepository.getObject(id);
+    }
+
+    @Override
+    public IMemoriaClass getMemoriaClass(Object object) {
+      return fMode.getMemoriaClass(object, fObjectRepository);
+    }
+
+    @Override
     public IObjectId getMemoriaClassId(String javaClassName) {
       IMemoriaClassConfig memoriaClass = fObjectRepository.getMemoriaClass(javaClassName);
       return fObjectRepository.getId(memoriaClass);
@@ -47,12 +58,15 @@ public final class ObjectSerializer {
 
   private final IObjectRepository fObjectRepository;
     private final MemoriaByteArrayOutputStream fStream;
+    private final IModeStrategy fMode;
 
   /**
    * @param repo
+   * @param mode 
    */
-  public ObjectSerializer(IObjectRepository repo) {
+  public ObjectSerializer(IObjectRepository repo, IModeStrategy mode) {
     fObjectRepository = repo;
+    fMode = mode;
     fStream = new MemoriaByteArrayOutputStream();
   }
 

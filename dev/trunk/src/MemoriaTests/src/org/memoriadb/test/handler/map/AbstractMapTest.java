@@ -3,8 +3,8 @@ package org.memoriadb.test.handler.map;
 import java.util.Map;
 
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.test.testclasses.*;
+import org.memoriadb.testutil.*;
 
 public abstract class AbstractMapTest extends AbstractMemoriaTest {
   
@@ -153,6 +153,65 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
     map = get(id);
     
     assertEquals("2", map.get(1));
+  }
+  
+  public void test_valueObject_are_diffrent_instance_after_reopen() {
+    Map<String, TestValueObject> map1 = createMap();
+    Map<String, TestValueObject> map2 = createMap();
+    
+    TestValueObject v1 = new TestValueObject("1");
+    
+    map1.put("1", v1);
+    map2.put("1", v1);
+    
+    IObjectId id1 = save(map1);
+    IObjectId id2 = save(map2);
+    assertSame(map1.get("1"), map2.get("1"));
+    reopen();
+    
+    Map<String, TestValueObject> l1_map1 = get(id1);
+    Map<String, TestValueObject> l1_map2 = get(id2);
+    
+    TestValueObject l1_map1_value = l1_map1.values().iterator().next();
+    TestValueObject l1_map2_value = l1_map2.values().iterator().next();
+    
+    assertNotSame(l1_map1_value, l1_map2_value);
+  }
+  
+  public void test_valueObject_as_key() {
+    Map<TestValueObject, Object> map = createMap();
+    
+    TestValueObject k1 = new TestValueObject("1");
+    TestValueObject k2 = new TestValueObject("2");
+    
+    map.put(k1, "1");
+    map.put(k2, "2");
+    
+    IObjectId id = saveAll(map);
+    
+    reopen();
+    
+    Map<TestValueObject, Object> l1_map = fObjectStore.get(id);
+    assertEquals(2, l1_map.size());
+    CollectionUtil.containsAll(l1_map.keySet(), k1, k2);
+  }
+  
+  public void test_valueObject_as_value() {
+    Map<String, TestValueObject> map = createMap();
+    
+    TestValueObject v1 = new TestValueObject("1");
+    TestValueObject v2 = new TestValueObject("2");
+    
+    map.put("1", v1);
+    map.put("2", v2);
+    
+    IObjectId id = save(map);
+    reopen();
+    
+    Map<String, TestValueObject> l1_map = get(id);
+    
+    assertEquals(map.size(), l1_map.size());    
+    CollectionUtil.containsAll(l1_map.values(), v1, v2);
   }
 
   

@@ -13,8 +13,6 @@ import org.memoriadb.id.*;
 
 public class ObjectStore implements IObjectStoreExt  {
 
-  // FIXME hier sollte die Schnittstelle von TransactionHandler verwendet werden, geht aber nicht.
-  // bringt die Schnittstelle überhaupt etwas?
   private final TransactionHandler fTransactionHandler;
   
   private final ObjectModeQueryStrategy fQueryStrategy = new ObjectModeQueryStrategy();

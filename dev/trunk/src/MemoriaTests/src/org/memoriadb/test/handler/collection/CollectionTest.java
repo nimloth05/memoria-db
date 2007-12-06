@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.memoriadb.handler.collection.ICollectionDataObject;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class CollectionTest extends AbstractMemoriaTest {
@@ -23,6 +23,21 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(collection, l1_collection);
   }
   
+  public void test_collection_with_value_objects() {
+    List<TestValueObject> list = new ArrayList<TestValueObject>();
+    
+    for(int i = 0; i < 3; ++i) {
+      list.add(new TestValueObject(Integer.toString(i)));
+    }
+    
+    IObjectId id = save(list);
+    
+    reopen();
+    
+    List<TestValueObject> l1_list = fObjectStore.get(id);
+    assertEquals(list, l1_list);
+  }
+
   public void test_data_mode() {
     Collection<SimpleTestObj> objectList = getObjectCollection();
     IObjectId objectId = saveAll(objectList);
@@ -60,7 +75,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(l1_collection.getCollection().size(), l2_collection.size());
     assertEquals("newObj", ((SimpleTestObj)getElement(0, l2_collection)).getString());
   }
-
+  
   public void test_empty_collection() {
     Collection<Object> collection = createCollection();
     reopen(collection);
@@ -122,12 +137,12 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(3, l1_collection.size());
     
   }
-  
+
   public void test_object() {
     Collection<SimpleTestObj> collection = getObjectCollection();
     reopen(collection);
   }
-
+  
   public void test_save_all_data_mode() {
     reopenDataMode();
     
@@ -149,14 +164,14 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     collection.add(new Integer(2));
     return collection;
   }
-  
+
   protected Collection<Integer> getIntPrimitiveCollection() {
     Collection<Integer> collection = createCollection();
     collection.add(1);
     collection.add(1);
     return collection;
   }
-
+  
   protected Collection<SimpleTestObj> getObjectCollection() {
     Collection<SimpleTestObj> collection = createCollection();
     collection.add(new SimpleTestObj("1"));

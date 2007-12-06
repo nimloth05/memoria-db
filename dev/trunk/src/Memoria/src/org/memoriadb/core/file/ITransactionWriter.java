@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.memoriadb.block.IBlockManager;
 import org.memoriadb.core.*;
+import org.memoriadb.core.mode.IModeStrategy;
 
 
 public interface ITransactionWriter {
@@ -18,6 +19,6 @@ public interface ITransactionWriter {
 
   public IObjectRepository getRepo();
   
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete)  throws Exception;
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, IModeStrategy mode)  throws Exception;
   
 }

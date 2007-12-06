@@ -137,6 +137,13 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory;
   }
   
+  @Override
+  public IMemoriaClass getMemoriaClass(Object object) {
+    ObjectInfo info = getObjectInfo(object);
+    if(info == null) return null;
+    return (IMemoriaClass) getObject(info.getMemoriaClassId());
+  }
+
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */

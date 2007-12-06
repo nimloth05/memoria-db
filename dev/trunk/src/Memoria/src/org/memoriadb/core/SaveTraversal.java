@@ -1,6 +1,7 @@
 package org.memoriadb.core;
 
 
+
 /**
  * 
  * Visits all direct children of the given object to check for enums.
@@ -23,9 +24,9 @@ public class SaveTraversal implements IObjectTraversal {
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, new IObjectTraversal() {
 
       @Override
-      public void handle(Object obj) {
-        if(!fTransactionHandler.isEnum(obj)) return;
-        fTransactionHandler.addMemoriaClassIfNecessary(obj);
+      public void handle(Object object) {
+        if (fTransactionHandler.isEnum(object)) fTransactionHandler.addMemoriaClassIfNecessary(object);
+        if (fTransactionHandler.isValueObject(object)) fTransactionHandler.addMemoriaClassIfNecessary(object); 
       }
       
     });

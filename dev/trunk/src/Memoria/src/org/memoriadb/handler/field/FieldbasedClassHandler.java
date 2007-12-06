@@ -21,8 +21,9 @@ public class FieldbasedClassHandler implements IHandler {
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
+    boolean hasValueObejctAnnotation = input.readBoolean();
     
-    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(className, typeId);
+    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(className, typeId, hasValueObejctAnnotation);
     
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinding(classObject, superClassId)); 
@@ -48,6 +49,7 @@ public class FieldbasedClassHandler implements IHandler {
     FieldbasedMemoriaClass classObject = (FieldbasedMemoriaClass) obj;
     
     output.writeUTF(classObject.getClassName());
+    output.writeBoolean(classObject.hasValueObjectAnnotation());
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) superClassId = context.getExistingtId(classObject.getSuperClass());

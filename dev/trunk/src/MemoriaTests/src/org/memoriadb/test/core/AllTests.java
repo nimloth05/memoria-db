@@ -11,6 +11,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.scenario.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.query.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.util.AllTests.suite());
+    suite.addTest(org.memoriadb.test.core.valueobject.AllTests.suite());
 
     //$JUnit-BEGIN$
     suite.addTestSuite(LongIdFactoryTest.class);

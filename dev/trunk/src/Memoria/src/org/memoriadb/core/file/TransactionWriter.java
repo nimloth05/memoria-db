@@ -7,6 +7,7 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 
 public final class TransactionWriter implements ITransactionWriter {
@@ -29,7 +30,37 @@ public final class TransactionWriter implements ITransactionWriter {
     fHeadRevision = headRevision;
   }
 
-  public Block append(byte[] trxData, int numberOfObjects) throws IOException {
+  @Override
+  public void close() {
+    fFile.close();
+  }
+  
+  @Override
+  public IBlockManager getBlockManager() {
+    return fBlockManager;
+  }
+
+  @Override
+  public IMemoriaFile getFile() {
+    return fFile;
+  }
+
+  @Override
+  public long getHeadRevision() {
+    return fHeadRevision;
+  }
+
+  @Override
+  public IObjectRepository getRepo() {
+    return fRepo;
+  }
+
+  @Override
+  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, IModeStrategy mode) throws Exception {
+    write(add, update, delete, new HashSet<Block>(), mode);
+  }
+
+  private Block append(byte[] trxData, int numberOfObjects) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
@@ -60,67 +91,18 @@ public final class TransactionWriter implements ITransactionWriter {
 
     return block;
   }
-
   
-  @Override
-  public void close() {
-    fFile.close();
-  }
-
-  @Override
-  public IBlockManager getBlockManager() {
-    return fBlockManager;
-  }
-
-  @Override
-  public IMemoriaFile getFile() {
-    return fFile;
-  }
-
-  @Override
-  public long getHeadRevision() {
-    return fHeadRevision;
-  }
-
-  @Override
-  public IObjectRepository getRepo() {
-    return fRepo;
-  }
-
-  @Override
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete) throws Exception {
-    write(add, update, delete, new HashSet<Block>());
-  }
-  
-  /**
-   * Called recursively
-   * @throws Exception 
-   */
-  public void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks) throws Exception {
-    
-    ObjectSerializer serializer = new ObjectSerializer(fRepo);
-    
-    writeAddOrUpdate(add, tabooBlocks, serializer);
-    writeAddOrUpdate(update, tabooBlocks, serializer);
-    writeDelete(delete, tabooBlocks, serializer);
-    Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks);
-
-    updateInfoForAdd(add, block);
-    updateInfoForUpdate(update, block);
-    updateInfoForDelete(delete, block);
-  }
-
   /**
    * Safes the survivors of the given <tt>block</tt>;
    * 
    * @throws IOException
    */
-  private void freeBlock(Block block, Set<Block> tabooBlocks) throws Exception {
+  private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
     if(survivorAgent.hasNoSurvivors()) return;
     
     // save survivors recursively
-    write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(), tabooBlocks);
+    write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(), tabooBlocks, mode);
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
@@ -148,7 +130,7 @@ public final class TransactionWriter implements ITransactionWriter {
       info.setRevision(fHeadRevision);
       info.incrememntOldGenerationCount();
     }
-  } 
+  }
 
   private void write(Block block, byte[] trxData) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -169,9 +151,9 @@ public final class TransactionWriter implements ITransactionWriter {
     fFile.write(byteArrayOutputStream.toByteArray(), block.getPosition() + FileLayout.BLOCK_OVERHEAD);
     
     fConfig.getListeners().triggerAfterWrite(block);
-  }
+  } 
 
-  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks) throws Exception {
+  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
@@ -179,7 +161,7 @@ public final class TransactionWriter implements ITransactionWriter {
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);
 
-    freeBlock(block, tabooBlocks);
+    freeBlock(block, tabooBlocks, mode);
     
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
@@ -189,10 +171,26 @@ public final class TransactionWriter implements ITransactionWriter {
     return block;    
   }
 
+  /**
+   * Called recursively
+   * @throws Exception 
+   */
+  private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
+    
+    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
+    
+    writeAddOrUpdate(add, tabooBlocks, serializer);
+    writeAddOrUpdate(update, tabooBlocks, serializer);
+    writeDelete(delete, tabooBlocks, serializer);
+    Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode);
+
+    updateInfoForAdd(add, block);
+    updateInfoForUpdate(update, block);
+    updateInfoForDelete(delete, block);
+  }
+
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
     for(ObjectInfo info: add) {
-      if(info.isDeleted()) throw new MemoriaException("object to add is deleted: " + fRepo.getObject(info.getMemoriaClassId()));
-      
       serializer.serialize(info);
       tabooBlocks.add(info.getCurrentBlock());
     }

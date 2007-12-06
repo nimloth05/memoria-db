@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -119,6 +119,19 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractMemoriaTest {
 
     assertNotSame(arr, arr_l1);
     assertTrue(Arrays.equals(arr, arr_l1));
+  }
+  
+  public void test_save_valueObject() {
+    TestValueObject[] array = new TestValueObject[3];
+    for(int i = 0; i < 3; ++i) {
+      array[i] = new TestValueObject(Integer.toString(i));
+    }
+    
+    IObjectId id = save(array);
+    
+    reopen();
+    
+    assertTrue(Arrays.deepEquals(array, (Object[]) fObjectStore.get(id)));
   }
   
   public void test_string_array() {

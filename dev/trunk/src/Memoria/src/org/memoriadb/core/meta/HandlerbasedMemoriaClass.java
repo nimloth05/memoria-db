@@ -1,6 +1,5 @@
 package org.memoriadb.core.meta;
 
-import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 
@@ -9,14 +8,12 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
   private final IHandler fHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
+  private final boolean fHasValueObjectAnnotation;
 
-  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId) {
+  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean hasValueObjectAnnotation) {
     fHandler = handler;
     fMemoriaClassId = memoriaClassId;
-  }
-
-  public HandlerbasedMemoriaClass(String handlerName, IObjectId memoriaClassId) throws Exception {
-    this(ReflectionUtil.<IHandler> createInstance(handlerName), memoriaClassId);
+    fHasValueObjectAnnotation = hasValueObjectAnnotation;
   }
 
   @Override
@@ -40,6 +37,11 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
+  }
+
+  @Override
+  public boolean hasValueObjectAnnotation() {
+    return fHasValueObjectAnnotation;
   }
 
   @Override
