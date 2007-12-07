@@ -39,7 +39,7 @@ public class DataArray extends AbstractArray implements IDataArray {
   }
 
   @Override
-  public ArrayTypeInfo getComponentTypeInfo() {
+  public ArrayTypeInfo getTypeInfo() {
     return fComponentTypeInfo;
   }
 

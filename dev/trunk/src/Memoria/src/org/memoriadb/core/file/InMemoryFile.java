@@ -67,11 +67,26 @@ public class InMemoryFile extends AbstractMemoriaFile {
     if(data.length+offset > getSize()) throw new MemoriaException("invalid offset: " + offset);
     System.arraycopy(data, 0, fData, (int)offset, data.length);
   }
-
+  
+  /**
+   * @return The byte at the given index-position as int
+   */
   public int get(long index) {
     return fData[(int)index] & 0xFF;
   }
   
+  public byte getByte(long index) {
+    return fData[(int)index];
+  }
+  
+  /**
+   * Shrinks the file to the given size.
+   */
+  public void shrink(int size) {
+    if(size >= getSize()) throw new MemoriaException("shrink size too big:" + size);
+    fSize = size;
+  }
+
   @Override
   public String toString() {
     return "in memory file";

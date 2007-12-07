@@ -66,15 +66,14 @@ public final class TransactionWriter implements ITransactionWriter {
 
     stream.write(FileLayout.BLOCK_START_TAG);
 
-    MemoriaCRC32 crc32 = new MemoriaCRC32();
-
-    // data.length + revision + data + crc32
+    MemoriaCRC32 crc = new MemoriaCRC32();
     long blockSize = FileLayout.TRX_OVERHEAD + trxData.length;
     stream.writeLong(blockSize);
-    crc32.updateLong(blockSize);
-
+    crc.updateLong(blockSize);
+    stream.writeLong(crc.getValue());
+    
     // transaction
-    writeTransaction(trxData, stream, crc32);
+    writeTransaction(trxData, stream);
 
     // first create the block...
     Block block = new Block(blockSize, fFile.getSize());
@@ -136,19 +135,14 @@ public final class TransactionWriter implements ITransactionWriter {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
 
-    MemoriaCRC32 crc32 = new MemoriaCRC32();
-
-    // first entry in the checked area is the size of the block, which is not overwritten.
-    crc32.updateLong(block.getSize());
-
     // transaction
-    writeTransaction(trxData, stream, crc32);
+    writeTransaction(trxData, stream);
     
     fConfig.getListeners().triggerBeforeWrite(block);
     
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
     // dd the data after the BlockTag to the file
-    fFile.write(byteArrayOutputStream.toByteArray(), block.getPosition() + FileLayout.BLOCK_OVERHEAD);
+    fFile.write(byteArrayOutputStream.toByteArray(), block.getBodyStartPosition());
     
     fConfig.getListeners().triggerAfterWrite(block);
   } 
@@ -204,18 +198,20 @@ public final class TransactionWriter implements ITransactionWriter {
     }
   }
 
-  private void writeTransaction(byte[] trxData, DataOutputStream stream, MemoriaCRC32 crc32) throws IOException {
+  private void writeTransaction(byte[] trxData, DataOutputStream stream) throws IOException {
+    MemoriaCRC32 crc = new MemoriaCRC32();
+    
     stream.writeLong(trxData.length);
-    crc32.updateLong(trxData.length);
+    crc.updateLong(trxData.length);
 
-    // increment revision here. If it's a saving of survivors or an append,
-    // either way the revision must be incremeneted at the time of writing back
+    // increment revision here. If it's the saving of survivors or an append,
+    // either way, the revision must be incremeneted at the time of writing back
     stream.writeLong(++fHeadRevision);
-    crc32.updateLong(fHeadRevision);
+    crc.updateLong(fHeadRevision);
 
     stream.write(trxData);
-    crc32.update(trxData);
+    crc.update(trxData);
 
-    stream.writeLong(crc32.getValue());
+    stream.writeLong(crc.getValue());
   }
 }

@@ -1,14 +1,27 @@
 package org.memoriadb.core.file;
 
+import org.memoriadb.block.Block;
+
+/**
+ * 
+ * Information about the last block that was written.
+ * 
+ * @author msc
+ *
+ */
 public class LastWrittenBlockInfo {
   private final int fWriteMode;
   private final long fPosition;
+  
+  public static LastWrittenBlockInfo createNoLastWrittenBlock() {
+    return new LastWrittenBlockInfo(-1,-1);
+  }
 
   public LastWrittenBlockInfo(int writeMode, long position) {
     fWriteMode = writeMode;
     fPosition = position;
   }
-
+  
   public long getPosition() {
     return fPosition;
   }
@@ -25,6 +38,10 @@ public class LastWrittenBlockInfo {
    */
   public boolean isAppend() {
     return fWriteMode == FileLayout.WRITE_MODE_APPEND;
+  }
+
+  boolean isLastWritten(Block block) {
+    return fPosition == block.getPosition();
   }
   
 }

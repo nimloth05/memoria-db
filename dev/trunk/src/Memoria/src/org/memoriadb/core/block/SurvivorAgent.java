@@ -41,9 +41,9 @@ public class SurvivorAgent implements IFileReaderHandler  {
     BlockReader reader = new BlockReader();
     
     try {
-      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this);
+      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this, new AlwaysThrowErrorHandler());
     }
-    catch (IOException e) {
+    catch (IOException e) { 
       throw new MemoriaException(e);
     }
     finally {

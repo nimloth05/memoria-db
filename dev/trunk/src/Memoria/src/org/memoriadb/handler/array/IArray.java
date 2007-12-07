@@ -16,7 +16,7 @@ public interface IArray extends IDataObject {
    */
   public Object get(int index);
 
-  public ArrayTypeInfo getComponentTypeInfo();
+  public ArrayTypeInfo getTypeInfo();
 
   /**
    * @return the array-object, depending on the mode either a java-Array or an {@link IArrayDataObject}.

@@ -3,7 +3,6 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.util.Arrays;
 
-import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.mode.IObjectStoreExt;
 import org.memoriadb.core.util.Constants;
 
@@ -26,7 +25,7 @@ public final class FileLayout {
   public static final int REVISION_LEN = Constants.LONG_LEN;
   public static final int CRC_LEN = Constants.LONG_LEN;
   
-  public static final int BLOCK_OVERHEAD = BLOCK_TAG_LEN + BLOCK_SIZE_LEN;
+  public static final int BLOCK_OVERHEAD = BLOCK_TAG_LEN + BLOCK_SIZE_LEN + CRC_LEN;
   
   public static final int TRX_OVERHEAD = TRX_SIZE_LEN +  REVISION_LEN + CRC_LEN;
 
@@ -37,12 +36,6 @@ public final class FileLayout {
   public static final int CURRENT_BLOCK_INFO_LEN = Constants.INT_LEN + 2 * Constants.LONG_LEN;
   public static final int CURRENT_BLOCK_INFO_START_POSITION = MEMORIA_TAG.length;
 
-  public static void assertBlockTag(DataInputStream stream) throws IOException {
-    byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
-    stream.readFully(tagBuffer);
-    if (!Arrays.equals(tagBuffer, BLOCK_START_TAG)) throw new FileCorruptException("Could not read block start-tag : " + Arrays.toString(tagBuffer));
-  }
-  
   /**
    * @param trxDataLength The length of the net-data in the transaction
    * 
@@ -61,6 +54,12 @@ public final class FileLayout {
    */
   public static int getOPO(IObjectStoreExt objectStore) {
     return OBJECT_SIZE_LEN + 2*objectStore.getIdSize();
+  }
+  
+  public static boolean testBlockTag(DataInputStream stream) throws IOException {
+    byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
+    stream.readFully(tagBuffer);
+    return Arrays.equals(tagBuffer, BLOCK_START_TAG);
   }
 
   private FileLayout() {}

@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.FileReader;
 import org.memoriadb.core.mode.IModeStrategy;
@@ -102,6 +102,9 @@ public final class ObjectLoader implements IReaderContext {
       
       return headRevision;
     } 
+    catch(FileCorruptException e) {
+      throw e;
+    }
     catch (Exception e) {
       throw new MemoriaException(e);
     }

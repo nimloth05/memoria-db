@@ -52,7 +52,7 @@ public class ObjectArray extends AbstractArray {
   }
 
   @Override
-  public ArrayTypeInfo getComponentTypeInfo() {
+  public ArrayTypeInfo getTypeInfo() {
     return fComponentTypeInfo;
   }
 

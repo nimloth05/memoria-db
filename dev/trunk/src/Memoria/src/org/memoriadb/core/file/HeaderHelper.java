@@ -6,7 +6,7 @@ import java.util.*;
 import org.memoriadb.Memoria;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.CreateConfig;
-import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.util.*;
 
 public class HeaderHelper {
@@ -18,19 +18,19 @@ public class HeaderHelper {
 
     LastWrittenBlockInfo readCurrentBlockInfo = readLastWrittenBlockInfo(stream);
 
-    int headerInfoSize = stream.readInt();
+    int headerSize = stream.readInt();
 
-    byte[] headerInfo = new byte[headerInfoSize];
+    byte[] headerInfo = new byte[headerSize];
     stream.readFully(headerInfo);
     
     long readCrc = stream.readLong();
     
     MemoriaCRC32 crc = new MemoriaCRC32();
-    crc.update(headerInfoSize);
+    crc.updateInt(headerSize);
     crc.update(headerInfo);
     if(readCrc != crc.getValue()) throw new MemoriaException("header corrupt");
     
-    return readHeaderInfo(readCurrentBlockInfo, headerInfoSize, headerInfo);
+    return readHeaderInfo(readCurrentBlockInfo, headerSize, headerInfo);
   }
 
   /**
@@ -52,7 +52,7 @@ public class HeaderHelper {
     int headerInfoSize = headerInfo.length;
     
     MemoriaCRC32 crc = new MemoriaCRC32();
-    crc.update(headerInfoSize);
+    crc.updateInt(headerInfoSize);
     crc.update(headerInfo);
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -66,10 +66,10 @@ public class HeaderHelper {
   }
 
   private static void checkMemoriaTag(DataInputStream stream) throws IOException {
-    if (stream.available() < FileLayout.MEMORIA_TAG.length) throw new MemoriaException("not a memoria file");
+    if (stream.available() < FileLayout.MEMORIA_TAG.length) throw new FileCorruptException("file too short for beeing a memoria file");
     byte[] buffer = new byte[FileLayout.MEMORIA_TAG.length];
     stream.read(buffer);
-    if (!Arrays.equals(FileLayout.MEMORIA_TAG, buffer)) throw new MemoriaException("not a memoria file");
+    if (!Arrays.equals(FileLayout.MEMORIA_TAG, buffer)) throw new FileCorruptException("not a memoria file");
   }
 
   private static byte[] getCurrentBlockInfo(long blockPosition, int writeMode) throws IOException {
@@ -79,6 +79,7 @@ public class HeaderHelper {
     stream.writeInt(writeMode);
     stream.writeLong(blockPosition);
     MemoriaCRC32 crc = new MemoriaCRC32();
+    crc.updateInt(writeMode);
     crc.updateLong(blockPosition);
     
     stream.writeLong(crc.getValue());
@@ -106,9 +107,10 @@ public class HeaderHelper {
     long currentBlock = stream.readLong();
 
     MemoriaCRC32 crc = new MemoriaCRC32();
+    crc.updateInt(writeMode);
     crc.updateLong(currentBlock);
     long readCrc = stream.readLong();
-    if(readCrc != crc.getValue()) throw new MemoriaException("wrong crc in header");
+    if(readCrc != crc.getValue()) throw new FileCorruptException("wrong crc in header");
     
     return new LastWrittenBlockInfo(writeMode, currentBlock);
   }

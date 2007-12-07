@@ -20,14 +20,12 @@ public class ArrayHandler implements IHandler {
 
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
-    int dimension = input.readInt();
-    int length = input.readInt();
-    Type componentType = Type.values()[input.readByte()];
+    
+    IArray array = ArrayTypeInfo.readTypeInfo(input, context);
+    ArrayTypeInfo arrayTypeInfo = array.getTypeInfo();
 
-    IArray array = instantiateArray(input, context, dimension, length, componentType);
-
-    if (dimension == 1) {
-      readContent(input, context, componentType, array);
+    if (arrayTypeInfo.getDimension() == 1) {
+      readContent(input, context, arrayTypeInfo.getComponentType(), array);
     }
     else {
       // multidimensional array, read components, which are also arrays
@@ -46,22 +44,13 @@ public class ArrayHandler implements IHandler {
   public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
     IArray array = getArray(obj);
 
-    ArrayTypeInfo componentTypeInfo = array.getComponentTypeInfo();
+    ArrayTypeInfo arrayTypeInfo = array.getTypeInfo();
 
-    output.writeInt(componentTypeInfo.getDimension());
-    output.writeInt(array.length());
-    
-    // writeTo auf ArrayTypeInfo
-    output.writeByte(componentTypeInfo.getComponentType().ordinal());
+    arrayTypeInfo.writeTypeInfo(array.length(), output, context);
 
-    // if componentType is a class, write MemoriaClassId
-    if (componentTypeInfo.getComponentType() == Type.typeClass) {
-      context.getMemoriaClassId(componentTypeInfo.getClassName()).writeTo(output);
-    }
-
-    if (componentTypeInfo.getDimension() == 1) {
+    if (arrayTypeInfo.getDimension() == 1) {
       // store content of the array, either primitives are objectIds
-      storeArrayContent(context, output, componentTypeInfo, array);
+      storeArrayContent(context, output, arrayTypeInfo, array);
     }
     else {
       // if dimension is bigger than one, references to the nested arrays are stored
@@ -87,30 +76,6 @@ public class ArrayHandler implements IHandler {
     if (obj instanceof IArray) { return (IArray) obj; }
 
     return new ObjectArray(obj);
-  }
-
-  private IArray instantiateArray(DataInputStream input, IReaderContext context, int dimension, int length, Type componentType)
-      throws IOException {
-
-    if (componentType.isPrimitive()) {
-      // name is given only for debug-reasons
-      ArrayTypeInfo arrayTypeInfo = new ArrayTypeInfo(componentType, dimension, componentType.name());
-
-      return instantiateArray(context, length, arrayTypeInfo);
-    }
-
-    // read MemoriaClass of componentType
-    IObjectId memoriaClassId = context.readObjectId(input);
-    IMemoriaClassConfig memoriaClass = (IMemoriaClassConfig) context.getExistingObject(memoriaClassId);
-
-    ArrayTypeInfo arrayTypeInfo = new ArrayTypeInfo(componentType, dimension, memoriaClass.getJavaClassName());
-
-    return instantiateArray(context, length, arrayTypeInfo);
-  }
-
-  private IArray instantiateArray(IReaderContext context, int length, ArrayTypeInfo arrayTypeInfo) {
-    if (context.isInDataMode()) return new DataArray(context.getArrayMemoriaClass(), arrayTypeInfo, length);
-    return new ObjectArray(context.getArrayMemoriaClass(), arrayTypeInfo, length);
   }
 
   private void readContent(DataInputStream input, IReaderContext context, Type componentType, IArray array) throws Exception {

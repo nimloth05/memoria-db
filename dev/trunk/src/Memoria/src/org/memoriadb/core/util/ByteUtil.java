@@ -9,6 +9,15 @@ public final class ByteUtil {
   
   public static final int INT_SIZE = 4;
 
+  public static byte[] asByteArray(int value){
+    byte[] result = new byte[4];
+    result[0] = (byte)(value >>> 24);
+    result[1] = (byte)(value >>> 16);
+    result[2] = (byte)(value >>>  8);
+    result[3] = (byte)(value >>>  0);
+    return result;
+  }
+
   public static byte[] asByteArray(long value){
     byte[] result = new byte[8];
     result[0] = (byte)(value >>> 56);

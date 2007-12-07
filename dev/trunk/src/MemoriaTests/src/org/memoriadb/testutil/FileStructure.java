@@ -45,7 +45,7 @@ public class FileStructure {
     }
     
     public long getSize() {
-      return fBlock.getSize();
+      return fBlock.getBodySize();
     }
 
   }
@@ -108,17 +108,21 @@ public class FileStructure {
     }
 
   }
-
+  
   public BlockInfo getBlock(int index){
     return fBlocks.get(index);
   }
-  
+
   public Object getBlockCount() {
     return fBlocks.size();
   }
   
   public List<BlockInfo> getBlocks() {
     return fBlocks;
+  }
+  
+  public Header getHeader() {
+    return fHeader;
   }
 
   private void readFile(FileReader reader) throws IOException {

@@ -85,9 +85,9 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   public void inactiveRatioChanged(Block block) {
     if(!blockQualifiesForRecycling(block)) return;
     
-    BlockBucket prototype = new BlockBucket(block.getSize());
+    BlockBucket prototype = new BlockBucket(block.getBodySize());
     BlockBucket bucket = fRecycleList.ceiling(prototype);
-    if(bucket == null || bucket.getSize()!=block.getSize()) {
+    if(bucket == null || bucket.getSize()!=block.getBodySize()) {
       bucket = prototype;
       fRecycleList.add(bucket);
     }

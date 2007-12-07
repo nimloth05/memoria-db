@@ -43,8 +43,8 @@ public class PhysicalFileTest extends junit.framework.TestCase {
   }
   
   public void test_stream_seek() throws IOException {
-    fPf.append(ByteUtil.asByteArray(1));
-    fPf.append(ByteUtil.asByteArray(2));
+    fPf.append(ByteUtil.asByteArray(1l));
+    fPf.append(ByteUtil.asByteArray(2l));
     
     DataInputStream stream = new DataInputStream(fPf.getInputStream(Constants.LONG_LEN));
     assertEquals(2, stream.readLong());
@@ -57,10 +57,10 @@ public class PhysicalFileTest extends junit.framework.TestCase {
     if(file.exists()) if(!file.delete()) throw new RuntimeException("unable to delete file " + file);
     fPf = new PhysicalFile(PATH);
   }
-  
+
   @Override
   protected void tearDown() {
-   fPf.close(); 
+   fPf.close();
   }
 
   private void append(byte... data) {

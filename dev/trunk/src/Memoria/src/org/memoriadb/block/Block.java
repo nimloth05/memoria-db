@@ -5,8 +5,14 @@ import org.memoriadb.core.file.FileLayout;
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to
  * make this Block free for new data.
+ *
+ * The block header is only written once, when the block is appended. including:
+ * - block-tag
+ * - size
+ * - crc over the size
  * 
- * The crc32 check at the end fo the transaction-data includes the block's size, but not it's tag.
+ * Then follows the body, containing one transaction. The size is the size of the body!
+ * 
  */
 public class Block {
   
@@ -21,7 +27,7 @@ public class Block {
    * 
    * Limited to int because arrays can't be bigger than INT_MAX (implementation depends on arrays)
    */
-  private long fSize;
+  private long fBodySize;
   
   /**
    * Position in the file
@@ -40,8 +46,8 @@ public class Block {
     this(-1, position);
   }
 
-  public Block(long size, long position) {
-    fSize = size;
+  public Block(long bodySize, long position) {
+    fBodySize = bodySize;
     fPosition = position;
     fObjectDataCount = 0;
     fInactiveObjectDataCount = 0;
@@ -56,14 +62,28 @@ public class Block {
     if (fInactiveObjectDataCount != other.fInactiveObjectDataCount) return false;
     if (fObjectDataCount != other.fObjectDataCount) return false;
     if (fPosition != other.fPosition) return false;
-    if (fSize != other.fSize) return false;
+    if (fBodySize != other.fBodySize) return false;
     return true;
   }
   
+  /**
+   * @return The net-size of this block
+   */
+  public long getBodySize() {
+    return fBodySize;
+  }
+  
+  /**
+   * @return The position, where the transaction starts (size of the transaction starts here)
+   */
+  public long getBodyStartPosition() {
+    return getPosition() + FileLayout.BLOCK_OVERHEAD;
+  }
+
   public int getInactiveObjectDataCount() {
     return fInactiveObjectDataCount;
   }
-  
+
   /**
    * @return A Value between 0 and 100. 0 Means: no inactive ObjectData, 100 means:
    * 100% of the ObjectData are inactive.
@@ -78,22 +98,18 @@ public class Block {
    * @return The max number of bytes that can be stored in the contained transaction.
    */
   public long getMaxTrxDataSize() {
-    return getSize() - FileLayout.TRX_OVERHEAD;
+    return getBodySize() - FileLayout.TRX_OVERHEAD;
   }
 
   public int getObjectDataCount() {
     return fObjectDataCount;
   }
 
+  /**
+   * @return The absolut position of this block.
+   */
   public long getPosition() {
     return fPosition;
-  }
-
-  /**
-   * @return The net-size of this block
-   */
-  public long getSize() {
-    return fSize;
   }
 
   @Override
@@ -103,7 +119,7 @@ public class Block {
     result = prime * result + fInactiveObjectDataCount;
     result = prime * result + fObjectDataCount;
     result = prime * result + (int) (fPosition ^ (fPosition >>> 32));
-    result = prime * result + (int) (fSize ^ (fSize >>> 32));
+    result = prime * result + (int) (fBodySize ^ (fBodySize >>> 32));
     return result;
   }
 
@@ -124,25 +140,23 @@ public class Block {
     fInactiveObjectDataCount = 0;
     setNumberOfObjectData(numberOfObjects);
   }
-
+  
   public void setBlockManager(IBlockManager manager) {
     fManager = manager;
   }
-  
+
   public void setNumberOfObjectData(int numberOfObjects) {
-    System.out.println("number of objects: " + numberOfObjects);
-    
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
 
   public void setSize(long blockSize) {
-    fSize = blockSize;
+    fBodySize = blockSize;
   }
 
   @Override
   public String toString() {
-    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getSize();
+    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getBodySize();
   }
   
 }
