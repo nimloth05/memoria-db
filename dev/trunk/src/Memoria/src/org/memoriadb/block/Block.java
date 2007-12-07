@@ -37,6 +37,9 @@ public class Block {
   
   private int fObjectDataCount;
   private int fInactiveObjectDataCount;
+
+  // if true, the inactiveRatio fo this block is 100%
+  private boolean fIsFree = false;
   
   public static Block getDefaultBlock() {
     return sDefaultBlock;
@@ -89,6 +92,8 @@ public class Block {
    * 100% of the ObjectData are inactive.
    */
   public long getInactiveRatio() {
+    if(fIsFree) return 100;
+    
     // when the block-size still is 0, the ratio is 0
     if(fObjectDataCount == 0) return 0;
     return fInactiveObjectDataCount*100 / fObjectDataCount;
@@ -145,13 +150,25 @@ public class Block {
     fManager = manager;
   }
 
+  public void setBodySize(long bodySize) {
+    fBodySize = bodySize;
+  }
+  
+  public void setIsFree() {
+    fIsFree  = true;
+  }
+  
   public void setNumberOfObjectData(int numberOfObjects) {
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
 
-  public void setSize(long blockSize) {
-    fBodySize = blockSize;
+  /**
+   * The size of this block (header + body)
+   * @param blockSize
+   */
+  public void setWholeSize(long blockSize) {
+    fBodySize = blockSize-FileLayout.BLOCK_OVERHEAD;
   }
 
   @Override

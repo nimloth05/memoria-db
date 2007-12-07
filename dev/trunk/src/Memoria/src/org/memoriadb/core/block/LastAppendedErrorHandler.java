@@ -1,7 +1,7 @@
 package org.memoriadb.core.block;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.file.IFileReaderHandler;
+import org.memoriadb.core.file.*;
 
 /**
  * 
@@ -12,26 +12,34 @@ import org.memoriadb.core.file.IFileReaderHandler;
  */
 public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
 
-  public LastAppendedErrorHandler(IFileReaderHandler fileReaderHandler) {
+  private final IMemoriaFile fFile;
+
+  public LastAppendedErrorHandler(IFileReaderHandler fileReaderHandler, IMemoriaFile file) {
     super(fileReaderHandler);
+    fFile = file;
   }
 
   @Override
   public long blockSizeCorrupt(Block block) {
-    // TODO Auto-generated method stub
-    return 0;
+    return readToEndOfFile(block);
   }
 
   @Override
   public long blockTagCorrupt(Block block) {
-    // TODO Auto-generated method stub
-    return 0;
+    return readToEndOfFile(block);
   }
 
   @Override
   public void transactionCorrupt(Block block) {
-  // TODO Auto-generated method stub
+    readToEndOfFile(block);
+  }
 
+  private long readToEndOfFile(Block block) {
+    long size = fFile.getSize()-block.getPosition();
+    block.setWholeSize(size);
+    block.setIsFree(); 
+    fFileReaderHandler.block(block);
+    return size;
   }
 
 }

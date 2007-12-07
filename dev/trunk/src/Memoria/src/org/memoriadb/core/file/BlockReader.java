@@ -42,8 +42,10 @@ public class BlockReader {
     if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(block); 
 
     byte[] transactionData = readTransaction(stream, block, blockSize, errorHandler);
+    if(transactionData == null) return blockSize + FileLayout.BLOCK_OVERHEAD;
 
-    block.setSize(blockSize);
+    // no state was changed before this line!
+    block.setBodySize(blockSize);
     handler.block(block);
 
     int objectCount = readObjects(idFactory, handler, fRevision, transactionData);
@@ -108,7 +110,10 @@ public class BlockReader {
 
     long expectedCrc32 = stream.readLong();
     long value = crc.getValue();
-    if (value != expectedCrc32) errorHandler.transactionCorrupt(block);
+    if (value != expectedCrc32){
+      errorHandler.transactionCorrupt(block);
+      return null;
+    }
  
     // block may be bigger then the transaction-data -> skip
     skip(stream, blockSize - transactionSize - FileLayout.TRX_OVERHEAD);

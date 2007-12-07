@@ -63,6 +63,5 @@ public final class FileLayout {
   }
 
   private FileLayout() {}
-  
 
 }

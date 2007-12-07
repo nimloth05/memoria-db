@@ -86,11 +86,31 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertEquals(fs.getHeader().getHeaderSize(), fs.getBlock(0).getPosition());
   }
 
-  public void test_repair_with_invalid_block() {
+  public void test_repair_corrupt_block_size_in_last_appended() {
+    save(new Object());
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getPosition()+FileLayout.BLOCK_TAG_LEN);
+    
+    reopen();
+    
+  }
+
+  public void test_repair_corrupt_block_tag_in_last_appended() {
     save(new Object());
     
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getPosition());
+    
+    reopen();
+    
+  }
+  
+  public void test_repair_corrupt_trx_in_last_appended() {
+    save(new Object());
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getBodyStartPosition());
     
     reopen();
     

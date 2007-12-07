@@ -32,6 +32,10 @@ public class FileStructure {
       return fBlock;
     }
     
+    public long getBodyStartPosition() {
+      return fBlock.getBodyStartPosition();
+    }
+    
     public ObjectInfo getObject(int index) {
       return fObjectInfos.get(index);
     }

@@ -87,7 +87,7 @@ public class FileReader {
     
     // the last written block is processed!
     
-    if(fHeader.getLastWrittenBlockInfo().isAppend()) return new LastAppendedErrorHandler(handler);
+    if(fHeader.getLastWrittenBlockInfo().isAppend()) return new LastAppendedErrorHandler(handler, fFile);
     
     return new LastWrittenErrorHandler(handler);
   }
