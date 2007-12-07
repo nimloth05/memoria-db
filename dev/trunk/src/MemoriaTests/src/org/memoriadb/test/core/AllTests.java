@@ -20,6 +20,7 @@ public class AllTests {
     suite.addTestSuite(TypeTest.class);
     suite.addTestSuite(TypeInfoTest.class);
     suite.addTestSuite(ModeTest.class);
+    suite.addTestSuite(RecoveryTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     //$JUnit-END$

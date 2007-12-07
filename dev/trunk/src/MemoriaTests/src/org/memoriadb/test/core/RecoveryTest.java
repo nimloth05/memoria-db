@@ -24,7 +24,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
   }
   
-  
   public void test_corrupt_bootstrap_block_startTag() {
     FileStructure fs = new FileStructure(getFile());
 
@@ -96,7 +95,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
     reopen();
     
     assertEquals(0, fObjectStore.query(Object.class));
-    
   }
   
   @Override
@@ -114,6 +112,5 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     file.write(new byte[] { b }, position);
   }
-
   
 }
