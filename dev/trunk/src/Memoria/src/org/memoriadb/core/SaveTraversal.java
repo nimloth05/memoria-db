@@ -26,7 +26,7 @@ public class SaveTraversal implements IObjectTraversal {
       @Override
       public void handle(Object object) {
         if (fTransactionHandler.isEnum(object)) fTransactionHandler.addMemoriaClassIfNecessary(object);
-        if (fTransactionHandler.isValueObject(object)) fTransactionHandler.addMemoriaClassIfNecessary(object); 
+        if (fTransactionHandler.isValueObject(object)) new AddMemoriaClassesTraversal(fTransactionHandler).handle(object); 
       }
       
     });
