@@ -6,6 +6,19 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class LongIdFactoryTest extends AbstractMemoriaTest {
   
+  public void test_call_peekNextId_multiple_times() {
+    LongId id = (LongId) save(new Object());
+    LongIdFactory factory = (LongIdFactory)fObjectStore.getIdFactory();
+    
+    LongId nextId = factory.peekNexId();
+    assertEquals(nextId.getLong(), id.getLong()+1);
+    assertEquals(nextId, factory.peekNexId());
+    assertEquals(nextId, factory.peekNexId());
+    
+    LongId id2 = (LongId) save(new Object());
+    assertEquals(nextId, id2);
+  }
+  
   /**
    * Because of a bug in the id-factory-handling, the ids of deleted objects were not 
    * registered in the IdFactory what lead to redundant ids!
@@ -17,6 +30,17 @@ public class LongIdFactoryTest extends AbstractMemoriaTest {
     reopen();
     LongId id2 = (LongId) save(new Object());
     assertEquals(id1.getLong()+1, id2.getLong());
+  }
+  
+  public void test_peek_nex_id() {
+    LongId id = (LongId) save(new Object());
+    LongIdFactory factory = (LongIdFactory)fObjectStore.getIdFactory();
+    
+    LongId nextId = factory.peekNexId();
+    assertEquals(nextId.getLong(), id.getLong()+1);
+    
+    LongId id2 = (LongId) save(new Object());
+    assertEquals(nextId, id2);
   }
   
   @Override

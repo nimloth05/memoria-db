@@ -86,4 +86,8 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
     return ROOT_CLASS_ID;
   }
 
+  public LongId peekNexId() {
+    return new LongId(fCurrentObjectId+1);
+  }
+
 }
