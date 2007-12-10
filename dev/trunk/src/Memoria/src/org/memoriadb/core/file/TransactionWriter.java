@@ -79,6 +79,8 @@ public final class TransactionWriter implements ITransactionWriter {
     Block block = new Block(blockSize, fFile.getSize());
     block.setNumberOfObjectData(numberOfObjects);
     fBlockManager.add(block);
+    
+    System.out.println("append " + numberOfObjects);
      
     fConfig.getListeners().triggerBeforeAppend(block);
     
@@ -160,6 +162,8 @@ public final class TransactionWriter implements ITransactionWriter {
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.resetBlock(numberOfObjects);
+    
+    System.out.println("write " + numberOfObjects);
     
     write(block, trxData);
     return block;    

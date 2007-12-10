@@ -1,5 +1,7 @@
 package org.memoriadb.core.block;
 
+import java.io.*;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.file.IFileReaderHandler;
@@ -18,18 +20,21 @@ public abstract class AbstractBlockErrorHandler implements IBlockErrorHandler {
     fFileReaderHandler = fileReaderHandler;
   }
 
+  @SuppressWarnings("unused")
   @Override
-  public long blockSizeCorrupt(Block block) {
+  public long blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("block size corrupt: " + block);
   }
 
+  @SuppressWarnings("unused")
   @Override
-  public long blockTagCorrupt(Block block) {
+  public long blockTagCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("block tag corrupt: " + block);
   }
 
+  @SuppressWarnings("unused")
   @Override
-  public void transactionCorrupt(Block block) {
+  public void transactionCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("transaction corrupt in block: " + block);
   }
 

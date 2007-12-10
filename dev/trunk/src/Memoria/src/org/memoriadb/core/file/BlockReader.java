@@ -33,19 +33,22 @@ public class BlockReader {
    */
   public long readBlock(DataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
       IBlockErrorHandler errorHandler) throws IOException {
-    if (!FileLayout.testBlockTag(stream))  return errorHandler.blockTagCorrupt(block); 
+    if (!FileLayout.testBlockTag(stream))  return errorHandler.blockTagCorrupt(stream, block); 
 
     MemoriaCRC32 crc = new MemoriaCRC32();
-    long blockSize = stream.readLong(); // the block size
+    
+    // block size
+    long blockSize = stream.readLong(); 
+    block.setBodySize(blockSize);
     crc.updateLong(blockSize);
-    long readCrc = stream.readLong();
-    if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(block); 
 
-    byte[] transactionData = readTransaction(stream, block, blockSize, errorHandler);
+    long readCrc = stream.readLong();
+    if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(stream, block); 
+
+    byte[] transactionData = readTransaction(stream, block, errorHandler);
     if(transactionData == null) return blockSize + FileLayout.BLOCK_OVERHEAD;
 
     // no state was changed before this line!
-    block.setBodySize(blockSize);
     handler.block(block);
 
     int objectCount = readObjects(idFactory, handler, fRevision, transactionData);
@@ -96,7 +99,7 @@ public class BlockReader {
     return objectCount;
   }
 
-  private byte[] readTransaction(DataInputStream stream, Block block, long blockSize, IBlockErrorHandler errorHandler) throws IOException {
+  private byte[] readTransaction(DataInputStream stream, Block block, IBlockErrorHandler errorHandler) throws IOException {
     MemoriaCRC32 crc;
     crc = new MemoriaCRC32();
     long transactionSize = stream.readLong(); // transactionsize
@@ -111,12 +114,13 @@ public class BlockReader {
     long expectedCrc32 = stream.readLong();
     long value = crc.getValue();
     if (value != expectedCrc32){
-      errorHandler.transactionCorrupt(block);
+      errorHandler.transactionCorrupt(stream, block);
       return null;
     }
- 
+
     // block may be bigger then the transaction-data -> skip
-    skip(stream, blockSize - transactionSize - FileLayout.TRX_OVERHEAD);
+    skip(stream, block.getBodySize() - transactionSize - FileLayout.TRX_OVERHEAD);
+    
     return transactionData;
   }
 

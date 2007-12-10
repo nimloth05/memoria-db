@@ -8,6 +8,4 @@ public class LastWrittenErrorHandler extends AbstractBlockErrorHandler {
     super(fileReaderHandler);
   }
 
-
-
 }

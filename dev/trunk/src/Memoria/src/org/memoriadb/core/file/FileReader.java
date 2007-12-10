@@ -46,11 +46,6 @@ public class FileReader {
 
     BlockReader blockReader = new BlockReader();
 
-    // read bootstrap-block. isLastWritten is false, because no recovery can be done if the bootstrap-block is corrupt.
-    // readBlock(idFactory, handler, blockReader, false);
-    // FIXME was ist mit dem bootstrap block?
-
-    // read file header
     while (fStream.available() > 0) {
       Block block = new Block(fPosition);
       IBlockErrorHandler errorHandler = createErrorHandler(fPosition, block, handler);
@@ -83,6 +78,7 @@ public class FileReader {
   private IBlockErrorHandler createErrorHandler(long position, Block block, IFileReaderHandler handler) {
     // bootstrap block must never be corrupt!
     if(position == fHeader.getHeaderSize()) return new AlwaysThrowErrorHandler();
+    
     if(!fHeader.getLastWrittenBlockInfo().isLastWritten(block)) return new AlwaysThrowErrorHandler();
     
     // the last written block is processed!

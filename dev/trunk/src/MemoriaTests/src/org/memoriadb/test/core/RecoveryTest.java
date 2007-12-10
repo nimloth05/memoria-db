@@ -94,6 +94,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     
     reopen();
     
+    assertEquals(0, fObjectStore.query(Object.class).size());
   }
 
   public void test_repair_corrupt_block_tag_in_last_appended() {
@@ -104,6 +105,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     
     reopen();
     
+    assertEquals(0, fObjectStore.query(Object.class).size());
   }
   
   public void test_repair_corrupt_trx_in_last_appended() {
@@ -114,7 +116,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     
     reopen();
     
-    assertEquals(0, fObjectStore.query(Object.class));
+    assertEquals(0, fObjectStore.query(Object.class).size());
   }
   
   @Override

@@ -1,5 +1,7 @@
 package org.memoriadb.core.block;
 
+import java.io.*;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.file.*;
 
@@ -20,25 +22,29 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
   }
 
   @Override
-  public long blockSizeCorrupt(Block block) {
-    return readToEndOfFile(block);
+  public long blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
+    return readToEndOfFile(input, block);
   }
 
   @Override
-  public long blockTagCorrupt(Block block) {
-    return readToEndOfFile(block);
+  public long blockTagCorrupt(DataInputStream input, Block block) throws IOException {
+    return readToEndOfFile(input, block);
   }
 
   @Override
-  public void transactionCorrupt(Block block) {
-    readToEndOfFile(block);
+  public void transactionCorrupt(DataInputStream input, Block block) throws IOException {
+    readToEndOfFile(input, block);
   }
 
-  private long readToEndOfFile(Block block) {
+  private long readToEndOfFile(DataInputStream input, Block block) throws IOException {
     long size = fFile.getSize()-block.getPosition();
     block.setWholeSize(size);
     block.setIsFree(); 
     fFileReaderHandler.block(block);
+    
+    // skip stream to the end
+    input.skip(Long.MAX_VALUE);
+    
     return size;
   }
 
