@@ -10,6 +10,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.crud.update.AllTests.suite());
     suite.addTest(org.memoriadb.test.crud.basic.AllTests.suite());
     suite.addTest(org.memoriadb.test.crud.delete.AllTests.suite());
+    suite.addTest(org.memoriadb.test.crud.valueobject.AllTests.suite());
     //$JUnit-END$
     return suite;
   }

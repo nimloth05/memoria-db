@@ -1,11 +1,11 @@
-package org.memoriadb.test.core.valueobject;
+package org.memoriadb.test.crud.valueobject;
 
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.*;
 
-public class ValueObjectTest extends AbstractMemoriaTest {
+public abstract class AbstractValueObjectTest extends AbstractMemoriaTest {
   
   public void test_delete() {
     ObjectReferencer ref = new ObjectReferencer();

@@ -11,7 +11,10 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 public abstract class AbstractEnumTest extends AbstractMemoriaTest {
 
   public void test_add_enum_class_adds_all_instances() {
-
+    fObjectStore.getTypeInfo().addMemoriaClass(TestEnum.class);
+    assertAllEnumInstanceAreContained();
+    reopen();
+    assertAllEnumInstanceAreContained();
   }
 
   public void test_add_enum_throws_in_dataMode() {
@@ -42,18 +45,14 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
 
   public void test_deleteAll_does_not_remove_enum() {
     EnumUse e1 = new EnumUse(TestEnum.c);
-    EnumUse e2 = new EnumUse(TestEnum.c);
 
     saveAll(e1);
-    IObjectId id2 = saveAll(e2);
 
     deleteAll(e1);
 
     reopen();
 
-    e2 = get(id2);
-
-    assertEquals(TestEnum.c, e2.getEnum());
+    assertAllEnumInstanceAreContained();
   }
 
   public void test_derived_enum() {
@@ -193,6 +192,12 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     assertEquals(3, fObjectStore.query(TestEnum.class).size());
     assertFalse(l1_list.isEmpty());
     assertEquals(TestEnum.a, l1_list.get(0));
+  }
+
+  private void assertAllEnumInstanceAreContained() {
+    for(TestEnum enumInstance: TestEnum.values()) {
+      assertTrue(fObjectStore.contains(enumInstance));
+    }
   }
 
 }
