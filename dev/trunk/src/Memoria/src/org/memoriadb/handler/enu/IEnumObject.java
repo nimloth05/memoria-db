@@ -11,6 +11,5 @@ public interface IEnumObject extends IDataObject {
 
   public void setOrdinal(int ordinal);
   
-  
 
 }
