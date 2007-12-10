@@ -267,6 +267,7 @@ public class TransactionHandler {
 
   public void writePendingChanges() {
     if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
+    System.out.println("add: " + fAdd + "\n Update: " + fUpdate + "\n Delete: " + fDelete);
 
     try {
       fTransactionWriter.write(fAdd, fUpdate, fDelete, fModeStrategy);
