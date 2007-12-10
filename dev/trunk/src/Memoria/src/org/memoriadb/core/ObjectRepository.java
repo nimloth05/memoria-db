@@ -2,10 +2,10 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.java.patched.PIdentityHashMap;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.*;
+import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
 import org.memoriadb.id.*;
 
 /**
@@ -31,7 +31,7 @@ public class ObjectRepository implements IObjectRepository {
   /**
    * Main-index
    */
-  private final Map<Object, ObjectInfo> fObjectMap = new PIdentityHashMap<Object, ObjectInfo>();
+  private final Map<Object, ObjectInfo> fObjectMap = new MemoriaIdentityHashMap<Object, ObjectInfo>();
   
   /**
    * MataClass index

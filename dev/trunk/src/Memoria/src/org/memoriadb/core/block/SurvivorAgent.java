@@ -8,7 +8,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.HydratedObject;
-import org.memoriadb.core.util.IdentityHashSet;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;
 import org.memoriadb.id.IObjectId;
 
@@ -20,8 +20,8 @@ import org.memoriadb.id.IObjectId;
 public class SurvivorAgent implements IFileReaderHandler  {
   
   // use IdentityHashSet for better performance
-  private final Set<ObjectInfo> fUpdates = new IdentityHashSet<ObjectInfo>();
-  private final Set<ObjectInfo> fDeleteMarkers = new IdentityHashSet<ObjectInfo>();
+  private final Set<ObjectInfo> fUpdates = IdentityHashSet.create();
+  private final Set<ObjectInfo> fDeleteMarkers = IdentityHashSet.create();
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
   

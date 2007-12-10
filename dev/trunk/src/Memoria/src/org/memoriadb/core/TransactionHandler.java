@@ -8,7 +8,8 @@ import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
-import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -19,9 +20,9 @@ public class TransactionHandler {
   private final ITransactionWriter fTransactionWriter;
 
   // use IdentityHashSets for better performance
-  private final Set<ObjectInfo> fAdd = new IdentityHashSet<ObjectInfo>();
-  private final Set<ObjectInfo> fUpdate = new IdentityHashSet<ObjectInfo>();
-  private final Set<ObjectInfo> fDelete = new IdentityHashSet<ObjectInfo>();
+  private final Set<ObjectInfo> fAdd = IdentityHashSet.create();
+  private final Set<ObjectInfo> fUpdate = IdentityHashSet.create();
+  private final Set<ObjectInfo> fDelete = IdentityHashSet.create();
 
   private int fUpdateCounter = 0;
   private final IInstantiator fInstantiator;
@@ -267,9 +268,9 @@ public class TransactionHandler {
 
   public void writePendingChanges() {
     if (fAdd.isEmpty() && fUpdate.isEmpty() && fDelete.isEmpty()) return;
-    System.out.println("add ["+fAdd.size()+"]: " + fAdd);
-    System.out.println("Update: ["+fUpdate.size()+"]" + fUpdate);
-    System.out.println("Delete: ["+fDelete.size()+"]" + fDelete);
+//    System.out.println("add ["+fAdd.size()+"]: " + fAdd);
+//    System.out.println("Update: ["+fUpdate.size()+"]" + fUpdate);
+//    System.out.println("Delete: ["+fDelete.size()+"]" + fDelete);
     
 
     try {

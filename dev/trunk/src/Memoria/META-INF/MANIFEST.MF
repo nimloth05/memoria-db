@@ -9,8 +9,7 @@ Eclipse-RegisterBuddy: com.google.guice
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Eclipse-LazyStart: true
-Export-Package: org.java.patched,
- org.memoriadb,
+Export-Package: org.memoriadb,
  org.memoriadb.block,
  org.memoriadb.block.maintenancefree,
  org.memoriadb.core,
@@ -24,6 +23,7 @@ Export-Package: org.java.patched,
  org.memoriadb.core.query,
  org.memoriadb.core.refactor,
  org.memoriadb.core.util,
+ org.memoriadb.core.util.collection.identity,
  org.memoriadb.core.util.disposable,
  org.memoriadb.core.util.io,
  org.memoriadb.handler,

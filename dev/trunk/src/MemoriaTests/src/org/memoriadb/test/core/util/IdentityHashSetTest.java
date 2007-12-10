@@ -4,13 +4,13 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.core.util.IdentityHashSet;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.test.testclasses.WrongHashCode;
 
 public class IdentityHashSetTest extends TestCase {
   
   public void test_add_remove() {
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     
     assertTrue( set.add(new WrongHashCode()) );
     
@@ -25,7 +25,7 @@ public class IdentityHashSetTest extends TestCase {
     List<WrongHashCode> add = new ArrayList<WrongHashCode>();
     add.add(new WrongHashCode("1"));
     
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     set.add(new WrongHashCode("4"));
     
     assertTrue(set.addAll(add));
@@ -33,7 +33,7 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_clear() {
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     
     set.add(new WrongHashCode());
     set.clear();
@@ -41,7 +41,7 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_contains() {
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     
     set.add(new WrongHashCode());
     assertFalse(set.contains(new WrongHashCode()));
@@ -51,14 +51,14 @@ public class IdentityHashSetTest extends TestCase {
     List<WrongHashCode> contain = new ArrayList<WrongHashCode>();
     contain.add(new WrongHashCode("1"));
     
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     set.add(new WrongHashCode("4"));
     
     assertFalse(set.containsAll(contain));
   }
   
   public void test_iterator() {
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     WrongHashCode expected = new WrongHashCode(); 
     set.add(expected);
     Iterator<WrongHashCode> iterator = set.iterator();
@@ -67,7 +67,7 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_remove() {
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+    Set<WrongHashCode> set = IdentityHashSet.create();;
     
     WrongHashCode obj = new WrongHashCode("1");
     WrongHashCode remain = new WrongHashCode("2");
@@ -82,14 +82,19 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_removeAll() {
-    List<WrongHashCode> removed = new ArrayList<WrongHashCode>();
-    removed.add(new WrongHashCode("1"));
-    
-    Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
-    set.add(new WrongHashCode("4"));
-    
-    set.removeAll(removed);
-    assertEquals(1, set.size());
+    try {
+      List<WrongHashCode> removed = new ArrayList<WrongHashCode>();
+      removed.add(new WrongHashCode("1"));
+      
+      Set<WrongHashCode> set = IdentityHashSet.create();;
+      set.add(new WrongHashCode("4"));
+      
+      set.removeAll(removed);
+      fail("RemoveAll is not supported, because the IdentityHashMap has a bug");
+    }
+    catch (UnsupportedOperationException e) {
+      //passed;
+    }
   }
   
   public void test_retainAll() {
@@ -100,7 +105,7 @@ public class IdentityHashSetTest extends TestCase {
       List<WrongHashCode> retain = new ArrayList<WrongHashCode>();
       retain.add(new WrongHashCode("1"));
     
-      Set<WrongHashCode> set = new IdentityHashSet<WrongHashCode>();
+      Set<WrongHashCode> set = IdentityHashSet.create();;
       set.add(new WrongHashCode("2"));
     
       assertTrue(set.retainAll(retain));

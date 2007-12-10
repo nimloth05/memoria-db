@@ -2,7 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
-import org.memoriadb.core.util.IdentityHashSet;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 
 /**
  * 
@@ -13,7 +13,7 @@ import org.memoriadb.core.util.IdentityHashSet;
  */
 public class SaveAllTraversal implements IObjectTraversal {
 
-  private final Set<Object> fVisited = new IdentityHashSet<Object>();
+  private final Set<Object> fVisited = IdentityHashSet.create();
   private final TransactionHandler fTransactionHandler;
   
   public SaveAllTraversal(TransactionHandler transactionHandler) {
