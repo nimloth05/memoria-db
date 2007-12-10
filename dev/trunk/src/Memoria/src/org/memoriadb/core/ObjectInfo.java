@@ -108,8 +108,8 @@ public class ObjectInfo implements IObjectInfo {
   
   @Override
   public String toString() {
-    if (isDeleted()) return fId + ": DELETED revision: " + fRevision; 
-    return fId + ": " + fObj.getClass().getName() + " revision: " + fRevision;
+    if (isDeleted()) return fId + " DELETED rev " + fRevision; 
+    return fId + " " + fObj.getClass().getName() + " rev " + fRevision;
   }
   
 }
