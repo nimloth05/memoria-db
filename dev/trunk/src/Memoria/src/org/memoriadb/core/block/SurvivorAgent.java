@@ -8,6 +8,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;
 import org.memoriadb.id.IObjectId;
@@ -21,7 +22,10 @@ public class SurvivorAgent implements IFileReaderHandler  {
   
   // use IdentityHashSet for better performance
   private final Set<ObjectInfo> fUpdates = IdentityHashSet.create();
-  private final Set<ObjectInfo> fDeleteMarkers = IdentityHashSet.create();
+  private final Set<ObjectInfo> fDeleteMarkers =  IdentityHashSet.create();
+  private final Set<ObjectInfo> fInactiveObjectDatas = IdentityHashSet.create();
+  private final Set<ObjectInfo> fInactiveDeletinoMarkers = IdentityHashSet.create();
+  
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
   
@@ -49,10 +53,21 @@ public class SurvivorAgent implements IFileReaderHandler  {
     finally {
       IOUtil.close(stream);
     }
+    
+    if(block.getObjectDataCount() != getObjectDataCount()) throw new MemoriaException("objectDataCount mismatch. File: " + getObjectDataCount() + " in memory: " + block.getObjectDataCount());
+    if(block.getInactiveObjectDataCount() != getInactiveObjectDataCount()) throw new MemoriaException("inactiveObjectDataCount mismatch. File: " + getInactiveObjectDataCount() + " in memory: " + block.getInactiveObjectDataCount());
+  }
+
+  public Iterable<ObjectInfo> getAllObjectInfo() {
+    return new CompoundIterator<ObjectInfo>(fDeleteMarkers, fInactiveDeletinoMarkers, fInactiveObjectDatas, fUpdates);
   }
 
   public Set<ObjectInfo> getDeleteMarkers() {
     return fDeleteMarkers;
+  }
+  
+  public Set<ObjectInfo> getInactiveObjectDatas() {
+    return fInactiveObjectDatas;
   }
 
   public Set<ObjectInfo> getUpdates() {
@@ -65,30 +80,59 @@ public class SurvivorAgent implements IFileReaderHandler  {
 
   @Override
   public void memoriaClass(HydratedObject metaClass, IObjectId id, long revision, int size) {
-    handleUpdate(fUpdates, id, revision);
+    handleUpdate(id, revision);
   }
   
   @Override
   public void memoriaClassDeleted(IObjectId id, long revision) {
-    handleUpdate(fDeleteMarkers, id, revision);
+    handleDelete(id, revision);
   }
 
   @Override
   public void object(HydratedObject object, IObjectId id, long revision, int size) {
-    handleUpdate(fUpdates, id, revision);
+    handleUpdate(id, revision);
   }
 
   @Override
   public void objectDeleted(IObjectId id, long revision) {
-    handleUpdate(fDeleteMarkers, id, revision);
+    handleDelete(id, revision);
   }
 
-  private void handleUpdate(Set<ObjectInfo> survivors, IObjectId id, long revision) {
+  private int getInactiveObjectDataCount() {
+    return fInactiveDeletinoMarkers.size() + fInactiveObjectDatas.size();
+  }
+
+  private int getObjectDataCount() {
+    return fDeleteMarkers.size() + fInactiveDeletinoMarkers.size() + fInactiveObjectDatas.size() + fUpdates.size();
+  }
+  
+  private void handleDelete(IObjectId id, long revision) {
     ObjectInfo info = fRepo.getObjectInfoForId(id);
     long revisionFromObjectRepo = info.getRevision();
-    if(revision > revisionFromObjectRepo) throw new MemoriaException("ObjectRepo has wrong revision " + revisionFromObjectRepo + " expected " + revision);
+    if(revision != revisionFromObjectRepo) throw new MemoriaException("Wrong revision for DeletionMarker in repo: " + revisionFromObjectRepo + " expected " + revision);
     
-    if(revisionFromObjectRepo == revision) survivors.add(info);
+    // check if deletionMarker must be saved.
+    if(info.getOldGenerationCount() == 0) {
+      // the DeletionMarker is not used anymore...
+      fInactiveDeletinoMarkers.add(info);
+    }
+    else {
+      fDeleteMarkers.add(info);
+    }
+  }
+
+  private void handleUpdate(IObjectId id, long revision) {
+    ObjectInfo info = fRepo.getObjectInfoForId(id);
+    long revisionFromObjectRepo = info.getRevision();
+    if(revision > revisionFromObjectRepo) throw new MemoriaException("Wrong revision for Object in repo: " + revisionFromObjectRepo + " expected " + revision);
+    
+    if(revisionFromObjectRepo == revision){
+      fUpdates.add(info);
+    }
+    else {
+      // return this object to adjust the oldGenerationCount
+      fInactiveObjectDatas.add(info);
+    }
   }
   
   

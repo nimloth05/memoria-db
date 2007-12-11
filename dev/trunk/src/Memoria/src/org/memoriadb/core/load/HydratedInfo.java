@@ -75,7 +75,7 @@ public class HydratedInfo {
     
     ++fOldGenerationCount;
     
-    // if the current version is bigger than the read one, do nothing.
+    // if the current version is bigger than the read one, adjust the block where the inactive ObjectData comes from.
     if(fVersion > version){
       block.incrementInactiveObjectDataCount();
       return;

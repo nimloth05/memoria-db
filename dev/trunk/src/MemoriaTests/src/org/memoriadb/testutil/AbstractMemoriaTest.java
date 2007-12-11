@@ -6,6 +6,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.memoriadb.*;
+import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
@@ -24,6 +25,12 @@ public abstract class AbstractMemoriaTest extends TestCase {
   
   public IBlockManagerExt getBlockManager() {
     return (IBlockManagerExt)fObjectStore.getBlockManager();
+  }
+  
+  protected void assertBlocks(Block b1, Block b2) {
+    assertEquals(b1.getPosition(), b2.getPosition());
+    assertEquals(b1.getWholeSize(), b2.getWholeSize());
+    assertEquals(b1.getInactiveRatio(), b2.getInactiveRatio());
   }
   
   protected final void assertTypeHierachy(Class<?> clazz) {

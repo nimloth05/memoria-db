@@ -22,8 +22,8 @@ public class BlockManagerTest extends AbstractMemoriaTest {
     FileStructure file = new FileStructure(getFile());
     Block block_from_FileStructure = file.getBlock(1).getBlock();
     
-    assertEquals(block_after_append, block_after_reopen);
-    assertEquals(block_after_reopen, block_from_FileStructure);
+    assertBlocks(block_after_append, block_after_reopen);
+    assertBlocks(block_after_reopen, block_from_FileStructure);
   }
   
   public void test_ObjectInfo_has_right_currentBlock() {
@@ -34,24 +34,23 @@ public class BlockManagerTest extends AbstractMemoriaTest {
     endUpdate();
     
     Block block1 = getBlockFromManager(1);
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block1, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block1, getObjectInfo(o2).getCurrentBlock());
     
     // update o2 to block2
     save(get(o2));
     Block block2 = getBlockManager().getBlock(2);
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
     
     // after reopen, the referenced blocks must still be equals.
     reopen();
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
   }
 
   private Block getBlockFromManager(int index) {
     return getBlockManager().getBlock(index);
   }
-  
   
 }

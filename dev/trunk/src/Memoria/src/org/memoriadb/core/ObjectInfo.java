@@ -53,6 +53,19 @@ public class ObjectInfo implements IObjectInfo {
     fCurrentBlock = block;
   }
 
+  public void decrementOldGenerationCount() {
+    --fOldGenerationCount;
+    
+    // FIXME assertions removed, when survivors are saved, OGC can temporarily be -1. Maybe rearrange code! msc
+    //if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
+    
+    // FIXME the object-info could now be removed from the index, because no persistent information is left about it.
+    if(fOldGenerationCount==0 && isDeleted()) {
+      fCurrentBlock.incrementInactiveObjectDataCount();
+      fCurrentBlock = null;
+    }
+  }
+
   public Block getBlock() {
     return fBlock;
   }
@@ -85,7 +98,7 @@ public class ObjectInfo implements IObjectInfo {
   public void incrememntOldGenerationCount() {
     ++fOldGenerationCount;
   }
-
+  
   public boolean isDeleted() {
     return fObj == null;
   }
@@ -93,7 +106,7 @@ public class ObjectInfo implements IObjectInfo {
   public void setBlock(Block block) {
     fBlock = block;
   }
-  
+
   public void setDeleted() {
     fObj = null;
   }
@@ -101,11 +114,11 @@ public class ObjectInfo implements IObjectInfo {
   public void setObj(Object obj) {
     fObj = obj;
   }
-
+  
   public void setRevision(long revision) {
     fRevision = revision;
   }
-  
+
   @Override
   public String toString() {
     if (isDeleted()) return fId + " DELETED rev " + fRevision; 

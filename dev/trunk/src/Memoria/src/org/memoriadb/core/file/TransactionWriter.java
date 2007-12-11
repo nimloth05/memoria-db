@@ -80,8 +80,6 @@ public final class TransactionWriter implements ITransactionWriter {
     block.setNumberOfObjectData(numberOfObjects);
     fBlockManager.add(block);
     
-    System.out.println("append " + numberOfObjects);
-     
     fConfig.getListeners().triggerBeforeAppend(block);
     
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
@@ -100,6 +98,11 @@ public final class TransactionWriter implements ITransactionWriter {
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
+    
+    for(ObjectInfo info: survivorAgent.getAllObjectInfo()){
+      info.decrementOldGenerationCount();
+    }  
+    
     if(survivorAgent.hasNoSurvivors()) return;
     
     // save survivors recursively
@@ -162,8 +165,6 @@ public final class TransactionWriter implements ITransactionWriter {
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.resetBlock(numberOfObjects);
-    
-    System.out.println("write " + numberOfObjects);
     
     write(block, trxData);
     return block;    

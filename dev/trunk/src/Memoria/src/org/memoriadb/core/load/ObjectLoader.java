@@ -169,6 +169,11 @@ public final class ObjectLoader implements IReaderContext {
     
     if(info.isDeleted()){
       fRepo.handleDelete(objectInfo);
+      
+      // if the info is a deletin-marker and no older generations exist, the deletionMarker is inactive
+      if(info.getOldGenerationCount() == 0){
+        info.getCurrentBlock().incrementInactiveObjectDataCount();
+      }
     }
     else {
       fRepo.handleAdd(objectInfo);

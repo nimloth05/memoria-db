@@ -23,7 +23,7 @@ public class LastWrittenBlockAfterCrashTest extends AbstractMemoriaTest {
     assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
 
     // write block2, block1 has one inactive, one active.
-    delete(get(id1));
+    save(get(id1));
     
     reopen();
     
@@ -53,7 +53,6 @@ public class LastWrittenBlockAfterCrashTest extends AbstractMemoriaTest {
     assertFalse(getObjectInfo(id2).isDeleted());
     
     assertEquals(getBlockManager().getBlock(2), getObjectInfo(id1).getCurrentBlock());
-    assertTrue(getObjectInfo(id1).isDeleted());
 
   }
 

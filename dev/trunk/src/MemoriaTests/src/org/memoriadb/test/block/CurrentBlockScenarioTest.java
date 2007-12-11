@@ -49,8 +49,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     
     reopen();
     
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
     
     // o1 and o2 are saved in block3
     beginUpdate();
@@ -70,8 +70,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     assertEquals(0, block3.getInactiveObjectDataCount());
     
     reopen();
-    assertEquals(block3, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block3, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block3, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block3, getObjectInfo(o2).getCurrentBlock());
     
     block1 = getBlockManager().getBlock(1);
     block2 = getBlockManager().getBlock(2);
@@ -88,8 +88,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     block3 = getBlockManager().getBlock(3);
     Block block4 = getBlockManager().getBlock(4);
     
-    assertEquals(block4, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block3, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block4, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block3, getObjectInfo(o2).getCurrentBlock());
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -128,8 +128,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     block2 = getBlockManager().getBlock(2);
     block3 = getBlockManager().getBlock(3);
     
-    assertEquals(block4, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block5, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block4, getObjectInfo(o1).getCurrentBlock());
+    assertBlocks(block5, getObjectInfo(o2).getCurrentBlock());
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -146,10 +146,10 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
   protected void configureOpen(CreateConfig config) {
     config.setBlockManager(new AppendBlockManager());
   }
-
+  
   @Override
   protected void configureReopen(CreateConfig config) {
     config.setBlockManager(new AppendBlockManager());
   }
-  
+
 }

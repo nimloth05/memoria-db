@@ -56,19 +56,6 @@ public class Block {
     fInactiveObjectDataCount = 0;
   } 
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    final Block other = (Block) obj;
-    if (fInactiveObjectDataCount != other.fInactiveObjectDataCount) return false;
-    if (fObjectDataCount != other.fObjectDataCount) return false;
-    if (fPosition != other.fPosition) return false;
-    if (fBodySize != other.fBodySize) return false;
-    return true;
-  }
-  
   /**
    * @return The net-size of this block
    */
@@ -117,15 +104,8 @@ public class Block {
     return fPosition;
   }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + fInactiveObjectDataCount;
-    result = prime * result + fObjectDataCount;
-    result = prime * result + (int) (fPosition ^ (fPosition >>> 32));
-    result = prime * result + (int) (fBodySize ^ (fBodySize >>> 32));
-    return result;
+  public long getWholeSize() {
+    return fBodySize + FileLayout.BLOCK_OVERHEAD;
   }
 
   public void incrementInactiveObjectDataCount() {
@@ -135,9 +115,11 @@ public class Block {
     // incrementInactiveObjectDataCount() is called during reading the objects.
     
     //if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
+    
+    
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
-
+  
   /**
    * Is called after all survivors were safed.
    */
@@ -145,11 +127,11 @@ public class Block {
     fInactiveObjectDataCount = 0;
     setNumberOfObjectData(numberOfObjects);
   }
-  
+
   public void setBlockManager(IBlockManager manager) {
     fManager = manager;
   }
-
+  
   public void setBodySize(long bodySize) {
     fBodySize = bodySize;
   }
@@ -157,7 +139,7 @@ public class Block {
   public void setIsFree() {
     fIsFree  = true;
   }
-  
+
   public void setNumberOfObjectData(int numberOfObjects) {
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
@@ -173,7 +155,7 @@ public class Block {
 
   @Override
   public String toString() {
-    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getBodySize();
+    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getWholeSize();
   }
   
 }

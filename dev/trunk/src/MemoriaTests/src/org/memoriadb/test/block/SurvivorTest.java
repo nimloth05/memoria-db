@@ -19,167 +19,245 @@ public class SurvivorTest extends AbstractMemoriaTest {
     IObjectId id1 = save(new Object());
     IObjectId id2 = save(new Object());
     endUpdate();
-    
+
     delete(get(id1));
-    
+
     assertEquals(3, getBlockManager().getBlockCount());
-    
+
     // update o2 from block0. block0 must not be recycled, because o2 resides in block0
     save(get(id2));
-    
+
     assertEquals(4, getBlockManager().getBlockCount());
-    
+
     assertEquals(2, getBlock(1).getInactiveObjectDataCount());
     assertEquals(getBlock(2), getCurrentBlock(id1));
     assertEquals(getBlock(3), getCurrentBlock(id2));
   }
-  
+
   public void test_deletionMarker_is_survivor() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);
     // |o1|
-    
+
     beginUpdate();
-      Object o2 = new Object();
-      IObjectId id2 = save(o2);
-      delete(o1);
+    Object o2 = new Object();
+    IObjectId id2 = save(o2);
+    delete(o1);
     endUpdate();
     // |~o1|o2,d1|
-    
+
     save(o2);
     // |o2'|~o2,d1|
-    
+
     save(o2);
     // |d1'|o2 |
-    
+
     reopen();
-    
+
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
-        
   }
-  
+
   public void test_inactiveCount() {
     Object obj = new Object();
-    
+
     IObjectId id = save(obj);
     assertEquals(0, getBlock(1).getInactiveRatio());
-    
+
     save(obj);
     assertEquals(100, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
-    
+
     save(obj);
     assertEquals(0, getBlock(1).getInactiveRatio());
     assertEquals(100, getBlock(2).getInactiveRatio());
-    
+
     reopen();
     assertEquals(0, getBlock(1).getInactiveRatio());
     assertEquals(100, getBlock(2).getInactiveRatio());
   }
-  
+
   public void test_inactiveRatio_when_a_block_is_reused() {
     Object obj = new Object();
     save(obj);
     assertEquals(2, getBlockManager().getBlockCount());
     assertEquals(0, getBlock(0).getInactiveRatio());
-    
+
     delete(obj);
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(100, getBlock(1).getInactiveRatio());
-    
+
     save(new Object());
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(00, getBlock(1).getInactiveRatio());
+
+  }
+
+  public void test_obsolete_deletion_marker() {
+    IObjectId id1 = save(new Object());
+    // |o1|
+
+    // second block, block 0 has one inactive, one active.
+    delete(get(id1));
+    // |~o1|d1|
+
+    IObjectId id2 = save(new Object());
+    // |o2|d1|
+    
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
+    
+    reopen();
+    
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
     
   }
-  
-  
+
+  public void test_oldGenerationCount_for_survivor() {
+    Object o1 = new Object();
+    Object o2 = new Object();
+
+    beginUpdate();
+    IObjectId id1 = save(o1);
+    IObjectId id2 = save(o2);
+    endUpdate();
+    // |o1,o2|
+
+    assertEquals(2, getBlockManager().getBlockCount());
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+
+    save(o1);
+    // |~o1,o2|o1'|
+
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(1, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+
+    IObjectId id3 = save(new Object());
+    // |o3|o1'|o2'|
+
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id3).getOldGenerationCount());
+  }
+
   public void test_reusing_one_block() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);
     assertEquals(2, getBlockManager().getBlockCount());
-    
+
     reopen();
-    
-    // deleting the object, waht results in a free block and a  deletionMarker.
-    delete(get(id1));
-    
+
+    // deleting the object, waht results in a free block and a deletionMarker.
+    save(get(id1));
+
     // let o2 reuse the free block
     IObjectId id2 = save(new Object());
-    
+
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(getBlock(1), getCurrentBlock(id2));
     assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
-    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
-    
+
     reopen();
-    
+
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(getBlock(1), getCurrentBlock(id2));
     assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
-    assertFalse(fObjectStore.containsId(id1));
+    assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
-  
+
   public void test_safing_survivor() {
-    
+
     beginUpdate();
-      IObjectId id1 = save(new Object());
-      IObjectId id2 = save(new Object());
+    IObjectId id1 = save(new Object());
+    IObjectId id2 = save(new Object());
     endUpdate();
-    
+    // |o1,o2|
+
     // second block, block 0 has one inactive, one active.
     delete(get(id1));
-    
+    // |~o1,o2|d1|
+
     assertEquals(3, getObjectInfo(id1).getRevision());
+    assertEquals(1, getObjectInfo(id1).getOldGenerationCount());
     assertEquals(2, getObjectInfo(id2).getRevision());
-    
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+
+    assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(50, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
-    
-    IObjectId id3 = save(new Object());
 
-    // test trx-id is proper
+    IObjectId id3 = save(new Object());
+    // |o3|o2'|
+
+    assertEquals(3, getBlockManager().getBlockCount());
+    // FIXME noch nicht gut. ObjectInfo kann entfernt werden, aber wieso -1? msc
+    assertEquals(-1, getObjectInfo(id1).getOldGenerationCount());
+    assertTrue(getObjectInfo(id1).isDeleted());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertFalse(getObjectInfo(id2).isDeleted());
+    assertEquals(0, getObjectInfo(id3).getOldGenerationCount());
+    assertFalse(getObjectInfo(id3).isDeleted());
+
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
+
     assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(4, getObjectInfo(id2).getRevision());
     assertEquals(5, getObjectInfo(id3).getRevision());
-    
+
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertEquals(4, getBlockManager().getBlockCount());
+    assertNull(getObjectInfo(id1).getCurrentBlock());
+    assertEquals(getBlock(2), getCurrentBlock(id2));
     assertEquals(getBlock(1), getCurrentBlock(id3));
-    assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    
+
     reopen();
 
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertNull(getObjectInfo(id1));
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertFalse(getObjectInfo(id2).isDeleted());
+    assertEquals(0, getObjectInfo(id3).getOldGenerationCount());
+    assertFalse(getObjectInfo(id3).isDeleted());
+
+    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(0, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
+
+    assertEquals(4, getObjectInfo(id2).getRevision());
+    assertEquals(5, getObjectInfo(id3).getRevision());
+
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(getBlock(2), getCurrentBlock(id2));
     assertEquals(getBlock(1), getCurrentBlock(id3));
-    assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    
-    assertEquals(0, getBlock(1).getInactiveRatio());
-    assertEquals(0, getBlock(2).getInactiveRatio());
-    assertEquals(0, getBlock(3).getInactiveRatio());
   }
-  
+
   @Override
   protected void configureOpen(CreateConfig config) {
     configure(config);
   }
-  
+
   @Override
   protected void configureReopen(CreateConfig config) {
     configure(config);
@@ -190,7 +268,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
   }
 
   /**
-   * @param index Block from BlockManager
+   * @param index
+   *          Block from BlockManager
    */
   private Block getBlock(int index) {
     return getBlockManager().getBlock(index);
