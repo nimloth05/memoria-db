@@ -4,8 +4,8 @@ import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.field.ClassInheritanceBinding;
@@ -41,7 +41,7 @@ public class HandlerClassHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws IOException {
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws IOException {
     HandlerbasedMemoriaClass classObject = (HandlerbasedMemoriaClass) obj;
     
     output.writeUTF(classObject.getJavaClassName());

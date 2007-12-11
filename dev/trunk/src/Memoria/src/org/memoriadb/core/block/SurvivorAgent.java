@@ -7,7 +7,7 @@ import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.file.read.*;
 import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;

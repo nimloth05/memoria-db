@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.*;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
@@ -62,7 +62,7 @@ public class MapHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);
     
     for (Map.Entry<?, ?> entry: map.entrySet()) {
@@ -127,7 +127,7 @@ public class MapHandler implements IHandler {
     }
   }
 
-  private void writeListEntry(Object listEntry, DataOutput output, ISerializeContext context) throws Exception {
+  private void writeListEntry(Object listEntry, DataOutput output, IWriterContext context) throws Exception {
     Type.writeValueWithType(output, listEntry, context);
 
   }

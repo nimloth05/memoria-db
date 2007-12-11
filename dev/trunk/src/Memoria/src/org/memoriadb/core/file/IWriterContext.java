@@ -4,7 +4,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
 
-public interface ISerializeContext {
+public interface IWriterContext {
   
   public boolean contains(Object obj);
 

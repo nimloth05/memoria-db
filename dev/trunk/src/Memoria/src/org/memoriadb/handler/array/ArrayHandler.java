@@ -5,8 +5,8 @@ import java.lang.reflect.Array;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ArrayTypeInfo;
 import org.memoriadb.handler.IHandler;
@@ -41,7 +41,7 @@ public class ArrayHandler implements IHandler {
   }
 
   @Override
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     IArray array = getArray(obj);
 
     ArrayTypeInfo arrayTypeInfo = array.getTypeInfo();
@@ -155,7 +155,7 @@ public class ArrayHandler implements IHandler {
    * Stores the content of an one-dimensional array, either primitives or references
    * @throws IOException 
    */
-  private void storeArrayContent(ISerializeContext context, DataOutput output, ArrayTypeInfo componentTypeInfo, IArray array) throws Exception {
+  private void storeArrayContent(IWriterContext context, DataOutput output, ArrayTypeInfo componentTypeInfo, IArray array) throws Exception {
     if (componentTypeInfo.getDimension() != 1) throw new MemoriaException("one dimensional array expected");
 
     if (componentTypeInfo.getComponentType().isPrimitive()) {
@@ -170,17 +170,17 @@ public class ArrayHandler implements IHandler {
    * Writes the id of the given obj to the given stream or NullReference, if the given obj is null.
    * @throws IOException 
    */
-  private void writeObject(ISerializeContext context, DataOutput output, Object obj) throws Exception {
+  private void writeObject(IWriterContext context, DataOutput output, Object obj) throws Exception {
     Type.writeValueWithType(output, obj, context);
   }
 
-  private void writeObjects(ISerializeContext context, DataOutput output, IArray array) throws Exception {
+  private void writeObjects(IWriterContext context, DataOutput output, IArray array) throws Exception {
     for (int i = 0; i < array.length(); ++i) {
       writeObject(context, output, array.get(i));
     }
   }
 
-  private void writePrimitives(ISerializeContext context, DataOutput output, ArrayTypeInfo componentTypeInfo, IArray array) throws Exception {
+  private void writePrimitives(IWriterContext context, DataOutput output, ArrayTypeInfo componentTypeInfo, IArray array) throws Exception {
     for (int i = 0; i < array.length(); ++i) {
       componentTypeInfo.getComponentType().writeValue(output, array.get(i), context);
     }

@@ -1,10 +1,11 @@
-package org.memoriadb.core.file;
+package org.memoriadb.core.file.read;
 
 import java.io.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectIdFactory;
 

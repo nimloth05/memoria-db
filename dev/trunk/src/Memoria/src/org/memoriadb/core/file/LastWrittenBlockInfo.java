@@ -40,7 +40,7 @@ public class LastWrittenBlockInfo {
     return fWriteMode == FileLayout.WRITE_MODE_APPEND;
   }
 
-  boolean isLastWritten(Block block) {
+  public boolean isLastWritten(Block block) {
     return fPosition == block.getPosition();
   }
   

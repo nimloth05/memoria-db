@@ -3,8 +3,8 @@ package org.memoriadb.handler;
 import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -40,7 +40,7 @@ public interface IHandler {
    * @param output - the stream
    * @param context 
    */
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception;
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception;
   
   
   /**

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 
@@ -30,7 +30,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeBoolean(((Boolean) value).booleanValue());
     }
     
@@ -54,7 +54,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeBoolean(((Boolean) value).booleanValue());
     }
 
@@ -78,7 +78,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeChar(((Character) value).charValue());
     }
 
@@ -102,7 +102,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeChar(((Character) value).charValue());
     }
   },
@@ -125,7 +125,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeByte(((Byte) value).byteValue());
     }
 
@@ -149,7 +149,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeByte(((Byte) value).byteValue());
     }
 
@@ -173,7 +173,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeShort(((Short) value).shortValue());
     }
 
@@ -199,7 +199,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeShort(((Short) value).shortValue());
     }
 
@@ -223,7 +223,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeInt(((Integer) value).intValue());
     }
 
@@ -249,7 +249,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeInt(((Integer) value).intValue());
     }
 
@@ -273,7 +273,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeLong(((Long) value).longValue());
     }
 
@@ -298,7 +298,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeLong(((Long) value).longValue());
     }
 
@@ -322,7 +322,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeFloat(((Float) value).floatValue());
     }
 
@@ -347,7 +347,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeFloat(((Float) value).floatValue());
     }
 
@@ -371,7 +371,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeDouble(((Double) value).doubleValue());
     }
 
@@ -396,7 +396,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeDouble(((Double) value).doubleValue());
     }
 
@@ -421,7 +421,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       output.writeUTF(value.toString());
     }
 
@@ -445,7 +445,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws IOException {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
       IObjectId id = (IObjectId) value;
       id.writeTo(output);
     }
@@ -477,7 +477,7 @@ public enum Type {
     }
     
     @Override
-    protected void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws Exception {
+    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws Exception {
       IMemoriaClass memoriaClass = context.getMemoriaClass(value);
       if (memoriaClass == null) throw new MemoriaException("No memoriaClass for object (use saveAll): " + value);
       
@@ -499,7 +499,7 @@ public enum Type {
       visitor.visitValueObject(object);
     }
 
-    private void writeValueObject(IMemoriaClass memoriaClass, Object value, DataOutput output, ISerializeContext context) throws Exception {
+    private void writeValueObject(IMemoriaClass memoriaClass, Object value, DataOutput output, IWriterContext context) throws Exception {
       context.getExistingtId(memoriaClass).writeTo(output);
       memoriaClass.getHandler().serialize(value, output, context);
     }
@@ -561,7 +561,7 @@ public enum Type {
    * @param context
    * @throws IOException
    */
-  public static void writeValueWithType(DataOutput output, Object value, ISerializeContext context) throws Exception {
+  public static void writeValueWithType(DataOutput output, Object value, IWriterContext context) throws Exception {
     if (value == null) {
       output.writeByte(Constants.NULL_VALUE);
       return;
@@ -642,7 +642,7 @@ public enum Type {
    * @param context
    * @throws IOException 
    */
-  public void writeValue(DataOutput output, Object value, ISerializeContext context) throws Exception {
+  public void writeValue(DataOutput output, Object value, IWriterContext context) throws Exception {
     if (canBeNull()) {
       if (value == null) {
         output.writeByte(Constants.NULL_VALUE);
@@ -659,6 +659,6 @@ public enum Type {
 
   protected abstract void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws Exception;
   
-  protected abstract void internalWriteValue(DataOutput output, Object value, ISerializeContext context) throws Exception;
+  protected abstract void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws Exception;
 
 }

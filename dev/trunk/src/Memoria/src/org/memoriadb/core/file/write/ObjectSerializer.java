@@ -1,8 +1,9 @@
-package org.memoriadb.core.file;
+package org.memoriadb.core.file.write;
 
 import java.io.IOException;
 
 import org.memoriadb.core.*;
+import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.io.MemoriaByteArrayOutputStream;
@@ -17,7 +18,7 @@ import org.memoriadb.id.IObjectId;
  */
 public final class ObjectSerializer {
 
-  private class SerializeContext implements ISerializeContext {
+  private class SerializeContext implements IWriterContext {
 
     @Override
     public boolean contains(Object obj) {

@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.*;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.collection.CollectionHandler.SetHandler;
@@ -32,7 +32,7 @@ public class EnumSetHandler extends SetHandler {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     EnumSet<?> enumSet = (EnumSet<?>) obj;
     Class<Enum> enumType = getEnumType(enumSet);
     IObjectId memoriaClassId = context.getMemoriaClassId(ReflectionUtil.getCorrectEnumClass(enumType).getName());

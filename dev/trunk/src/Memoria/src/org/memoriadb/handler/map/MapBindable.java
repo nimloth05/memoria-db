@@ -2,7 +2,7 @@ package org.memoriadb.handler.map;
 
 import java.util.Map;
 
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.handler.IBindable;
 
 

@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.*;
@@ -137,7 +137,7 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   }
 
   @Override
-  public void serialize(Object obj, DataOutput output, ISerializeContext context) throws Exception {
+  public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     Collection<?> list = getCollectionObject(obj);
     for (Object listEntry : list) {
       Type.writeValueWithType(output, listEntry, context);

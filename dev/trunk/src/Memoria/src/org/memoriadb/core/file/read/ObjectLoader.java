@@ -1,4 +1,4 @@
-package org.memoriadb.core.load;
+package org.memoriadb.core.file.read;
 
 import java.io.*;
 import java.util.*;
@@ -6,8 +6,7 @@ import java.util.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.*;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.FileReader;
+import org.memoriadb.core.file.IFileReaderHandler;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.*;
@@ -153,7 +152,7 @@ public final class ObjectLoader implements IReaderContext {
       fObjectsToBind.clear();
     }
     catch (Exception e) {
-      throw new BindingException(e);
+      throw new MemoriaException(e);
     }
   }
 

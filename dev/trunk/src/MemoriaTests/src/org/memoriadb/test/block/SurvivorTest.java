@@ -225,7 +225,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertNull(getObjectInfo(id1).getCurrentBlock());
+    assertEquals(getBlock(2), getCurrentBlock(id1));
     assertEquals(getBlock(2), getCurrentBlock(id2));
     assertEquals(getBlock(1), getCurrentBlock(id3));
 

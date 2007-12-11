@@ -24,7 +24,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     catch (FileCorruptException e) {
       // pass
     }
-
+    
   }
 
   public void test_corrupt_bootstrap_block_startTag() {

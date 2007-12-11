@@ -12,7 +12,7 @@ package org.memoriadb.core.util.io;
 
 import java.io.*;
 
-import org.memoriadb.core.file.BlockReader;
+import org.memoriadb.core.file.read.BlockReader;
 
 /**
  * 

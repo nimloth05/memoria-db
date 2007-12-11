@@ -6,7 +6,8 @@ import java.util.concurrent.*;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
-import org.memoriadb.core.load.ObjectLoader;
+import org.memoriadb.core.file.read.*;
+import org.memoriadb.core.file.write.TransactionWriter;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;

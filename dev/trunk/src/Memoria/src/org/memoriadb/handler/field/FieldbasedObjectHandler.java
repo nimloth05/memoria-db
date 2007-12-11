@@ -4,8 +4,8 @@ import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.*;
-import org.memoriadb.core.file.ISerializeContext;
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.IWriterContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
@@ -39,7 +39,7 @@ public class FieldbasedObjectHandler implements IHandler {
   }
 
   @Override
-  public void serialize(final Object obj, final DataOutput output, final ISerializeContext context) throws Exception {
+  public void serialize(final Object obj, final DataOutput output, final IWriterContext context) throws Exception {
     IFieldbasedObject fieldObject = getFieldObject(obj);
     
     for(MemoriaField metaField: (fClassObject).getFields()) {

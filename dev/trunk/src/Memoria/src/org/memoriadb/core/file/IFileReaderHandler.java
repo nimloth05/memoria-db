@@ -1,7 +1,7 @@
 package org.memoriadb.core.file;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.file.read.*;
 import org.memoriadb.id.IObjectId;
 
 /**

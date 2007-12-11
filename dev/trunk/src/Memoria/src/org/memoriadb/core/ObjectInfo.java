@@ -62,7 +62,6 @@ public class ObjectInfo implements IObjectInfo {
     // FIXME the object-info could now be removed from the index, because no persistent information is left about it.
     if(fOldGenerationCount==0 && isDeleted()) {
       fCurrentBlock.incrementInactiveObjectDataCount();
-      fCurrentBlock = null;
     }
   }
 

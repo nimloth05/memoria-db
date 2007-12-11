@@ -1,11 +1,11 @@
-package org.memoriadb.core.file;
+package org.memoriadb.core.file.read;
 
 import java.io.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.load.HydratedObject;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.id.*;
 

@@ -1,4 +1,4 @@
-package org.memoriadb.core.file;
+package org.memoriadb.core.file.write;
 
 import java.io.*;
 import java.util.*;
@@ -7,6 +7,7 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 
@@ -150,7 +151,7 @@ public final class TransactionWriter implements ITransactionWriter {
     fFile.write(byteArrayOutputStream.toByteArray(), block.getBodyStartPosition());
     
     fConfig.getListeners().triggerAfterWrite(block);
-  } 
+  }
 
   private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     int blockSize = FileLayout.getBlockSize(trxData.length);
@@ -172,7 +173,6 @@ public final class TransactionWriter implements ITransactionWriter {
 
   /**
    * Called recursively
-   * @throws Exception 
    */
   private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     
@@ -181,6 +181,7 @@ public final class TransactionWriter implements ITransactionWriter {
     writeAddOrUpdate(add, tabooBlocks, serializer);
     writeAddOrUpdate(update, tabooBlocks, serializer);
     writeDelete(delete, tabooBlocks, serializer);
+    
     Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode);
 
     updateInfoForAdd(add, block);

@@ -3,7 +3,7 @@
  */
 package org.memoriadb.handler.map;
 
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.id.IObjectId;
 
 class ReferenceResolver implements IObjectResolver {

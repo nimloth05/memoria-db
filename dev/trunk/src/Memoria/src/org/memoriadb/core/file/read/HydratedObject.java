@@ -1,4 +1,4 @@
-package org.memoriadb.core.load;
+package org.memoriadb.core.file.read;
 
 import java.io.DataInputStream;
 

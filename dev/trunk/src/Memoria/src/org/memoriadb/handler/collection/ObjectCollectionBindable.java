@@ -2,7 +2,7 @@ package org.memoriadb.handler.collection;
 
 import java.util.Collection;
 
-import org.memoriadb.core.load.IReaderContext;
+import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 

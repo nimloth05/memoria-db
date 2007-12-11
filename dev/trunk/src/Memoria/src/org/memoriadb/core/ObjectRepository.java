@@ -19,7 +19,7 @@ import org.memoriadb.id.*;
 public class ObjectRepository implements IObjectRepository {
 
   /**
-   * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null. 
+   * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null.
    */
   private final Map<IObjectId, ObjectInfo> fDeletedMap = new HashMap<IObjectId, ObjectInfo>();
 
