@@ -11,8 +11,8 @@ import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 
-public final class TransactionWriter  {
- 
+public final class TransactionWriter {
+
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
   private long fHeadRevision;
@@ -23,8 +23,8 @@ public final class TransactionWriter  {
     fConfig = config;
     if (repo == null) throw new IllegalArgumentException("objectRepo is null");
     if (config == null) throw new IllegalArgumentException("config is null");
-    if(file == null) throw new IllegalArgumentException("file is null");
-    
+    if (file == null) throw new IllegalArgumentException("file is null");
+
     fRepo = repo;
     fFile = file;
     fBlockManager = config.getBlockManager();
@@ -34,7 +34,7 @@ public final class TransactionWriter  {
   public void close() {
     fFile.close();
   }
-  
+
   public IBlockManager getBlockManager() {
     return fBlockManager;
   }
@@ -66,7 +66,7 @@ public final class TransactionWriter  {
     stream.writeLong(blockSize);
     crc.updateLong(blockSize);
     stream.writeLong(crc.getValue());
-    
+
     // transaction
     writeTransaction(trxData, stream, numberOfObjects);
 
@@ -74,9 +74,9 @@ public final class TransactionWriter  {
     Block block = new Block(blockSize, fFile.getSize());
     block.setObjectDataCount(numberOfObjects);
     fBlockManager.add(block);
-    
+
     fConfig.getListeners().triggerBeforeAppend(block);
-    
+
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
     // ... then add the data to the file.
     fFile.append(byteArrayOutputStream.toByteArray());
@@ -85,7 +85,7 @@ public final class TransactionWriter  {
 
     return block;
   }
-  
+
   /**
    * Safes the survivors of the given <tt>block</tt>;
    * 
@@ -93,15 +93,15 @@ public final class TransactionWriter  {
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
-    
-    for(ObjectInfo info: survivorAgent.getAllObjectData()) {
+
+    // save survivors recursively
+    if (survivorAgent.hasSurvivors()) write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(),
+        tabooBlocks, mode);
+
+    // must be at the end to avoid problems because of temporary state
+    for (ObjectInfo info : survivorAgent.getAllObjectData()) {
       info.decrementOldGenerationCount();
     }
-
-    if(survivorAgent.hasNoSurvivors()) return;
-    
-    // save survivors recursively
-    write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(), tabooBlocks, mode);
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
@@ -109,23 +109,23 @@ public final class TransactionWriter  {
   }
 
   private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block) {
-    for(ObjectInfo info: infos){
+    for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
       info.setRevision(fHeadRevision);
     }
   }
 
   private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block) {
-    for(ObjectInfo info: infos){
+    for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
       info.setRevision(fHeadRevision);
       info.incrementOldGenerationCount();
-      info.setDeleteMarkerPersistent(); 
+      info.setDeleteMarkerPersistent();
     }
   }
 
   private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block) {
-    for(ObjectInfo info: infos){
+    for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
       info.setRevision(fHeadRevision);
       info.incrementOldGenerationCount();
@@ -138,13 +138,13 @@ public final class TransactionWriter  {
 
     // transaction
     writeTransaction(trxData, stream, numberOfObjects);
-    
+
     fConfig.getListeners().triggerBeforeWrite(block);
-    
+
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
     // dd the data after the BlockTag to the file
     fFile.write(byteArrayOutputStream.toByteArray(), block.getBodyStartPosition());
-    
+
     fConfig.getListeners().triggerAfterWrite(block);
   }
 
@@ -152,31 +152,32 @@ public final class TransactionWriter  {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
-    
+
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);
 
     freeBlock(block, tabooBlocks, mode);
-    
+
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
-    if(block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
+    if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.resetBlock(numberOfObjects);
-    
+
     write(block, trxData, numberOfObjects);
-    return block;    
+    return block;
   }
 
   /**
    * Called recursively
    */
-  private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
-    
+  private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode)
+      throws Exception {
+
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
-    
+
     writeAddOrUpdate(add, tabooBlocks, serializer);
     writeAddOrUpdate(update, tabooBlocks, serializer);
     writeDelete(delete, tabooBlocks, serializer);
-    
+
     Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode);
 
     updateInfoAfterAdd(add, block);
@@ -185,15 +186,15 @@ public final class TransactionWriter  {
   }
 
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
-    for(IObjectInfo info: add) {
+    for (IObjectInfo info : add) {
       serializer.serialize(info);
       tabooBlocks.add(info.getCurrentBlock());
     }
   }
 
   private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) throws IOException {
-    for(IObjectInfo info: delete){
-      if(!info.isDeleted()) throw new MemoriaException("trying to delete live object: " + info);
+    for (IObjectInfo info : delete) {
+      if (!info.isDeleted()) throw new MemoriaException("trying to delete live object: " + info);
       serializer.markAsDeleted(info);
       tabooBlocks.add(info.getCurrentBlock());
     }
@@ -201,7 +202,7 @@ public final class TransactionWriter  {
 
   private void writeTransaction(byte[] trxData, DataOutputStream stream, int numberOfObjects) throws IOException {
     MemoriaCRC32 crc = new MemoriaCRC32();
-    
+
     stream.writeLong(trxData.length);
     crc.updateLong(trxData.length);
 
@@ -209,7 +210,7 @@ public final class TransactionWriter  {
     // either way, the revision must be incremeneted at the time of writing back
     stream.writeLong(++fHeadRevision);
     crc.updateLong(fHeadRevision);
-    
+
     stream.writeInt(numberOfObjects);
     crc.updateInt(numberOfObjects);
 

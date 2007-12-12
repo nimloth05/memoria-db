@@ -18,7 +18,7 @@ public class ObjectInfo implements IObjectInfo {
   /**
    * true, when the deletion-marker for this object has been written
    */
-  boolean fDeleteMarkerPersistent;
+  private boolean fDeleteMarkerPersistent;
   
   /**
    *  null for deleted object

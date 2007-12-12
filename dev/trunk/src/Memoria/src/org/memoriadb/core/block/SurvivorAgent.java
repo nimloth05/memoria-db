@@ -77,8 +77,8 @@ public class SurvivorAgent implements IFileReaderHandler  {
     return fUpdates;
   }
 
-  public boolean hasNoSurvivors() {
-    return fUpdates.isEmpty() && fDeleteMarkers.isEmpty();
+  public boolean hasSurvivors() {
+    return !fUpdates.isEmpty() || !fDeleteMarkers.isEmpty();
   }
 
   @Override

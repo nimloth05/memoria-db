@@ -218,10 +218,10 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(50, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
 
+    // block2 must not be overwritten, because block2 contains a deleteMarker which is not obsolete during the operation 
     IObjectId id3 = save(new Object());
-    // |o3|o2'|
+    // |o3|d1|o2'|
 
-    assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
     assertTrue(getObjectInfo(id1).isDeleted());
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
@@ -229,9 +229,10 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(0, getObjectInfo(id3).getOldGenerationCount());
     assertFalse(getObjectInfo(id3).isDeleted());
 
-    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(0, getBlock(1).getInactiveRatio());
-    assertEquals(0, getBlock(2).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
+    assertEquals(0, getBlock(3).getInactiveRatio());
 
     assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(4, getObjectInfo(id2).getRevision());
@@ -242,22 +243,24 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id3));
 
     assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(2), getCurrentBlock(id2));
+    assertEquals(getBlock(3), getCurrentBlock(id2));
     assertEquals(getBlock(1), getCurrentBlock(id3));
 
     reopen();
 
-    assertEquals(3, getBlockManager().getBlockCount());
-    assertNull(getObjectInfo(id1));
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertTrue(getObjectInfo(id1).isDeleted());
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
     assertFalse(getObjectInfo(id2).isDeleted());
     assertEquals(0, getObjectInfo(id3).getOldGenerationCount());
     assertFalse(getObjectInfo(id3).isDeleted());
 
-    assertEquals(3, getBlockManager().getBlockCount());
+    assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(0, getBlock(1).getInactiveRatio());
-    assertEquals(0, getBlock(2).getInactiveRatio());
+    assertEquals(100, getBlock(2).getInactiveRatio());
+    assertEquals(0, getBlock(3).getInactiveRatio());
 
+    assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(4, getObjectInfo(id2).getRevision());
     assertEquals(5, getObjectInfo(id3).getRevision());
 
@@ -265,8 +268,37 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertEquals(getBlock(2), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(3), getCurrentBlock(id2));
     assertEquals(getBlock(1), getCurrentBlock(id3));
+    
+    save(get(id3));
+    // |o3~|o3'|o2'|
+    
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertEquals(1, getObjectInfo(id3).getOldGenerationCount());
+
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(100, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
+    assertEquals(0, getBlock(3).getInactiveRatio());
+    assertEquals(getBlock(3), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getCurrentBlock(id3));
+    
+    reopen();
+    
+    assertNull(getObjectInfo(id1));
+    assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
+    assertEquals(1, getObjectInfo(id3).getOldGenerationCount());
+    
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertEquals(100, getBlock(1).getInactiveRatio());
+    assertEquals(0, getBlock(2).getInactiveRatio());
+    assertEquals(0, getBlock(3).getInactiveRatio());
+    assertEquals(getBlock(3), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getCurrentBlock(id3));
+    
   }
 
   @Override
