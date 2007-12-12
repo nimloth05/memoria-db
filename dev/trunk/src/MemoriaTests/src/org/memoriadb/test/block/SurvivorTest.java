@@ -28,7 +28,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
     
     delete(o1);
     // |o1,o2,o3|
-    
   }
 
   public void test_current_block_from_updatee_is_not_recycled() {
@@ -107,7 +106,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
     save(new Object());
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(00, getBlock(1).getInactiveRatio());
-
   }
 
   public void test_obsolete_deletion_marker() {
@@ -134,7 +132,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
     assertEquals(0, getBlock(1).getInactiveRatio());
     assertEquals(100, getBlock(2).getInactiveRatio());
-    
   }
 
   public void test_oldGenerationCount_for_survivor() {
@@ -196,7 +193,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
-  
+
   public void test_safing_survivor() {
 
     beginUpdate();
@@ -298,7 +295,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(0, getBlock(3).getInactiveRatio());
     assertEquals(getBlock(3), getCurrentBlock(id2));
     assertEquals(getBlock(2), getCurrentBlock(id3));
-    
   }
 
   @Override

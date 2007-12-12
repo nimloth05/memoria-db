@@ -62,7 +62,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
    * @return olld objectData in the scanned block, but no inactive delete-markers!
    */
   public Iterable<ObjectInfo> getAllObjectData() {
-    return new CompoundIterator<ObjectInfo>(fDeleteMarkers, fInactiveObjectDatas, fUpdates);
+    return new CompoundIterator<ObjectInfo>(fInactiveObjectDatas, fUpdates);
   }
 
   public Set<ObjectInfo> getDeleteMarkers() {

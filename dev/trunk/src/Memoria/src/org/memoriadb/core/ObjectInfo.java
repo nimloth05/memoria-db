@@ -71,8 +71,7 @@ public class ObjectInfo implements IObjectInfo {
   public void decrementOldGenerationCount() {
     --fOldGenerationCount;
     
-    // FIXME assertions removed, when survivors are saved, OGC can temporarily be -1. Maybe rearrange code! msc
-    //if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
+    if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
     
     // FIXME the object-info could now be removed from the index, because no persistent information is left about it.
     if(fOldGenerationCount==0 && fDeleteMarkerPersistent) {
