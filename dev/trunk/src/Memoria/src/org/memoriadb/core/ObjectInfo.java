@@ -62,10 +62,13 @@ public class ObjectInfo implements IObjectInfo {
     fOldGenerationCount = oldGenerationCount;
   }
 
+  /**
+   * Sets the given block and increments the iodc of the former currentBlock. 
+   */
   @Override
   public void changeCurrentBlock(Block block) {
     fCurrentBlock.incrementInactiveObjectDataCount();
-    fCurrentBlock = block;
+    setCurrentBlock(block);
   }
 
   public void decrementOldGenerationCount() {
@@ -78,7 +81,7 @@ public class ObjectInfo implements IObjectInfo {
       fCurrentBlock.incrementInactiveObjectDataCount();
     }
   }
-
+  
   public Block getBlock() {
     return fBlock;
   }
@@ -111,7 +114,7 @@ public class ObjectInfo implements IObjectInfo {
   public void incrementOldGenerationCount() {
     ++fOldGenerationCount;
   }
-  
+
   public boolean isDeleted() {
     return fObj == null;
   }
@@ -119,9 +122,9 @@ public class ObjectInfo implements IObjectInfo {
   public boolean isDeleteMarkerPersistent() {
     return fDeleteMarkerPersistent;
   }
-
-  public void setBlock(Block block) {
-    fBlock = block;
+  
+  public void setCurrentBlock(Block block) {
+    fCurrentBlock = block;
   }
 
   public void setDeleted() {

@@ -8,7 +8,6 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.*;
-import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;
 import org.memoriadb.id.IObjectId;
@@ -21,8 +20,8 @@ import org.memoriadb.id.IObjectId;
 public class SurvivorAgent implements IFileReaderHandler  {
   
   // use IdentityHashSet for better performance
-  private final Set<ObjectInfo> fUpdates = IdentityHashSet.create();
-  private final Set<ObjectInfo> fDeleteMarkers =  IdentityHashSet.create();
+  private final Set<ObjectInfo> fActiveObjectData = IdentityHashSet.create();
+  private final Set<ObjectInfo> fActiveDeleteMarkers =  IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveObjectDatas = IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveDeleteMarkers = IdentityHashSet.create();
   
@@ -58,27 +57,24 @@ public class SurvivorAgent implements IFileReaderHandler  {
     if(block.getInactiveObjectDataCount() != getInactiveObjectDataCount()) throw new MemoriaException("inactiveObjectDataCount mismatch. File: " + getInactiveObjectDataCount() + " in memory: " + block.getInactiveObjectDataCount());
   }
 
-  /**
-   * @return olld objectData in the scanned block, but no inactive delete-markers!
-   */
-  public Iterable<ObjectInfo> getAllObjectData() {
-    return new CompoundIterator<ObjectInfo>(fInactiveObjectDatas, fUpdates);
-  }
-
-  public Set<ObjectInfo> getDeleteMarkers() {
-    return fDeleteMarkers;
+  public Set<ObjectInfo> getActiveDeleteMarkers() {
+    return fActiveDeleteMarkers;
   }
   
-  public Set<ObjectInfo> getInactiveObjectDatas() {
+  public Set<ObjectInfo> getActiveObjectData() {
+    return fActiveObjectData;
+  }
+  
+  public Set<ObjectInfo> getInactiveDeleteMarkers() {
+    return fInactiveDeleteMarkers;
+  }
+
+  public Set<ObjectInfo> getInactiveObjectData() {
     return fInactiveObjectDatas;
   }
 
-  public Set<ObjectInfo> getUpdates() {
-    return fUpdates;
-  }
-
   public boolean hasSurvivors() {
-    return !fUpdates.isEmpty() || !fDeleteMarkers.isEmpty();
+    return !fActiveObjectData.isEmpty() || !fActiveDeleteMarkers.isEmpty();
   }
 
   @Override
@@ -106,7 +102,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
 
   private int getObjectDataCount() {
-    return fDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fUpdates.size();
+    return fActiveDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fActiveObjectData.size();
   }
   
   private void handleDelete(IObjectId id, long revision) {
@@ -120,7 +116,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
       fInactiveDeleteMarkers.add(info);
     }
     else {
-      fDeleteMarkers.add(info);
+      fActiveDeleteMarkers.add(info);
     }
   }
 
@@ -130,7 +126,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
     if(revision > revisionFromObjectRepo) throw new MemoriaException("Wrong revision for Object in repo: " + revisionFromObjectRepo + " expected " + revision);
     
     if(revisionFromObjectRepo == revision){
-      fUpdates.add(info);
+      fActiveObjectData.add(info);
     }
     else {
       // return this object to adjust the oldGenerationCount

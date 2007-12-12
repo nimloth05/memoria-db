@@ -94,13 +94,34 @@ public final class TransactionWriter {
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
 
-    // save survivors recursively
-    if (survivorAgent.hasSurvivors()) write(new HashSet<ObjectInfo>(), survivorAgent.getUpdates(), survivorAgent.getDeleteMarkers(),
-        tabooBlocks, mode);
-
-    // must be at the end to avoid problems because of temporary state
-    for (ObjectInfo info : survivorAgent.getAllObjectData()) {
+    if(survivorAgent.hasSurvivors()) {
+      ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
+      
+      writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
+      writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
+      
+      Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode);
+      
+      for(ObjectInfo info: survivorAgent.getActiveObjectData()) {
+        info.changeCurrentBlock(survivorsBlock);
+        info.setRevision(fHeadRevision);
+      }
+      
+      for(ObjectInfo info: survivorAgent.getActiveDeleteMarkers()) {
+        info.changeCurrentBlock(survivorsBlock);
+        info.setRevision(fHeadRevision);
+      }
+    }
+    
+    for(ObjectInfo info: survivorAgent.getInactiveObjectData()) {
+      // silenty discard object-data
+      
+      //decrement ogc
       info.decrementOldGenerationCount();
+    }
+    
+    for(ObjectInfo info: survivorAgent.getInactiveDeleteMarkers()) {
+      // silently discard inactive delete-markers
     }
   }
 

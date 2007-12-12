@@ -58,7 +58,7 @@ public class SurvivorAgentTest extends AbstractMemoriaTest {
 
   private Iterable<IObjectId> getDeleteMarkers(Block block) {
     HashSet<IObjectId> result = new HashSet<IObjectId>();
-    for(IObjectInfo info: fObjectStore.getSurvivorAgent(block).getDeleteMarkers()){
+    for(IObjectInfo info: fObjectStore.getSurvivorAgent(block).getActiveDeleteMarkers()){
       result.add(info.getId());
     }
     return result;
@@ -66,7 +66,7 @@ public class SurvivorAgentTest extends AbstractMemoriaTest {
   
   private Iterable<IObjectId> getUpdates(Block block) {
     HashSet<IObjectId> result = new HashSet<IObjectId>();
-    for(IObjectInfo info: fObjectStore.getSurvivorAgent(block).getUpdates()){
+    for(IObjectInfo info: fObjectStore.getSurvivorAgent(block).getActiveObjectData()){
       result.add(info.getId());
     }
     return result;
