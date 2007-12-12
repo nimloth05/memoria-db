@@ -1,4 +1,4 @@
-package org.memoriadb.core.file;
+package org.memoriadb.core.file.read;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.file.read.*;

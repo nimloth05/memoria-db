@@ -5,7 +5,7 @@ import java.io.*;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.id.*;
 
@@ -52,7 +52,7 @@ public class BlockReader {
     handler.block(block);
 
     int objectCount = readObjects(idFactory, handler, fRevision, transactionData);
-    block.setNumberOfObjectData(objectCount);
+    if(objectCount != block.getObjectDataCount()) throw new MemoriaException("object-count mismatch: " + objectCount  + " != " + block.getObjectDataCount());
 
     return blockSize + FileLayout.BLOCK_OVERHEAD;
   }
@@ -102,11 +102,16 @@ public class BlockReader {
   private byte[] readTransaction(DataInputStream stream, Block block, IBlockErrorHandler errorHandler) throws IOException {
     MemoriaCRC32 crc;
     crc = new MemoriaCRC32();
-    long transactionSize = stream.readLong(); // transactionsize
+    long transactionSize = stream.readLong(); // transaction size
     crc.updateLong(transactionSize);
 
     fRevision = stream.readLong(); // transaction-revision
     crc.updateLong(fRevision);
+    
+    int objectCount = stream.readInt();
+    crc.updateInt(objectCount);
+    block.setObjectDataCount(objectCount);
+    
     byte[] transactionData = new byte[(int) transactionSize];
     stream.readFully(transactionData);
     crc.update(transactionData);

@@ -15,7 +15,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b10 = new Block(10, 0);
-    b10.setNumberOfObjectData(20);
+    b10.setObjectDataCount(20);
     manager.add(b10);
     
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -32,7 +32,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setNumberOfObjectData(2);
+    b10a.setObjectDataCount(2);
     manager.add(b10a);
     
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -43,7 +43,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertSame(b10a, manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     Block b10b = new Block(10, 1);
-    b10b.setNumberOfObjectData(2);
+    b10b.setObjectDataCount(2);
     manager.add(b10b);
 
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -58,7 +58,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setNumberOfObjectData(2);
+    b10a.setObjectDataCount(2);
     manager.add(b10a);
 
     assertNull(manager.allocatedRecyclebleBlock(20, new HashSet<Block>()));
@@ -80,10 +80,10 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setNumberOfObjectData(2);
+    b10a.setObjectDataCount(2);
 
     Block b10b = new Block(10, 1);
-    b10b.setNumberOfObjectData(2);
+    b10b.setObjectDataCount(2);
 
     manager.add(b10b);
     manager.add(b10a);
@@ -112,7 +112,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b = new Block(1000, 0);
-    b.setNumberOfObjectData(20);
+    b.setObjectDataCount(20);
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -128,7 +128,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 100);
 
     Block b = new Block(1000, 0);
-    b.setNumberOfObjectData(20);
+    b.setObjectDataCount(20);
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -145,7 +145,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 50);
 
     Block b = new Block(1000, 0);
-    b.setNumberOfObjectData(20);
+    b.setObjectDataCount(20);
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -160,7 +160,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b = new Block(1000, 0);
-    b.setNumberOfObjectData(10);
+    b.setObjectDataCount(10);
     b.incrementInactiveObjectDataCount();
     
     manager.add(b);

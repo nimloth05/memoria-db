@@ -112,7 +112,7 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public ObjectInfo getObjectInfo(Object obj) {
+  public IObjectInfo getObjectInfo(Object obj) {
     return fTransactionHandler.getObjectInfo(obj);
   }
 

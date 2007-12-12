@@ -6,7 +6,7 @@ import java.util.Set;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.*;
 import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
@@ -24,7 +24,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   private final Set<ObjectInfo> fUpdates = IdentityHashSet.create();
   private final Set<ObjectInfo> fDeleteMarkers =  IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveObjectDatas = IdentityHashSet.create();
-  private final Set<ObjectInfo> fInactiveDeletinoMarkers = IdentityHashSet.create();
+  private final Set<ObjectInfo> fInactiveDeleteMarkers = IdentityHashSet.create();
   
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
@@ -58,8 +58,11 @@ public class SurvivorAgent implements IFileReaderHandler  {
     if(block.getInactiveObjectDataCount() != getInactiveObjectDataCount()) throw new MemoriaException("inactiveObjectDataCount mismatch. File: " + getInactiveObjectDataCount() + " in memory: " + block.getInactiveObjectDataCount());
   }
 
-  public Iterable<ObjectInfo> getAllObjectInfo() {
-    return new CompoundIterator<ObjectInfo>(fDeleteMarkers, fInactiveDeletinoMarkers, fInactiveObjectDatas, fUpdates);
+  /**
+   * @return olld objectData in the scanned block, but no inactive delete-markers!
+   */
+  public Iterable<ObjectInfo> getAllObjectData() {
+    return new CompoundIterator<ObjectInfo>(fDeleteMarkers, fInactiveObjectDatas, fUpdates);
   }
 
   public Set<ObjectInfo> getDeleteMarkers() {
@@ -99,11 +102,11 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
 
   private int getInactiveObjectDataCount() {
-    return fInactiveDeletinoMarkers.size() + fInactiveObjectDatas.size();
+    return fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size();
   }
 
   private int getObjectDataCount() {
-    return fDeleteMarkers.size() + fInactiveDeletinoMarkers.size() + fInactiveObjectDatas.size() + fUpdates.size();
+    return fDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fUpdates.size();
   }
   
   private void handleDelete(IObjectId id, long revision) {
@@ -114,7 +117,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
     // check if deletionMarker must be saved.
     if(info.getOldGenerationCount() == 0) {
       // the DeletionMarker is not used anymore...
-      fInactiveDeletinoMarkers.add(info);
+      fInactiveDeleteMarkers.add(info);
     }
     else {
       fDeleteMarkers.add(info);

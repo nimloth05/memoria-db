@@ -33,7 +33,7 @@ public interface IObjectRepository {
    * Called when an object is deleted in the same transaction as it was added.
    * @param id
    */
-  public ObjectInfo delete(Object obj);
+  public IObjectInfo delete(Object obj);
   
   public Collection<IObjectInfo> getAllObjectInfos();
 
@@ -88,24 +88,5 @@ public interface IObjectRepository {
    * @return true, if the given obj is a metaclass
    */
   public boolean isMemoriaClass(Object obj);
-
-
-  /**
-   * Tells the ObjectContainer that an object was added to the persistent store.
-   */
-  public void updateObjectInfoAdded(Object obj, long revision);
-
-
-  /**
-   * Tells the ObjectContainer that a DeleteMarker was written to the persistent store for the given id. 
-   */
-  public void updateObjectInfoDeleted(IObjectId id, long headRevision);
-
-
-  /**
-   * Tells the ObjectContainer that an existing object has been updated, i.e. a new generation was
-   * written to the persistent store.
-   */
-  public void updateObjectInfoUpdated(Object obj, long headRevision);
 
 }

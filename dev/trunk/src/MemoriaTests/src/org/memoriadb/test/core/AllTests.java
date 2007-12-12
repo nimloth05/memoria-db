@@ -1,7 +1,5 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.test.block.DeleteMarkerTest;
-
 import junit.framework.*;
 
 public class AllTests {
@@ -15,7 +13,6 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.core.util.AllTests.suite());
 
     //$JUnit-BEGIN$
-    suite.addTestSuite(DeleteMarkerTest.class);
     suite.addTestSuite(LongIdFactoryTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);

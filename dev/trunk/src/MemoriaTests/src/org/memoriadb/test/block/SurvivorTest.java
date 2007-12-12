@@ -14,6 +14,23 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
  */
 public class SurvivorTest extends AbstractMemoriaTest {
 
+  public void scenarioTest() {
+    Object o1 = new Object();
+    Object o2 = new Object();
+    Object o3 = new Object();
+    
+    beginUpdate();
+    IObjectId id1 = save(o1);
+    IObjectId id2 = save(o1);
+    IObjectId id3 = save(o1);
+    endUpdate();
+    // |o1,o2,o3|
+    
+    delete(o1);
+    // |o1,o2,o3|
+    
+  }
+
   public void test_current_block_from_updatee_is_not_recycled() {
     beginUpdate();
     IObjectId id1 = save(new Object());
@@ -179,7 +196,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
-
+  
   public void test_safing_survivor() {
 
     beginUpdate();
@@ -205,8 +222,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
     // |o3|o2'|
 
     assertEquals(3, getBlockManager().getBlockCount());
-    // FIXME noch nicht gut. ObjectInfo kann entfernt werden, aber wieso -1? msc
-    assertEquals(-1, getObjectInfo(id1).getOldGenerationCount());
+    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
     assertTrue(getObjectInfo(id1).isDeleted());
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
     assertFalse(getObjectInfo(id2).isDeleted());
@@ -265,14 +281,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
 
   private void configure(CreateConfig config) {
     config.setBlockManager(new MaintenanceFreeBlockManager(0, 0));
-  }
-
-  /**
-   * @param index
-   *          Block from BlockManager
-   */
-  private Block getBlock(int index) {
-    return getBlockManager().getBlock(index);
   }
 
   private Block getCurrentBlock(IObjectId id) {

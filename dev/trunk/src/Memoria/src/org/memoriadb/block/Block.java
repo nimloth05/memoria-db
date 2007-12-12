@@ -1,5 +1,6 @@
 package org.memoriadb.block;
 
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.FileLayout;
 
 /**
@@ -42,6 +43,7 @@ public class Block {
   private boolean fIsFree = false;
   
   public static Block getDefaultBlock() {
+    sDefaultBlock.setObjectDataCount(sDefaultBlock.getObjectDataCount()+1);
     return sDefaultBlock;
   }
   
@@ -111,11 +113,7 @@ public class Block {
   public void incrementInactiveObjectDataCount() {
     ++fInactiveObjectDataCount;
     
-    // assertions must be desabled because fObjectDataCount is not set bevor all ObjectData are read in, but
-    // incrementInactiveObjectDataCount() is called during reading the objects.
-    
-    //if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
-    
+    if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
     
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
@@ -125,7 +123,7 @@ public class Block {
    */
   public void resetBlock(int numberOfObjects) {
     fInactiveObjectDataCount = 0;
-    setNumberOfObjectData(numberOfObjects);
+    setObjectDataCount(numberOfObjects);
   }
 
   public void setBlockManager(IBlockManager manager) {
@@ -140,7 +138,7 @@ public class Block {
     fIsFree  = true;
   }
 
-  public void setNumberOfObjectData(int numberOfObjects) {
+  public void setObjectDataCount(int numberOfObjects) {
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }

@@ -6,6 +6,7 @@ import org.memoriadb.block.*;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.write.TransactionWriter;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
@@ -17,7 +18,7 @@ public class TransactionHandler {
 
   private final IObjectRepository fObjectRepository;
 
-  private final ITransactionWriter fTransactionWriter;
+  private final TransactionWriter fTransactionWriter;
 
   // use IdentityHashSets for better performance
   private final Set<ObjectInfo> fAdd = IdentityHashSet.create();
@@ -29,7 +30,7 @@ public class TransactionHandler {
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(IInstantiator instantiator, ITransactionWriter writer, Header header,IModeStrategy modeStrategy) {
+  public TransactionHandler(IInstantiator instantiator, TransactionWriter writer, Header header,IModeStrategy modeStrategy) {
     fInstantiator = instantiator;
     fTransactionWriter = writer;
     fHeader = header;
@@ -155,7 +156,7 @@ public class TransactionHandler {
   }
 
   public IObjectId getMemoriaClassId(Object object) {
-    ObjectInfo info = getObjectInfo(object);
+    IObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
     return info.getMemoriaClassId();
   }

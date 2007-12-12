@@ -50,7 +50,7 @@ public class TransactionWriterTest extends AbstractMemoriaTest {
     save(new Object());    
     
     long opt = getBlockManager().getBlock(2).getPosition() - getBlockManager().getBlock(1).getPosition();
-    assertEquals(68, opt);
+    assertEquals(72, opt);
     assertEquals(opt, FileLayout.getOPO(fObjectStore) + FileLayout.TRX_OVERHEAD + FileLayout.BLOCK_OVERHEAD);
   }
   

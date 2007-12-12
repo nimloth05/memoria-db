@@ -55,8 +55,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
     // |~o1,o2|o1'|
     assertEquals(3, getBlockManager().getBlockCount());
     
-    FilePrinter.print(getFile());
-    
     save(o1);
     // |o1''|~o1'|o2'|
     
@@ -66,10 +64,10 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertEquals(100, getBlockManager().getBlock(2).getInactiveRatio());
     assertEquals(getBlockManager().getBlock(3), getObjectInfo(id2).getCurrentBlock());
     
-    // block1 is 88 bytes wide, garbage starting at byte 68. corrupt bytes in between
+    // block1 is 92 bytes wide, garbage starting at byte 72. corrupt bytes in between
     FileStructure fs = new FileStructure(getFile());
-    corruptFile(fs.getBlock(1).getPosition()+68);
-    corruptFile(fs.getBlock(1).getPosition()+87);
+    corruptFile(fs.getBlock(1).getPosition()+72);
+    corruptFile(fs.getBlock(1).getPosition()+91);
 
     reopen();
 

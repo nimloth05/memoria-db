@@ -6,7 +6,6 @@ import java.util.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.*;
-import org.memoriadb.core.file.IFileReaderHandler;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.*;
@@ -169,9 +168,10 @@ public final class ObjectLoader implements IReaderContext {
     if(info.isDeleted()){
       fRepo.handleDelete(objectInfo);
       
-      // if the info is a deletin-marker and no older generations exist, the deletionMarker is inactive
+      // if the info is a deletion-marker and no older generations exist, the deletionMarker is inactive
       if(info.getOldGenerationCount() == 0){
         info.getCurrentBlock().incrementInactiveObjectDataCount();
+        
       }
     }
     else {

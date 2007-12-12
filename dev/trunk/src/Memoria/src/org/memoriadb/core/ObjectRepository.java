@@ -84,7 +84,7 @@ public class ObjectRepository implements IObjectRepository {
   }
   
   @Override
-  public ObjectInfo delete(Object obj) {
+  public IObjectInfo delete(Object obj) {
     ObjectInfo info = fObjectMap.remove(obj);
     if (info == null) throw new MemoriaException("object not found: " + obj);
     if (fIdMap.remove(info.getId()) == null) throw new MemoriaException("object not found: " + obj);
@@ -139,7 +139,7 @@ public class ObjectRepository implements IObjectRepository {
   
   @Override
   public IMemoriaClass getMemoriaClass(Object object) {
-    ObjectInfo info = getObjectInfo(object);
+    IObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
     return (IMemoriaClass) getObject(info.getMemoriaClassId());
   }
@@ -196,22 +196,6 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.isNullReference(objectId);
   }
 
-  public void updateObjectInfoAdded(Object obj, long revision) {
-    ObjectInfo info = fObjectMap.get(obj);
-    info.setRevision(revision);
-  }
-
-  @Override
-  public void updateObjectInfoDeleted(IObjectId id, long revision) {
-    ObjectInfo info = fDeletedMap.remove(id);
-    internalUpdateObjectInfo(info, revision);
-  }
-
-  public void updateObjectInfoUpdated(Object obj, long revision) {
-    ObjectInfo info = fObjectMap.get(obj);
-    internalUpdateObjectInfo(info, revision);
-  }
-
   private IObjectId generateId() {
     return fIdFactory.createNextId();
   }
@@ -232,12 +216,6 @@ public class ObjectRepository implements IObjectRepository {
     
  // adjustId here for bootstrapped objects
     fIdFactory.adjustId(info.getId());
-  }
-
-  private void internalUpdateObjectInfo(ObjectInfo info, long revision) {
-    if (info == null) throw new IllegalArgumentException("Object not found");
-    info.setRevision(revision);
-    info.incrememntOldGenerationCount();
   }
 
 }

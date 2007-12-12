@@ -18,15 +18,16 @@ public class HeaderHelper {
 
     LastWrittenBlockInfo readCurrentBlockInfo = readLastWrittenBlockInfo(stream);
 
+    MemoriaCRC32 crc = new MemoriaCRC32();
+
     int headerSize = stream.readInt();
+    crc.updateInt(headerSize);
 
     byte[] headerInfo = new byte[headerSize];
     stream.readFully(headerInfo);
     
     long readCrc = stream.readLong();
     
-    MemoriaCRC32 crc = new MemoriaCRC32();
-    crc.updateInt(headerSize);
     crc.update(headerInfo);
     if(readCrc != crc.getValue()) throw new MemoriaException("header corrupt");
     
@@ -76,10 +77,12 @@ public class HeaderHelper {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
     
-    stream.writeInt(writeMode);
-    stream.writeLong(blockPosition);
     MemoriaCRC32 crc = new MemoriaCRC32();
+    
+    stream.writeInt(writeMode);
     crc.updateInt(writeMode);
+
+    stream.writeLong(blockPosition);
     crc.updateLong(blockPosition);
     
     stream.writeLong(crc.getValue());

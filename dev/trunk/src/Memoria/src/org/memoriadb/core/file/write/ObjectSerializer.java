@@ -84,7 +84,7 @@ public final class ObjectSerializer {
     info.getId().writeTo(fStream);
   }
 
-  public void serialize(ObjectInfo info) throws Exception {
+  public void serialize(IObjectInfo info) throws Exception {
     serializeObject(info);
   }
 

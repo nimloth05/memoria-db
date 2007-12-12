@@ -79,15 +79,19 @@ public abstract class AbstractMemoriaTest extends TestCase {
     return fObjectStore.get(id);
   }
   
+  protected Block getBlock(int index) {
+    return getBlockManager().getBlock(index);
+  }
+  
   protected IMemoriaFile getFile() {
     if(fObjectStore!=null) return ((ObjectStore)fObjectStore).getFile();
     return ((DataStore)fDataStore).getFile();
   }
-  
+
   protected LastWrittenBlockInfo getLastBlockInfo() {
     return fObjectStore.getHeader().getLastWrittenBlockInfo();
   }
-
+  
   protected IObjectInfo getObjectInfo(IObjectId id) {
     return fObjectStore.getObjectInfoForId(id);
   }
@@ -99,15 +103,15 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected int getOPO() {
     return FileLayout.getOPO(fObjectStore);
   }
-  
+
   protected TestMode getTestMode() {
     return TestMode.memory;
   }
-
+  
   protected <T> List<T> query(Class<T> clazz) {
     return fObjectStore.query(clazz);
   }
-  
+
   protected final void recreateDataStore() {
     closeStores();
     
@@ -123,7 +127,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
     fObjectStore = null;
   }
-
+  
   protected final void recreateObjectStore() {
     closeStores();
     
@@ -139,15 +143,15 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
     fDataStore = null;
   }
-  
+   
   protected final void reopen() {
     recreateObjectStore(); 
   }
-   
+
   protected void reopenDataMode() {
     recreateDataStore();
   }
-
+  
   protected final IObjectId save(IDataObject obj) {
     return fDataStore.save(obj);
   }
@@ -159,11 +163,11 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected final IObjectId saveAll(IDataObject obj) {
     return fDataStore.saveAll(obj);
   }
-  
+
   protected final IObjectId saveAll(Object obj) {
     return fObjectStore.saveAll(obj);
   }
-
+  
   @Override
   protected void setUp() {
    CreateConfig config = new CreateConfig();

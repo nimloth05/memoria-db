@@ -1,6 +1,6 @@
 package org.memoriadb.core.block;
 
-import org.memoriadb.core.file.IFileReaderHandler;
+import org.memoriadb.core.file.read.IFileReaderHandler;
 
 public class LastWrittenErrorHandler extends AbstractBlockErrorHandler {
 

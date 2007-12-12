@@ -28,4 +28,6 @@ public interface IObjectInfo {
   
   public boolean isDeleted();
 
+  public boolean isDeleteMarkerPersistent();
+
 }

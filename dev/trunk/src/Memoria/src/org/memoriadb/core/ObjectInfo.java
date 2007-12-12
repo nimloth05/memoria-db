@@ -1,6 +1,7 @@
 package org.memoriadb.core;
 
 import org.memoriadb.block.Block;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 
@@ -14,11 +15,20 @@ import org.memoriadb.id.IObjectId;
  */
 public class ObjectInfo implements IObjectInfo {
   
+  /**
+   * true, when the deletion-marker for this object has been written
+   */
+  boolean fDeleteMarkerPersistent;
+  
+  /**
+   *  null for deleted object
+   */
   private Object fObj;
   private final IObjectId fId;
   private final IObjectId fMemoriaClassId;
   private long fRevision;
   private int fOldGenerationCount;
+  
   private Block fCurrentBlock;
   
   /**
@@ -31,6 +41,7 @@ public class ObjectInfo implements IObjectInfo {
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock) {
     this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_HEAD_REVISION, 0);
+    if(obj == null) throw new MemoriaException("new object can not be null");
   }
 
   /**
@@ -40,6 +51,10 @@ public class ObjectInfo implements IObjectInfo {
     if (memoriaClassId == null) throw new IllegalArgumentException("MemoriaClassId is null.");
     
     fObj = obj;
+    
+    // when the object is deleted, there must be a persistent delete-marker
+    fDeleteMarkerPersistent = isDeleted();
+    
     fId = id;
     fCurrentBlock = currentBlock;
     fMemoriaClassId = memoriaClassId;
@@ -60,7 +75,7 @@ public class ObjectInfo implements IObjectInfo {
     //if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
     
     // FIXME the object-info could now be removed from the index, because no persistent information is left about it.
-    if(fOldGenerationCount==0 && isDeleted()) {
+    if(fOldGenerationCount==0 && fDeleteMarkerPersistent) {
       fCurrentBlock.incrementInactiveObjectDataCount();
     }
   }
@@ -94,7 +109,7 @@ public class ObjectInfo implements IObjectInfo {
     return fRevision;
   }
 
-  public void incrememntOldGenerationCount() {
+  public void incrementOldGenerationCount() {
     ++fOldGenerationCount;
   }
   
@@ -102,12 +117,21 @@ public class ObjectInfo implements IObjectInfo {
     return fObj == null;
   }
   
+  public boolean isDeleteMarkerPersistent() {
+    return fDeleteMarkerPersistent;
+  }
+
   public void setBlock(Block block) {
     fBlock = block;
   }
 
   public void setDeleted() {
     fObj = null;
+  }
+  
+  public void setDeleteMarkerPersistent() {
+    if(!isDeleted()) throw new MemoriaException("object must be deleted before deleteMarker can be persistent");
+    fDeleteMarkerPersistent = true;
   }
 
   public void setObj(Object obj) {

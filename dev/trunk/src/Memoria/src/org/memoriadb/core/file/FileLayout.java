@@ -24,10 +24,12 @@ public final class FileLayout {
   public static final int TRX_SIZE_LEN = Constants.LONG_LEN;
   public static final int REVISION_LEN = Constants.LONG_LEN;
   public static final int CRC_LEN = Constants.LONG_LEN;
+  public static final int OBJECT_COUNT_LEN = Constants.INT_LEN;
+  
   
   public static final int BLOCK_OVERHEAD = BLOCK_TAG_LEN + BLOCK_SIZE_LEN + CRC_LEN;
   
-  public static final int TRX_OVERHEAD = TRX_SIZE_LEN +  REVISION_LEN + CRC_LEN;
+  public static final int TRX_OVERHEAD = TRX_SIZE_LEN +  REVISION_LEN + OBJECT_COUNT_LEN + CRC_LEN;
 
   public static final int OBJECT_SIZE_LEN = Constants.INT_LEN;
   

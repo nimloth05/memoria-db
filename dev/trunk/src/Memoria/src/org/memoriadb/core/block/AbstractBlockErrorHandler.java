@@ -4,7 +4,7 @@ import java.io.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.FileCorruptException;
-import org.memoriadb.core.file.IFileReaderHandler;
+import org.memoriadb.core.file.read.IFileReaderHandler;
 
 /**
  * Default-behaviour for when a part of a block is corrupt: throw
