@@ -87,46 +87,51 @@ public final class TransactionWriter {
   }
 
   /**
-   * Safes the survivors of the given <tt>block</tt>;
+   * Saves the survivors of the given <tt>block</tt>;
    * 
    * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
 
-    if(survivorAgent.hasSurvivors()) {
-      ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
-      
-      writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
-      writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
-      
-      Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode);
-      
-      for(ObjectInfo info: survivorAgent.getActiveObjectData()) {
-        info.changeCurrentBlock(survivorsBlock);
-        info.setRevision(fHeadRevision);
-      }
-      
-      for(ObjectInfo info: survivorAgent.getActiveDeleteMarkers()) {
-        info.changeCurrentBlock(survivorsBlock);
-        info.setRevision(fHeadRevision);
-      }
+    if (survivorAgent.hasSurvivors()) {
+      saveSurvivors(tabooBlocks, mode, survivorAgent);
     }
-    
-    for(ObjectInfo info: survivorAgent.getInactiveObjectData()) {
+
+    // the following updates must be performed irrespective of the survivors.
+
+    for (ObjectInfo info : survivorAgent.getInactiveObjectData()) {
       // silenty discard object-data
-      
-      //decrement ogc
+
+      // decrement ogc
       info.decrementOldGenerationCount();
     }
     
-    for(ObjectInfo info: survivorAgent.getInactiveDeleteMarkers()) {
-      // silently discard inactive delete-markers
-    }
+    // silently discard inactive delete-markers
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
     HeaderHelper.updateBlockInfo(getFile(), block, writeMode);
+  }
+
+  private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent) throws Exception, IOException {
+    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
+
+    writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
+    writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
+
+    Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size()
+        + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode);
+
+    for (ObjectInfo info : survivorAgent.getActiveObjectData()) {
+      info.changeCurrentBlock(survivorsBlock);
+      info.setRevision(fHeadRevision);
+    }
+
+    for (ObjectInfo info : survivorAgent.getActiveDeleteMarkers()) {
+      info.changeCurrentBlock(survivorsBlock);
+      info.setRevision(fHeadRevision);
+    }
   }
 
   private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block) {

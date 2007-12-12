@@ -15,7 +15,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
   public PhysicalFile(String path) {
     fPath = path;
     try {
-      fRandomAccessFile = new RandomAccessFile(path, "rw");
+      fRandomAccessFile = new RandomAccessFile(path, "rws");
       fLock = fRandomAccessFile.getChannel().tryLock();
     }
     catch (Exception e) {

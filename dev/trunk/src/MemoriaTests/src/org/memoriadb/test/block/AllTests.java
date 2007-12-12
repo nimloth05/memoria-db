@@ -15,6 +15,7 @@ public class AllTests {
     suite.addTestSuite(BlockManagerTest.class);
     suite.addTestSuite(TransactionWriterTest.class);
     suite.addTestSuite(DeleteMarkerTest.class);
+    suite.addTestSuite(TestInactiveObjectDataCount.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);
     suite.addTestSuite(LastWrittenBlockAfterCrashTest.class);
     //$JUnit-END$
