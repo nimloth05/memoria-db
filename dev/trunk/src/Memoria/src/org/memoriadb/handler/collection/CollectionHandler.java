@@ -104,22 +104,22 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          context.objectToBind(new ObjectCollectionBindable(collection, objectId));
+          context.addGenTwoBinding(new ObjectCollectionBindable(collection, objectId));
         }
 
         @Override
         public void visitNull() {
-          context.objectToBind(new NullCollectionBindlable(collection));
+          context.addGenTwoBinding(new NullCollectionBindlable(collection));
         }
 
         @Override
         public void visitPrimitive(Type type, Object value) {
-          context.objectToBind(new CollectionBindable(collection, value));
+          context.addGenTwoBinding(new CollectionBindable(collection, value));
         }
 
         @Override
         public void visitValueObject(Object value) {
-          context.objectToBind(new CollectionBindable(collection, value));
+          context.addGenTwoBinding(new CollectionBindable(collection, value));
         }
       });
     }

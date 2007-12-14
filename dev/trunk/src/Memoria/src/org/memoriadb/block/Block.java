@@ -111,6 +111,9 @@ public class Block {
   }
 
   public void incrementInactiveObjectDataCount() {
+    // FIXME experimental
+    //if(fInactiveObjectDataCount == fObjectDataCount) return;
+    
     ++fInactiveObjectDataCount;
     
     if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));

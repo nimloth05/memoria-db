@@ -26,7 +26,7 @@ public class FieldbasedClassHandler implements IHandler {
     FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(className, typeId, hasValueObejctAnnotation);
     
     IObjectId superClassId = context.readObjectId(input);
-    if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinding(classObject, superClassId)); 
+    if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
     
     while (input.available() > 0) {
       int fieldId = input.readInt();

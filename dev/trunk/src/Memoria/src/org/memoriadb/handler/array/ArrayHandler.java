@@ -92,7 +92,7 @@ public class ArrayHandler implements IHandler {
 
       @Override
       public void visitClass(Type type, IObjectId objectId) {
-        context.objectToBind(new BindArray(array, index, objectId));
+        context.addGenOneBinding(new BindArray(array, index, objectId));
       }
 
       @Override

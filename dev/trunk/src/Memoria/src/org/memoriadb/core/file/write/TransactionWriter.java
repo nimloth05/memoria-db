@@ -88,14 +88,15 @@ public final class TransactionWriter {
 
   /**
    * Saves the survivors of the given <tt>block</tt>;
+   * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
    * 
    * @throws IOException
    */
-  private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
+  private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
 
     if (survivorAgent.hasSurvivors()) {
-      saveSurvivors(tabooBlocks, mode, survivorAgent);
+      saveSurvivors(tabooBlocks, mode, survivorAgent, decOGC);
     }
 
     // the following updates must be performed irrespective of the survivors.
@@ -103,10 +104,9 @@ public final class TransactionWriter {
     for (ObjectInfo info : survivorAgent.getInactiveObjectData()) {
       // silenty discard object-data
 
-      // decrement ogc
-      info.decrementOldGenerationCount();
+      decOGC.add(info);
     }
-    
+
     // silently discard inactive delete-markers
   }
 
@@ -114,14 +114,16 @@ public final class TransactionWriter {
     HeaderHelper.updateBlockInfo(getFile(), block, writeMode);
   }
 
-  private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent) throws Exception, IOException {
+  /**
+   * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
+   */
+  private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent, List<ObjectInfo> decOGC) throws Exception, IOException {
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
 
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
     writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
 
-    Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size()
-        + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode);
+    Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode, decOGC);
 
     for (ObjectInfo info : survivorAgent.getActiveObjectData()) {
       info.changeCurrentBlock(survivorsBlock);
@@ -174,7 +176,11 @@ public final class TransactionWriter {
     fConfig.getListeners().triggerAfterWrite(block);
   }
 
-  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
+  /**
+   * Called recursively
+   * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented. 
+   */
+  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
@@ -182,7 +188,7 @@ public final class TransactionWriter {
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(trxData, numberOfObjects);
 
-    freeBlock(block, tabooBlocks, mode);
+    freeBlock(block, tabooBlocks, mode, decOGC);
 
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
@@ -192,11 +198,7 @@ public final class TransactionWriter {
     return block;
   }
 
-  /**
-   * Called recursively
-   */
-  private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode)
-      throws Exception {
+  private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
 
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
 
@@ -204,11 +206,17 @@ public final class TransactionWriter {
     writeAddOrUpdate(update, tabooBlocks, serializer);
     writeDelete(delete, tabooBlocks, serializer);
 
-    Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode);
-
+    List<ObjectInfo> decOGC = new ArrayList<ObjectInfo>();
+    Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode, decOGC);
+    
     updateInfoAfterAdd(add, block);
     updateInfoAfterUpdate(update, block);
     updateInfoAfterDelete(delete, block);
+
+    // must done at the end of the write-process to avoid abnormities.
+    for(ObjectInfo info: decOGC) {
+      info.decrementOldGenerationCount();
+    }
   }
 
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {

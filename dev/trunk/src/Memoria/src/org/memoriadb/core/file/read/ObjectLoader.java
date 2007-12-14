@@ -16,7 +16,9 @@ public final class ObjectLoader implements IReaderContext {
   private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
   private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
-  private final Set<IBindable> fObjectsToBind = new LinkedHashSet<IBindable>();
+  private final Set<IBindable> fGenOneBindings = new LinkedHashSet<IBindable>();
+  private final Set<IBindable> fGenTwoBindings = new LinkedHashSet<IBindable>();
+
   private final ObjectRepository fRepo;
   private final FileReader fFileReader;
   private final IBlockManager fBlockManager;
@@ -35,14 +37,24 @@ public final class ObjectLoader implements IReaderContext {
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
     if (store == null) throw new IllegalArgumentException("store is null");
-    
+
     fStore = store;
     fFileReader = fileReader;
     fRepo = repo;
     fBlockManager = blockManager;
     fInstantiator = instantiator;
     fIdFactory = repo.getIdFactory();
-  } 
+  }
+
+  @Override
+  public void addGenOneBinding(IBindable bindable) {
+    fGenOneBindings.add(bindable);
+  }
+
+  @Override
+  public void addGenTwoBinding(IBindable bindable) {
+    fGenTwoBindings.add(bindable);
+  }
 
   @Override
   public IObjectId getArrayMemoriaClass() {
@@ -53,7 +65,7 @@ public final class ObjectLoader implements IReaderContext {
   public IInstantiator getDefaultInstantiator() {
     return fInstantiator;
   }
-  
+
   @Override
   public Object getExistingObject(IObjectId id) {
     return fRepo.getExistingObject(id);
@@ -73,7 +85,7 @@ public final class ObjectLoader implements IReaderContext {
   public boolean isInDataMode() {
     return fStore.isDataMode();
   }
-  
+
   @Override
   public boolean isNullReference(IObjectId objectId) {
     return fRepo.isNullReference(objectId);
@@ -84,23 +96,18 @@ public final class ObjectLoader implements IReaderContext {
     return fRepo.getIdFactory().isRootClassId(superClassId);
   }
 
-  @Override
-  public void objectToBind(IBindable bindable) {
-    fObjectsToBind.add(bindable);
-  }
-
   public long read() {
     try {
       long headRevision = readBlockData();
-      
+
       dehydrateMetaClasses();
       bindObjects();
       dehydrateObjects();
       bindObjects();
-      
+
       return headRevision;
-    } 
-    catch(FileCorruptException e) {
+    }
+    catch (FileCorruptException e) {
       throw e;
     }
     catch (Exception e) {
@@ -115,29 +122,30 @@ public final class ObjectLoader implements IReaderContext {
 
   private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long revision) {
     fIdFactory.adjustId(id);
-    
+
     HydratedInfo info = container.get(id);
     if (info == null) {
       container.put(id, new HydratedInfo(id, deletionTypeId, null, revision, fCurrentBlock));
       return;
-    } 
+    }
 
     // object already loaded in other version, newer version survives
     info.update(fCurrentBlock, null, deletionTypeId, revision);
-    if (info.getVersion() != revision) throw new MemoriaException(id + ": DeletionMarker("+revision+") has lower revision then last objectData("+info.getVersion()+")");
+    if (info.getVersion() != revision) throw new MemoriaException(id + ": DeletionMarker(" + revision + ") has lower revision then last objectData(" + info.getVersion() + ")");
   }
 
   /**
-   * @param object null if deleteMarker was encountered
+   * @param object
+   *          null if deleteMarker was encountered
    */
   private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
     fIdFactory.adjustId(id);
-    
+
     HydratedInfo info = container.get(id);
     if (info == null) {
       container.put(id, new HydratedInfo(id, object.getTypeId(), object, version, fCurrentBlock));
       return;
-    } 
+    }
 
     // object already loaded in other version, newer version survives
     info.update(fCurrentBlock, object, object.getTypeId(), version);
@@ -145,10 +153,15 @@ public final class ObjectLoader implements IReaderContext {
 
   private void bindObjects() {
     try {
-      for (IBindable bindable : fObjectsToBind) {
+      for (IBindable bindable : fGenOneBindings) {
         bindable.bind(this);
       }
-      fObjectsToBind.clear();
+      fGenOneBindings.clear();
+      
+      for (IBindable bindable : fGenTwoBindings) {
+        bindable.bind(this);
+      }
+      fGenTwoBindings.clear();
     }
     catch (Exception e) {
       throw new MemoriaException(e);
@@ -164,14 +177,14 @@ public final class ObjectLoader implements IReaderContext {
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getCurrentBlock(), info.getVersion(), info.getOldGenerationCount());
-    
-    if(info.isDeleted()){
+
+    if (info.isDeleted()) {
       fRepo.handleDelete(objectInfo);
-      
+
       // if the info is a deletion-marker and no older generations exist, the deletionMarker is inactive
-      if(info.getOldGenerationCount() == 0){
+      if (info.getOldGenerationCount() == 0) {
         info.getCurrentBlock().incrementInactiveObjectDataCount();
-        
+
       }
     }
     else {
@@ -218,5 +231,5 @@ public final class ObjectLoader implements IReaderContext {
 
     });
   }
-  
+
 }

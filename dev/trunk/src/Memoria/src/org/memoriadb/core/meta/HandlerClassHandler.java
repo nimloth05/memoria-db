@@ -30,7 +30,7 @@ public class HandlerClassHandler implements IHandler {
     
     HandlerbasedMemoriaClass memoriaClass = new HandlerbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
     
-    if (!context.isRootClassId(superClassId)) context.objectToBind(new ClassInheritanceBinding(memoriaClass, superClassId));
+    if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(memoriaClass, superClassId));
       
     return memoriaClass;
   }

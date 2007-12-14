@@ -102,7 +102,7 @@ public class FieldbasedObjectHandler implements IHandler {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          context.objectToBind(new ObjectFieldReference(result, field.getName(), objectId));
+          context.addGenOneBinding(new ObjectFieldReference(result, field.getName(), objectId));
         }
 
         @Override

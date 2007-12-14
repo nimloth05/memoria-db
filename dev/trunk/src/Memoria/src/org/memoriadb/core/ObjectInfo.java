@@ -17,6 +17,7 @@ public class ObjectInfo implements IObjectInfo {
   
   /**
    * true, when the deletion-marker for this object has been written
+   * FIXME remove flag, msc
    */
   private boolean fDeleteMarkerPersistent;
   
@@ -77,7 +78,7 @@ public class ObjectInfo implements IObjectInfo {
     if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
     
     // FIXME the object-info could now be removed from the index, because no persistent information is left about it.
-    if(fOldGenerationCount==0 && fDeleteMarkerPersistent) {
+    if(fOldGenerationCount==0 && isDeleted()) {
       fCurrentBlock.incrementInactiveObjectDataCount();
     }
   }

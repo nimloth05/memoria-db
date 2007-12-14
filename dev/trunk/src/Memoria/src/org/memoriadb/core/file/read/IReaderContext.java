@@ -10,10 +10,22 @@ import org.memoriadb.instantiator.IInstantiator;
 
 public interface IReaderContext {
 
-  public IObjectId getArrayMemoriaClass();
+  /**
+   * Use this method for bindings with NO side-effects: for example fields, arrays.
+   */
+  public void addGenOneBinding(IBindable bindable);
 
-  public IInstantiator getDefaultInstantiator();
+  /**
+   * Use this method for bindings with side-effects: Sets, maps.
+   * 
+   * The bindings added with this method are added after the bindings added with {@link IReaderContext#addGenOneBinding(IBindable)}.
+   */
+  public void addGenTwoBinding(IBindable bindable);
   
+  public IObjectId getArrayMemoriaClass();
+  
+  public IInstantiator getDefaultInstantiator();
+
   /**
    * @return the object for the given <tt>id</tt>
    * throw new {@link MemoriaException} if the given <tt>id</tt> is not found. 
@@ -28,12 +40,10 @@ public interface IReaderContext {
   public IObjectId getPrimitiveClassId();
   
   public boolean isInDataMode();
-
+  
   public boolean isNullReference(IObjectId id);
   
   public boolean isRootClassId(IObjectId superClassId);
-  
-  public void objectToBind(IBindable bindable);
 
   public IObjectId readObjectId(DataInput input) throws IOException;
 

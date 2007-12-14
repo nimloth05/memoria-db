@@ -50,7 +50,7 @@ public class MapHandler implements IHandler {
       IObjectResolver key = readNextElement(input, context);
       IObjectResolver value = readNextElement(input, context);
 
-      context.objectToBind(new MapBindable(map, key, value));
+      context.addGenTwoBinding(new MapBindable(map, key, value));
     }
 
     return context.isInDataMode()? new MapDataObject(map, typeId) : map;
