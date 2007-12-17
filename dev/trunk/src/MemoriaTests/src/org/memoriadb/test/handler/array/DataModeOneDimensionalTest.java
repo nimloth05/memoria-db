@@ -13,7 +13,7 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   public void test_add_enum_array() {
     reopenDataMode();
     
-    fDataStore.getTypeInfo().addMemoriaClass(TestEnum.class);
+    fDataStore.getTypeInfo().addMemoriaClassIfNecessary(TestEnum.class);
     
     IArray arr = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
     
@@ -53,7 +53,7 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   public void test_create_Object_array_when_java_class_is_known() {
     reopenDataMode();
     
-    fDataStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
+    fDataStore.getTypeInfo().addMemoriaClassIfNecessary(SimpleTestObj.class);
     
     IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj[].class, 2);
     
@@ -71,7 +71,7 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   
   public void test_create_Object_array_when_java_class_is_unknown() {
     // add class
-    fObjectStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
+    fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(SimpleTestObj.class);
     
     reopenDataMode();
     

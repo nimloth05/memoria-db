@@ -38,7 +38,7 @@ public class TransactionHandler {
     fObjectRepository = writer.getRepo();
   }
 
-  public IObjectId addMemoriaClass(Class<?> clazz) {
+  public IObjectId addMemoriaClassIfNecessary(Class<?> clazz) {
     Class<?> type = clazz;
     
     if (clazz.isArray()) {
@@ -199,6 +199,8 @@ public class TransactionHandler {
 
     IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
     fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
+    if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("ValueObject can not be added: " + obj);    
+
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(result);
     return result.getId();
@@ -246,7 +248,9 @@ public class TransactionHandler {
   }
 
   public boolean isValueObject(Object object) {
-    return fModeStrategy.hasValueObjectAnnotation(object, fObjectRepository);
+    IMemoriaClass clazz = getMemoriaClass(object);
+    if(clazz == null) return fModeStrategy.hasValueObjectAnnotation(object, fObjectRepository); 
+    return clazz.isValueObject();
   }
 
   public IObjectId save(Object obj) {

@@ -14,6 +14,7 @@ public class AllTests {
 
     //$JUnit-BEGIN$
     suite.addTestSuite(LongIdFactoryTest.class);
+    suite.addTestSuite(ValueObjectTest.class);
     suite.addTestSuite(ObjectContainerTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(TypeTest.class);

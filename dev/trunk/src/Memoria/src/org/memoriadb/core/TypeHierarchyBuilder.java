@@ -4,6 +4,7 @@ import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.*;
 import org.memoriadb.handler.enu.EnumHandler;
+import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.id.IObjectId;
 
 public class TypeHierarchyBuilder {
@@ -29,7 +30,7 @@ public class TypeHierarchyBuilder {
       return;
     }
     
-    classObject = FieldbasedMemoriaClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = new FieldbasedMemoriaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     transactionHandler.internalSave(classObject);
     subClassconfig.setSuperClass(classObject);
     
@@ -76,7 +77,7 @@ public class TypeHierarchyBuilder {
     }
     
     // add the current class and all its superclasses to the store
-    classObject = FieldbasedMemoriaClassFactory.createMetaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = new FieldbasedMemoriaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);

@@ -1,8 +1,9 @@
-package org.memoriadb.core.meta;
+package org.memoriadb.handler.field;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
@@ -10,8 +11,6 @@ import org.memoriadb.id.IObjectId;
 public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
 
   private String fClassName;
-  
-  private final boolean fHasValueObjectAnnotation;
 
   private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
   private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
@@ -25,17 +24,31 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
    * 
    */
   public FieldbasedMemoriaClass(Class<?> klass, IObjectId memoriaClassId) {
+    this(klass, memoriaClassId, ReflectionUtil.hasValueObjectAnnotation(klass));
+  }
+  
+  /**
+   * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first object of a
+   * given type enters the memoria-reference-space.
+   * 
+   */
+  public FieldbasedMemoriaClass(Class<?> klass, IObjectId memoriaClassId, boolean isValueObject) {
+    super(isValueObject);
+    if(klass.isArray()) throw new IllegalArgumentException("Array not expected");
+    
     fMemoriaClassId = memoriaClassId;
     fClassName = klass.getName();
-    fHasValueObjectAnnotation = ReflectionUtil.hasValueObjectAnnotation(klass);
 
     addFields(klass);
   }
 
-  public FieldbasedMemoriaClass(String className, IObjectId memoriaClassId, boolean hasValueObjectAnnotation) {
+  /**
+   * Ctor used after deserialization
+   */
+  public FieldbasedMemoriaClass(String className, IObjectId memoriaClassId, boolean isValueObject) {
+    super(isValueObject);
     fClassName = className;
     fMemoriaClassId = memoriaClassId;
-    fHasValueObjectAnnotation = hasValueObjectAnnotation;
   }
 
   public void addMetaField(MemoriaField metaField) {
@@ -77,11 +90,6 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  @Override
-  public boolean hasValueObjectAnnotation() {
-    return fHasValueObjectAnnotation;
   }
 
   public void setClassName(String name) {

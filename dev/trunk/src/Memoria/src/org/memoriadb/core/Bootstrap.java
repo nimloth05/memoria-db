@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.memoriadb.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.read.*;
@@ -13,6 +14,7 @@ import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
+import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -32,9 +34,9 @@ public class Bootstrap {
     }
   }
 
-  private static void addDefaultMetaClasses(TransactionHandler trxHandler, Iterable<String> customHandlers) {
+  private static void addDefaultMetaClasses(TransactionHandler trxHandler) {
     // These classObjects don't need a fix known ID.
-    IMemoriaClassConfig objectMemoriaClass = FieldbasedMemoriaClassFactory.createMetaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
+    IMemoriaClassConfig objectMemoriaClass = new FieldbasedMemoriaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
 
     // FIXME den CollectionHandler auf mehr Generizität umschreiben (Ctor mit String-arg)
@@ -59,8 +61,18 @@ public class Bootstrap {
     registerHandler(trxHandler, new MapHandler(LinkedHashMap.class));
     registerHandler(trxHandler, new MapHandler(TreeMap.class));
     registerHandler(trxHandler, new MapHandler(WeakHashMap.class));
+  }
+
+  private static void addValueClasses(TransactionHandler transactionHandler, Iterable<Class<?>> valueClasses) {
+    // classes may already be registered, when they are handler-classes
+    for(Class<?> clazz: valueClasses) {
+      transactionHandler.addMemoriaClassIfNecessary(clazz);
+    }
     
-    addCustomHandlers(trxHandler, customHandlers);
+    for(Class<?> clazz: valueClasses) {
+      ((AbstractMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setHasValueObjectAnnotation(true);
+    }
+    
   }
 
   private static TransactionHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
@@ -71,7 +83,9 @@ public class Bootstrap {
     
     // bootstap memoriaClasses
     transactionHandler.beginUpdate();
-    addDefaultMetaClasses(transactionHandler, (config).getCustomHandlers());
+    addDefaultMetaClasses(transactionHandler);
+    addCustomHandlers(transactionHandler, config.getCustomHandlers());
+    addValueClasses(transactionHandler, config.getValueClasses());
     transactionHandler.endUpdate();
     
     return transactionHandler;

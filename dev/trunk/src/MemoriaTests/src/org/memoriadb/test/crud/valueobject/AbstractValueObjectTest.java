@@ -2,6 +2,7 @@ package org.memoriadb.test.crud.valueobject;
 
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
+import org.memoriadb.test.crud.valueobject.testclasses.ValueB;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.*;
 
@@ -33,6 +34,20 @@ public abstract class AbstractValueObjectTest extends AbstractMemoriaTest {
     assertEquals(0, CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()));
   }
   
+  public void test_inheritance() {
+    ObjectReferencer ref = new ObjectReferencer(new ValueB("a", "b"));
+    
+    IObjectId id = save(ref);
+    assertFalse(fObjectStore.contains(ref.getObejct()));
+    
+    reopen();
+    
+    ref = get(id);
+    
+    assertFalse(fObjectStore.contains(ref.getObejct()));
+    assertEquals("a", ((ValueB)ref.getObejct()).fDataA);
+  }
+  
   public void test_save_valueObject_owner() {
     ObjectReferencer ref = new ObjectReferencer();
     TestValueObject valueObject = new TestValueObject("1"); 
@@ -47,6 +62,18 @@ public abstract class AbstractValueObjectTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.contains(l1_ref.getObejct()));
     assertEquals(ref.getObejct(), l1_ref.getObejct());
     assertEquals(1, CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()));
+  }
+  
+  public void test_save_valueObject_throws() {
+
+    try {
+      save(new TestValueObject("1"));
+      fail("saving value-object is not allwed");
+    }
+    catch(Exception e) {
+      // pass
+    }
+    
   }
   
   public void test_saveAll_valueObject_owner() {

@@ -13,8 +13,8 @@ public class TypeInfo implements ITypeInfo {
   }
 
   @Override
-  public IObjectId addMemoriaClass(Class<?> clazz) {
-    return fTransactionHandler.addMemoriaClass(clazz);
+  public IObjectId addMemoriaClassIfNecessary(Class<?> clazz) {
+    return fTransactionHandler.addMemoriaClassIfNecessary(clazz);
   }
   
   @Override

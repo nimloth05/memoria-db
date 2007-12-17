@@ -11,7 +11,7 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 public abstract class AbstractEnumTest extends AbstractMemoriaTest {
 
   public void test_add_enum_class_adds_all_instances() {
-    fObjectStore.getTypeInfo().addMemoriaClass(TestEnum.class);
+    fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(TestEnum.class);
     assertAllEnumInstanceAreContained();
     reopen();
     assertAllEnumInstanceAreContained();

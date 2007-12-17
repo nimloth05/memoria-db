@@ -49,7 +49,7 @@ public class FieldbasedClassHandler implements IHandler {
     FieldbasedMemoriaClass classObject = (FieldbasedMemoriaClass) obj;
     
     output.writeUTF(classObject.getClassName());
-    output.writeBoolean(classObject.hasValueObjectAnnotation());
+    output.writeBoolean(classObject.isValueObject());
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) superClassId = context.getExistingtId(classObject.getSuperClass());

@@ -1,7 +1,8 @@
-package org.memoriadb.core.meta;
+package org.memoriadb.handler.field;
 
 import java.lang.reflect.Field;
 
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.core.util.ReflectionUtil;
 
 

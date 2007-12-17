@@ -46,7 +46,7 @@ public class HandlerClassHandler implements IHandler {
     
     output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());
-    output.writeBoolean(classObject.hasValueObjectAnnotation());
+    output.writeBoolean(classObject.isValueObject());
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) {

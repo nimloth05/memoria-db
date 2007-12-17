@@ -43,7 +43,7 @@ public final class DataModeStrategy implements IModeStrategy {
 
   @Override
   public boolean hasValueObjectAnnotation(Object object, IObjectRepository objectRepository) {
-    return getMemoriaClass(object, objectRepository).hasValueObjectAnnotation();
+    return getMemoriaClass(object, objectRepository).isValueObject();
   }
 
   @Override

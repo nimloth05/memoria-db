@@ -8,6 +8,10 @@ import org.memoriadb.test.handler.testclassses.HashSetKey;
 
 public class HashSetTest extends SetTest {
 
+  /**
+   * This tests fails when the binding is not performed in two steps 
+   * (generation one and generation two bindings).
+   */
   public void test_key_with_reference() {
     Set<HashSetKey> set1 = new HashSet<HashSetKey>();
     Set<HashSetKey> set2 = new HashSet<HashSetKey>();

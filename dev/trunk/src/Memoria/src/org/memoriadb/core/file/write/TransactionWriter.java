@@ -3,6 +3,7 @@ package org.memoriadb.core.file.write;
 import java.io.*;
 import java.util.*;
 
+import org.memoriadb.OpenConfig;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.block.SurvivorAgent;

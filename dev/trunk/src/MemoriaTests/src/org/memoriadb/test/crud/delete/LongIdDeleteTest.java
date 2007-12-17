@@ -1,6 +1,6 @@
 package org.memoriadb.test.crud.delete;
 
-import org.memoriadb.core.CreateConfig;
+import org.memoriadb.CreateConfig;
 import org.memoriadb.id.loong.LongIdFactory;
 
 public class LongIdDeleteTest extends DeleteTest {

@@ -8,12 +8,11 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
   private final IHandler fHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
-  private final boolean fHasValueObjectAnnotation;
 
-  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean hasValueObjectAnnotation) {
+  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean isValueObject) {
+    super(isValueObject);
     fHandler = handler;
     fMemoriaClassId = memoriaClassId;
-    fHasValueObjectAnnotation = hasValueObjectAnnotation;
   }
 
   @Override
@@ -37,11 +36,6 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
   @Override
   public IMemoriaClass getSuperClass() {
     return fSuperClass;
-  }
-
-  @Override
-  public boolean hasValueObjectAnnotation() {
-    return fHasValueObjectAnnotation;
   }
 
   @Override

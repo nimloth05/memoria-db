@@ -481,7 +481,7 @@ public enum Type {
       IMemoriaClass memoriaClass = context.getMemoriaClass(value);
       if (memoriaClass == null) throw new MemoriaException("No memoriaClass for object (use saveAll): " + value);
       
-      if (memoriaClass.hasValueObjectAnnotation()) {
+      if (memoriaClass.isValueObject()) {
         output.writeByte(Constants.VALUE_OBJECT);
         writeValueObject(memoriaClass, value, output, context);
         return;

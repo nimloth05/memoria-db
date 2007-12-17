@@ -1,7 +1,7 @@
 package org.memoriadb.test.block;
 
+import org.memoriadb.CreateConfig;
 import org.memoriadb.block.*;
-import org.memoriadb.core.CreateConfig;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 

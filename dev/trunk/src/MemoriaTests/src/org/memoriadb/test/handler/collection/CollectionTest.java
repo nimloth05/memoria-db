@@ -145,8 +145,6 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   
   public void test_save_all_data_mode() {
     reopenDataMode();
-    
-    
   }
   
   public void test_string() {

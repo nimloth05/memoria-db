@@ -1,6 +1,6 @@
 package org.memoriadb.test.handler.array;
 
-import org.memoriadb.core.CreateConfig;
+import org.memoriadb.CreateConfig;
 import org.memoriadb.id.guid.GuidIdFactory;
 
 public class GuidBasicOneiDimensionalArrayTest extends BasicOneDimensionalArrayTest {

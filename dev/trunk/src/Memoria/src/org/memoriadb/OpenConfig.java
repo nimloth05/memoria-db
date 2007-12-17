@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb;
 
 import org.memoriadb.block.IBlockManager;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;

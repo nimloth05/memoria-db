@@ -14,7 +14,7 @@ public class TypeInfoTest extends AbstractMemoriaTest {
   
   public void test_add_class() {
     beginUpdate();
-    IObjectId id = fObjectStore.getTypeInfo().addMemoriaClass(SimpleTestObj.class);
+    IObjectId id = fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(SimpleTestObj.class);
     endUpdate();
     
     IMemoriaClass memoriaClass = fObjectStore.get(id);
@@ -84,7 +84,7 @@ public class TypeInfoTest extends AbstractMemoriaTest {
 
   
   private void addClass(Class<?> klass) {
-    fObjectStore.getTypeInfo().addMemoriaClass(klass);
+    fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(klass);
   }
 
   private void checkAddFails(Class<?> clazz) {

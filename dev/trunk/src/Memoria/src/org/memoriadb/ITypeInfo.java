@@ -10,7 +10,7 @@ public interface ITypeInfo {
    * 
    * @return Id if the added are already present memoria class
    */
-  public IObjectId addMemoriaClass(Class<?> clazz);
+  public IObjectId addMemoriaClassIfNecessary(Class<?> clazz);
 
   public IObjectId getMemoriaArrayClass();
   

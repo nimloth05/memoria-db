@@ -1,6 +1,6 @@
 package org.memoriadb.test.core;
 
-import org.memoriadb.core.CreateConfig;
+import org.memoriadb.CreateConfig;
 import org.memoriadb.id.loong.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 

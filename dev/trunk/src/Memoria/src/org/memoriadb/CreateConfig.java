@@ -1,4 +1,4 @@
-package org.memoriadb.core;
+package org.memoriadb;
 
 import java.util.*;
 
@@ -12,6 +12,7 @@ public class CreateConfig extends OpenConfig {
 
   private final String fDefaultInstantiatorClassName;
   private final List<String> fCustomHandlers = new ArrayList<String>();
+  private final List<Class<?>> fValueClasses = new ArrayList<Class<?>>();
 
   public CreateConfig() {
     super();
@@ -30,7 +31,7 @@ public class CreateConfig extends OpenConfig {
     fIdFactoryClassName = idFactoryClassName;
     fDefaultInstantiatorClassName = defaultInstantiatorClassName;
   }
-
+  
   /**
    * @param handlerClass
    *          The IHandler subclass.
@@ -39,6 +40,14 @@ public class CreateConfig extends OpenConfig {
    */
   public void addCustomHandler(String className) {
     fCustomHandlers.add(className);
+  }
+
+  /**
+   * Declares the given class as value-class (it's objects are inline stored value-objects).
+   * @param clazz
+   */
+  public void addValueClass(Class<?> clazz) {
+    fValueClasses.add(clazz);
   }
 
   public Iterable<String> getCustomHandlers() {
@@ -53,8 +62,14 @@ public class CreateConfig extends OpenConfig {
     return fIdFactoryClassName;
   }
 
+  public Iterable<Class<?>> getValueClasses() {
+    return fValueClasses;
+  }
+
   public void setIdFactoryName(String name) {
     fIdFactoryClassName = name;
   }
+  
+  
 
 }

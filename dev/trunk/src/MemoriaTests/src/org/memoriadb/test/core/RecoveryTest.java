@@ -1,7 +1,7 @@
 package org.memoriadb.test.core;
 
+import org.memoriadb.CreateConfig;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
-import org.memoriadb.core.CreateConfig;
 import org.memoriadb.core.exception.FileCorruptException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.id.IObjectId;
