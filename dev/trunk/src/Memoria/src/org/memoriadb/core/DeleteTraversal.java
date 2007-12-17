@@ -2,6 +2,7 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 
 /**
@@ -23,16 +24,16 @@ public class DeleteTraversal implements IObjectTraversal {
   @Override
   public void handle(Object obj) {
     if(fVisited.contains(obj)) return;
-    if(fTransactionHandler.isEnum(obj)) return;
-    if(!fTransactionHandler.contains(obj)){
-      System.out.println("deleting nonexisting object: " + obj);
-      return;
-    }
-    
     fVisited.add(obj);
+
+    if(fTransactionHandler.isEnum(obj)) return;
+    
+    IMemoriaClass memoriaClass = fTransactionHandler.getMemoriaClass(obj);
+    if(memoriaClass == null) return;
+    if(memoriaClass.isValueObject()) return;
     
     
-    fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
+    memoriaClass.getHandler().traverseChildren(obj, this);
     fTransactionHandler.internalDelete(obj);
   }
 
