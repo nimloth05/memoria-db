@@ -24,8 +24,13 @@ public class DeleteTraversal implements IObjectTraversal {
   public void handle(Object obj) {
     if(fVisited.contains(obj)) return;
     if(fTransactionHandler.isEnum(obj)) return;
+    if(!fTransactionHandler.contains(obj)){
+      System.out.println("deleting nonexisting object: " + obj);
+      return;
+    }
     
     fVisited.add(obj);
+    
     
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
     fTransactionHandler.internalDelete(obj);

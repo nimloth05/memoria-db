@@ -103,6 +103,23 @@ public class CompositeTest extends AbstractMemoriaTest {
     }
   }
   
+  public void test_deleting_shared_object() {
+    Composite c1 = new Composite();
+    Composite c2 = new Composite();
+    Leaf shared = new Leaf();
+    c1.addChild(shared);
+    c2.addChild(shared);
+    
+    saveAll(c1);
+    saveAll(c2);
+    
+    deleteAll(c1);
+    deleteAll(c2);
+    
+    assertEquals(0, fObjectStore.query(Object.class).size());
+    
+  }
+  
   public void test_save_composite() {
     Composite root = new Composite();
     root.setData("root");

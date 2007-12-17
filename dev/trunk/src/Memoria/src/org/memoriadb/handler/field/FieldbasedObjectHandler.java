@@ -95,8 +95,6 @@ public class FieldbasedObjectHandler implements IHandler {
   private void superDeserialize(Object object, DataInputStream input, final IReaderContext context) throws Exception {
     final IFieldbasedObject result = getFieldObject(object);
     
-    System.out.println(fClassObject);
-    
     for(int i = 0; i < (fClassObject).getFieldCount(); ++i) {
       int fieldId = input.readInt();
       final MemoriaField field = (fClassObject).getField(fieldId);
