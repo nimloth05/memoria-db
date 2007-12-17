@@ -15,6 +15,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
   public PhysicalFile(String path) {
     fPath = path;
     try {
+      // FIXME sync only when a block is written
       fRandomAccessFile = new RandomAccessFile(path, "rws");
       fLock = fRandomAccessFile.getChannel().tryLock();
     }

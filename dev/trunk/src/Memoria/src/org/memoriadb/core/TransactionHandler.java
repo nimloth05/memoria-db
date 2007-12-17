@@ -194,10 +194,9 @@ public class TransactionHandler {
     return new TypeInfo(this);
   }
 
-  public IObjectId internalAddObject(Object obj) {
+  public IObjectId internalAddObject(Object obj, IObjectId memoriaClassId) {
     if (contains(obj)) throw new MemoriaException("obj already added: " + obj);
 
-    IObjectId memoriaClassId = addMemoriaClassIfNecessary(obj);
     fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
     if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("ValueObject can not be added: " + obj);    
 
@@ -227,16 +226,20 @@ public class TransactionHandler {
     return fObjectRepository.getMemoriaClass(klass);
   }
 
+  public IObjectId internalSave(IMemoriaClass clazz) {
+    return internalSave(clazz, clazz.getMemoriaClassId());
+  }
+  
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
-  public IObjectId internalSave(Object obj) {
+  public IObjectId internalSave(Object obj, IObjectId memoriaClassId) {
     fModeStrategy.checkObject(obj);
     
     ObjectInfo info = getObjectInfo(obj);
 
     if (info != null) return internalUpdateObject(obj, info);
-    return internalAddObject(obj);
+    return internalAddObject(obj, memoriaClassId);
   }
 
   public boolean isEnum(Object obj) {
@@ -245,12 +248,6 @@ public class TransactionHandler {
 
   public boolean isInUpdateMode() {
     return fUpdateCounter > 0;
-  }
-
-  public boolean isValueObject(Object object) {
-    IMemoriaClass clazz = getMemoriaClass(object);
-    if(clazz == null) return fModeStrategy.hasValueObjectAnnotation(object, fObjectRepository); 
-    return clazz.isValueObject();
   }
 
   public IObjectId save(Object obj) {

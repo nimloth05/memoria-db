@@ -45,11 +45,6 @@ public final class ObjectModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public boolean hasValueObjectAnnotation(Object object, IObjectRepository objectRepository) {
-    return ReflectionUtil.hasValueObjectAnnotation(object.getClass());
-  }
-
-  @Override
   public boolean isDataMode() {
     return false;
   }

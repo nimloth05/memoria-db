@@ -1,6 +1,6 @@
 package org.memoriadb.core.mode;
 
-import java.util.*;
+import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.block.*;
@@ -172,13 +172,6 @@ public class DataStore implements IDataStoreExt {
 
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
-  }
-
-  /**
-   * Saves the obj without considering if this ObjectStore is in update-mode or not.
-   */
-  IObjectId internalSave(Object obj) {
-    return fTransactionHandler.internalSave(obj);
   }
   
 }

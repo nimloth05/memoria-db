@@ -45,7 +45,8 @@ public class TypeHierarchyBuilder {
     
     // enum class added, add enum-instances
     for(Enum<?> current: (Enum<?>[]) javaClass.getEnumConstants()) {
-      transactionHandler.internalAddObject(modeStrategy.createEnum(current, result));
+      // FIXME ist es korrekt, hier result als Klassen-Id mitzugeben? ich nid sicher sein, msc
+      transactionHandler.internalAddObject(modeStrategy.createEnum(current, result), result);
     }
     
     return result;

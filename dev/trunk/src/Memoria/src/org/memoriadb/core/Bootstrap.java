@@ -83,9 +83,9 @@ public class Bootstrap {
     
     // bootstap memoriaClasses
     transactionHandler.beginUpdate();
-    addDefaultMetaClasses(transactionHandler);
-    addCustomHandlers(transactionHandler, config.getCustomHandlers());
-    addValueClasses(transactionHandler, config.getValueClasses());
+      addDefaultMetaClasses(transactionHandler);
+      addCustomHandlers(transactionHandler, config.getCustomHandlers());
+      addValueClasses(transactionHandler, config.getValueClasses());
     transactionHandler.endUpdate();
     
     return transactionHandler;

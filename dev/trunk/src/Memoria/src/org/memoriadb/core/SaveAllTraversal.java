@@ -2,7 +2,9 @@ package org.memoriadb.core;
 
 import java.util.Set;
 
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.id.IObjectId;
 
 /**
  * 
@@ -25,17 +27,13 @@ public class SaveAllTraversal implements IObjectTraversal {
     if(fVisited.contains(obj)) return;
     fVisited.add(obj);
     
-    if(fTransactionHandler.isEnum(obj)) {
-      fTransactionHandler.addMemoriaClassIfNecessary(obj);
-      return;
-    }
+    IObjectId memoriaClassId = fTransactionHandler.addMemoriaClassIfNecessary(obj);
+    IMemoriaClass clazz = fTransactionHandler.getObject(memoriaClassId);
     
-    if (fTransactionHandler.isValueObject(obj)) {
-      fTransactionHandler.addMemoriaClassIfNecessary(obj);
-      return;
-    }
+    if(fTransactionHandler.isEnum(obj)) return;
+    if (clazz.isValueObject()) return;
     
-    fTransactionHandler.internalSave(obj);
+    fTransactionHandler.internalSave(obj, memoriaClassId);
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);
   }
 

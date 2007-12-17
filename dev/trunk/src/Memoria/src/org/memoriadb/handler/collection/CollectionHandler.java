@@ -98,7 +98,9 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   @Override
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     final T collection = createCollection(context.isInDataMode());
-    while (input.available() > 0) {
+    int size = input.readInt();
+    
+    for(int i = 0; i < size; ++i) {
 
       Type.readValueWithType(input, context, new ITypeVisitor() {
 
@@ -139,6 +141,9 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     Collection<?> list = getCollectionObject(obj);
+    
+    output.writeInt(list.size());
+    
     for (Object listEntry : list) {
       Type.writeValueWithType(output, listEntry, context);
     }

@@ -45,7 +45,8 @@ public class MapHandler implements IHandler {
   public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     Map<Object, Object> map = createMap();
     
-    while (input.available() > 0) {
+    int size = input.readInt();
+    for(int i = 0; i < size; ++i) {
 
       IObjectResolver key = readNextElement(input, context);
       IObjectResolver value = readNextElement(input, context);
@@ -65,6 +66,7 @@ public class MapHandler implements IHandler {
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     Map<?,?> map = getMapObject(obj);
     
+    output.writeInt(map.size());
     for (Map.Entry<?, ?> entry: map.entrySet()) {
       writeListEntry(entry.getKey(), output, context);
       writeListEntry(entry.getValue(), output, context);

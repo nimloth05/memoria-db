@@ -1,9 +1,10 @@
-package org.memoriadb.test.core;
+package org.memoriadb.test.crud.valueobject;
 
 import java.util.*;
 
 import org.memoriadb.CreateConfig;
 import org.memoriadb.id.IObjectId;
+import org.memoriadb.test.crud.valueobject.testclasses.AnnotatedObjectReferencer;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.composite.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
@@ -49,13 +50,13 @@ public class ValueObjectTest extends AbstractMemoriaTest {
   
   public void test_Composite() {
     IComponent c = new Composite();
-    //c.addChild(new Composite());
-    //c.addChild(new Leaf());
+    c.addChild(new Composite());
+    c.addChild(new Leaf());
     
     ObjectReferencer ref = new ObjectReferencer(c);
     
     // save is enough, because the whole composite is stored inline
-    save(ref);
+    IObjectId id = save(ref);
     
     assertEquals(1, fObjectStore.query(Object.class).size());
     
@@ -63,6 +64,9 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     
     assertEquals(1, fObjectStore.query(Object.class).size());
     
+    ref = get(id);
+    c = (IComponent) ref.getObejct();
+    assertEquals(2, c.getChildCount());
     
   }
   
@@ -97,6 +101,28 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     assertEquals(1, fObjectStore.query(Object.class).size());
     assertNotNull(ref.getObejct());
   }
+  
+  public void test_ValueObject_in_ValueObjecct() {
+    AnnotatedObjectReferencer aor = new AnnotatedObjectReferencer();
+    ArrayList<Object> list = new ArrayList<Object>();
+    aor.setObject(list);
+    
+    ObjectReferencer ref = new ObjectReferencer(aor);
+    
+    // save is enough, because the whole composite is stored inline
+    IObjectId id = save(ref);
+    
+    assertTrue(fObjectStore.contains(ref));
+    assertFalse(fObjectStore.contains(ref.getObejct()));
+    
+    reopen();
+
+    ref = get(id);
+    assertTrue(fObjectStore.contains(ref));
+    assertFalse(fObjectStore.contains(ref.getObejct()));
+
+    
+  }
 
   @Override
   protected void configureOpen(CreateConfig config) {
@@ -104,6 +130,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     config.addValueClass(Object.class);
     config.addValueClass(Composite.class);
     config.addValueClass(Leaf.class);
+    config.addValueClass(AnnotatedObjectReferencer.class);
   }
   
 }

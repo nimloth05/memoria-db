@@ -6,7 +6,7 @@ import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
@@ -28,6 +28,7 @@ public class FieldbasedClassHandler implements IHandler {
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
     
+    // ok, because MemoriaClasses are never stored inline!
     while (input.available() > 0) {
       int fieldId = input.readInt();
       String name = input.readUTF();

@@ -1,5 +1,8 @@
 package org.memoriadb.core;
 
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.id.IObjectId;
+
 
 
 /**
@@ -19,14 +22,15 @@ public class SaveTraversal implements IObjectTraversal {
 
   @Override
   public void handle(Object obj) {
-    fTransactionHandler.internalSave(obj);
-    
+    IObjectId memoriaClassId = fTransactionHandler.addMemoriaClassIfNecessary(obj);
+    fTransactionHandler.internalSave(obj, memoriaClassId);
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, new IObjectTraversal() {
 
       @Override
       public void handle(Object object) {
-        if (fTransactionHandler.isEnum(object)) fTransactionHandler.addMemoriaClassIfNecessary(object);
-        if (fTransactionHandler.isValueObject(object)) new AddMemoriaClassesTraversal(fTransactionHandler).handle(object); 
+        IObjectId memoriaClassId = fTransactionHandler.addMemoriaClassIfNecessary(object);
+        IMemoriaClass clazz = fTransactionHandler.getObject(memoriaClassId);
+        if(clazz.isValueObject())new AddMemoriaClassesTraversal(fTransactionHandler).handle(object);
       }
       
     });

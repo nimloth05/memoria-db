@@ -177,11 +177,4 @@ public class ObjectStore implements IObjectStoreExt  {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
 
-  /**
-   * Saves the obj without considering if this ObjectStore is in update-mode or not.
-   */
-  IObjectId internalSave(Object obj) {
-    return fTransactionHandler.internalSave(obj);
-  }
-
 }

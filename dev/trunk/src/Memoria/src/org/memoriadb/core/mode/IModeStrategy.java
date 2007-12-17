@@ -26,8 +26,6 @@ public interface IModeStrategy {
 
   public IMemoriaClass getMemoriaClass(Object object, IObjectRepository objectRepository);
 
-  public boolean hasValueObjectAnnotation(Object object, IObjectRepository objectRepository);
-
   /**
    * @return true, if the db is operated in data-mode (the java classes are not required).
    */

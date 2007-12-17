@@ -145,6 +145,9 @@ public abstract class AbstractValueObjectTest extends AbstractMemoriaTest {
     assertEquals("1", l1_valueObject.get("fValue"));
   }
   
+  /**
+   * ObjectReferencer->ValueObjectReferencer->TestValueObject
+   */
   public void test_valueObject_references_a_valueObject() {
     ObjectReferencer ref = new ObjectReferencer();
     ValueObjectReferencer valueObjectRef = new ValueObjectReferencer();
