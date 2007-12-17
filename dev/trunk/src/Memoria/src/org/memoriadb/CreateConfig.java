@@ -3,6 +3,7 @@ package org.memoriadb;
 import java.util.*;
 
 import org.memoriadb.block.IBlockManager;
+import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.loong.LongIdFactory;
 import org.memoriadb.instantiator.DefaultInstantiator;
 
@@ -11,7 +12,7 @@ public class CreateConfig extends OpenConfig {
   private String fIdFactoryClassName;
 
   private final String fDefaultInstantiatorClassName;
-  private final List<String> fCustomHandlers = new ArrayList<String>();
+  private final List<IHandler> fCustomHandlers = new ArrayList<IHandler>();
   private final List<Class<?>> fValueClasses = new ArrayList<Class<?>>();
 
   public CreateConfig() {
@@ -38,8 +39,8 @@ public class CreateConfig extends OpenConfig {
    * @param objectClass
    *          java-type which is handled by the given handler.
    */
-  public void addCustomHandler(String className) {
-    fCustomHandlers.add(className);
+  public void addCustomHandler(IHandler handler) {
+    fCustomHandlers.add(handler);
   }
 
   /**
@@ -50,7 +51,7 @@ public class CreateConfig extends OpenConfig {
     fValueClasses.add(clazz);
   }
 
-  public Iterable<String> getCustomHandlers() {
+  public Iterable<IHandler> getCustomHandlers() {
     return Collections.unmodifiableCollection(fCustomHandlers);
   }
 

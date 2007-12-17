@@ -28,9 +28,9 @@ public class Bootstrap {
     return openDb(config, file, strategy);
   }
   
-  private static void addCustomHandlers(TransactionHandler transactionHandler, Iterable<String> customHandlers) {
-    for (String className : customHandlers) {
-      registerHandler(transactionHandler, (IHandler)ReflectionUtil.createInstance(className));
+  private static void addCustomHandlers(TransactionHandler transactionHandler, Iterable<IHandler> customHandlers) {
+    for (IHandler handler : customHandlers) {
+      registerHandler(transactionHandler, handler);
     }
   }
 
