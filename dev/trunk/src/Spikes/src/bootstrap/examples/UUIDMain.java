@@ -3,7 +3,7 @@ package bootstrap.examples;
 import java.util.*;
 
 /**
- * $Rev$
+ * $Rev: 272 $
  * @author msc
  *
  */
