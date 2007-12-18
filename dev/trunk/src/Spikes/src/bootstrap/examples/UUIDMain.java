@@ -2,6 +2,11 @@ package bootstrap.examples;
 
 import java.util.*;
 
+/**
+ * $Rev$
+ * @author msc
+ *
+ */
 public class UUIDMain {
   
   public static void main(String[] args) {
