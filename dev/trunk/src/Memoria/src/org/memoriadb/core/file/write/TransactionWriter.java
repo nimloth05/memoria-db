@@ -19,8 +19,9 @@ public final class TransactionWriter {
   private long fHeadRevision;
   private final IObjectRepository fRepo;
   private final OpenConfig fConfig;
+  private final ICompressor fCompressor;
 
-  public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision) {
+  public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision, ICompressor compressor) {
     fConfig = config;
     if (repo == null) throw new IllegalArgumentException("objectRepo is null");
     if (config == null) throw new IllegalArgumentException("config is null");
@@ -30,6 +31,7 @@ public final class TransactionWriter {
     fFile = file;
     fBlockManager = config.getBlockManager();
     fHeadRevision = headRevision;
+    fCompressor = compressor;
   }
 
   public void close() {
@@ -94,7 +96,7 @@ public final class TransactionWriter {
    * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
-    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block);
+    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block, fCompressor);
 
     if (survivorAgent.hasSurvivors()) {
       saveSurvivors(tabooBlocks, mode, survivorAgent, decOGC);
@@ -182,6 +184,9 @@ public final class TransactionWriter {
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented. 
    */
   private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
+    
+    trxData = fCompressor.compress(trxData);
+    
     int blockSize = FileLayout.getBlockSize(trxData.length);
 
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);

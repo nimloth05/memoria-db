@@ -1,5 +1,6 @@
 package org.memoriadb.test.block;
 
+import org.memoriadb.CreateConfig;
 import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.OneInt;
@@ -70,6 +71,20 @@ public class TransactionWriterTest extends AbstractMemoriaTest {
     assertEquals(headerSize, positionB0);
     assertEquals(positionB0+blockSize, positionB1);
     assertEquals(positionB1+blockSize, getFile().getSize());
+  }
+  
+  @Override
+  protected void configureOpen(CreateConfig config) {
+    configure(config);
+  }
+
+  @Override
+  protected void configureReopen(CreateConfig config) {
+    configure(config);
+  }
+
+  private void configure(CreateConfig config) {
+    config.setUseCompression(false);
   }
   
 }

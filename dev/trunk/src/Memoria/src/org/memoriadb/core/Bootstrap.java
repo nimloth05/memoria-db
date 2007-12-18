@@ -95,13 +95,15 @@ public class Bootstrap {
   private static TransactionHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
     FileReader fileReader = new FileReader(file);
     Header header = readHeader(fileReader);
-
+    
+    ICompressor compressor = header.getCompressor();
+    
     IInstantiator instantiator = header.loadDefaultInstantiator();
     ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), instantiator, strategy);
+    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), instantiator, strategy, compressor);
 
-    TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision);
-    TransactionHandler transactionHandler = new TransactionHandler(instantiator, writer, header, strategy);
+    TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision, compressor);
+    TransactionHandler transactionHandler = new TransactionHandler(instantiator, writer, header, strategy, compressor);
     
     return transactionHandler;
   }

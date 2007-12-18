@@ -29,12 +29,14 @@ public class TransactionHandler {
   private final IInstantiator fInstantiator;
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
+  private final ICompressor fCompressor;
 
-  public TransactionHandler(IInstantiator instantiator, TransactionWriter writer, Header header,IModeStrategy modeStrategy) {
+  public TransactionHandler(IInstantiator instantiator, TransactionWriter writer, Header header,IModeStrategy modeStrategy, ICompressor compressor) {
     fInstantiator = instantiator;
     fTransactionWriter = writer;
     fHeader = header;
     fModeStrategy = modeStrategy;
+    fCompressor = compressor;
     fObjectRepository = writer.getRepo();
   }
 
@@ -186,7 +188,7 @@ public class TransactionHandler {
   }
 
   public SurvivorAgent getSurvivorAgent(Block block) {
-    return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block);
+    return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block, fCompressor);
   }
 
   //FIXME: TypeInfo bereinigen

@@ -167,6 +167,7 @@ public class DeleteMarkerTest extends AbstractMemoriaTest {
 
   private void configure(CreateConfig config) {
     config.setBlockManager(new MaintenanceFreeBlockManager(50, 0));
+    config.setUseCompression(false);
   }
 
 }

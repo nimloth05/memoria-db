@@ -54,6 +54,6 @@ public class FilePrinter {
     
     System.out.println("------------------------");
 
-    reader.readBlocks(header.loadIdFactory(), new PrintHandler());
+    reader.readBlocks(header.loadIdFactory(), header.getCompressor(), new PrintHandler());
   };
 }

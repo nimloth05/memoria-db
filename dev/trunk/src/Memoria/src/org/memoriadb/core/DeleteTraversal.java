@@ -6,11 +6,9 @@ import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 
 /**
- * 
  * Traverses a given object graph and saves all visited objects
  * 
  * @author msc
- *
  */
 public class DeleteTraversal implements IObjectTraversal {
 
@@ -31,7 +29,6 @@ public class DeleteTraversal implements IObjectTraversal {
     IMemoriaClass memoriaClass = fTransactionHandler.getMemoriaClass(obj);
     if(memoriaClass == null) return;
     if(memoriaClass.isValueObject()) return;
-    
     
     memoriaClass.getHandler().traverseChildren(obj, this);
     fTransactionHandler.internalDelete(obj);

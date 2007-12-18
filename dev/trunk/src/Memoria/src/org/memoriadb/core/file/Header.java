@@ -24,8 +24,9 @@ public class Header {
   private final int fHeaderSize;
   private final String fDefaultInstantiatorClassName;
   private final LastWrittenBlockInfo fLastWrittenBlockInfo;
+  private final boolean fUseCompression;
 
-  public Header(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo) {
+  public Header(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo, boolean compress) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fHostBranchRevision = hostBranchRevision;
@@ -35,12 +36,17 @@ public class Header {
     fDefaultInstantiatorClassName = defaultInstantiator;
     fHeaderSize = headerSize;
     fLastWrittenBlockInfo = lastWrittenBlockInfo;
+    fUseCompression = compress;
+  }
+
+  public ICompressor getCompressor() {
+    return useCompression()? new ZipCompressor() : ICompressor.NullComporeesorInstance;
   }
 
   public int getFileLayoutVersion() {
     return fFileLayoutVersion;
   }
-
+  
   public int getHeaderSize() {
     return fHeaderSize;
   }
@@ -75,6 +81,10 @@ public class Header {
 
   public IObjectIdFactory loadIdFactory() {
     return ReflectionUtil.createInstance(getIdFactoryClassName());
+  }
+
+  public boolean useCompression() {
+    return fUseCompression;
   }
 
   private String getDefaultInstantiatorClassName() {

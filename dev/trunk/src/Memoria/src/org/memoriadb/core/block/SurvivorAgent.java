@@ -6,7 +6,7 @@ import java.util.Set;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.read.*;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.core.util.io.IOUtil;
@@ -27,10 +27,12 @@ public class SurvivorAgent implements IFileReaderHandler  {
   
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
+  private final ICompressor fCompressor;
   
-  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file, Block block) {
+  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file, Block block, ICompressor compressor) {
     fFile = file;
     fRepo = repo;
+    fCompressor = compressor;
     computeSurvivors(block);
   }
    
@@ -41,7 +43,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   public void computeSurvivors(Block block) {
     
     DataInputStream stream = new DataInputStream(fFile.getInputStream(block.getPosition()));
-    BlockReader reader = new BlockReader();
+    BlockReader reader = new BlockReader(fCompressor);
     
     try {
       reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this, new AlwaysThrowErrorHandler());

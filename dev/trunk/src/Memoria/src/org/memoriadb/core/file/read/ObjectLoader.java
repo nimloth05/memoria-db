@@ -6,6 +6,7 @@ import java.util.*;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.*;
+import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.*;
@@ -26,17 +27,19 @@ public final class ObjectLoader implements IReaderContext {
   private final IInstantiator fInstantiator;
   private final IObjectIdFactory fIdFactory;
   private final IModeStrategy fStore;
+  private final ICompressor fCompressor;
 
-  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store) {
-    return new ObjectLoader(fileReader, repo, blockManager, instantiator, store).read();
+  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
+    return new ObjectLoader(fileReader, repo, blockManager, instantiator, store, compressor).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store) {
+  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
     if (instantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
     if (store == null) throw new IllegalArgumentException("store is null");
+    if (compressor == null) throw new IllegalArgumentException("compressor is null");
 
     fStore = store;
     fFileReader = fileReader;
@@ -44,6 +47,7 @@ public final class ObjectLoader implements IReaderContext {
     fBlockManager = blockManager;
     fInstantiator = instantiator;
     fIdFactory = repo.getIdFactory();
+    fCompressor = compressor;
   }
 
   @Override
@@ -201,7 +205,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private long readBlockData() throws IOException {
-    return fFileReader.readBlocks(fRepo.getIdFactory(), new IFileReaderHandler() {
+    return fFileReader.readBlocks(fRepo.getIdFactory(), fCompressor, new IFileReaderHandler() {
 
       @Override
       public void block(Block block) {

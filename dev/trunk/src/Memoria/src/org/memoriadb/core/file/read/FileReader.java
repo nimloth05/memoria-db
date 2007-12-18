@@ -42,10 +42,10 @@ public class FileReader {
    * 
    * @return Headrevision
    */
-  public long readBlocks(IObjectIdFactory idFactory, IFileReaderHandler handler) throws IOException {
+  public long readBlocks(IObjectIdFactory idFactory, ICompressor compressor, IFileReaderHandler handler) throws IOException {
     checkState(State.headerRead, State.blockRead);
 
-    BlockReader blockReader = new BlockReader();
+    BlockReader blockReader = new BlockReader(compressor);
 
     while (fStream.available() > 0) {
       Block block = new Block(fPosition);

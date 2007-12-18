@@ -170,6 +170,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
   private void configure(CreateConfig config) {
     config.setBlockManager(new MaintenanceFreeBlockManager(0, 0));
+    config.setUseCompression(false);
   }
 
   private void corruptFile(long position) {

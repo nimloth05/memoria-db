@@ -96,12 +96,13 @@ public class HeaderHelper {
     long hostBranchVersion = stream.readLong();
     Version version = readVersion(stream);
     int fileLayoutRevision = stream.readInt();
-
+    boolean useCompression = stream.readBoolean();
+    
     String idFactoryClassName = stream.readUTF();
     String defaultInstantiatorClassName = stream.readUTF();
     
     return new Header(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
-        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo);
+        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, useCompression);
   }
 
   private static LastWrittenBlockInfo readLastWrittenBlockInfo(DataInputStream stream) throws IOException {
@@ -144,6 +145,7 @@ public class HeaderHelper {
 
     writeVersion(stream, Memoria.getMemoriaVersion());
     stream.writeInt(Memoria.getFileLayoutVersion());
+    stream.writeBoolean(config.isUseCompression()); 
 
     stream.writeUTF(config.getIdFactoryClassName());
     stream.writeUTF(config.getDefaultInstantiatorClassName());

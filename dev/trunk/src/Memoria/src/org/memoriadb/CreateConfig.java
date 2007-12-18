@@ -10,6 +10,7 @@ import org.memoriadb.instantiator.DefaultInstantiator;
 public class CreateConfig extends OpenConfig {
 
   private String fIdFactoryClassName;
+  private boolean fUseCompression;
 
   private final String fDefaultInstantiatorClassName;
   private final List<IHandler> fCustomHandlers = new ArrayList<IHandler>();
@@ -19,6 +20,7 @@ public class CreateConfig extends OpenConfig {
     super();
     fIdFactoryClassName = LongIdFactory.class.getName();
     fDefaultInstantiatorClassName = DefaultInstantiator.class.getName();
+    fUseCompression = true;
   }
 
   public CreateConfig(IBlockManager blockManager, String IdFactoryClassName, String defaultInstantiatorClassName) {
@@ -67,10 +69,17 @@ public class CreateConfig extends OpenConfig {
     return fValueClasses;
   }
 
+  public boolean isUseCompression() {
+    return fUseCompression;
+  }
+
   public void setIdFactoryName(String name) {
     fIdFactoryClassName = name;
   }
-  
+
+  public void setUseCompression(boolean useCompression) {
+    fUseCompression = useCompression;
+  }
   
 
 }

@@ -31,11 +31,11 @@ public class FileStructure {
     public Block getBlock() {
       return fBlock;
     }
-    
+
     public long getBodyStartPosition() {
       return fBlock.getBodyStartPosition();
     }
-    
+
     public ObjectInfo getObject(int index) {
       return fObjectInfos.get(index);
     }
@@ -47,7 +47,7 @@ public class FileStructure {
     public long getPosition() {
       return fBlock.getPosition();
     }
-    
+
     public long getSize() {
       return fBlock.getBodySize();
     }
@@ -112,28 +112,27 @@ public class FileStructure {
     }
 
   }
-  
-  public BlockInfo getBlock(int index){
+
+  public BlockInfo getBlock(int index) {
     return fBlocks.get(index);
   }
 
   public Object getBlockCount() {
     return fBlocks.size();
   }
-  
+
   public List<BlockInfo> getBlocks() {
     return fBlocks;
   }
-  
+
   public Header getHeader() {
     return fHeader;
   }
 
   private void readFile(FileReader reader) throws IOException {
     fHeader = reader.readHeader();
-    reader.readBlocks(
-        fHeader.loadIdFactory(), new IFileReaderHandler(){
- 
+    reader.readBlocks(fHeader.loadIdFactory(), fHeader.getCompressor(), new IFileReaderHandler() {
+
       @Override
       public void block(Block block) {
         fCurrentBlock = new BlockInfo(block);
@@ -159,7 +158,7 @@ public class FileStructure {
       public void objectDeleted(IObjectId id, long version) {
         fCurrentBlock.add(new ObjectInfo(false, id, version));
       }
-      
+
     });
   }
 }

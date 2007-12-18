@@ -5,7 +5,7 @@ import java.io.*;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.id.*;
 
@@ -19,8 +19,11 @@ import org.memoriadb.id.*;
 public class BlockReader {
 
   private long fRevision = 0;
-
-  public BlockReader() {}
+  private final ICompressor fCompressor;
+  
+  public BlockReader(ICompressor compressor) {
+    fCompressor = compressor;
+  }
 
   public long getRevision() {
     return fRevision;
@@ -48,6 +51,8 @@ public class BlockReader {
     byte[] transactionData = readTransaction(stream, block, errorHandler);
     if(transactionData == null) return blockSize + FileLayout.BLOCK_OVERHEAD;
 
+    transactionData = fCompressor.decompress(transactionData);
+    
     // no state was changed before this line!
     handler.block(block);
 
