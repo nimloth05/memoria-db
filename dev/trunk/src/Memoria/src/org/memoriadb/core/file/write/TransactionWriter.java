@@ -11,6 +11,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
+import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 
 public final class TransactionWriter {
 
@@ -58,24 +59,25 @@ public final class TransactionWriter {
     write(add, update, delete, new HashSet<Block>(), mode);
   }
 
-  private Block append(byte[] trxData, int numberOfObjects) throws IOException {
+  private Block append(byte[] trxData, long objectDataCount) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
 
     stream.write(FileLayout.BLOCK_START_TAG);
 
     MemoriaCRC32 crc = new MemoriaCRC32();
     long blockSize = FileLayout.TRX_OVERHEAD + trxData.length;
+    //stream.writeUnsignedLong(blockSize);
     stream.writeLong(blockSize);
     crc.updateLong(blockSize);
     stream.writeLong(crc.getValue());
 
     // transaction
-    writeTransaction(trxData, stream, numberOfObjects);
+    writeTransaction(trxData, stream, objectDataCount);
 
     // first create the block...
     Block block = new Block(blockSize, fFile.getSize());
-    block.setObjectDataCount(numberOfObjects);
+    block.setObjectDataCount(objectDataCount);
     fBlockManager.add(block);
 
     fConfig.getListeners().triggerBeforeAppend(block);
@@ -163,12 +165,12 @@ public final class TransactionWriter {
     }
   }
 
-  private void write(Block block, byte[] trxData, int numberOfObjects) throws IOException {
+  private void write(Block block, byte[] trxData, long objectDataCount) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
 
     // transaction
-    writeTransaction(trxData, stream, numberOfObjects);
+    writeTransaction(trxData, stream, objectDataCount);
 
     fConfig.getListeners().triggerBeforeWrite(block);
 
@@ -183,7 +185,7 @@ public final class TransactionWriter {
    * Called recursively
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented. 
    */
-  private Block write(byte[] trxData, int numberOfObjects, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
+  private Block write(byte[] trxData, long objectDataCount, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     
     trxData = fCompressor.compress(trxData);
     
@@ -192,15 +194,15 @@ public final class TransactionWriter {
     Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
 
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
-    if (block == null) return append(trxData, numberOfObjects);
+    if (block == null) return append(trxData, objectDataCount);
 
     freeBlock(block, tabooBlocks, mode, decOGC);
 
     // now all objects in the freed block must be inactive (inactive-ratio == 100%)
     if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
-    block.resetBlock(numberOfObjects);
+    block.resetBlock(objectDataCount);
 
-    write(block, trxData, numberOfObjects);
+    write(block, trxData, objectDataCount);
     return block;
   }
 
@@ -240,7 +242,7 @@ public final class TransactionWriter {
     }
   }
 
-  private void writeTransaction(byte[] trxData, DataOutputStream stream, int numberOfObjects) throws IOException {
+  private void writeTransaction(byte[] trxData, MemoriaDataOutputStream stream, long objectDataCount) throws IOException {
     MemoriaCRC32 crc = new MemoriaCRC32();
 
     stream.writeLong(trxData.length);
@@ -251,8 +253,8 @@ public final class TransactionWriter {
     stream.writeLong(++fHeadRevision);
     crc.updateLong(fHeadRevision);
 
-    stream.writeInt(numberOfObjects);
-    crc.updateInt(numberOfObjects);
+    stream.writeLong(objectDataCount);
+    crc.updateLong(objectDataCount);
 
     stream.write(trxData);
     crc.update(trxData);

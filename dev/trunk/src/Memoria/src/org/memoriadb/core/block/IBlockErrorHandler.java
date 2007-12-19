@@ -10,6 +10,6 @@ public interface IBlockErrorHandler {
   
   public long blockTagCorrupt(DataInputStream input, Block block) throws IOException;
   
-  public void transactionCorrupt(DataInputStream input, Block block) throws IOException;
+  public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) throws IOException;
   
 }

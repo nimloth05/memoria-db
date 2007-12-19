@@ -1,12 +1,13 @@
 package org.memoriadb.core.file.read;
 
-import java.io.*;
+import java.io.IOException;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.Constants;
+import org.memoriadb.core.util.io.MemoriaDataInputStream;
 import org.memoriadb.id.IObjectIdFactory;
 
 /**
@@ -26,7 +27,7 @@ public class FileReader {
 
   private final IMemoriaFile fFile;
   private State fState = State.created;
-  private DataInputStream fStream;
+  private MemoriaDataInputStream fStream;
 
   // the current position in the file
   private long fPosition = 0;
@@ -51,6 +52,9 @@ public class FileReader {
       Block block = new Block(fPosition);
       IBlockErrorHandler errorHandler = createErrorHandler(fPosition, block, handler);
       fPosition += blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
+      if(fPosition != fStream.getReadBytes()){
+        System.out.println(fPosition + " != " + fStream.getReadBytes());
+      }
       fHeadRevision = Math.max(fHeadRevision, blockReader.getRevision());
     }
 
@@ -63,7 +67,7 @@ public class FileReader {
   public Header readHeader() throws IOException {
     checkState(State.created, State.headerRead);
 
-    fStream = new DataInputStream(fFile.getInputStream());
+    fStream = new MemoriaDataInputStream(fFile.getInputStream());
 
     fHeader = HeaderHelper.getHeader(fStream);
     fPosition = fHeader.getHeaderSize();

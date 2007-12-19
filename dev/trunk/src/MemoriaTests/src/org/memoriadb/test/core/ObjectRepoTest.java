@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.loong.*;
@@ -58,7 +58,6 @@ public class ObjectRepoTest extends TestCase {
     assertSame(classObject, fRepo.getExistingObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
   }
-  
   
   public void test_put_new_object_in_cache() {
     SimpleTestObj obj = new SimpleTestObj();

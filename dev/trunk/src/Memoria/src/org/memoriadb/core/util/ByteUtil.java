@@ -3,6 +3,8 @@ package org.memoriadb.core.util;
 import java.io.*;
 import java.util.UUID;
 
+import org.memoriadb.core.exception.MemoriaException;
+
 
 
 public final class ByteUtil {
@@ -46,10 +48,24 @@ public final class ByteUtil {
     return ((int1 << 24) + (int2 << 16) + (int3 << 8) + (int4 << 0));
   }
 
+  public static long readUnsignedLong(DataInputStream stream) throws IOException {
+    long result=0;
+    int shift = 0;
+    byte b;
+    do {
+      b = stream.readByte();
+      result |= (long)(b&0x7F)<<shift;
+      shift += 7;
+    }
+    while((b&0x80) != 0);
+    
+    return result;
+  }
+  
   public static UUID readUUID(DataInput input) throws IOException {
     return new UUID(input.readLong(), input.readLong());
   }
-  
+
   /**
    * Write the given value in the given byte array at position 0
    */
@@ -59,7 +75,19 @@ public final class ByteUtil {
     data[2] = (byte)(value >>>  8);
     data[3] = (byte)(value >>>  0);
   }
-
+  
+  public static void writeUnsignedLong(long input, DataOutputStream stream) throws IOException {
+    if(input < 0) throw new MemoriaException("unsigned long expected but was: " + input);
+      
+    do {
+      int value = ((int)input & 0x7F);
+      input >>>= 7;
+      if(input!=0) value |= 0x80;
+      stream.writeByte(value);
+    }
+    while(input != 0);
+  }
+  
   public static void writeUUID(DataOutput output, UUID uuid) throws IOException {
     output.writeLong(uuid.getMostSignificantBits());
     output.writeLong(uuid.getLeastSignificantBits());

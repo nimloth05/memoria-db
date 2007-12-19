@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 import org.memoriadb.*;
 import org.memoriadb.block.Block;
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClass;
@@ -145,7 +145,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
    
   protected final void reopen() {
-    recreateObjectStore(); 
+    recreateObjectStore();
   }
 
   protected void reopenDataMode() {

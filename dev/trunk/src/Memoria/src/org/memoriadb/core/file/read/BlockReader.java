@@ -7,6 +7,7 @@ import org.memoriadb.core.block.IBlockErrorHandler;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
+import org.memoriadb.core.util.io.MemoriaDataInputStream;
 import org.memoriadb.id.*;
 
 /**
@@ -34,14 +35,15 @@ public class BlockReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  public long readBlock(DataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
+  public long readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
       IBlockErrorHandler errorHandler) throws IOException {
     if (!FileLayout.testBlockTag(stream))  return errorHandler.blockTagCorrupt(stream, block); 
 
     MemoriaCRC32 crc = new MemoriaCRC32();
     
     // block size
-    long blockSize = stream.readLong(); 
+    //long blockSize = stream.readUnsignedLong(); 
+    long blockSize = stream.readLong();
     block.setBodySize(blockSize);
     crc.updateLong(blockSize);
 
@@ -104,7 +106,7 @@ public class BlockReader {
     return objectCount;
   }
 
-  private byte[] readTransaction(DataInputStream stream, Block block, IBlockErrorHandler errorHandler) throws IOException {
+  private byte[] readTransaction(MemoriaDataInputStream stream, Block block, IBlockErrorHandler errorHandler) throws IOException {
     MemoriaCRC32 crc;
     crc = new MemoriaCRC32();
     long transactionSize = stream.readLong(); // transaction size
@@ -113,8 +115,8 @@ public class BlockReader {
     fRevision = stream.readLong(); // transaction-revision
     crc.updateLong(fRevision);
     
-    int objectCount = stream.readInt();
-    crc.updateInt(objectCount);
+    long objectCount = stream.readLong();
+    crc.updateLong(objectCount);
     block.setObjectDataCount(objectCount);
     
     byte[] transactionData = new byte[(int) transactionSize];
@@ -124,7 +126,7 @@ public class BlockReader {
     long expectedCrc32 = stream.readLong();
     long value = crc.getValue();
     if (value != expectedCrc32){
-      errorHandler.transactionCorrupt(stream, block);
+      errorHandler.transactionCorrupt(stream, block, transactionSize);
       return null;
     }
 

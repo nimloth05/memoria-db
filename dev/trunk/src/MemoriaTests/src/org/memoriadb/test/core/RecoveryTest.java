@@ -9,6 +9,34 @@ import org.memoriadb.testutil.*;
 
 public class RecoveryTest extends AbstractMemoriaTest {
 
+  public void test_corrupt_block_size_in_last_written() {
+    Object o1 = new Object();
+    
+    IObjectId id = save(o1);
+    save(o1);
+    save(o1);
+    // |o1''|~o1'|
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getPosition() + FileLayout.BLOCK_TAG_LEN);
+    
+    reopenFails();
+  }
+  
+  public void test_corrupt_block_tag_in_last_written() {
+    Object o1 = new Object();
+    
+    IObjectId id = save(o1);
+    save(o1);
+    save(o1);
+    // |o1''|~o1'|
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getPosition());
+    
+    reopenFails();
+  }
+  
   public void test_corrupt_bootstrap_block() {
     // add an other block
     save(new Object());
@@ -17,13 +45,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     corruptFile(fs.getBlock(0).getPosition() + FileLayout.BLOCK_TAG_LEN);
 
-    try {
-      reopen();
-      fail("start-tag in bootstrap-block is corrupt");
-    }
-    catch (FileCorruptException e) {
-      // pass
-    }
+    reopenFails();
     
   }
 
@@ -32,13 +54,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     corruptFile(fs.getBlock(0).getPosition());
 
-    try {
-      reopen();
-      fail("start-tag in bootstrap-block is corrupt");
-    }
-    catch (FileCorruptException e) {
-      // pass
-    }
+    reopenFails();
   }
 
   public void test_corrupt_garbage_has_no_effect() {
@@ -66,8 +82,8 @@ public class RecoveryTest extends AbstractMemoriaTest {
     
     // block1 is 92 bytes wide, garbage starting at byte 72. corrupt bytes in between
     FileStructure fs = new FileStructure(getFile());
-    corruptFile(fs.getBlock(1).getPosition()+72);
-    corruptFile(fs.getBlock(1).getPosition()+91);
+    corruptFile(fs.getBlock(1).getPosition()+76);
+    corruptFile(fs.getBlock(1).getPosition()+95);
 
     reopen();
 
@@ -78,40 +94,66 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     corruptFile(FileLayout.MEMORIA_TAG.length);
 
-    try {
-      reopen();
-      fail("start-tag in bootstrap-block is corrupt");
-    }
-    catch (FileCorruptException e) {
-      // pass
-    }
+    reopenFails();
   }
 
   public void test_corrupt_memoria_tag() {
 
     corruptFile(0);
 
-    try {
-      reopen();
-      fail("file is corrupt");
-    }
-    catch (FileCorruptException e) {
-      // pass
-    }
+    reopenFails();
 
+  }
+
+  public void test_corrupt_transaction_in_last_written() {
+    Object o1 = new Object();
+    
+    IObjectId id = save(o1);
+    save(o1);
+    save(o1);
+    // |o1''|~o1'|
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getBodyStartPosition());
+    
+    assertEquals(4, getObjectInfo(id).getRevision());
+    reopen();
+    
+    assertEquals(3, getObjectInfo(id).getRevision());
+  }
+
+  public void test_corrupt_transaction_in_last_written_with_garbage() {
+    Object o1 = new Object();
+    
+    beginUpdate();
+      IObjectId id = save(o1);
+      save(new Object());
+    endUpdate();
+    // |o1, o|
+    
+    save(o1);
+    // |~o1, o|o1'|
+    
+    save(o1);
+    // |o1'',garbage|~o1'|o'|
+    
+    assertEquals(4, getBlockManager().getBlockCount());
+    assertBlocks(getBlock(1),getObjectInfo(id).getCurrentBlock());
+    
+    FileStructure fs = new FileStructure(getFile());
+    corruptFile(fs.getBlock(1).getBodyStartPosition());
+    
+    assertEquals(5, getObjectInfo(id).getRevision());
+    reopen();
+    
+    assertEquals(4, getObjectInfo(id).getRevision());
   }
 
   public void test_file_too_small() {
 
     getFile().shrink(2);
 
-    try {
-      reopen();
-      fail("file is corrupt");
-    }
-    catch (FileCorruptException e) {
-      // pass
-    }
+    reopenFails();
 
   }
 
@@ -131,6 +173,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertEquals(0, fObjectStore.query(Object.class).size());
   }
 
+  
   public void test_repair_corrupt_block_tag_in_last_appended() {
     save(new Object());
 
@@ -182,6 +225,16 @@ public class RecoveryTest extends AbstractMemoriaTest {
     b = (byte) (b ^ 0xFF);
 
     file.write(new byte[] { b }, position);
+  }
+
+  private void reopenFails() {
+    try {
+      reopen();
+      fail("start-tag in bootstrap-block is corrupt");
+    }
+    catch (FileCorruptException e) {
+      // pass
+    }
   }
 
 }

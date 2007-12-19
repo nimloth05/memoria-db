@@ -36,8 +36,8 @@ public class Block {
   private final long fPosition;
   private IBlockManager fManager;
   
-  private int fObjectDataCount;
-  private int fInactiveObjectDataCount;
+  private long fObjectDataCount;
+  private long fInactiveObjectDataCount;
 
   // if true, the inactiveRatio fo this block is 100%
   private boolean fIsFree = false;
@@ -72,7 +72,7 @@ public class Block {
     return getPosition() + FileLayout.BLOCK_OVERHEAD;
   }
 
-  public int getInactiveObjectDataCount() {
+  public long getInactiveObjectDataCount() {
     return fInactiveObjectDataCount;
   }
 
@@ -95,7 +95,7 @@ public class Block {
     return getBodySize() - FileLayout.TRX_OVERHEAD;
   }
 
-  public int getObjectDataCount() {
+  public long getObjectDataCount() {
     return fObjectDataCount;
   }
 
@@ -124,7 +124,7 @@ public class Block {
   /**
    * Is called after all survivors were safed.
    */
-  public void resetBlock(int numberOfObjects) {
+  public void resetBlock(long numberOfObjects) {
     fInactiveObjectDataCount = 0;
     setObjectDataCount(numberOfObjects);
   }
@@ -141,7 +141,7 @@ public class Block {
     fIsFree  = true;
   }
 
-  public void setObjectDataCount(int numberOfObjects) {
+  public void setObjectDataCount(long numberOfObjects) {
     fObjectDataCount = numberOfObjects;
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
