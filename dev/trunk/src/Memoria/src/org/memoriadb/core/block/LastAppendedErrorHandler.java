@@ -3,7 +3,7 @@ package org.memoriadb.core.block;
 import java.io.*;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.IFileReaderHandler;
 
 /**
@@ -11,7 +11,7 @@ import org.memoriadb.core.file.read.IFileReaderHandler;
  * Used when the currently processed block is the last written block
  * 
  * @author msc
- *
+ * 
  */
 public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
 
@@ -38,11 +38,11 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
   }
 
   private long readToEndOfFile(DataInputStream input, Block block) throws IOException {
-    long size = fFile.getSize()-block.getPosition();
+    long size = fFile.getSize() - block.getPosition();
     block.setWholeSize(size);
-    block.setIsFree(); 
+    block.setIsFree();
     fFileReaderHandler.block(block);
-    
+
     // skip stream to the end
     input.skip(Long.MAX_VALUE);
     

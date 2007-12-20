@@ -65,14 +65,10 @@ public final class ObjectSerializer {
    * @param repo
    * @param mode 
    */
-  public ObjectSerializer(IObjectRepository repo, IModeStrategy mode) {
+  public ObjectSerializer(IObjectRepository repo, IModeStrategy mode, MemoriaByteArrayOutputStream stream) {
     fObjectRepository = repo;
     fMode = mode;
-    fStream = new MemoriaByteArrayOutputStream();
-  }
-
-  public byte[] getBytes() {
-    return fStream.toByteArray();
+    fStream = stream;
   }
 
   public void markAsDeleted(IObjectInfo info) throws IOException {

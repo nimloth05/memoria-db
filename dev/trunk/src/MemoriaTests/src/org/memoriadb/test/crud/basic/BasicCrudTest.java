@@ -83,7 +83,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     
     assertEquals(o, fObjectStore.get(id));
   }
-  
+
   public void test_Object() {
     Object o = new Object();
     IObjectId id = save(o);
@@ -185,7 +185,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     B l1_b = (B) fObjectStore.get(id);
     assertNull(l1_b.getName());
   }
-  
+
   public void test_save_null_reference() {
     A a = new A();
     

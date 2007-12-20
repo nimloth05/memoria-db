@@ -11,7 +11,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
-import org.memoriadb.core.util.io.MemoriaDataOutputStream;
+import org.memoriadb.core.util.io.*;
 
 public final class TransactionWriter {
 
@@ -59,24 +59,25 @@ public final class TransactionWriter {
     write(add, update, delete, new HashSet<Block>(), mode);
   }
 
-  private Block append(byte[] trxData, long objectDataCount) throws IOException {
+  private Block append(byte[] compressedTrx, long objectDataCount) throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
 
     stream.write(FileLayout.BLOCK_START_TAG);
 
     MemoriaCRC32 crc = new MemoriaCRC32();
-    long blockSize = FileLayout.TRX_OVERHEAD + trxData.length;
-    //stream.writeUnsignedLong(blockSize);
-    stream.writeLong(blockSize);
-    crc.updateLong(blockSize);
+    stream.writeLong(compressedTrx.length);
+    crc.updateLong(compressedTrx.length);
     stream.writeLong(crc.getValue());
-
-    // transaction
-    writeTransaction(trxData, stream, objectDataCount);
-
+    
+    stream.write(compressedTrx);
+    crc = new MemoriaCRC32();
+    crc.update(compressedTrx);
+    stream.writeLong(crc.getValue());
+    
     // first create the block...
-    Block block = new Block(blockSize, fFile.getSize());
+    Block block = new Block(compressedTrx.length, fFile.getSize());
+    
     block.setObjectDataCount(objectDataCount);
     fBlockManager.add(block);
 
@@ -123,44 +124,48 @@ public final class TransactionWriter {
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
    */
   private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent, List<ObjectInfo> decOGC) throws Exception, IOException {
-    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
+    
+    MemoriaByteArrayOutputStream stream = new MemoriaByteArrayOutputStream();
+    long revision = writeTransaction(stream, survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size());
+    
+    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
 
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
     writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
 
-    Block survivorsBlock = write(serializer.getBytes(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode, decOGC);
+    Block survivorsBlock = write(stream.toByteArray(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode, decOGC);
 
     for (ObjectInfo info : survivorAgent.getActiveObjectData()) {
       info.changeCurrentBlock(survivorsBlock);
-      info.setRevision(fHeadRevision);
+      info.setRevision(revision);
     }
 
     for (ObjectInfo info : survivorAgent.getActiveDeleteMarkers()) {
       info.changeCurrentBlock(survivorsBlock);
-      info.setRevision(fHeadRevision);
+      info.setRevision(revision);
     }
   }
 
-  private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block) {
+  private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
-      info.setRevision(fHeadRevision);
+      info.setRevision(revision);
     }
   }
 
-  private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block) {
+  private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
-      info.setRevision(fHeadRevision);
+      info.setRevision(revision);
       info.incrementOldGenerationCount();
       info.setDeleteMarkerPersistent();
     }
   }
 
-  private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block) {
+  private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
       info.changeCurrentBlock(block);
-      info.setRevision(fHeadRevision);
+      info.setRevision(revision);
       info.incrementOldGenerationCount();
     }
   }
@@ -169,9 +174,15 @@ public final class TransactionWriter {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
 
-    // transaction
-    writeTransaction(trxData, stream, objectDataCount);
-
+    stream.write(trxData);
+    byte[] garbage = new byte[(int)block.getBodySize()-trxData.length];
+    stream.write(garbage);
+    
+    MemoriaCRC32 crc = new MemoriaCRC32();
+    crc.update(trxData);
+    crc.update(garbage);
+    stream.writeLong(crc.getValue());
+    
     fConfig.getListeners().triggerBeforeWrite(block);
 
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
@@ -187,14 +198,12 @@ public final class TransactionWriter {
    */
   private Block write(byte[] trxData, long objectDataCount, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     
-    trxData = fCompressor.compress(trxData);
+    byte[] compressedTrx = fCompressor.compress(trxData);
+
+    Block block = fBlockManager.allocatedRecyclebleBlock(compressedTrx.length, tabooBlocks);
     
-    int blockSize = FileLayout.getBlockSize(trxData.length);
-
-    Block block = fBlockManager.allocatedRecyclebleBlock(blockSize, tabooBlocks);
-
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
-    if (block == null) return append(trxData, objectDataCount);
+    if (block == null) return append(compressedTrx, objectDataCount);
 
     freeBlock(block, tabooBlocks, mode, decOGC);
 
@@ -202,24 +211,27 @@ public final class TransactionWriter {
     if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.resetBlock(objectDataCount);
 
-    write(block, trxData, objectDataCount);
+    write(block, compressedTrx, objectDataCount);
     return block;
   }
 
   private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
-
-    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode);
-
+    
+    MemoriaByteArrayOutputStream stream = new MemoriaByteArrayOutputStream();
+    long revision = writeTransaction(stream, add.size() + update.size() + delete.size());
+    
+    ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
+    
     writeAddOrUpdate(add, tabooBlocks, serializer);
     writeAddOrUpdate(update, tabooBlocks, serializer);
     writeDelete(delete, tabooBlocks, serializer);
 
     List<ObjectInfo> decOGC = new ArrayList<ObjectInfo>();
-    Block block = write(serializer.getBytes(), add.size() + update.size() + delete.size(), tabooBlocks, mode, decOGC);
+    Block block = write(stream.toByteArray(), add.size() + update.size() + delete.size(), tabooBlocks, mode, decOGC);
     
-    updateInfoAfterAdd(add, block);
-    updateInfoAfterUpdate(update, block);
-    updateInfoAfterDelete(delete, block);
+    updateInfoAfterAdd(add, block, revision);
+    updateInfoAfterUpdate(update, block, revision);
+    updateInfoAfterDelete(delete, block, revision);
 
     // must done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {
@@ -242,23 +254,11 @@ public final class TransactionWriter {
     }
   }
 
-  private void writeTransaction(byte[] trxData, MemoriaDataOutputStream stream, long objectDataCount) throws IOException {
-    MemoriaCRC32 crc = new MemoriaCRC32();
-
-    stream.writeLong(trxData.length);
-    crc.updateLong(trxData.length);
-
+  private long writeTransaction(MemoriaByteArrayOutputStream stream, long objectDataCount) throws IOException {
     // increment revision here. If it's the saving of survivors or an append,
     // either way, the revision must be incremeneted at the time of writing back
     stream.writeLong(++fHeadRevision);
-    crc.updateLong(fHeadRevision);
-
     stream.writeLong(objectDataCount);
-    crc.updateLong(objectDataCount);
-
-    stream.write(trxData);
-    crc.update(trxData);
-
-    stream.writeLong(crc.getValue());
+    return fHeadRevision;
   }
 }

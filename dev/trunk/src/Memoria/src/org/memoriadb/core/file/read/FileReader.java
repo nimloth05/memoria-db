@@ -50,6 +50,7 @@ public class FileReader {
 
     while (fStream.available() > 0) {
       Block block = new Block(fPosition);
+      
       IBlockErrorHandler errorHandler = createErrorHandler(fPosition, block, handler);
       fPosition += blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
       if(fPosition != fStream.getReadBytes()){

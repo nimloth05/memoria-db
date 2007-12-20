@@ -232,8 +232,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(0, getBlock(3).getInactiveRatio());
 
     assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(4, getObjectInfo(id2).getRevision());
-    assertEquals(5, getObjectInfo(id3).getRevision());
+    assertEquals(5, getObjectInfo(id2).getRevision());
+    assertEquals(4, getObjectInfo(id3).getRevision());
 
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
@@ -258,8 +258,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(0, getBlock(3).getInactiveRatio());
 
     assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(4, getObjectInfo(id2).getRevision());
-    assertEquals(5, getObjectInfo(id3).getRevision());
+    assertEquals(5, getObjectInfo(id2).getRevision());
+    assertEquals(4, getObjectInfo(id3).getRevision());
 
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));

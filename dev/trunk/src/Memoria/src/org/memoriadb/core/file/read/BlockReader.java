@@ -1,6 +1,7 @@
 package org.memoriadb.core.file.read;
 
 import java.io.*;
+import java.util.Arrays;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
@@ -39,27 +40,41 @@ public class BlockReader {
       IBlockErrorHandler errorHandler) throws IOException {
     if (!FileLayout.testBlockTag(stream))  return errorHandler.blockTagCorrupt(stream, block); 
 
-    MemoriaCRC32 crc = new MemoriaCRC32();
-    
     // block size
-    //long blockSize = stream.readUnsignedLong(); 
     long blockSize = stream.readLong();
-    block.setBodySize(blockSize);
-    crc.updateLong(blockSize);
-
     long readCrc = stream.readLong();
-    if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(stream, block); 
 
-    byte[] transactionData = readTransaction(stream, block, errorHandler);
-    if(transactionData == null) return blockSize + FileLayout.BLOCK_OVERHEAD;
+    //long blockSize = stream.readUnsignedLong(); 
+    MemoriaCRC32 crc = new MemoriaCRC32();
+    crc.updateLong(blockSize);
+    if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(stream, block);
+    
+    block.setBodySize(blockSize);
+    
+    byte[] body = new byte[(int)blockSize];
+    stream.readFully(body);
+    readCrc = stream.readLong();
+    
+    crc = new MemoriaCRC32();
+    crc.update(body);
+    if (readCrc != crc.getValue()){
+      errorHandler.transactionCorrupt(stream, block, 0);
+      return blockSize + FileLayout.BLOCK_OVERHEAD;
+    }
+    
+    // now expand the transaction
+    body = fCompressor.decompress(body);
+    
+    DataInputStream dis = new DataInputStream(new ByteArrayInputStream(body));
+    fRevision = dis.readLong(); // transaction-revision
 
-    transactionData = fCompressor.decompress(transactionData);
+    long objectDataCount = dis.readLong();
+    block.setObjectDataCount(objectDataCount);
     
     // no state was changed before this line!
     handler.block(block);
 
-    int objectCount = readObjects(idFactory, handler, fRevision, transactionData);
-    if(objectCount != block.getObjectDataCount()) throw new MemoriaException("object-count mismatch: " + objectCount  + " != " + block.getObjectDataCount());
+    readObjects(idFactory, handler, fRevision, body, FileLayout.TRX_OVERHEAD, objectDataCount);
 
     return blockSize + FileLayout.BLOCK_OVERHEAD;
   }
@@ -70,6 +85,8 @@ public class BlockReader {
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
+
+    byte[] objectData = Arrays.copyOfRange(data, offset+2*idFactory.getIdSize(), offset+size);
 
     if (idFactory.isObjectDeletionMarker(typeId)) {
       handler.objectDeleted(objectId, revision);
@@ -82,58 +99,27 @@ public class BlockReader {
 
     // no deleteMarker encountered
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, stream), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.memoriaClass(new HydratedObject(typeId, objectData), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, stream), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.object(new HydratedObject(typeId, objectData), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
     }
   }
 
   /**
+   * @param objectDataCount 
    * @return The number of read ObjectData
    */
-  private int readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data) throws IOException {
-    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
-    int offset = 0;
-    int objectCount = 0;
-    while (stream.available() > 0) {
-      ++objectCount;
+  private int readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, long objectDataCount) throws IOException {
+    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
+    for(int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
-      readObject(idFactory, handler, revision, data, offset + FileLayout.OBJECT_SIZE_LEN, size);
-      offset += FileLayout.OBJECT_SIZE_LEN + size;
-      skip(stream, size);
+      byte[] objectData = new byte[size];
+      stream.readFully(objectData);
+      
+      readObject(idFactory, handler, revision, objectData, 0, size);
     }
-    return objectCount;
-  }
-
-  private byte[] readTransaction(MemoriaDataInputStream stream, Block block, IBlockErrorHandler errorHandler) throws IOException {
-    MemoriaCRC32 crc;
-    crc = new MemoriaCRC32();
-    long transactionSize = stream.readLong(); // transaction size
-    crc.updateLong(transactionSize);
-
-    fRevision = stream.readLong(); // transaction-revision
-    crc.updateLong(fRevision);
-    
-    long objectCount = stream.readLong();
-    crc.updateLong(objectCount);
-    block.setObjectDataCount(objectCount);
-    
-    byte[] transactionData = new byte[(int) transactionSize];
-    stream.readFully(transactionData);
-    crc.update(transactionData);
-
-    long expectedCrc32 = stream.readLong();
-    long value = crc.getValue();
-    if (value != expectedCrc32){
-      errorHandler.transactionCorrupt(stream, block, transactionSize);
-      return null;
-    }
-
-    // block may be bigger then the transaction-data -> skip
-    skip(stream, block.getBodySize() - transactionSize - FileLayout.TRX_OVERHEAD);
-    
-    return transactionData;
+    return 0;
   }
 
   private void skip(DataInputStream stream, long size) throws IOException {

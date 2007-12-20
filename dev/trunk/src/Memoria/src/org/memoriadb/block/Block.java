@@ -69,7 +69,7 @@ public class Block {
    * @return The position, where the transaction starts (size of the transaction starts here)
    */
   public long getBodyStartPosition() {
-    return getPosition() + FileLayout.BLOCK_OVERHEAD;
+    return getPosition() + FileLayout.BLOCK_HEADER_OVERHEAD;
   }
 
   public long getInactiveObjectDataCount() {
@@ -86,13 +86,6 @@ public class Block {
     // when the block-size still is 0, the ratio is 0
     if(fObjectDataCount == 0) return 0;
     return fInactiveObjectDataCount*100 / fObjectDataCount;
-  }
-
-  /**
-   * @return The max number of bytes that can be stored in the contained transaction.
-   */
-  public long getMaxTrxDataSize() {
-    return getBodySize() - FileLayout.TRX_OVERHEAD;
   }
 
   public long getObjectDataCount() {
