@@ -36,9 +36,12 @@ public class BlockReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  public long readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
+  public void readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
       IBlockErrorHandler errorHandler) throws IOException {
-    if (!FileLayout.testBlockTag(stream))  return errorHandler.blockTagCorrupt(stream, block); 
+    if (!FileLayout.testBlockTag(stream))  {
+      errorHandler.blockTagCorrupt(stream, block);
+      return;
+    }
 
     // block size
     long blockSize = stream.readLong();
@@ -47,7 +50,10 @@ public class BlockReader {
     //long blockSize = stream.readUnsignedLong(); 
     MemoriaCRC32 crc = new MemoriaCRC32();
     crc.updateLong(blockSize);
-    if (readCrc != crc.getValue()) return errorHandler.blockSizeCorrupt(stream, block);
+    if (readCrc != crc.getValue()) {
+      errorHandler.blockSizeCorrupt(stream, block);
+      return;
+    }
     
     block.setBodySize(blockSize);
     
@@ -59,7 +65,7 @@ public class BlockReader {
     crc.update(body);
     if (readCrc != crc.getValue()){
       errorHandler.transactionCorrupt(stream, block, 0);
-      return blockSize + FileLayout.BLOCK_OVERHEAD;
+      return;
     }
     
     // now expand the transaction
@@ -76,7 +82,7 @@ public class BlockReader {
 
     readObjects(idFactory, handler, fRevision, body, FileLayout.TRX_OVERHEAD, objectDataCount);
 
-    return blockSize + FileLayout.BLOCK_OVERHEAD;
+    return;
   }
 
   private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size)

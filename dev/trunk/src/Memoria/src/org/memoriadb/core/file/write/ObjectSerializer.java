@@ -6,7 +6,7 @@ import org.memoriadb.core.*;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
-import org.memoriadb.core.util.io.MemoriaByteArrayOutputStream;
+import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 
@@ -58,14 +58,14 @@ public final class ObjectSerializer {
   }
 
   private final IObjectRepository fObjectRepository;
-    private final MemoriaByteArrayOutputStream fStream;
+    private final MemoriaDataOutputStream fStream;
     private final IModeStrategy fMode;
 
   /**
    * @param repo
    * @param mode 
    */
-  public ObjectSerializer(IObjectRepository repo, IModeStrategy mode, MemoriaByteArrayOutputStream stream) {
+  public ObjectSerializer(IObjectRepository repo, IModeStrategy mode, MemoriaDataOutputStream stream) {
     fObjectRepository = repo;
     fMode = mode;
     fStream = stream;

@@ -7,7 +7,6 @@ import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.*;
-import org.memoriadb.testutil.CollectionUtil;
 
 public class ObjectContainerTest extends AbstractMemoriaTest {
 
@@ -167,8 +166,6 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
 
     reopen();
 
-    System.out.println(fObjectStore.getAllObjects());
-    
     Referencer loadedReferencer = query(Referencer.class).get(0);
     assertEquals(referencer.getStringValueFromReferencee(), loadedReferencer.getStringValueFromReferencee());
 

@@ -22,13 +22,13 @@ public abstract class AbstractBlockErrorHandler implements IBlockErrorHandler {
 
   @SuppressWarnings("unused")
   @Override
-  public long blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
+  public void blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("block size corrupt: " + block);
   }
 
   @SuppressWarnings("unused")
   @Override
-  public long blockTagCorrupt(DataInputStream input, Block block) throws IOException {
+  public void blockTagCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("block tag corrupt: " + block);
   }
 

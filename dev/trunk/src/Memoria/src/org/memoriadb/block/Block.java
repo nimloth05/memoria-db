@@ -149,7 +149,7 @@ public class Block {
 
   @Override
   public String toString() {
-    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getWholeSize();
+    return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getBodySize();
   }
   
 }

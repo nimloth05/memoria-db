@@ -49,16 +49,15 @@ public class HeaderHelper {
     writeDefaultLastWrittenBlockInfo(file);
 
     byte[] headerInfo = writeHeaderInfo(config);
-    int headerInfoSize = headerInfo.length;
     
     MemoriaCRC32 crc = new MemoriaCRC32();
-    crc.updateInt(headerInfoSize);
+    crc.updateInt(headerInfo.length);
     crc.update(headerInfo);
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
     
-    stream.writeInt(headerInfoSize);
+    stream.writeInt(headerInfo.length);
     stream.write(headerInfo);
     stream.writeLong(crc.getValue());
     

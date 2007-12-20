@@ -6,9 +6,9 @@ import org.memoriadb.block.Block;
 
 public interface IBlockErrorHandler {
   
-  public long blockSizeCorrupt(DataInputStream input, Block block) throws IOException;
+  public void blockSizeCorrupt(DataInputStream input, Block block) throws IOException;
   
-  public long blockTagCorrupt(DataInputStream input, Block block) throws IOException;
+  public void blockTagCorrupt(DataInputStream input, Block block) throws IOException;
   
   public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) throws IOException;
   

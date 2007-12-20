@@ -146,7 +146,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
     save(new Object());
 
     FileStructure fs = new FileStructure(getFile());
-    System.out.println(fs.getBlock(1).getPosition());
     corruptFile(fs.getBlock(1).getPosition() + FileLayout.BLOCK_TAG_LEN);
 
     reopen();

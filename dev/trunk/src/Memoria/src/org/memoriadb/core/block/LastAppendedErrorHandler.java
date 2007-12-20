@@ -23,30 +23,35 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
   }
 
   @Override
-  public long blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
-    return readToEndOfFile(input, block);
+  public void blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
+    freeCorruptBlock(input, block);
+    skipToEnd(input);
   }
 
   @Override
-  public long blockTagCorrupt(DataInputStream input, Block block) throws IOException {
-    return readToEndOfFile(input, block);
+  public void blockTagCorrupt(DataInputStream input, Block block) throws IOException {
+    freeCorruptBlock(input, block);
+    skipToEnd(input);
   }
 
   @Override
   public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) throws IOException {
-    readToEndOfFile(input, block);
+    freeCorruptBlock(input, block);
   }
 
-  private long readToEndOfFile(DataInputStream input, Block block) throws IOException {
+  private void freeCorruptBlock(DataInputStream input, Block block) throws IOException {
     long size = fFile.getSize() - block.getPosition();
     block.setWholeSize(size);
     block.setIsFree();
     fFileReaderHandler.block(block);
 
+    skipToEnd(input);
+    
+  }
+
+  private void skipToEnd(DataInputStream input) throws IOException {
     // skip stream to the end
     input.skip(Long.MAX_VALUE);
-    
-    return size;
   }
 
 }

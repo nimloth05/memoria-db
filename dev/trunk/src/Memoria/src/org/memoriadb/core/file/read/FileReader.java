@@ -30,7 +30,6 @@ public class FileReader {
   private MemoriaDataInputStream fStream;
 
   // the current position in the file
-  private long fPosition = 0;
   private long fHeadRevision = Constants.INITIAL_HEAD_REVISION;
   private Header fHeader;
 
@@ -49,13 +48,9 @@ public class FileReader {
     BlockReader blockReader = new BlockReader(compressor);
 
     while (fStream.available() > 0) {
-      Block block = new Block(fPosition);
-      
-      IBlockErrorHandler errorHandler = createErrorHandler(fPosition, block, handler);
-      fPosition += blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
-      if(fPosition != fStream.getReadBytes()){
-        System.out.println(fPosition + " != " + fStream.getReadBytes());
-      }
+      Block block = new Block(fStream.getReadBytes());
+      IBlockErrorHandler errorHandler = createErrorHandler(fStream.getReadBytes(), block, handler);
+      blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
       fHeadRevision = Math.max(fHeadRevision, blockReader.getRevision());
     }
 
@@ -71,8 +66,6 @@ public class FileReader {
     fStream = new MemoriaDataInputStream(fFile.getInputStream());
 
     fHeader = HeaderHelper.getHeader(fStream);
-    fPosition = fHeader.getHeaderSize();
-
     return fHeader;
   }
 

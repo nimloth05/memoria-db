@@ -48,12 +48,12 @@ public final class ByteUtil {
     return ((int1 << 24) + (int2 << 16) + (int3 << 8) + (int4 << 0));
   }
 
-  public static long readUnsignedLong(DataInputStream stream) throws IOException {
+  public static long readUnsignedLong(DataInput in) throws IOException {
     long result=0;
     int shift = 0;
     byte b;
     do {
-      b = stream.readByte();
+      b = in.readByte();
       result |= (long)(b&0x7F)<<shift;
       shift += 7;
     }
@@ -76,14 +76,14 @@ public final class ByteUtil {
     data[3] = (byte)(value >>>  0);
   }
   
-  public static void writeUnsignedLong(long input, DataOutputStream stream) throws IOException {
+  public static void writeUnsignedLong(long input, DataOutput out) throws IOException {
     if(input < 0) throw new MemoriaException("unsigned long expected but was: " + input);
       
     do {
       int value = ((int)input & 0x7F);
       input >>>= 7;
       if(input!=0) value |= 0x80;
-      stream.writeByte(value);
+      out.writeByte(value);
     }
     while(input != 0);
   }

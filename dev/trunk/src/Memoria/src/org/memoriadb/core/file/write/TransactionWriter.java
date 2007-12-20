@@ -1,6 +1,6 @@
 package org.memoriadb.core.file.write;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.OpenConfig;
@@ -11,7 +11,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
-import org.memoriadb.core.util.io.*;
+import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 
 public final class TransactionWriter {
 
@@ -60,8 +60,7 @@ public final class TransactionWriter {
   }
 
   private Block append(byte[] compressedTrx, long objectDataCount) throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
 
     stream.write(FileLayout.BLOCK_START_TAG);
 
@@ -85,7 +84,7 @@ public final class TransactionWriter {
 
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
     // ... then add the data to the file.
-    fFile.append(byteArrayOutputStream.toByteArray());
+    fFile.append(stream.toByteArray());
 
     fConfig.getListeners().triggerAfterAppend(block);
 
@@ -125,7 +124,7 @@ public final class TransactionWriter {
    */
   private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent, List<ObjectInfo> decOGC) throws Exception, IOException {
     
-    MemoriaByteArrayOutputStream stream = new MemoriaByteArrayOutputStream();
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
     long revision = writeTransaction(stream, survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size());
     
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
@@ -171,8 +170,7 @@ public final class TransactionWriter {
   }
 
   private void write(Block block, byte[] trxData, long objectDataCount) throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    MemoriaDataOutputStream stream = new MemoriaDataOutputStream(byteArrayOutputStream);
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
 
     stream.write(trxData);
     byte[] garbage = new byte[(int)block.getBodySize()-trxData.length];
@@ -187,7 +185,7 @@ public final class TransactionWriter {
 
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_UPDATE);
     // dd the data after the BlockTag to the file
-    fFile.write(byteArrayOutputStream.toByteArray(), block.getBodyStartPosition());
+    fFile.write(stream.toByteArray(), block.getBodyStartPosition());
 
     fConfig.getListeners().triggerAfterWrite(block);
   }
@@ -217,7 +215,7 @@ public final class TransactionWriter {
 
   private void write(Set<ObjectInfo> add, Set<ObjectInfo> update, Set<ObjectInfo> delete, Set<Block> tabooBlocks, IModeStrategy mode) throws Exception {
     
-    MemoriaByteArrayOutputStream stream = new MemoriaByteArrayOutputStream();
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
     long revision = writeTransaction(stream, add.size() + update.size() + delete.size());
     
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
@@ -254,7 +252,7 @@ public final class TransactionWriter {
     }
   }
 
-  private long writeTransaction(MemoriaByteArrayOutputStream stream, long objectDataCount) throws IOException {
+  private long writeTransaction(MemoriaDataOutputStream stream, long objectDataCount) throws IOException {
     // increment revision here. If it's the saving of survivors or an append,
     // either way, the revision must be incremeneted at the time of writing back
     stream.writeLong(++fHeadRevision);
