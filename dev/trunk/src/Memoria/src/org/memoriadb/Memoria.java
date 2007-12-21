@@ -14,8 +14,8 @@ import org.memoriadb.core.util.Version;
  */
 public final class Memoria {
 
-  private static Version fVersion = new Version(0, 0, 0);
-  private static int fFileLayoutVersion = 0;
+  private static final Version fVersion = new Version(0, 0, 0);
+  private static final int fFileLayoutVersion = 0;
 
   /**
    * @return The Version of the file-layout. Stays stable as long as possible.
@@ -49,14 +49,17 @@ public final class Memoria {
   /**
    * @return An ObjectStore backed with an in-memory file
    */
+  //FIXME: Umbennen in openInDataMode();
   public static IDataStore openDataMode(CreateConfig config) {
     return openDataMode(config, new InMemoryFile());
   }
 
+  //FIXME: Umbennen in openInDataMode();  
   public static IDataStore openDataMode(CreateConfig config, IMemoriaFile file) {
     return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
   }
 
+  //FIXME: Umbennen in openInDataMode();  
   public static IDataStore openDataMode(CreateConfig config, String path) {
     return openDataMode(config, new PhysicalFile(path));
   }

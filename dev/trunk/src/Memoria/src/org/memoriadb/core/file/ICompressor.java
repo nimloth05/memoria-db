@@ -7,7 +7,7 @@ package org.memoriadb.core.file;
  */
 public interface ICompressor {
   
-  public static class NullCompressor implements ICompressor {
+  public static final class NullCompressor implements ICompressor {
 
     @Override
     public byte[] compress(byte[] input) {

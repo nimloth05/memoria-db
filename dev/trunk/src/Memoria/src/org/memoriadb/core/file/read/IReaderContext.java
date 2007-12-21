@@ -11,12 +11,12 @@ import org.memoriadb.instantiator.IInstantiator;
 public interface IReaderContext {
 
   /**
-   * Use this method for bindings with NO side-effects: for example fields, arrays.
+   * Use this method for bindings with NO side-effects  (no method-call during binding): for example fields, arrays.
    */
   public void addGenOneBinding(IBindable bindable);
 
   /**
-   * Use this method for bindings with side-effects: Sets, maps.
+   * Use this method for bindings with side-effects (for example call to equals, hashCode): Sets, maps.
    * 
    * The bindings added with this method are added after the bindings added with {@link IReaderContext#addGenOneBinding(IBindable)}.
    */

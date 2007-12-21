@@ -42,13 +42,11 @@ public class MemoriaDataInputStream extends DataInputStream {
       return skipped;
     }
     
-    
   }
 
-  private static CountInputStream fCountInputStream;
-  
-  public MemoriaDataInputStream(InputStream in) {
-    super(fCountInputStream = new CountInputStream(in));
+  // FIXME read-Overloads auch weiterdelegieren
+  public MemoriaDataInputStream(InputStream inputStream) {
+    super(new CountInputStream(inputStream));
   }
   
   @Override

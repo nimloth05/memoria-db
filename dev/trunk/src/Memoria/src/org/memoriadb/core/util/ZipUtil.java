@@ -3,7 +3,10 @@ package org.memoriadb.core.util;
 import java.io.ByteArrayOutputStream;
 import java.util.zip.*;
 
-public class ZipUtil {
+import org.memoriadb.core.exception.MemoriaException;
+
+public final class ZipUtil {
+  
   public static byte[] compress(byte[] input) {
     
     // Create the compressor with highest level of compression
@@ -45,10 +48,13 @@ public class ZipUtil {
             int count = decompressor.inflate(buf);
             bos.write(buf, 0, count);
         } catch (DataFormatException e) {
+          throw new MemoriaException(e);
         }
     }
     
     // Get the decompressed data
     return bos.toByteArray();
   }
+  
+  private ZipUtil() {}
 }

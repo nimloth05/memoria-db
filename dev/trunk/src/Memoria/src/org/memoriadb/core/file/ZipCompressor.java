@@ -2,10 +2,9 @@ package org.memoriadb.core.file;
 
 import org.memoriadb.core.util.ZipUtil;
 
-public class ZipCompressor implements ICompressor {
+public final class ZipCompressor implements ICompressor {
 
   public ZipCompressor() {
-    
   }
   
   @Override

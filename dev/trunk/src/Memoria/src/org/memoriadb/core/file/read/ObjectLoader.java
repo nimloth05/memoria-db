@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
@@ -111,7 +111,8 @@ public final class ObjectLoader implements IReaderContext {
 
       return headRevision;
     }
-    catch (FileCorruptException e) {
+    // FIXME GenericMemoriaExceptions für nicht-Memoria Exceptions
+    catch (MemoriaException e) {
       throw e;
     }
     catch (Exception e) {

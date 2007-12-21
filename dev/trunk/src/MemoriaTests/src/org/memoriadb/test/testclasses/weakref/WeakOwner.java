@@ -8,6 +8,7 @@ public class WeakOwner {
   private Object fWeakRef;
 
   public WeakOwner() {
+    
   }
   
   public WeakOwner(Object weakRef) {
