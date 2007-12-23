@@ -51,16 +51,16 @@ public class MemoriaDataInputStream extends DataInputStream {
   
   @Override
   public int available() throws IOException {
-    return fCountInputStream.available();
+    return ((CountInputStream)in).available();
   }
   
   @Override
   public void close() throws IOException {
-    fCountInputStream.close();
+    ((CountInputStream)in).close();
   }
 
   public long getReadBytes() {
-    return fCountInputStream.getReadBytes();
+    return ((CountInputStream)in).getReadBytes();
   }
 
   public long readUnsignedLong() throws IOException {
@@ -69,7 +69,7 @@ public class MemoriaDataInputStream extends DataInputStream {
 
   @Override
   public long skip(long n) throws IOException {
-    return fCountInputStream.skip(n);
+    return ((CountInputStream)in).skip(n);
   }
   
   

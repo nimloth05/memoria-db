@@ -18,7 +18,7 @@ public interface IModeStrategy {
   /**
    * Before an object is added to the ObjectRepository, it is checked for instantiability.
    */
-  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator);
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId);
 
   public void checkObject(Object obj);
 
@@ -35,5 +35,7 @@ public interface IModeStrategy {
    * @return true, if the given <tt>obj</tt> is an enum.
    */
   public boolean isEnum(Object obj);
+  
+  public void setInstantiator(IInstantiator instantiator);
 
 }

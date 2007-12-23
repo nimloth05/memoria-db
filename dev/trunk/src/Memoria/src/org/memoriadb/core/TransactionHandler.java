@@ -12,7 +12,6 @@ import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.id.*;
-import org.memoriadb.instantiator.IInstantiator;
 
 public class TransactionHandler {
 
@@ -26,13 +25,11 @@ public class TransactionHandler {
   private final Set<ObjectInfo> fDelete = IdentityHashSet.create();
 
   private int fUpdateCounter = 0;
-  private final IInstantiator fInstantiator;
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
   private final ICompressor fCompressor;
 
-  public TransactionHandler(IInstantiator instantiator, TransactionWriter writer, Header header,IModeStrategy modeStrategy, ICompressor compressor) {
-    fInstantiator = instantiator;
+  public TransactionHandler(TransactionWriter writer, Header header,IModeStrategy modeStrategy, ICompressor compressor) {
     fTransactionWriter = writer;
     fHeader = header;
     fModeStrategy = modeStrategy;
@@ -199,7 +196,7 @@ public class TransactionHandler {
   public IObjectId internalAddObject(Object obj, IObjectId memoriaClassId) {
     if (contains(obj)) throw new MemoriaException("obj already added: " + obj);
 
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fInstantiator);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId);
     if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("ValueObject can not be added: " + obj);    
 
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);

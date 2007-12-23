@@ -99,11 +99,13 @@ public class Bootstrap {
     ICompressor compressor = header.getCompressor();
     
     IInstantiator instantiator = header.loadDefaultInstantiator();
+    strategy.setInstantiator(instantiator);
+    
     ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), instantiator, strategy, compressor);
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision, compressor);
-    TransactionHandler transactionHandler = new TransactionHandler(instantiator, writer, header, strategy, compressor);
+    TransactionHandler transactionHandler = new TransactionHandler(writer, header, strategy, compressor);
     
     return transactionHandler;
   }
