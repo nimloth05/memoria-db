@@ -22,25 +22,25 @@ public class Header {
   private final int fFileLayoutVersion;
   private final String fIdFactoryClassName;
   private final int fHeaderSize;
-  private final String fDefaultInstantiatorClassName;
+  private final IInstantiator fInstantiator;
   private final LastWrittenBlockInfo fLastWrittenBlockInfo;
-  private final boolean fUseCompression;
+  private final ICompressor fCompressor;
 
-  public Header(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo, boolean compress) {
+  public Header(UUID thisUuid, UUID hostUuid, long hostBranchRevision, Version version, int fileLayoutVersion, String idFactoryClassName, String defaultInstantiator, int headerSize, LastWrittenBlockInfo lastWrittenBlockInfo, ICompressor compressor) {
     fThisUuid = thisUuid;
     fHostUuid = hostUuid;
     fHostBranchRevision = hostBranchRevision;
     fVersion = version;
     fFileLayoutVersion = fileLayoutVersion;
     fIdFactoryClassName = idFactoryClassName;
-    fDefaultInstantiatorClassName = defaultInstantiator;
+    fInstantiator = loadDefaultInstantiator(defaultInstantiator);
     fHeaderSize = headerSize;
     fLastWrittenBlockInfo = lastWrittenBlockInfo;
-    fUseCompression = compress;
+    fCompressor = compressor;
   }
 
   public ICompressor getCompressor() {
-    return useCompression()? new ZipCompressor() : ICompressor.NullComporeesorInstance;
+    return fCompressor; 
   }
 
   public int getFileLayoutVersion() {
@@ -63,6 +63,10 @@ public class Header {
     return fIdFactoryClassName;
   }
 
+  public IInstantiator getInstantiator() {
+    return fInstantiator;
+  }
+
   public LastWrittenBlockInfo getLastWrittenBlockInfo() {
     return fLastWrittenBlockInfo;
   }
@@ -74,21 +78,13 @@ public class Header {
   public Version getVersion() {
     return fVersion;
   }
-
-  public IInstantiator loadDefaultInstantiator() {
-    return ReflectionUtil.createInstance(getDefaultInstantiatorClassName());
-  }
-
+  
   public IObjectIdFactory loadIdFactory() {
     return ReflectionUtil.createInstance(getIdFactoryClassName());
   }
 
-  public boolean useCompression() {
-    return fUseCompression;
-  }
-
-  private String getDefaultInstantiatorClassName() {
-    return fDefaultInstantiatorClassName;
+  private IInstantiator loadDefaultInstantiator(String className) {
+    return ReflectionUtil.createInstance(className);
   }
   
 }

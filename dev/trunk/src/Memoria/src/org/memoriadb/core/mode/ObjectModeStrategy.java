@@ -10,17 +10,15 @@ import org.memoriadb.instantiator.IInstantiator;
 
 public final class ObjectModeStrategy implements IModeStrategy {
   
-  private IInstantiator fInstantiator;
-
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
     return TypeHierarchyBuilder.addMemoriaClassIfNecessary(transactionHandler, obj.getClass(), this);
   }
 
   @Override
-  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId) {
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
     IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
-    memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), fInstantiator);
+    memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), instantiator);
   }
   
   @Override
@@ -56,9 +54,4 @@ public final class ObjectModeStrategy implements IModeStrategy {
     return ReflectionUtil.isEnum(object.getClass());
   }
 
-  @Override
-  public void setInstantiator(IInstantiator instantiator) {
-    fInstantiator = instantiator;
-  }
-  
 }

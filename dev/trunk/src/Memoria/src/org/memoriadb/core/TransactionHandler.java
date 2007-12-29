@@ -27,13 +27,11 @@ public class TransactionHandler {
   private int fUpdateCounter = 0;
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
-  private final ICompressor fCompressor;
 
-  public TransactionHandler(TransactionWriter writer, Header header,IModeStrategy modeStrategy, ICompressor compressor) {
+  public TransactionHandler(TransactionWriter writer, Header header,IModeStrategy modeStrategy) {
     fTransactionWriter = writer;
     fHeader = header;
     fModeStrategy = modeStrategy;
-    fCompressor = compressor;
     fObjectRepository = writer.getRepo();
   }
 
@@ -185,7 +183,7 @@ public class TransactionHandler {
   }
 
   public SurvivorAgent getSurvivorAgent(Block block) {
-    return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block, fCompressor);
+    return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block, fHeader.getCompressor());
   }
 
   //FIXME: TypeInfo bereinigen
@@ -196,7 +194,7 @@ public class TransactionHandler {
   public IObjectId internalAddObject(Object obj, IObjectId memoriaClassId) {
     if (contains(obj)) throw new MemoriaException("obj already added: " + obj);
 
-    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId);
+    fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fHeader.getInstantiator());
     if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("ValueObject can not be added: " + obj);    
 
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);

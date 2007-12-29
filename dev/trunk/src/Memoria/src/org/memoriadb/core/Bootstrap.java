@@ -16,7 +16,6 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.handler.map.MapHandler;
-import org.memoriadb.instantiator.IInstantiator;
 
 public class Bootstrap {
 
@@ -98,14 +97,11 @@ public class Bootstrap {
     
     ICompressor compressor = header.getCompressor();
     
-    IInstantiator instantiator = header.loadDefaultInstantiator();
-    strategy.setInstantiator(instantiator);
-    
     ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
-    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), instantiator, strategy, compressor);
+    long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), header.getInstantiator(), strategy, compressor);
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision, compressor);
-    TransactionHandler transactionHandler = new TransactionHandler(writer, header, strategy, compressor);
+    TransactionHandler transactionHandler = new TransactionHandler(writer, header, strategy);
     
     return transactionHandler;
   }

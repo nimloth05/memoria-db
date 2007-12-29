@@ -101,8 +101,10 @@ public class HeaderHelper {
     String idFactoryClassName = stream.readUTF();
     String defaultInstantiatorClassName = stream.readUTF();
     
+    ICompressor compressor = useCompression ? new ZipCompressor() : ICompressor.NullComporeesorInstance;
+    
     return new Header(thisUuid, hostUuid, hostBranchVersion, version, fileLayoutRevision, idFactoryClassName,
-        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, useCompression);
+        defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, compressor);
   }
 
   private static LastWrittenBlockInfo readLastWrittenBlockInfo(DataInputStream stream) throws IOException {

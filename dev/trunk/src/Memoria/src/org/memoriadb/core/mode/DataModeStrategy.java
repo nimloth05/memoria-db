@@ -21,7 +21,7 @@ public final class DataModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId) {
+  public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
     // FIXME was muss hier überprüft werden?
     // --> Hier müss überprüft werden, ob zum Beispiel die memoriaClassId vorhanden ist oder ähnliches.
   }
@@ -51,7 +51,4 @@ public final class DataModeStrategy implements IModeStrategy {
     return obj instanceof IEnumObject;
   }
 
-  @Override
-  public void setInstantiator(IInstantiator instantiator) {}
-  
 }
