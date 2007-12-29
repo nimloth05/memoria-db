@@ -3,7 +3,7 @@ package org.memoriadb.core.file;
 import java.io.*;
 import java.util.Arrays;
 
-import org.memoriadb.core.mode.IObjectStoreExt;
+import org.memoriadb.core.mode.AbstractStore;
 import org.memoriadb.core.util.Constants;
 
 /**
@@ -54,7 +54,7 @@ public final class FileLayout {
   /**
    * @return The overhead per object, depends on the size of the IObjectId
    */
-  public static int getOPO(IObjectStoreExt objectStore) {
+  public static int getOPO(AbstractStore objectStore) {
     return OBJECT_SIZE_LEN + 2*objectStore.getIdSize();
   }
   

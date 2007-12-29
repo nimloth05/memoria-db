@@ -3,7 +3,7 @@ package org.memoriadb.core.util.io;
 import java.io.*;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.util.ByteUtil;
+import org.memoriadb.core.util.*;
 
 public class MemoriaDataOutputStream extends ByteArrayOutputStream implements DataOutput {
 
@@ -18,6 +18,21 @@ public class MemoriaDataOutputStream extends ByteArrayOutputStream implements Da
   public void setMarker() throws IOException {
     fPosition = count;
     fStream.writeInt(0);
+  }
+
+  public void updateCRC32FromMarkerToPosition(MemoriaCRC32 crc32) {
+    checkPosition();
+    int offset = fPosition + 4;
+    crc32.update(buf, offset, count - offset);
+  }
+
+  public void writeAtMarker(int data) throws IOException {
+    checkPosition();
+    int tempPosition = count;
+    count = fPosition;
+    fStream.writeInt(data);
+    count = tempPosition;
+    fPosition = UNDEFINED_POSITION;
   }
 
   public final void writeBoolean(boolean v) throws IOException {
@@ -56,25 +71,20 @@ public class MemoriaDataOutputStream extends ByteArrayOutputStream implements Da
     fStream.writeLong(v);
   }
 
-  public void writeAtMarker(int data) throws IOException {
-    if (fPosition == UNDEFINED_POSITION) throw new MemoriaException("You have to mark the position first");
-    int tempPosition = count;
-    count = fPosition;
-    fStream.writeInt(data);
-    count = tempPosition;
-    fPosition = UNDEFINED_POSITION;
-  }
-
   public final void writeShort(int v) throws IOException {
     fStream.writeShort(v);
   }
 
+  public void writeUnsignedLong(long l) throws IOException {
+    ByteUtil.writeUnsignedLong(l, this);
+  }
+  
   public final void writeUTF(String str) throws IOException {
     fStream.writeUTF(str);
   }
-  
-  public void writeUnsignedLong(long l) throws IOException {
-    ByteUtil.writeUnsignedLong(l, this);
+
+  private void checkPosition() {
+    if (fPosition == UNDEFINED_POSITION) throw new MemoriaException("You have to mark the position first");
   }
 
 }

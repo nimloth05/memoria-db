@@ -3,47 +3,21 @@ package org.memoriadb.core.mode;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
-import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.query.ObjectModeQueryStrategy;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IObjectId;
 
-public class ObjectStore implements IObjectStoreExt  {
+public class ObjectStore extends AbstractStore implements IObjectStore  {
 
-  private final TransactionHandler fTransactionHandler;
-  
   private final ObjectModeQueryStrategy fQueryStrategy = new ObjectModeQueryStrategy();
+
+  public ObjectStore(TransactionHandler handler) {
+    super(handler);
+  }
   
-  public ObjectStore(TransactionHandler transactionHandler) {
-    fTransactionHandler = transactionHandler;
-  }
-
-  @Override
-  public void beginUpdate() {
-    fTransactionHandler.beginUpdate();
-  }
-
-  @Override
-  public void checkIndexConsistancy() {
-    fTransactionHandler.checkIndexConsistancy();
-  }
-
-  @Override
-  public void close() {
-    fTransactionHandler.close();
-  }
-
   @Override
   public boolean contains(Object obj) {
     return fTransactionHandler.contains(obj);
-  }
-
-  @Override
-  public boolean containsId(IObjectId id) {
-    return fTransactionHandler.containsId(id);
   }
 
   @Override
@@ -54,11 +28,6 @@ public class ObjectStore implements IObjectStoreExt  {
   @Override
   public void deleteAll(Object root) {
     fTransactionHandler.deleteAll(root);
-  }
-
-  @Override
-  public void endUpdate() {
-    fTransactionHandler.endUpdate();
   }
 
   @SuppressWarnings("unchecked")
@@ -78,63 +47,9 @@ public class ObjectStore implements IObjectStoreExt  {
   }
 
   @Override
-  public IBlockManager getBlockManager() {
-    return fTransactionHandler.getBlockManager();
-  }
-
-  public IMemoriaFile getFile() {
-    return fTransactionHandler.getFile();
-  }
-
-  @Override
-  public Header getHeader() {
-    return fTransactionHandler.getHeader();
-  }
-
-  @Override
-  public long getHeadRevision() {
-    return fTransactionHandler.getHeadRevision();
-  }
-
-  @Override
   public IObjectId getId(Object obj) {
     return fTransactionHandler.getId(obj);
   }
-
-  @Override
-  public IIdProvider getIdFactory() {
-    return fTransactionHandler.getDefaultIdProvider();
-  }
-
-  @Override
-  public int getIdSize() {
-    return fTransactionHandler.getIdSize();
-  }
-
-  @Override
-  public IObjectInfo getObjectInfo(Object obj) {
-    return fTransactionHandler.getObjectInfo(obj);
-  }
-
-  @Override
-  public IObjectInfo getObjectInfoForId(IObjectId id) {
-    return fTransactionHandler.getObjectInfoForId(id);
-  }
-
-  @Override
-  public SurvivorAgent getSurvivorAgent(Block block) {
-    return fTransactionHandler.getSurvivorAgent(block);
-  }
-
-  @Override
-  public ITypeInfo getTypeInfo() {
-    return fTransactionHandler.getTypeInfo();
-  }
-
-  @Override
-  public boolean isInUpdateMode() {
-    return fTransactionHandler.isInUpdateMode();
-  } 
 
   @SuppressWarnings("unchecked")
   @Override
@@ -173,8 +88,8 @@ public class ObjectStore implements IObjectStoreExt  {
     fTransactionHandler.internalDelete(obj);
   }
 
-  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
-    return fTransactionHandler.internalGetMemoriaClass(klass);
-  }
+//  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
+//    return fTransactionHandler.internalGetMemoriaClass(klass);
+//  }
 
 }

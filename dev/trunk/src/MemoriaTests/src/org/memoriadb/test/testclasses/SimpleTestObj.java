@@ -8,12 +8,12 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
   
   private String fString;
   
-  public static IFieldbasedObject createFieldObject(IDataStoreExt dataStore, String stringValue) {
+  public static IFieldbasedObject createFieldObject(DataStore dataStore, String stringValue) {
     IObjectId memoriaClassId = dataStore.getId(dataStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
     return setField(stringValue, memoriaClassId);
   }
 
-  public static IFieldbasedObject createFieldObject(IObjectStoreExt objectStore, String stringValue) {
+  public static IFieldbasedObject createFieldObject(ObjectStore objectStore, String stringValue) {
     IObjectId memoriaClassId = objectStore.getId(objectStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
     return setField(stringValue, memoriaClassId);
   }

@@ -37,11 +37,9 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
    
   @Override
-  public void block(Block block) {
-  }
+  public void block(Block block) {}
 
   public void computeSurvivors(Block block) {
-    
     MemoriaDataInputStream stream = new MemoriaDataInputStream(fFile.getInputStream(block.getPosition()));
     BlockReader reader = new BlockReader(fCompressor);
     

@@ -20,8 +20,8 @@ public abstract class AbstractMemoriaTest extends TestCase {
   
   private static final String PATH = "file.mia";
   
-  protected IObjectStoreExt fObjectStore;
-  protected IDataStoreExt fDataStore;
+  protected ObjectStore fObjectStore;
+  protected DataStore fDataStore;
   
   public IBlockManagerExt getBlockManager() {
     return (IBlockManagerExt)fObjectStore.getBlockManager();
@@ -84,8 +84,8 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
   
   protected IMemoriaFile getFile() {
-    if(fObjectStore!=null) return ((ObjectStore)fObjectStore).getFile();
-    return ((DataStore)fDataStore).getFile();
+    if(fObjectStore!=null) return (fObjectStore).getFile();
+    return (fDataStore).getFile();
   }
 
   protected LastWrittenBlockInfo getLastBlockInfo() {
@@ -193,12 +193,12 @@ public abstract class AbstractMemoriaTest extends TestCase {
     if(fDataStore != null) fDataStore.close();
   }
   
-  private IObjectStoreExt openStore(IMemoriaFile file, CreateConfig config) {
-    return (IObjectStoreExt) Memoria.open(config, file);
+  private ObjectStore openStore(IMemoriaFile file, CreateConfig config) {
+    return (ObjectStore) Memoria.open(config, file);
   }
   
-  private IDataStoreExt openStoreDataMode(IMemoriaFile file, CreateConfig config) {
-    return (IDataStoreExt) Memoria.openDataMode(config, file);
+  private DataStore openStoreDataMode(IMemoriaFile file, CreateConfig config) {
+    return (DataStore) Memoria.openDataMode(config, file);
   }
 
   

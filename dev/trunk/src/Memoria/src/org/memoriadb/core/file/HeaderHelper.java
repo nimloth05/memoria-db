@@ -7,6 +7,7 @@ import org.memoriadb.*;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.*;
 import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 
 public class HeaderHelper {
 
@@ -28,7 +29,7 @@ public class HeaderHelper {
     long readCrc = stream.readLong();
     
     crc.update(headerInfo);
-    if(readCrc != crc.getValue()) throw new MemoriaException("header corrupt");
+    if(readCrc != crc.getValue()) throw new MemoriaException("header corrupt, CRC32 check failed");
     
     return readHeaderInfo(readCurrentBlockInfo, headerSize, headerInfo);
   }
@@ -48,20 +49,20 @@ public class HeaderHelper {
     
     writeDefaultLastWrittenBlockInfo(file);
 
-    byte[] headerInfo = writeHeaderInfo(config);
+    MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
+
+    stream.setMarker();
+    writeHeaderInfo(config, stream);
+    int numberOfBytesWritten = stream.size() - Constants.INT_LEN; 
     
     MemoriaCRC32 crc = new MemoriaCRC32();
-    crc.updateInt(headerInfo.length);
-    crc.update(headerInfo);
-
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
+    crc.updateInt(numberOfBytesWritten);
+    stream.updateCRC32FromMarkerToPosition(crc);
     
-    stream.writeInt(headerInfo.length);
-    stream.write(headerInfo);
+    stream.writeAtMarker(numberOfBytesWritten);
     stream.writeLong(crc.getValue());
     
-    file.append(byteArrayOutputStream.toByteArray());
+    file.append(stream.toByteArray());
   }
 
   private static void checkMemoriaTag(DataInputStream stream) throws IOException {
@@ -134,10 +135,7 @@ public class HeaderHelper {
     file.append(byteArrayOutputStream);
   }
   
-  private static byte[] writeHeaderInfo(CreateConfig config) throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    DataOutputStream stream = new DataOutputStream(byteArrayOutputStream);
-
+  private static void writeHeaderInfo(CreateConfig config, DataOutput stream) throws IOException {
     writeUuid(stream, UUID.randomUUID());
     writeUuid(stream, Constants.NO_HOST_UUID);
     stream.writeLong(Constants.NO_HOST_BRANCH_REVISION);
@@ -148,8 +146,6 @@ public class HeaderHelper {
 
     stream.writeUTF(config.getIdFactoryClassName());
     stream.writeUTF(config.getDefaultInstantiatorClassName());
-    
-    return byteArrayOutputStream.toByteArray();
   }
 
   private static void writeMemoriaTag(IMemoriaFile file) {
@@ -157,11 +153,11 @@ public class HeaderHelper {
     file.append(FileLayout.MEMORIA_TAG);
   }
 
-  private static void writeUuid(DataOutputStream stream, UUID uuid) throws IOException {
+  private static void writeUuid(DataOutput stream, UUID uuid) throws IOException {
     ByteUtil.writeUUID(stream, uuid);
   }
 
-  private static void writeVersion(DataOutputStream stream, Version version) throws IOException {
+  private static void writeVersion(DataOutput stream, Version version) throws IOException {
     stream.writeInt(version.getMajor());
     stream.writeInt(version.getMinor());
     stream.writeInt(version.getService());

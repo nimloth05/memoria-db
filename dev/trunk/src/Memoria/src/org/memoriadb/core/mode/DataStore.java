@@ -3,50 +3,24 @@ package org.memoriadb.core.mode;
 import java.util.List;
 
 import org.memoriadb.*;
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
-import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.*;
 
-public class DataStore implements IDataStoreExt {
+public class DataStore extends AbstractStore implements IDataStore {
 
-  // FIXME Die Schnittstelle wäre besser, dann wird sie aber unglaublich gross!
-  private final TransactionHandler fTransactionHandler;
-  
   private final DataModeQueryStrategy fQueryStrategy = new DataModeQueryStrategy();
+
+  public DataStore(TransactionHandler handler) {
+    super(handler);
+  }
   
-  public DataStore(TransactionHandler transactionHandler) {
-    fTransactionHandler = transactionHandler;
-  }
-
-  @Override
-  public void beginUpdate() {
-    fTransactionHandler.beginUpdate();
-  } 
-
-  @Override
-  public void checkIndexConsistancy() {
-    fTransactionHandler.checkIndexConsistancy();
-  }
-
-  @Override
-  public void close() {
-    fTransactionHandler.close();
-  }
-
   @Override
   public boolean contains(IDataObject obj) {
     return fTransactionHandler.contains(obj);
-  }
-
-  @Override
-  public boolean containsId(IObjectId id) {
-    return fTransactionHandler.contains(id);
   }
 
   @Override
@@ -59,11 +33,6 @@ public class DataStore implements IDataStoreExt {
     fTransactionHandler.deleteAll(root);
   }
 
-  @Override
-  public void endUpdate() {
-    fTransactionHandler.endUpdate();
-  }
-  
   @SuppressWarnings("unchecked")
   @Override
   public <T extends IDataObject> T  get(IObjectId id) {
@@ -78,27 +47,8 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IBlockManager getBlockManager() {
-    return fTransactionHandler.getBlockManager();
-  }
-
-  @Override
   public IIdProvider getDefaultIdProvider() {
     return fTransactionHandler.getDefaultIdProvider();
-  }
-
-  public IMemoriaFile getFile() {
-    return fTransactionHandler.getFile();
-  }
-
-  @Override
-  public Header getHeader() {
-    return fTransactionHandler.getHeader();
-  }
-
-  @Override
-  public long getHeadRevision() {
-    return fTransactionHandler.getHeadRevision();
   }
 
   @Override
@@ -107,49 +57,14 @@ public class DataStore implements IDataStoreExt {
   }
 
   @Override
-  public IIdProvider getIdFactory() {
-    return fTransactionHandler.getDefaultIdProvider();
-  }
-
-  @Override
-  public int getIdSize() {
-    return fTransactionHandler.getIdSize();
-  }
-
-  @Override
-  public IObjectInfo getObjectInfo(Object obj) {
-    return fTransactionHandler.getObjectInfo(obj);
-  }
-
-  @Override
-  public IObjectInfo getObjectInfoForId(IObjectId id) {
-    return fTransactionHandler.getObjectInfoForId(id);
-  }
-
-  @Override
   public IRefactor getRefactorApi() {
     return new RefactorApi(this); 
   }
 
-  @Override
-  public SurvivorAgent getSurvivorAgent(Block block) {
-    return fTransactionHandler.getSurvivorAgent(block);
-  }
-  
-  @Override
-  public ITypeInfo getTypeInfo() {
-    return fTransactionHandler.getTypeInfo();
-  }
-  
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
   
-  @Override
-  public boolean isInUpdateMode() {
-    return fTransactionHandler.isInUpdateMode();
-  }
-
   public <T extends IDataObject> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   }
@@ -173,5 +88,4 @@ public class DataStore implements IDataStoreExt {
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }
-  
 }
