@@ -9,7 +9,7 @@ public final class Main {
 
       @Override
       public void run() {
-        ApplicationController.start();
+        ApplicationController.launch();
       }
       
     });
