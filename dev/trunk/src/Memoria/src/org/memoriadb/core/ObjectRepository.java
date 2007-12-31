@@ -93,6 +93,13 @@ public class ObjectRepository implements IObjectRepository {
     return info;
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public Iterable<IMemoriaClass> getAllClasses() {
+    Iterable<?> iterable = fMemoriaClasses.values();
+    return (Iterable<IMemoriaClass>) iterable;
+  }
+
   @Override
   public Collection<IObjectInfo> getAllObjectInfos() {
     return Collections.<IObjectInfo>unmodifiableCollection(fObjectMap.values());
@@ -131,12 +138,12 @@ public class ObjectRepository implements IObjectRepository {
     if(result == null) return null;
     return result.getId();
   }
-
+  
   @Override
   public IObjectIdFactory getIdFactory() {
     return fIdFactory;
   }
-  
+
   @Override
   public IMemoriaClass getMemoriaClass(Object object) {
     IObjectInfo info = getObjectInfo(object);

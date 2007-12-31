@@ -12,6 +12,8 @@ public interface ITypeInfo {
    */
   public IObjectId addMemoriaClassIfNecessary(Class<?> clazz);
 
+  public Iterable<IMemoriaClass> getAllClasses();
+  
   public IObjectId getMemoriaArrayClass();
   
   /**

@@ -18,6 +18,11 @@ public class TypeInfo implements ITypeInfo {
   }
   
   @Override
+  public Iterable<IMemoriaClass> getAllClasses() {
+    return fTransactionHandler.getAllClasses();
+  }
+
+  @Override
   public IObjectId getMemoriaArrayClass() {
     return fTransactionHandler.getMemoriaArrayClass();
   }

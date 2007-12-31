@@ -35,36 +35,39 @@ public interface IObjectRepository {
    */
   public IObjectInfo delete(Object obj);
   
+  public Iterable<IMemoriaClass> getAllClasses();
+
   public Collection<IObjectInfo> getAllObjectInfos();
 
   /**
    * @return All objects in the repository, including all bootstrapped or class-objects
    */
   public Iterable<Object> getAllObjects();
-
-  public Iterable<Object> getAllUserSpaceObjects();
   
+  public Iterable<Object> getAllUserSpaceObjects();
+
   public IObjectId getExistingId(Object obj);
 
   public Object getExistingObject(IObjectId id);
-
+  
   /**
    * @return The objectId of the given object.
    * @throws MemoriaException If the given object can not be found.
    */
   public IObjectId getId(Object obj);
-  
+
   public IObjectIdFactory getIdFactory();
 
   public IMemoriaClass getMemoriaClass(Object object);
-
+  
   /**
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
    */
   public IMemoriaClassConfig getMemoriaClass(String klass);
-  
+
+
   /**
    * @return The object or null, if no Object exists for the given id. 
    *         It is not considered if the object is persistent or not.
@@ -77,12 +80,12 @@ public interface IObjectRepository {
    */
   public ObjectInfo getObjectInfo(Object obj);
 
-
   /**
    * @return The stored ObjectInfo for the given id or null, if the given id is unknown. This method may work
    * even for deleted objects, if the delete-marker is still present.
    */
   public ObjectInfo getObjectInfoForId(IObjectId id);
+
 
   /**
    * @return true, if the given obj is a metaclass

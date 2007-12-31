@@ -91,6 +91,10 @@ public class TransactionHandler {
     writePendingChanges();
   }
 
+  public Iterable<IMemoriaClass> getAllClasses() {
+    return fObjectRepository.getAllClasses();
+  }
+  
   public Collection<IObjectInfo> getAllObjectInfos() {
     return fObjectRepository.getAllObjectInfos();
   }
@@ -102,19 +106,19 @@ public class TransactionHandler {
   public Iterable<Object> getAllUserSpaceObjects() {
     return fObjectRepository.getAllUserSpaceObjects();
   }
-  
+
   public IObjectId getArrayMemoriaClassId() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
-
+  
   public IBlockManager getBlockManager() {
     return fTransactionWriter.getBlockManager();
   }
-  
+
   public IIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
-
+  
   public IObjectId getExistingId(Object obj) {
     return fObjectRepository.getExistingId(obj);
   }
@@ -138,7 +142,7 @@ public class TransactionHandler {
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
-  
+
   public IObjectId getMemoriaArrayClass() {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
@@ -151,13 +155,13 @@ public class TransactionHandler {
   public IMemoriaClass getMemoriaClass(String className) {
     return fObjectRepository.getMemoriaClass(className);
   }
-
+  
   public IObjectId getMemoriaClassId(Object object) {
     IObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
     return info.getMemoriaClassId();
   }
-  
+
   /**
    * @return The Class for the given <tt>obj</tt> or null.
    */
@@ -222,11 +226,11 @@ public class TransactionHandler {
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepository.getMemoriaClass(klass);
   }
-
+  
   public IObjectId internalSave(IMemoriaClass clazz) {
     return internalSave(clazz, clazz.getMemoriaClassId());
   }
-  
+
   /**
    * Saves the obj without considering if this ObjectStore is in update-mode or not.
    */
