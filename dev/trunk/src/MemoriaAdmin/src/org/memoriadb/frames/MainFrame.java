@@ -1,33 +1,77 @@
 package org.memoriadb.frames;
 
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.*;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.memoriadb.IDataStore;
+import org.memoriadb.core.util.disposable.IDisposable;
+import org.memoriadb.services.store.*;
+import org.memoriadb.util.*;
+
+import com.google.inject.Inject;
 
 public final class MainFrame {
 
+  private static final int FRAME_WIDTH = 800;
+
   private final JFrame fFrame;
-  private final IDataStore fStore;
+  
+  private final IDatabaseService fDatabaseService;
 
-  public MainFrame(IDataStore store) {
-    if (store == null) throw new IllegalArgumentException("store is null");
-    fStore = store;
+  private JTree fClassTree;
+  private IDisposable fListenerDisposable;
 
+  @Inject
+  public MainFrame(IDatabaseService service) {
+    fDatabaseService = service;
     fFrame = new JFrame();
     fFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    fFrame.setSize(800, 600);
+    fFrame.setSize(FRAME_WIDTH, 600);
+    fFrame.setLocation(SwingUtil.calculateCenter(fFrame.getSize()));
     createControls();
+    addListeners();
   }
 
   public void show() {
     fFrame.setVisible(true);
+  }
+
+  private void addDatabaseServiceListener() {
+    fListenerDisposable = fDatabaseService.addListener(new IChangeListener() {
+
+      @Override
+      public void postOpen(IDataStore newStore) {
+        fClassTree.setModel(new DefaultTreeModel(ClassModelFactory.createClassModel(newStore.getTypeInfo())));
+      }
+
+      @Override
+      public void preClose() {
+        fClassTree.setModel(new EmptyTreeModel());
+      }
+    });
+  }
+
+  private void addListeners() {
+    addDatabaseServiceListener();
+    addWindowListener();
+  }
+
+  private void addWindowListener() {
+    fFrame.addWindowListener(new WindowAdapter() {
+
+      @Override
+      public void windowClosing(WindowEvent e) {
+        fListenerDisposable.dispose();
+      }
+      
+    });
   }
 
   private JComponent asScrollable(JComponent component) {
@@ -35,8 +79,14 @@ public final class MainFrame {
   }
 
   private JComponent createClassTree() {
-    JTree tree = new JTree(ClassModelFactory.createClassModel(fStore.getTypeInfo()));
+    fClassTree = new JTree(new EmptyTreeModel()) {
 
+      @Override
+      public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        return ClassModelFactory.getLabelOfObject(value); 
+      }
+      
+    };
     ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/icons/class_obj.gif"));
     if (icon != null) {
       DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
@@ -45,10 +95,10 @@ public final class MainFrame {
       renderer.setOpenIcon(icon);
       renderer.setClosedIcon(icon);
       
-      tree.setCellRenderer(renderer);
+      fClassTree.setCellRenderer(renderer);
     }
 
-    return asScrollable(tree);
+    return asScrollable(fClassTree);
   }
 
   private void createControls() {
@@ -59,6 +109,7 @@ public final class MainFrame {
 
     JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tree, table);
     splitter.setBorder(null);
+    splitter.setDividerLocation((FRAME_WIDTH - 10) / 2);
     fFrame.getContentPane().add(splitter, "grow");
   }
 

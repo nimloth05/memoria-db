@@ -1,47 +1,38 @@
 package org.memoriadb;
 
-import java.awt.Frame;
+import org.memoriadb.frames.MainFrame;
+import org.memoriadb.services.store.*;
 
-import javax.swing.JOptionPane;
-
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.frames.*;
+import com.google.inject.*;
 
 public final class ApplicationController {
 
-  public static void launch() {
-    IDataStore dataStore = openDB();
+  private static Injector sInjector;
 
-    MainFrame mainFrame = new MainFrame(dataStore);
+  public static void launch() {
+    sInjector = configureServices();
+    MainFrame mainFrame = sInjector.getInstance(MainFrame.class);
     mainFrame.show();
+    
+    boolean changed = sInjector.getInstance(IDatabaseService.class).change();
+    if (!changed) shutdown();
   }
 
-  private static IDataStore openDB() {
-    IDataStore dataStore = null;
-    do {
-      ChoosDbDialog chooseDbFrame = new ChoosDbDialog();
-      String dbPath = chooseDbFrame.show();
-      if (dbPath.isEmpty()) shutdown();
-      
-      dataStore = tryOpenDB(dbPath);
-    }
-    while (dataStore == null);
-    return dataStore;
+  private static Injector configureServices() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+
+      @Override
+      protected void configure() {
+        bind(IDatabaseService.class).to(DatabaseService.class); 
+      }
+    });
+    return injector;
   }
 
   private static void shutdown() {
+    sInjector.getInstance(IDatabaseService.class).close();
     System.exit(0);
   }
 
-  private static IDataStore tryOpenDB(String dbPath) {
-    try {
-      IDataStore dataStore = Memoria.openDataMode(new CreateConfig(), dbPath);
-      return dataStore;
-    }
-    catch (MemoriaException e) {
-      JOptionPane.showMessageDialog((Frame)null, "The DB could not be opened. Reason: " + e.getLocalizedMessage(), "error", JOptionPane.ERROR_MESSAGE);
-      return null;
-    }
-  }
 
 }

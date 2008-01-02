@@ -14,7 +14,7 @@ public final class ClassModelFactory {
   public static final TreeNode createClassModel(ITypeInfo info) {
     Map<IMemoriaClass, DefaultMutableTreeNode> createdNodes = new IdentityHashMap<IMemoriaClass, DefaultMutableTreeNode>();
     for(IMemoriaClass memClass: info.getAllClasses()) {
-      DefaultMutableTreeNode node = new DefaultMutableTreeNode(memClass.getJavaClassName());
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(memClass);
       createdNodes.put(memClass, node);
     }
     
@@ -33,11 +33,24 @@ public final class ClassModelFactory {
       }
       
       DefaultMutableTreeNode superNode = createdNodes.get(superClass);
-      
       superNode.add(node);
     }
     
     return root;
+  }
+
+  public static String getLabelOfObject(Object value) {
+    if (value == null) return "";
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+    IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
+    if (memoriaClass == null) return "";
+    return shortenClassName(memoriaClass.getJavaClassName());
+  }
+  
+  private static String shortenClassName(String longName) {
+    int indexOf = longName.lastIndexOf('.');
+    if (indexOf == -1) return longName;
+    return longName.substring(indexOf+1);
   }
   
   
