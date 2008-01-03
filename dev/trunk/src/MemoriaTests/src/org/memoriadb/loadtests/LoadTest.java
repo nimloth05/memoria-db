@@ -9,7 +9,6 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class LoadTest extends AbstractMemoriaTest {
   
-  
   @SuppressWarnings("nls")
   public void test_save_objectref() throws Exception {
     List<Object> objects = new ArrayList<Object>();
@@ -47,6 +46,7 @@ public class LoadTest extends AbstractMemoriaTest {
     
     long currentTime = System.nanoTime();
     fObjectStore.endUpdate();
+
     long durationInMs = (System.nanoTime() - currentTime) / 1000000;
     assertTrue("10'000 took " +durationInMs, durationInMs < 500);
   }

@@ -28,7 +28,7 @@ public class TransactionHandler {
   private final Header fHeader;
   private final IModeStrategy fModeStrategy;
 
-  public TransactionHandler(TransactionWriter writer, Header header,IModeStrategy modeStrategy) {
+  public TransactionHandler(TransactionWriter writer, Header header, IModeStrategy modeStrategy) {
     fTransactionWriter = writer;
     fHeader = header;
     fModeStrategy = modeStrategy;
