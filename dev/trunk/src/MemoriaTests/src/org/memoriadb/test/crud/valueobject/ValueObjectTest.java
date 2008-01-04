@@ -22,7 +22,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ref = get(id);
-    list = (List<Object>) ref.getObejct();
+    list = (List<Object>) ref.getObject();
     
     assertNotNull(list.get(0));
   }
@@ -40,7 +40,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ref = get(id);
-    valueRef = (ValueObjectReferencer) ref.getObejct();
+    valueRef = (ValueObjectReferencer) ref.getObject();
     ArrayList<Object> list = (ArrayList<Object>) valueRef.getObject();
     
     assertTrue(fObjectStore.contains(ref));
@@ -65,7 +65,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     assertEquals(1, fObjectStore.query(Object.class).size());
     
     ref = get(id);
-    c = (IComponent) ref.getObejct();
+    c = (IComponent) ref.getObject();
     assertEquals(2, c.getChildCount());
     
   }
@@ -90,16 +90,16 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     ObjectReferencer ref = new ObjectReferencer(new Object());
     IObjectId id = save(ref);
     assertTrue(fObjectStore.contains(ref));
-    assertFalse(fObjectStore.contains(ref.getObejct()));
+    assertFalse(fObjectStore.contains(ref.getObject()));
     assertEquals(1, fObjectStore.query(Object.class).size());
     
     reopen();
     
     ref = get(id);
     assertTrue(fObjectStore.contains(ref));
-    assertFalse(fObjectStore.contains(ref.getObejct()));
+    assertFalse(fObjectStore.contains(ref.getObject()));
     assertEquals(1, fObjectStore.query(Object.class).size());
-    assertNotNull(ref.getObejct());
+    assertNotNull(ref.getObject());
   }
   
   public void test_ValueObject_in_ValueObjecct() {
@@ -113,13 +113,13 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     IObjectId id = save(ref);
     
     assertTrue(fObjectStore.contains(ref));
-    assertFalse(fObjectStore.contains(ref.getObejct()));
+    assertFalse(fObjectStore.contains(ref.getObject()));
     
     reopen();
 
     ref = get(id);
     assertTrue(fObjectStore.contains(ref));
-    assertFalse(fObjectStore.contains(ref.getObejct()));
+    assertFalse(fObjectStore.contains(ref.getObject()));
 
     
   }

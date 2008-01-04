@@ -44,8 +44,8 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ObjectReferencer l1_ref = fObjectStore.get(refId);
-    assertFalse(fObjectStore.contains(l1_ref.getObejct()));
-    assertEquals(ref.getObejct(), l1_ref.getObejct());
+    assertFalse(fObjectStore.contains(l1_ref.getObject()));
+    assertEquals(ref.getObject(), l1_ref.getObject());
     assertEquals(1, CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()));
   }
   
@@ -60,8 +60,8 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ObjectReferencer l1_ref = fObjectStore.get(refId);
-    assertFalse(fObjectStore.contains(l1_ref.getObejct()));
-    assertEquals(ref.getObejct(), l1_ref.getObejct());
+    assertFalse(fObjectStore.contains(l1_ref.getObject()));
+    assertEquals(ref.getObject(), l1_ref.getObject());
     assertEquals(1, CollectionUtil.count(fObjectStore.getAllUserSpaceObjects()));
   }
   
@@ -84,8 +84,8 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     
     ObjectReferencer l2_ref1 = fObjectStore.get(id);
     ObjectReferencer l2_ref2 = fObjectStore.get(id2);
-    assertNotSame(l2_ref1.getObejct(), l2_ref2.getObejct());
-    assertEquals(l2_ref1.getObejct(), l2_ref2.getObejct());
+    assertNotSame(l2_ref1.getObject(), l2_ref2.getObject());
+    assertEquals(l2_ref1.getObject(), l2_ref2.getObject());
   }
   
   public void test_update_valueObject_in_dataMode() {
@@ -104,7 +104,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ObjectReferencer l2_ref = fObjectStore.get(id);
-    assertEquals(new TestValueObject("2"), l2_ref.getObejct());
+    assertEquals(new TestValueObject("2"), l2_ref.getObject());
   }
   
   public void test_valueObject_in_data_mode() {
@@ -131,7 +131,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopen();
     
     ObjectReferencer l1_ref = fObjectStore.get(id);
-    ValueObjectReferencer l1_valueObjectRef = (ValueObjectReferencer) l1_ref.getObejct();
+    ValueObjectReferencer l1_valueObjectRef = (ValueObjectReferencer) l1_ref.getObject();
     assertNotNull(l1_valueObjectRef);
     
     TestValueObject l1_valueObject = (TestValueObject) l1_valueObjectRef.getObject();

@@ -42,7 +42,7 @@ public final class ObjectSerializer {
 
     @Override
     public IObjectId getMemoriaClassId(String javaClassName) {
-      IMemoriaClassConfig memoriaClass = fObjectRepository.getMemoriaClass(javaClassName);
+      IMemoriaClass memoriaClass = fObjectRepository.getMemoriaClass(javaClassName);
       return fObjectRepository.getId(memoriaClass);
     }
 

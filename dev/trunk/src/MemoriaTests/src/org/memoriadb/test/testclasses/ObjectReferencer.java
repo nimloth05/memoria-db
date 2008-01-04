@@ -12,7 +12,7 @@ public class ObjectReferencer {
     fObject = object;
   }
 
-  public Object getObejct() {
+  public Object getObject() {
     return fObject;
   }
   

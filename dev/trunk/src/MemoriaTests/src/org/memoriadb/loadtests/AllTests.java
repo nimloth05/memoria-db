@@ -14,6 +14,7 @@ public class AllTests {
     suite.addTestSuite(ComplexGraphTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     suite.addTestSuite(TreeLoadTest.class);
+    suite.addTestSuite(BigInlineGraphTest.class);
     //$JUnit-END$
     return suite;
   }

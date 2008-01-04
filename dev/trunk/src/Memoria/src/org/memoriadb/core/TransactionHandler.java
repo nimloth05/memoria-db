@@ -147,9 +147,8 @@ public class TransactionHandler {
     return fObjectRepository.getIdFactory().getArrayMemoriaClass();
   }
 
-  //FIXME: Testen, wie das mit valueObjects ist.
   public IMemoriaClass getMemoriaClass(Object object) {
-    return fObjectRepository.getMemoriaClass(object);
+    return fModeStrategy.getMemoriaClass(object, fObjectRepository);
   }
 
   public IMemoriaClass getMemoriaClass(String className) {

@@ -22,7 +22,6 @@ public class Block {
    */
   private static final Block sDefaultBlock = new Block(0,-1);
   
-  //FIXME: Review Kommentar: was für arrays? Warum werden hier arrays erwähnt?
   /**
    * Number of bytes this block can store.
    * 

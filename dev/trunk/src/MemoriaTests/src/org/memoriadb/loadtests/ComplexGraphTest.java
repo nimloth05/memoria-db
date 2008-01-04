@@ -7,6 +7,11 @@ import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
+/**
+ * a pretty complex graph is created and many times updated with different BlockManager-configurations.
+ * @author msc
+ *
+ */
 public class ComplexGraphTest extends AbstractMemoriaTest {
 
   public static class IntArrayContainer implements IUpdatable {
@@ -173,8 +178,8 @@ public class ComplexGraphTest extends AbstractMemoriaTest {
   }
 
   public void test() {
-    for (int inactiveThreshold = 0; inactiveThreshold <= 100; inactiveThreshold += 20) {
-      for (int sizeThreshold = 0; sizeThreshold <= 100; sizeThreshold += 20) {
+    for (int inactiveThreshold = 0; inactiveThreshold <= 100; inactiveThreshold += 19) {
+      for (int sizeThreshold = 0; sizeThreshold <= 100; sizeThreshold += 23) {
         fInactiveThreshold = inactiveThreshold;
         fSizeThreshold = sizeThreshold;
 
@@ -229,7 +234,7 @@ public class ComplexGraphTest extends AbstractMemoriaTest {
   }
 
   private IUpdatable createChild3(List<IObjectId> updatables) {
-    ObjectArrayContainer result = new ObjectArrayContainer();
+    ObjectListContainer result = new ObjectListContainer();
     updatables.add(saveAll(result));
     return result;
   }

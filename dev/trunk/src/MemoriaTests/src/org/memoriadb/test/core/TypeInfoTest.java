@@ -6,7 +6,7 @@ import org.memoriadb.ITypeInfo;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.inheritance.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -57,13 +57,21 @@ public class TypeInfoTest extends AbstractMemoriaTest {
     assertNull(typeInfo().getMemoriaClassId(new SimpleTestObj()));
   }
   
+  public void test_getMemoriaClass_for_value_object() {
+    ObjectReferencer ref = new ObjectReferencer(new ValueObjectReferencer());
+    save(ref);
+    
+    IMemoriaClass clazz = fObjectStore.getTypeInfo().getMemoriaClass(ref.getObject());
+    assertEquals(ValueObjectReferencer.class.getName(), clazz.getJavaClassName());
+  }
+  
   public void test_primitives_can_not_be_added() {
     checkAddFails(int.class);
     checkAddFails(int[][].class);
     checkAddFails(Integer.class);
     checkAddFails(String.class);
   }
-  
+
   public void test_TypeInfo() {
     assertEquals(get(typeInfo().getMemoriaClassId(Object.class)), typeInfo().getMemoriaClass(Object.class));
     assertEquals(Object.class.getName(), typeInfo().getMemoriaClass(Object.class).getJavaClassName());
@@ -81,7 +89,6 @@ public class TypeInfoTest extends AbstractMemoriaTest {
     assertEquals(get(typeInfo().getMemoriaClassId(list)), typeInfo().getMemoriaClass(list));
     assertEquals(ArrayList.class.getName(), typeInfo().getMemoriaClass(list).getJavaClassName());
   }
-
   
   private void addClass(Class<?> klass) {
     fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(klass);
@@ -95,10 +102,6 @@ public class TypeInfoTest extends AbstractMemoriaTest {
     catch(MemoriaException e) {
       
     }
-  }
-
-  private int getMemoriaClassCount() {
-    return query(IMemoriaClass.class).size();
   }
 
   private ITypeInfo typeInfo() {

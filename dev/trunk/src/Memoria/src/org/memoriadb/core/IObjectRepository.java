@@ -58,6 +58,10 @@ public interface IObjectRepository {
 
   public IObjectIdFactory getIdFactory();
 
+  /**
+   * @param object An object in object-mode!
+   * @return the memoria-class for the given obejct (works also for value-objects).
+   */
   public IMemoriaClass getMemoriaClass(Object object);
   
   /**
