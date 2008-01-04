@@ -76,7 +76,6 @@ public class TypeInfoTest extends AbstractMemoriaTest {
     
     clazz = fDataStore.getTypeInfo().getMemoriaClass(vor);
     assertEquals(ValueObjectReferencer.class.getName(), clazz.getJavaClassName());
-    
   }
   
   public void test_primitives_can_not_be_added() {
