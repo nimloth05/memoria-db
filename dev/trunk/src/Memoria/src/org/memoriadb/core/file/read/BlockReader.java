@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
-import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
@@ -126,11 +125,6 @@ public class BlockReader {
       readObject(idFactory, handler, revision, objectData, 0, size);
     }
     return 0;
-  }
-
-  private void skip(DataInputStream stream, long size) throws IOException {
-    long skip = stream.skip(size);
-    if (skip != size) { throw new MemoriaException("could not skip bytes: " + size); }
   }
 
 }

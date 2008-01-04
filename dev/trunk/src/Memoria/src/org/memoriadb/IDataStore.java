@@ -1,6 +1,6 @@
 package org.memoriadb;
 
-import java.util.*;
+import java.util.List;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.handler.IDataObject;

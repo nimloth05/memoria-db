@@ -39,7 +39,11 @@ public final class ObjectModeStrategy implements IModeStrategy {
 
   @Override
   public IMemoriaClass getMemoriaClass(Object object, IObjectRepository objectRepository) {
-    return objectRepository.getMemoriaClass(object);
+    IMemoriaClass result = objectRepository.getMemoriaClass(object);
+    if(result != null) return result;
+    
+    // value-objects
+    return objectRepository.getMemoriaClass(object.getClass().getName()); 
   }
 
   @Override

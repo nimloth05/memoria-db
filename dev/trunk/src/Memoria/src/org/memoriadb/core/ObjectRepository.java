@@ -147,10 +147,8 @@ public class ObjectRepository implements IObjectRepository {
   @Override
   public IMemoriaClass getMemoriaClass(Object object) {
     IObjectInfo info = getObjectInfo(object);
-    if(info != null) return (IMemoriaClass) getObject(info.getMemoriaClassId());
-    
-    // value-objects
-    return getMemoriaClass(object.getClass().getName()); 
+    if(info == null) return null;
+    return (IMemoriaClass) getObject(info.getMemoriaClassId());
   }
 
   /**

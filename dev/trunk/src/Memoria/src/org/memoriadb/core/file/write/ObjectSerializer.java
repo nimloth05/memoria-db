@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.memoriadb.core.*;
 import org.memoriadb.core.file.IWriterContext;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 import org.memoriadb.handler.IHandler;
