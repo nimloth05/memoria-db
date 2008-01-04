@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.memoriadb.ITypeInfo;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.inheritance.*;
@@ -57,12 +58,25 @@ public class TypeInfoTest extends AbstractMemoriaTest {
     assertNull(typeInfo().getMemoriaClassId(new SimpleTestObj()));
   }
   
+  /**
+   * Tests in object- and data-mode.
+   */
   public void test_getMemoriaClass_for_value_object() {
     ObjectReferencer ref = new ObjectReferencer(new ValueObjectReferencer());
-    save(ref);
+    IObjectId id = save(ref);
     
     IMemoriaClass clazz = fObjectStore.getTypeInfo().getMemoriaClass(ref.getObject());
     assertEquals(ValueObjectReferencer.class.getName(), clazz.getJavaClassName());
+    
+    reopenDataMode();
+    
+    IFieldbasedObject l1_ref = fDataStore.get(id);
+    IFieldbasedObject vor = (IFieldbasedObject) l1_ref.get("fObject");
+    assertNull(vor.get("fObject"));
+    
+    clazz = fDataStore.getTypeInfo().getMemoriaClass(vor);
+    assertEquals(ValueObjectReferencer.class.getName(), clazz.getJavaClassName());
+    
   }
   
   public void test_primitives_can_not_be_added() {
