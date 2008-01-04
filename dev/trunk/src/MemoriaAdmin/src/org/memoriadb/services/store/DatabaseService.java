@@ -8,6 +8,8 @@ import org.memoriadb.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.frames.ChoosDbDialog;
+import org.memoriadb.model.Configuration;
+import org.memoriadb.util.ClassPathManager;
 
 import com.google.inject.Singleton;
 
@@ -16,6 +18,7 @@ public final class DatabaseService implements IDatabaseService {
   
   private final ListenerList<IChangeListener> fListeners = new ListenerList<IChangeListener>();
   private IDataStore fCurrentStore;
+  private final ClassPathManager fManager = new ClassPathManager();
 
   @Override
   public IDisposable addListener(IChangeListener changeListener) {
@@ -27,12 +30,12 @@ public final class DatabaseService implements IDatabaseService {
     IDataStore dataStore = null;
     do {
       ChoosDbDialog chooseDbFrame = new ChoosDbDialog();
-      String dbPath = chooseDbFrame.show();
-      if (dbPath.isEmpty()) return false;
+      Configuration configuration = chooseDbFrame.show();
+      if (configuration.getDbPath().isEmpty()) return false;
       
       close();
       
-      dataStore = tryOpenDB(dbPath);
+      dataStore = tryOpenDB(configuration);
     } while (dataStore == null);
     fCurrentStore = dataStore;
     notifyPostOpen();
@@ -44,6 +47,7 @@ public final class DatabaseService implements IDatabaseService {
     notifyPreClose();
     fCurrentStore.close();
     fCurrentStore = null;
+    fManager.resetClassLoader();
   }
 
   private void notifyPostOpen() {
@@ -58,9 +62,10 @@ public final class DatabaseService implements IDatabaseService {
     }
   }
 
-  private IDataStore tryOpenDB(String dbPath) {
+  private IDataStore tryOpenDB(Configuration configuration) {
+    fManager.configure(configuration.getClassPaths());
     try {
-      IDataStore dataStore = Memoria.openDataMode(new CreateConfig(), dbPath);
+      IDataStore dataStore = Memoria.openDataMode(new CreateConfig(), configuration.getDbPath());
       return dataStore;
     }
     catch (MemoriaException e) {

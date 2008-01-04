@@ -69,7 +69,7 @@ public final class ReflectionUtil {
   
   public static Class<?> getClass(String javaClassName) {
     try {
-      return Class.forName(javaClassName);
+      return Class.forName(javaClassName, true, Thread.currentThread().getContextClassLoader());
     }
     catch (ClassNotFoundException e) {
       throw new MemoriaException(e);

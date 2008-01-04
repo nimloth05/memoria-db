@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.memoriadb.model.Configuration;
 import org.memoriadb.util.SwingUtil;
 
 public final class ChoosDbDialog {
@@ -23,9 +24,11 @@ public final class ChoosDbDialog {
     createControls();
   }
 
-  public String show() {
+  public Configuration show() {
     fFrame.setVisible(true);
-    return fDbPath;
+    Configuration configuration = new Configuration();
+    configuration.setDbPath(fDbPath);
+    return configuration;
   }
 
   private void add(JComponent component, String constaints) {
