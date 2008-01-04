@@ -1,5 +1,7 @@
 package org.memoriadb.test.core.valueobject;
 
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.mode.AbstractStore;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
@@ -7,6 +9,8 @@ import org.memoriadb.testutil.*;
 
 public class ValueObjectTest extends AbstractMemoriaTest {
   
+  private static final String OBJECT_REFERENCER_FIELD_NAME = "fObject";
+
   public void test_delete() {
     ObjectReferencer ref = new ObjectReferencer();
     TestValueObject valueObject = new TestValueObject("1"); 
@@ -73,10 +77,10 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     IFieldbasedObject l1_ref = fDataStore.get(id);
-    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get("fObject");
+    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get(OBJECT_REFERENCER_FIELD_NAME);
     
     IFieldbasedObject l1_ref2 = fDataStore.getRefactorApi().asFieldDataObject(new ObjectReferencer());
-    l1_ref2.set("fObject", l1_valueObject);
+    l1_ref2.set(OBJECT_REFERENCER_FIELD_NAME, l1_valueObject);
     
     IObjectId id2 = save(l1_ref2);
     
@@ -96,7 +100,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     IFieldbasedObject l1_ref = fDataStore.get(id);
-    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get("fObject");
+    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get(OBJECT_REFERENCER_FIELD_NAME);
     l1_valueObject.set("fValue", "2");
     
     save(l1_ref);
@@ -107,6 +111,21 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     assertEquals(new TestValueObject("2"), l2_ref.getObject());
   }
   
+  public void test_value_object_metaInfo_in_dataMode() {
+    ObjectReferencer ref = new ObjectReferencer();
+    ref.setObject(new TestValueObject("1"));
+    IObjectId refId = fObjectStore.save(ref);
+    
+    reopenDataMode();
+    
+    IFieldbasedObject object = fDataStore.get(refId);
+    Object l1_valueObject = object.get(OBJECT_REFERENCER_FIELD_NAME);
+    
+    IMemoriaClass memoriaClass = fDataStore.getTypeInfo().getMemoriaClass(l1_valueObject);
+    assertEquals(TestValueObject.class.getName(), memoriaClass.getJavaClassName());
+    assertNull(((AbstractStore)fDataStore).getObjectInfo(l1_valueObject));
+  }
+  
   public void test_valueObject_in_data_mode() {
     ObjectReferencer ref = new ObjectReferencer();
     ref.setObject(new TestValueObject("1"));
@@ -115,7 +134,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     IFieldbasedObject l1_ref = fDataStore.get(id);
-    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get("fObject");
+    IFieldbasedObject l1_valueObject = (IFieldbasedObject) l1_ref.get(OBJECT_REFERENCER_FIELD_NAME);
     assertEquals("1", l1_valueObject.get("fValue"));
   }
   
