@@ -80,7 +80,6 @@ public class Block {
    * 100% of the ObjectData are inactive.
    */
   public long getInactiveRatio() {
-    if(fIsFree) return 100;
     
     // when the block-size still is 0, the ratio is 0
     if(fObjectDataCount == 0) return 0;
@@ -110,7 +109,11 @@ public class Block {
     
     if(fInactiveObjectDataCount > fObjectDataCount) throw new MemoriaException(String.format("more inactive(%d) than active(%d) ObjectData", fInactiveObjectDataCount, fObjectDataCount));
     
-    if(fManager != null)fManager.inactiveRatioChanged(this);
+    notifyBlockManager();
+  }
+
+  public boolean isFree() {
+    return fIsFree;
   }
   
   /**
@@ -131,11 +134,12 @@ public class Block {
   
   public void setIsFree() {
     fIsFree  = true;
+    notifyBlockManager();
   }
 
   public void setObjectDataCount(long numberOfObjects) {
     fObjectDataCount = numberOfObjects;
-    if(fManager != null)fManager.inactiveRatioChanged(this);
+    notifyBlockManager();
   }
 
   /**
@@ -149,6 +153,10 @@ public class Block {
   @Override
   public String toString() {
     return "Block ("+fInactiveObjectDataCount+"/"+fObjectDataCount+") pos:" + getPosition() + " size: " + getBodySize();
+  }
+
+  private void notifyBlockManager() {
+    if(fManager != null)fManager.inactiveRatioChanged(this);
   }
   
 }

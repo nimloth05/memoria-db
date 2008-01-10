@@ -35,7 +35,7 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
   }
 
   @Override
-  public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) throws IOException {
+  public void transactionCorrupt(DataInputStream input, Block block) throws IOException {
     freeCorruptBlock(input, block);
   }
 

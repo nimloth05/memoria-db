@@ -7,7 +7,7 @@ import org.memoriadb.core.exception.*;
 import org.memoriadb.core.meta.Type;
 
 public final class ReflectionUtil {
-  
+
   @SuppressWarnings("unchecked")
   public static <T> T createInstance(String className) {
     try {
@@ -20,7 +20,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
-  
+
   /**
    * Creates an instance by a string ctor.
    * 
@@ -44,21 +44,17 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public static <T> T createInstanceWithDefaultOrStringCtor(String className, String arg) {
     try {
       Class<?> clazz = getClass(className);
-      for(Constructor<?> ctor: clazz.getDeclaredConstructors()) {
+      for (Constructor<?> ctor : clazz.getDeclaredConstructors()) {
         ctor.setAccessible(true);
         Class<?>[] parameterTypes = ctor.getParameterTypes();
-        if (parameterTypes.length == 0) {
-          return (T) ctor.newInstance();
-        }
-        
-        if (parameterTypes.length == 1 && parameterTypes[0].equals(String.class)) {
-          return (T) ctor.newInstance(arg);
-        }
+        if (parameterTypes.length == 0) { return (T) ctor.newInstance(); }
+
+        if (parameterTypes.length == 1 && parameterTypes[0].equals(String.class)) { return (T) ctor.newInstance(arg); }
       }
       throw new MemoriaException("Could not find a default ctor or a ctro with a single String argument");
     }
@@ -66,8 +62,16 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
-  
+
   public static Class<?> getClass(String javaClassName) {
+    try {
+      return Class.forName(javaClassName);
+    }
+    catch (ClassNotFoundException e) {
+      // caller-class-loader was not successful
+    }
+
+    // try the context-class-loader assotiated with the current thread
     try {
       return Class.forName(javaClassName, true, Thread.currentThread().getContextClassLoader());
     }
@@ -75,7 +79,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
- 
+
   public static ArrayTypeInfo getComponentTypeInfo(Class<?> componentType) {
     int dimension = 1;
     componentType = componentType.getComponentType();
@@ -85,7 +89,7 @@ public final class ReflectionUtil {
     }
     return new ArrayTypeInfo(Type.getType(componentType), dimension, componentType.getName());
   }
-  
+
   @SuppressWarnings("unchecked")
   public static Class<Enum> getCorrectEnumClass(Class<Enum> enumType) {
     Class result = enumType;
@@ -101,40 +105,35 @@ public final class ReflectionUtil {
 
   public static Field getField(Class<?> clazz, String name) {
     Field[] fields = clazz.getDeclaredFields();
-    for(Field field: fields) {
+    for (Field field : fields) {
       if (field.getName().equals(name)) {
         field.setAccessible(true);
         return field;
       }
     }
-    
+
     if (clazz.getSuperclass() == null) throw new SchemaException("No such field: " + name + " in  class: " + clazz);
     return getField(clazz.getSuperclass(), name);
   }
-  
-  public static Object getFieldValue(Object object, String string) {
-    try {
-      Field field = ReflectionUtil.getField(object.getClass(), string);
-      return field.get(object);
-    }
-    catch(IllegalAccessException e) {
-      throw new MemoriaException(e);
-    }
+
+  public static Object getFieldValue(Object object, String string) throws IllegalArgumentException, IllegalAccessException {
+    Field field = ReflectionUtil.getField(object.getClass(), string);
+    return field.get(object);
   }
-  
+
   public static ArrayTypeInfo getTypeInfo(Object array) {
-    if(!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
+    if (!array.getClass().isArray()) throw new MemoriaException("not an array " + array);
     return getComponentTypeInfo(array.getClass());
   }
-  
+
   public static Object getValueFromField(Object owner, String fieldName) {
     try {
       Field declaredField = getField(owner.getClass(), fieldName);
       declaredField.setAccessible(true);
       return declaredField.get(owner);
-    } 
+    }
     catch (Exception e) {
-      throw new MemoriaException(e);  
+      throw new MemoriaException(e);
     }
   }
 
@@ -148,7 +147,7 @@ public final class ReflectionUtil {
       return false;
     }
   }
-  
+
   public static boolean hasValueObjectAnnotation(Class<?> clazz) {
     return clazz.getAnnotation(ValueObject.class) != null;
   }
@@ -180,11 +179,10 @@ public final class ReflectionUtil {
       declaredField.set(owner, value);
     }
     catch (Exception e) {
-      throw new MemoriaException(e);  
+      throw new MemoriaException(e);
     }
   }
 
   private ReflectionUtil() {}
-  
-    
+
 }

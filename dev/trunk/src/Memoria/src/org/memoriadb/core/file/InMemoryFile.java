@@ -82,9 +82,14 @@ public class InMemoryFile extends AbstractMemoriaFile {
   /**
    * Shrinks the file to the given size.
    */
-  public void shrink(int size) {
-    if(size >= getSize()) throw new MemoriaException("shrink size too big:" + size);
-    fSize = size;
+  public void shrink(int newSize) {
+    if(newSize >= getSize()) throw new MemoriaException("shrink size too big:" + newSize);
+    fSize = newSize;
+  }
+
+  @Override
+  public void sync() {
+    // always in sync
   }
 
   @Override

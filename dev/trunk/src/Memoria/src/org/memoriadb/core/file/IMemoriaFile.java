@@ -43,6 +43,8 @@ public interface IMemoriaFile {
   public boolean isEmpty();
 
   
+  public void sync();
+
   /**
    * The given offset plus the size of the given byte-array must not exceed the file-site.
    */

@@ -44,6 +44,13 @@ public class BlockReader {
 
     // block size
     long blockSize = stream.readLong();
+    
+    // blockSize + size-crc + trx-crc
+    if(blockSize+FileLayout.CRC_LEN+FileLayout.CRC_LEN > stream.available()) {
+      errorHandler.transactionCorrupt(stream, block);
+      return;
+    }
+    
     long readCrc = stream.readLong();
 
     //long blockSize = stream.readUnsignedLong(); 
@@ -63,7 +70,7 @@ public class BlockReader {
     crc = new MemoriaCRC32();
     crc.update(body);
     if (readCrc != crc.getValue()){
-      errorHandler.transactionCorrupt(stream, block, 0);
+      errorHandler.transactionCorrupt(stream, block);
       return;
     }
     

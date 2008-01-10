@@ -1,29 +1,29 @@
 package org.memoriadb.core.file;
 
 import java.io.*;
-import java.nio.channels.FileLock;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.io.BufferedRandomInputStream;
 
+/**
+ * Encapsulates a RandomAccessFile. No explicit locking is done.
+ * @author msc
+ *
+ */
 public class PhysicalFile extends AbstractMemoriaFile {
 
   private final RandomAccessFile fRandomAccessFile;
-  private FileLock fLock;
   private final String fPath;
 
   public PhysicalFile(String path) {
     fPath = path;
     try {
-      // FIXME sync only when a block is written
-      fRandomAccessFile = new RandomAccessFile(path, "rws");
-      fLock = fRandomAccessFile.getChannel().tryLock();
+      fRandomAccessFile = new RandomAccessFile(path, "rw");
     }
     catch (Exception e) {
       throw new MemoriaException(e);
     }
 
-    if (fLock == null) throw new MemoriaException("File is locked: " + path);
   }
 
   @Override
@@ -37,14 +37,13 @@ public class PhysicalFile extends AbstractMemoriaFile {
     catch (IOException e) {
       throw new MemoriaException(e);
     }
-    
+
     internalWrite(data, oldSize);
   }
 
   @Override
   public void doClose() {
     try {
-      if (fLock != null) fLock.release();
       if (fRandomAccessFile != null) fRandomAccessFile.close();
     }
     catch (IOException e) {
@@ -87,10 +86,20 @@ public class PhysicalFile extends AbstractMemoriaFile {
   }
 
   @Override
+  public void sync() {
+    try {
+      fRandomAccessFile.getFD().sync();
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
+  }
+
+  @Override
   public String toString() {
     return fPath;
   }
-
+  
   /**
    * ATTENION: The buffer must be big enough to avoid the recursive read in the 
    *           BufferedRandomInputStream to generate a StackoverflowException.
@@ -98,7 +107,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
   private int getBufferSize() {
     return (int) Runtime.getRuntime().freeMemory() / 64;
   }
-  
+
   private void internalWrite(byte[] data, long offset) {
     try {
       fRandomAccessFile.seek(offset);

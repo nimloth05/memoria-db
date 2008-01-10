@@ -13,7 +13,9 @@ public final class Configuration {
   private String fDbPath;
   
   public Configuration() {
-    fClassPath.add("C:\\projects\\rep_memoria\\dev\\trunk\\src\\Example\\bin\\");
+    fClassPath.add("C:\\projects\\aXos2\\trunk\\com.netstal.core\\target\\java\\bin\\");
+    fClassPath.add("C:\\projects\\aXos2\\trunk\\ch.activesource.core\\bin\\");
+    fClassPath.add("C:\\projects\\aXos2\\trunk\\ch.activesource.libs_external\\libs\\jug.jar");
   }
   
   public void addClassPath(String path) {

@@ -20,7 +20,7 @@ public class TreeLoadTest extends AbstractMemoriaTest {
     
     System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);
     long start1 = System.nanoTime();
-    Node root = createTree(8, 2);
+    Node root = createTree(5, 2);
     IObjectId id = save(root);
     long start2 = System.nanoTime();
     System.out.println("create ms: " + (start2 - start1)/1000000);

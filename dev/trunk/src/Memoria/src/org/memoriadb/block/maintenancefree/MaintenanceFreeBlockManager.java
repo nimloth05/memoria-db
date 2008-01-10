@@ -98,6 +98,8 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   }
 
   private boolean blockQualifiesForRecycling(Block block) {
+    if(block.isFree()) return true;
+    
     // if the inactiveThreshold is 0, a single inactive ObjectData qualifies the block for recycling.
     if (fInactiveThreshold == 0) return block.getInactiveObjectDataCount() > 0;
 

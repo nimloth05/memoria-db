@@ -85,6 +85,9 @@ public final class TransactionWriter {
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
     // ... then add the data to the file.
     fFile.append(stream.toByteArray());
+    
+    // the block si written, synchronize.
+    fFile.sync();
 
     fConfig.getListeners().triggerAfterAppend(block);
 
@@ -127,6 +130,7 @@ public final class TransactionWriter {
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
     long revision = writeTransaction(stream, survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size());
     
+    // FIXME survivors müssen NICHT nochmals serialisiert werden! besser den buffer kopieren.
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
 
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
@@ -187,6 +191,9 @@ public final class TransactionWriter {
     // dd the data after the BlockTag to the file
     fFile.write(stream.toByteArray(), block.getBodyStartPosition());
 
+    // the block si written, synchronize.
+    fFile.sync();
+    
     fConfig.getListeners().triggerAfterWrite(block);
   }
 
@@ -203,10 +210,12 @@ public final class TransactionWriter {
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
     if (block == null) return append(compressedTrx, objectDataCount);
 
-    freeBlock(block, tabooBlocks, mode, decOGC);
+    if(!block.isFree()) {
+      freeBlock(block, tabooBlocks, mode, decOGC);
+      // now all objects in the freed block must be inactive (inactive-ratio == 100%)
+      if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
+    }
 
-    // now all objects in the freed block must be inactive (inactive-ratio == 100%)
-    if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     block.resetBlock(objectDataCount);
 
     write(block, compressedTrx, objectDataCount);

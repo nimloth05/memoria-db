@@ -11,32 +11,32 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
   public void test_corrupt_block_size_in_last_written() {
     Object o1 = new Object();
-    
+
     IObjectId id = save(o1);
     save(o1);
     save(o1);
     // |o1''|~o1'|
-    
+
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getPosition() + FileLayout.BLOCK_TAG_LEN);
-    
+
     reopenFails();
   }
-  
+
   public void test_corrupt_block_tag_in_last_written() {
     Object o1 = new Object();
-    
+
     IObjectId id = save(o1);
     save(o1);
     save(o1);
     // |o1''|~o1'|
-    
+
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getPosition());
-    
+
     reopenFails();
   }
-  
+
   public void test_corrupt_bootstrap_block() {
     // add an other block
     save(new Object());
@@ -46,7 +46,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     corruptFile(fs.getBlock(0).getPosition() + FileLayout.BLOCK_TAG_LEN);
 
     reopenFails();
-    
+
   }
 
   public void test_corrupt_bootstrap_block_startTag() {
@@ -74,57 +74,57 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
   public void test_corrupt_transaction_in_last_written() {
     Object o1 = new Object();
-    
+
     IObjectId id = save(o1);
     save(o1);
     save(o1);
     // |o1''|~o1'|
-    
+
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getBodyStartPosition());
-    
+
     assertEquals(4, getObjectInfo(id).getRevision());
     reopen();
-    
+
     assertEquals(3, getObjectInfo(id).getRevision());
   }
 
   public void test_corrupt_transaction_in_last_written_with_garbage() {
     Object o1 = new Object();
     Object o2 = new Object();
-    
+
     beginUpdate();
-      IObjectId id1 = save(o1);
-      IObjectId id2 = save(o2);
+    IObjectId id1 = save(o1);
+    IObjectId id2 = save(o2);
     endUpdate();
     // |o1, o2|
     assertEquals(2, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1),getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(1),getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
+    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
     assertEquals(2, getObjectInfo(id1).getRevision());
     assertEquals(2, getObjectInfo(id2).getRevision());
-    
+
     save(o1);
     // |~o1, o2|o1'|
     assertEquals(3, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(2),getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(1),getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(2), getObjectInfo(id1).getCurrentBlock());
+    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
     assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(2, getObjectInfo(id2).getRevision());
-    
+
     save(o1);
     // |o1'',garbage|~o1'|o2'|
     assertEquals(4, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1),getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(3),getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
+    assertBlocks(getBlock(3), getObjectInfo(id2).getCurrentBlock());
     assertEquals(4, getObjectInfo(id1).getRevision());
     assertEquals(5, getObjectInfo(id2).getRevision());
-    
+
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getBodyStartPosition());
 
     reopen();
-    
+
     assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(5, getObjectInfo(id2).getRevision());
   }
@@ -164,33 +164,32 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertEquals(0, fObjectStore.query(Object.class).size());
   }
 
-  
   public void test_repair_corrupt_garbage() {
     Object o1 = new Object();
     Object o2 = new Object();
 
     beginUpdate();
-      IObjectId id1 = save(o1);
-      IObjectId id2 = save(o2);
+    IObjectId id1 = save(o1);
+    IObjectId id2 = save(o2);
     endUpdate();
     // |o1,o2|
-    
+
     save(o1);
     // |~o1,o2|o1'|
     assertEquals(3, getBlockManager().getBlockCount());
-    
+
     save(o1);
     // |o1''|~o1'|o2'|
-    
+
     assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(1, getBlockManager().getBlock(1).getObjectDataCount());
     assertEquals(getBlockManager().getBlock(1), getObjectInfo(id1).getCurrentBlock());
     assertEquals(100, getBlockManager().getBlock(2).getInactiveRatio());
     assertEquals(getBlockManager().getBlock(3), getObjectInfo(id2).getCurrentBlock());
-    
+
     // garbage is expected at position 78
     FileStructure fs = new FileStructure(getFile());
-    corruptFile(fs.getBlock(1).getPosition()+78);
+    corruptFile(fs.getBlock(1).getPosition() + 78);
 
     reopen();
 
@@ -206,8 +205,72 @@ public class RecoveryTest extends AbstractMemoriaTest {
     reopen();
 
     assertEquals(0, fObjectStore.query(Object.class).size());
-    
+
     assertEquals(68, getBlock(1).getWholeSize());
+  }
+
+  /**
+   * length: 2822
+   * 
+   * |__head__|__boot__|2734|__block_tag__|2742|__size_crc__|2758|__trxa__|2814|__crc__
+   */
+  public void test_shrunk_block_crc_in_last_appended_repairs() {
+    beginUpdate();
+      save(new Object());
+      save(new Object());
+    endUpdate();
+
+    assertEquals(2, getBlockManager().getBlockCount());
+
+    System.out.println(getBlock(1).getBodySize());
+
+    getFile().shrink(2821);
+
+    reopen();
+
+    assertEquals(0, fObjectStore.query(Object.class).size());
+
+    assertEquals(2734, getBlock(1).getPosition());
+    assertEquals(87, getBlock(1).getWholeSize());
+    assertTrue(getBlock(1).isFree());
+
+    // add a new element, the corrupt block must be reused
+    IObjectId id = save(new Object());
+
+    assertBlocks(getBlock(1), getObjectInfo(id).getCurrentBlock());
+    assertEquals(87, getBlock(1).getWholeSize());
+  }
+  
+  /**
+   * length: 2822
+   * 
+   * |__head__|__boot__|2734|__block_tag__|2742|__size_crc__|2758|__trxa__|2814|__crc__
+   */
+  public void test_shrunk_trx_in_last_appended_repairs() {
+    beginUpdate();
+      save(new Object());
+      save(new Object());
+    endUpdate();
+
+    assertEquals(2, getBlockManager().getBlockCount());
+
+    System.out.println(getBlock(1).getBodySize());
+
+    getFile().shrink(2813);
+
+    reopen();
+
+    assertEquals(0, fObjectStore.query(Object.class).size());
+
+    assertEquals(2734, getBlock(1).getPosition());
+    assertEquals(79, getBlock(1).getWholeSize());
+    assertTrue(getBlock(1).isFree());
+
+    // add a new element, the corrupt block must be reused
+    IObjectId id = save(new Object());
+
+    assertBlocks(getBlock(1), getObjectInfo(id).getCurrentBlock());
+    assertEquals(79, getBlock(1).getWholeSize());
   }
 
   @Override

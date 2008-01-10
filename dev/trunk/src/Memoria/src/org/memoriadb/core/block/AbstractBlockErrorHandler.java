@@ -34,7 +34,7 @@ public abstract class AbstractBlockErrorHandler implements IBlockErrorHandler {
 
   @SuppressWarnings("unused")
   @Override
-  public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) throws IOException {
+  public void transactionCorrupt(DataInputStream input, Block block) throws IOException {
     throw new FileCorruptException("transaction corrupt in block: " + block);
   }
 

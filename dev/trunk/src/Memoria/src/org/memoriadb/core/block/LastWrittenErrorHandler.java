@@ -12,7 +12,7 @@ public class LastWrittenErrorHandler extends AbstractBlockErrorHandler {
   }
   
   @Override
-  public void transactionCorrupt(DataInputStream input, Block block, long transactionSize) {
+  public void transactionCorrupt(DataInputStream input, Block block) {
    //BlockReader.skip(input, block.getBodySize() - transactionSize - FileLayout.TRX_OVERHEAD);
   }
 
