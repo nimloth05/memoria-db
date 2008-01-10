@@ -222,8 +222,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     assertEquals(2, getBlockManager().getBlockCount());
 
-    System.out.println(getBlock(1).getBodySize());
-
     getFile().shrink(2821);
 
     reopen();
@@ -253,8 +251,6 @@ public class RecoveryTest extends AbstractMemoriaTest {
     endUpdate();
 
     assertEquals(2, getBlockManager().getBlockCount());
-
-    System.out.println(getBlock(1).getBodySize());
 
     getFile().shrink(2813);
 
