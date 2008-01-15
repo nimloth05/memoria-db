@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.core.TransactionHandler;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.query.ObjectModeQueryStrategy;
 import org.memoriadb.id.IObjectId;
 
@@ -17,22 +18,26 @@ public class ObjectStore extends AbstractStore implements IObjectStore  {
   
   @Override
   public boolean contains(Object obj) {
+    if(obj == null) return false;
     return fTransactionHandler.contains(obj);
   }
 
   @Override
   public void delete(Object obj) {
+    if(obj == null) throw new MemoriaException("can not delete null");
     fTransactionHandler.delete(obj);
   }
 
   @Override
   public void deleteAll(Object root) {
+    if(root == null) throw new MemoriaException("can not delete null");
     fTransactionHandler.deleteAll(root);
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T> T get(IObjectId id) {
+    if(id== null) throw new MemoriaException("id was null");
     return (T) fTransactionHandler.getObject(id);
   }
 
@@ -48,6 +53,7 @@ public class ObjectStore extends AbstractStore implements IObjectStore  {
 
   @Override
   public IObjectId getId(Object obj) {
+    if(obj == null) throw new MemoriaException("null has no id");
     return fTransactionHandler.getId(obj);
   }
 
@@ -73,10 +79,12 @@ public class ObjectStore extends AbstractStore implements IObjectStore  {
   }
   
   public IObjectId save(Object obj) {
+    if(obj == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.save(obj);
   }
 
   public IObjectId saveAll(Object root) {
+    if(root == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.saveAll(root);
   }
 
@@ -87,9 +95,5 @@ public class ObjectStore extends AbstractStore implements IObjectStore  {
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }
-
-//  /* package */ IMemoriaClassConfig internalGetMemoriaClass(String klass) {
-//    return fTransactionHandler.internalGetMemoriaClass(klass);
-//  }
 
 }

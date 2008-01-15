@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.memoriadb.*;
 import org.memoriadb.core.TransactionHandler;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
@@ -20,22 +21,26 @@ public class DataStore extends AbstractStore implements IDataStore {
   
   @Override
   public boolean contains(IDataObject obj) {
+    if(obj == null) return false;
     return fTransactionHandler.contains(obj);
   }
 
   @Override
   public void delete(IDataObject obj) {
+    if(obj == null) throw new MemoriaException("can not delete null");
     fTransactionHandler.delete(obj);
   }
 
   @Override
   public void deleteAll(IDataObject root) {
+    if(root == null) throw new MemoriaException("can not delete null");
     fTransactionHandler.deleteAll(root);
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public <T extends IDataObject> T  get(IObjectId id) {
+    if(id== null) throw new MemoriaException("id was null");
     return (T) fTransactionHandler.getObject(id);
   }
   
@@ -53,6 +58,7 @@ public class DataStore extends AbstractStore implements IDataStore {
 
   @Override
   public IObjectId getId(IDataObject obj) {
+    if(obj == null) throw new MemoriaException("null has no id");
     return fTransactionHandler.getId(obj);
   }
 
@@ -74,10 +80,12 @@ public class DataStore extends AbstractStore implements IDataStore {
   }
 
   public IObjectId save(IDataObject obj) {
+    if(obj == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.save(obj);
   }
 
   public IObjectId saveAll(IDataObject root) {
+    if(root == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.saveAll(root);
   }
 
