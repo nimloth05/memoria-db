@@ -65,7 +65,7 @@ public final class DatabaseService implements IDatabaseService {
   private IDataStore tryOpenDB(Configuration configuration) {
     fManager.configure(configuration.getClassPaths());
     try {
-      IDataStore dataStore = Memoria.openDataMode(new CreateConfig(), configuration.getDbPath());
+      IDataStore dataStore = Memoria.openInDataMode(new CreateConfig(), configuration.getDbPath());
       return dataStore;
     }
     catch (MemoriaException e) {

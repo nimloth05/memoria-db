@@ -101,6 +101,9 @@ public final class TransactionWriter {
    * @throws IOException
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
+    
+    System.out.println("free block: " + block.getWholeSize());
+    
     SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block, fCompressor);
 
     if (survivorAgent.hasSurvivors()) {

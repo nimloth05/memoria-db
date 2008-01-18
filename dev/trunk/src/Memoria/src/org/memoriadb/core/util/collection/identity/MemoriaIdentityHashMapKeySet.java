@@ -72,4 +72,8 @@ public class MemoriaIdentityHashMapKeySet<K> implements Set<K> {
     return fKeySet.toArray(a);
   }
   
+  @Override
+  public String toString() {
+    return fKeySet.toString();
+  }
 }

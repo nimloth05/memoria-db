@@ -103,6 +103,8 @@ public class Bootstrap {
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision, compressor);
     TransactionHandler transactionHandler = new TransactionHandler(writer, header, strategy);
     
+    repo.notifyReconstitute();
+    
     return transactionHandler;
   }
 

@@ -49,19 +49,16 @@ public final class Memoria {
   /**
    * @return An ObjectStore backed with an in-memory file
    */
-  //FIXME: Umbennen in openInDataMode();
-  public static IDataStore openDataMode(CreateConfig config) {
-    return openDataMode(config, new InMemoryFile());
+  public static IDataStore openInDataMode(CreateConfig config) {
+    return openInDataMode(config, new InMemoryFile());
   }
 
-  //FIXME: Umbennen in openInDataMode();  
-  public static IDataStore openDataMode(CreateConfig config, IMemoriaFile file) {
+  public static IDataStore openInDataMode(CreateConfig config, IMemoriaFile file) {
     return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
   }
 
-  //FIXME: Umbennen in openInDataMode();  
-  public static IDataStore openDataMode(CreateConfig config, String path) {
-    return openDataMode(config, new PhysicalFile(path));
+  public static IDataStore openInDataMode(CreateConfig config, String path) {
+    return openInDataMode(config, new PhysicalFile(path));
   }
   
   private Memoria() {}

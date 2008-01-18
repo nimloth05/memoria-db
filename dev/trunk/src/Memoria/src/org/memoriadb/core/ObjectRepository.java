@@ -2,6 +2,7 @@ package org.memoriadb.core;
 
 import java.util.*;
 
+import org.memoriadb.ILifeCycle;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.*;
@@ -40,7 +41,6 @@ public class ObjectRepository implements IObjectRepository {
   
   private final IObjectIdFactory fIdFactory;
   
-
   public ObjectRepository(IObjectIdFactory idFactory) {
     fIdFactory = idFactory;
   }
@@ -203,6 +203,17 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.isNullReference(objectId);
   }
 
+  /**
+   * Calls all {@link ILifeCycle#postReconstitute()}-methods for Objects that support this interface.
+   */
+  public void notifyReconstitute() {
+    for(Object current: fObjectMap.keySet()){
+      if(current instanceof ILifeCycle) {
+        ((ILifeCycle)current).postReconstitute();
+      }
+    }
+  }
+
   private IObjectId generateId() {
     return fIdFactory.createNextId();
   }
@@ -211,7 +222,7 @@ public class ObjectRepository implements IObjectRepository {
     
     Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
-
+    
     previousMapped = fIdMap.put(info.getId(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in id-Map " + info);
 

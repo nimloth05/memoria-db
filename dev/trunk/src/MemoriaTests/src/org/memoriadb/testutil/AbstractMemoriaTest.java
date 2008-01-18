@@ -198,7 +198,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
   
   private DataStore openStoreDataMode(IMemoriaFile file, CreateConfig config) {
-    return (DataStore) Memoria.openDataMode(config, file);
+    return (DataStore) Memoria.openInDataMode(config, file);
   }
 
   

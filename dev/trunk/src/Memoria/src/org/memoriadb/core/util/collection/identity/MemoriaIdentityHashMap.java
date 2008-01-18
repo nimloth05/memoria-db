@@ -63,6 +63,11 @@ public class MemoriaIdentityHashMap<K, V> implements Map<K, V> {
   }
 
   @Override
+  public String toString() {
+    return fMap.toString();
+  }
+  
+  @Override
   public Collection<V> values() {
     return fMap.values();
   }
