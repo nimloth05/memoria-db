@@ -1,7 +1,7 @@
 package org.memoriadb;
 
-import org.memoriadb.frames.MainFrame;
 import org.memoriadb.services.store.*;
+import org.memoriadb.ui.frames.MainFrame;
 
 import com.google.inject.*;
 

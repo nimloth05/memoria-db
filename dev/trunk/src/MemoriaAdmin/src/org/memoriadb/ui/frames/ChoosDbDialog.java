@@ -1,4 +1,4 @@
-package org.memoriadb.frames;
+package org.memoriadb.ui.frames;
 
 import java.awt.*;
 import java.awt.event.*;

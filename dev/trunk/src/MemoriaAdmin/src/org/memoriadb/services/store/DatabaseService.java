@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 import org.memoriadb.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.disposable.*;
-import org.memoriadb.frames.ChoosDbDialog;
 import org.memoriadb.model.Configuration;
+import org.memoriadb.ui.frames.ChoosDbDialog;
 import org.memoriadb.util.ClassPathManager;
 
 import com.google.inject.Singleton;
