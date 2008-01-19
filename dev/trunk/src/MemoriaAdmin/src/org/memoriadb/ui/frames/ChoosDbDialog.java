@@ -7,25 +7,23 @@ import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.memoriadb.model.Configuration;
+import org.memoriadb.ui.moodel.ConfigurationPM;
 import org.memoriadb.util.SwingUtil;
 
 public final class ChoosDbDialog {
 
   private final JDialog fFrame;
-  private String fDbPath = "";
-  private JTextField fDbPathTextField;
+  private final ConfigurationPM fModel;
 
   public ChoosDbDialog() {
     fFrame = new JDialog((Frame) null, true);
+    fModel = ConfigurationPM.createNew();
     createControls();
   }
 
-  public Configuration show() {
+  public ConfigurationPM show() {
     fFrame.setVisible(true);
-    Configuration configuration = new Configuration();
-    configuration.setDbPath(fDbPath);
-    return configuration;
+    return fModel;
   }
 
   private void add(JComponent component, String constaints) {
@@ -47,6 +45,7 @@ public final class ChoosDbDialog {
         JFileChooser dialog = new JFileChooser();
         dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         dialog.showOpenDialog(fFrame);
+        fModel.getClassPath().addElement(dialog.getSelectedFile().getAbsolutePath());
       }
     });
   }
@@ -60,7 +59,7 @@ public final class ChoosDbDialog {
         dlg.setVisible(true);
         
         if (dlg.getFile() != null) {
-           
+           fModel.getClassPath().addElement(dlg.getDirectory() + dlg.getFile());
         }
         dlg.dispose(); 
       }
@@ -93,14 +92,16 @@ public final class ChoosDbDialog {
   private void createChoosDbPathPart() {
     add(new JLabel("Choose a DB from File-System: "), "span");
     add(createDbPathChooserButton(), "split, span");
-    fDbPathTextField = new JTextField();
-    add(fDbPathTextField, "growx, wrap");
+    JTextField dbPath = new JTextField();
+    dbPath.setDocument(fModel.getDBPath());
+    add(dbPath, "growx, wrap");
   }
 
   private void createClassPathPart() {
     JList classPathEntries = new JList();
-    LookAndFeel.installBorder(classPathEntries, "TextField.border");
-    add(classPathEntries, "h :150:, w :150:, grow");
+    //LookAndFeel.installBorder(classPathEntries, "TextField.border");
+    classPathEntries.setModel(fModel.getClassPath());
+    add(new JScrollPane(classPathEntries), "h :150:, w :150:, grow");
     add(createAddFolderButton(), "sizegroup classPathButton, aligny top, split, flowy");
     add(createAddJarButton(), "sizegroup classPathButton, wrap");
   }
@@ -126,7 +127,7 @@ public final class ChoosDbDialog {
         FileDialog dlg = new FileDialog(fFrame, "Choose DB", FileDialog.LOAD);
         dlg.setVisible(true);
         if (dlg.getFile() != null) {
-          fDbPathTextField.setText( dlg.getDirectory() + dlg.getFile() ); 
+          fModel.setDbPathString(dlg.getDirectory() + dlg.getFile());
         }
         dlg.dispose();
       }
@@ -139,7 +140,6 @@ public final class ChoosDbDialog {
       @Override
       public void actionPerformed(ActionEvent e) {
         fFrame.setVisible(false);
-        fDbPath = fDbPathTextField.getText(); 
       }
     });
   }

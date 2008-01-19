@@ -9,6 +9,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.model.Configuration;
 import org.memoriadb.ui.frames.ChoosDbDialog;
+import org.memoriadb.ui.moodel.ConfigurationPM;
 import org.memoriadb.util.ClassPathManager;
 
 import com.google.inject.Singleton;
@@ -30,7 +31,8 @@ public final class DatabaseService implements IDatabaseService {
     IDataStore dataStore = null;
     do {
       ChoosDbDialog chooseDbFrame = new ChoosDbDialog();
-      Configuration configuration = chooseDbFrame.show();
+      ConfigurationPM configurationPm = chooseDbFrame.show();
+      Configuration configuration = configurationPm.createConfiguration();
       if (configuration.getDbPath().isEmpty()) return false;
       
       close();

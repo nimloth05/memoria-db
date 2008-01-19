@@ -87,7 +87,8 @@ public final class MainFrame {
       }
       
     };
-    ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/icons/class_obj.gif"));
+    //FIXME: Bilder laden sollte fail-safe sein.
+    ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/ui/icons/class_obj.gif"));
     if (icon != null) {
       DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
       
