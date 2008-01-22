@@ -105,6 +105,35 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertNull(manager.allocatedRecyclebleBlock(1, new HashSet<Block>()));
   }
 
+  public void test_same_Block_is_not_added_twice() {
+    IBlockManagerExt manager = new MaintenanceFreeBlockManager(21, 0);
+    
+    Block block = new Block(10, 0);
+    block.setBlockManager(manager);
+    
+    block.setObjectDataCount(5);
+    
+    assertEquals(0, manager.getRecyclingBlockCount());
+    
+    block.incrementInactiveObjectDataCount();
+    assertEquals(0, manager.getRecyclingBlockCount());
+
+    // 21% inactiveThreshold-mark exceeded.
+    block.incrementInactiveObjectDataCount();
+    assertEquals(1, manager.getRecyclingBlockCount());
+
+    // still one, the same block can not be added twice!
+    block.incrementInactiveObjectDataCount();
+    assertEquals(1, manager.getRecyclingBlockCount());
+    
+    // remove the block
+    Block found = manager.allocatedRecyclebleBlock(1, new HashSet<Block>());
+    assertEquals(found, block);
+    
+    assertEquals(0, manager.getRecyclingBlockCount());
+    
+  }
+  
   /**
    * The size doesn't matter
    */

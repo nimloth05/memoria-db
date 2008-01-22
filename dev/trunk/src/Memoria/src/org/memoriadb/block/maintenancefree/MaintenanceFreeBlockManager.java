@@ -62,6 +62,12 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
         // sizeThreshold exceeded
         return null;
       }
+
+      
+      // This guarantees that the algorithm does not stop making progress. 
+      // If a BlockBucket is found with the right size but all it's Blocks are
+      // contained in the taboo-list, the next bigger BlockBucket must be taken to check if
+      // it's size still fits in the given sizeThreshold.
       currentSize = Math.max(currentSize + 1, blockBucket.getSize());
     }
   }
@@ -90,6 +96,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     BlockBucket prototype = new BlockBucket(block.getBodySize());
     BlockBucket bucket = fRecycleList.ceiling(prototype);
     if (bucket == null || bucket.getSize() != block.getBodySize()) {
+      // no BlockBucket with exactly the requested bodySize was found. Add the created prototype.
       bucket = prototype;
       fRecycleList.add(bucket);
     }
@@ -98,8 +105,8 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   }
 
   private boolean blockQualifiesForRecycling(Block block) {
-    if(block.isFree()) return true;
-    
+    if (block.isFree()) return true;
+
     // if the inactiveThreshold is 0, a single inactive ObjectData qualifies the block for recycling.
     if (fInactiveThreshold == 0) return block.getInactiveObjectDataCount() > 0;
 

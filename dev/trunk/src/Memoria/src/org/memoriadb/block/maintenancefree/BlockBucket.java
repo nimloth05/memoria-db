@@ -14,9 +14,14 @@ public class BlockBucket implements Comparable<BlockBucket> {
     fSize = size;
   }
   
+  /**
+   * Adding same {@link Block} several times is ignored.
+   */
   public void add(Block block) {
     // optimization to avoid instantiation of the List in case when no Blocks are added (when BlockBucket is search-prototype)
     if(fBlocks == null) fBlocks = new ArrayList<Block>();
+    
+    if(fBlocks.contains(block)) return;
     
     fBlocks.add(block);
   }
