@@ -13,7 +13,7 @@ import org.memoriadb.core.file.FileLayout;
  * - crc over the size
  * 
  * Then follows the body, containing one transaction. The size is the size of the body!
- * 
+ * FIXME IBlock-Interface einziehen, um die Verwendungs-Schnittstelle von der Konstruktionsschnittstell zu trennen, msc.
  */
 public class Block {
   

@@ -128,7 +128,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     
     // remove the block
     Block found = manager.allocatedRecyclebleBlock(1, new HashSet<Block>());
-    assertEquals(found, block);
+    assertSame(block, found);
     
     assertEquals(0, manager.getRecyclingBlockCount());
     
