@@ -12,4 +12,8 @@ public class Person {
     fName = string;
   }
   
+  public String getName() {
+    return fName;
+  }
+  
 }

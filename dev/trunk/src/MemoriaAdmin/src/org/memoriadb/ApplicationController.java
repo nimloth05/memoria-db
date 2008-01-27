@@ -20,6 +20,12 @@ public final class ApplicationController {
     sInjector.getInstance(ChangeDataStoreBody.class).run();
   }
 
+  public static void shutdown() {
+    sInjector.getInstance(IDatastoreService.class).dispose();
+    sInjector.getInstance(IDataStoreConfigurationService.class).dispose();
+    System.exit(0);
+  }
+
   private static Injector prepareService() {
     Injector injector = Guice.createInjector(new AbstractModule() {
 
@@ -30,12 +36,6 @@ public final class ApplicationController {
       }
     });
     return injector;
-  }
-
-  private static void shutdown() {
-    sInjector.getInstance(IDatastoreService.class).dispose();
-    sInjector.getInstance(IDataStoreConfigurationService.class).dispose();
-    System.exit(0);
   }
 
 }

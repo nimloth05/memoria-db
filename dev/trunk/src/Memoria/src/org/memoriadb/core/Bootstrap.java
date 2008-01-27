@@ -38,7 +38,6 @@ public class Bootstrap {
     IMemoriaClassConfig objectMemoriaClass = new FieldbasedMemoriaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
 
-    // FIXME den CollectionHandler auf mehr Generizität umschreiben (Ctor mit String-arg)
     registerHandler(trxHandler, new CollectionHandler.ListHandler(ArrayList.class));
     registerHandler(trxHandler, new CollectionHandler.ListHandler(LinkedList.class));
     registerHandler(trxHandler, new CollectionHandler.ListHandler(CopyOnWriteArrayList.class));

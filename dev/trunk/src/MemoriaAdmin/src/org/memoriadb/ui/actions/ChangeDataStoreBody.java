@@ -4,7 +4,6 @@ import java.awt.Frame;
 
 import javax.swing.JOptionPane;
 
-import org.memoriadb.IDataStore;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.model.Configuration;
 import org.memoriadb.services.configuration.IDataStoreConfigurationService;
@@ -29,7 +28,6 @@ public class ChangeDataStoreBody {
     Configuration configuration = fService.loadConfiguration();
     ConfigurationPM configPM = ConfigurationPM.createFrom(configuration);
     
-    IDataStore dataStore = null;
     do {
       ChoosDbDialog chooseDbFrame = new ChoosDbDialog(configPM);
       if (!chooseDbFrame.show()) return;
@@ -37,6 +35,7 @@ public class ChangeDataStoreBody {
       
       if (tryToChangeDb(configuration)) break;
     } while (true);
+    
     fService.save(configuration);
   }
 
