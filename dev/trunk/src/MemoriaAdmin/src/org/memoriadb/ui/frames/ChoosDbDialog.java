@@ -14,16 +14,18 @@ public final class ChoosDbDialog {
 
   private final JDialog fFrame;
   private final ConfigurationPM fModel;
+  private boolean fOkButtonPressed = false;
 
-  public ChoosDbDialog() {
+  public ChoosDbDialog(ConfigurationPM configPM) {
+    if (configPM == null) throw new IllegalArgumentException("Null Argument configPM");
     fFrame = new JDialog((Frame) null, true);
-    fModel = ConfigurationPM.createNew();
+    fModel = configPM;
     createControls();
   }
 
-  public ConfigurationPM show() {
+  public boolean show() {
     fFrame.setVisible(true);
-    return fModel;
+    return fOkButtonPressed;
   }
 
   private void add(JComponent component, String constaints) {
@@ -84,6 +86,7 @@ public final class ChoosDbDialog {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        fOkButtonPressed = false;
         fFrame.setVisible(false);
       }
     });
@@ -139,6 +142,7 @@ public final class ChoosDbDialog {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        fOkButtonPressed = true;
         fFrame.setVisible(false);
       }
     });

@@ -23,14 +23,14 @@ public final class MainFrame {
 
   private final JFrame fFrame;
   
-  private final IDatabaseService fDatabaseService;
+  private final IDatastoreService fDataStoreService;
 
   private JTree fClassTree;
   private IDisposable fListenerDisposable;
 
   @Inject
-  public MainFrame(IDatabaseService service) {
-    fDatabaseService = service;
+  public MainFrame(IDatastoreService service) {
+    fDataStoreService = service;
     fFrame = new JFrame();
     fFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     fFrame.setSize(FRAME_WIDTH, 600);
@@ -44,7 +44,7 @@ public final class MainFrame {
   }
 
   private void addDatabaseServiceListener() {
-    fListenerDisposable = fDatabaseService.addListener(new IChangeListener() {
+    fListenerDisposable = fDataStoreService.addListener(new IChangeListener() {
 
       @Override
       public void postOpen(IDataStore newStore) {
