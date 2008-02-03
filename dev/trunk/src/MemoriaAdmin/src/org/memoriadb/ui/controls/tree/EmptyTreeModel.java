@@ -1,4 +1,4 @@
-package org.memoriadb.util;
+package org.memoriadb.ui.controls.tree;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.*;

@@ -6,8 +6,9 @@ import javax.swing.tree.*;
 
 import org.memoriadb.ITypeInfo;
 import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.ui.controls.tree.ILabelProvider;
 
-
+//Hier müssen wir ien PM erzeugen, der die Funktionalität für das Hauptfenster bietet.
 public final class ClassModelFactory {
   
   //FIXME: Dieser Code ist ein erstes Wurf... so
@@ -39,20 +40,28 @@ public final class ClassModelFactory {
     return root;
   }
 
-  public static String getLabelOfObject(Object value) {
-    if (value == null) return "";
-    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+  public static ILabelProvider createLabelProvider() {
+    return new ILabelProvider() {
+
+      @Override
+      public String getLabel(Object element) {
+        return ClassModelFactory.getLabelOfObject(element);
+      }
+    };
+  }
+  
+  public static String getLabelOfObject(Object treeNode) {
+    if (treeNode == null) return "";
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeNode;
     IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
     if (memoriaClass == null) return "";
     return shortenClassName(memoriaClass.getJavaClassName());
   }
-  
+
   private static String shortenClassName(String longName) {
     int indexOf = longName.lastIndexOf('.');
     if (indexOf == -1) return longName;
     return longName.substring(indexOf+1);
   }
-  
-  
 
 }

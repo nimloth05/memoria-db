@@ -13,7 +13,8 @@ import net.miginfocom.swing.MigLayout;
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.util.disposable.IDisposable;
 import org.memoriadb.services.store.*;
-import org.memoriadb.util.*;
+import org.memoriadb.ui.controls.tree.*;
+import org.memoriadb.util.SwingUtil;
 
 import com.google.inject.Inject;
 
@@ -79,14 +80,8 @@ public final class MainFrame {
   }
 
   private JComponent createClassTree() {
-    fClassTree = new JTree(new EmptyTreeModel()) {
-
-      @Override
-      public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        return ClassModelFactory.getLabelOfObject(value); 
-      }
-      
-    };
+    fClassTree = new JLabelTree(ClassModelFactory.createLabelProvider());
+    
     //FIXME: Bilder laden sollte fail-safe sein.
     ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/ui/icons/class_obj.gif"));
     if (icon != null) {
