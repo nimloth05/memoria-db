@@ -6,14 +6,16 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.util.disposable.IDisposable;
 import org.memoriadb.services.store.*;
-import org.memoriadb.ui.controls.tree.*;
+import org.memoriadb.ui.controls.tree.JLabelTree;
+import org.memoriadb.ui.moodel.*;
 import org.memoriadb.util.SwingUtil;
 
 import com.google.inject.Inject;
@@ -29,9 +31,12 @@ public final class MainFrame {
   private JTree fClassTree;
   private IDisposable fListenerDisposable;
 
+  private final MainFramePM fPM;
+
   @Inject
-  public MainFrame(IDatastoreService service) {
+  public MainFrame(IDatastoreService service, MainFramePM pm) {
     fDataStoreService = service;
+    fPM = pm;
     fFrame = new JFrame();
     fFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     fFrame.setSize(FRAME_WIDTH, 600);
@@ -49,12 +54,12 @@ public final class MainFrame {
 
       @Override
       public void postOpen(IDataStore newStore) {
-        fClassTree.setModel(new DefaultTreeModel(ClassModelFactory.createClassModel(newStore.getTypeInfo())));
+        fClassTree.setModel(fPM.getClassTreeModel(newStore.getTypeInfo()));
       }
 
       @Override
       public void preClose() {
-        fClassTree.setModel(new EmptyTreeModel());
+        fClassTree.setModel(fPM.getEmptyModel());
       }
     });
   }
@@ -80,7 +85,7 @@ public final class MainFrame {
   }
 
   private JComponent createClassTree() {
-    fClassTree = new JLabelTree(ClassModelFactory.createLabelProvider());
+    fClassTree = new JLabelTree(fPM.createLabelProvider());
     
     //FIXME: Bilder laden sollte fail-safe sein.
     ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/ui/icons/class_obj.gif"));
@@ -101,12 +106,24 @@ public final class MainFrame {
     fFrame.getContentPane().setLayout(new MigLayout("fill"));
 
     JComponent tree = createClassTree();
-    JComponent table = asScrollable(new JTable());
+    JComponent table = asScrollable(createTable());
 
     JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tree, table);
     splitter.setBorder(null);
     splitter.setDividerLocation((FRAME_WIDTH - 10) / 2);
     fFrame.getContentPane().add(splitter, "grow");
+  }
+
+  private JComponent createTable() {
+    final JTable table = new JTable();
+    fPM.addQueryListener(new IQueryListener() {
+
+      @Override
+      public void executed(TableModel model) {
+        table.setModel(model);
+      }
+    });
+    return table;
   }
 
   private BufferedImage loadImage(String path) {
