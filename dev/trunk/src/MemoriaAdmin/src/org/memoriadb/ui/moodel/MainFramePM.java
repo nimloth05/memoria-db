@@ -72,7 +72,7 @@ public class MainFramePM {
     model.addColumn("Revision");
     model.addColumn("Class ObjectId");
     
-    Object[] rowData = new Object[2];
+    Object[] rowData = new Object[3];
     for(IDataObject dataObject: result) {
       rowData[0] = store.getId(dataObject);
       rowData[1] = -1;
