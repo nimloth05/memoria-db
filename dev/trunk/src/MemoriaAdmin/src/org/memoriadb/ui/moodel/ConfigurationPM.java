@@ -1,7 +1,5 @@
 package org.memoriadb.ui.moodel;
 
-import java.net.URL;
-
 import javax.swing.DefaultListModel;
 import javax.swing.text.*;
 
@@ -17,7 +15,7 @@ public class ConfigurationPM {
     
     result.setDbPathString(configuration.getDbPath());
     
-    for(URL entry: configuration.getClassPaths()) {
+    for(String entry: configuration.getClassPaths()) {
       result.addClasspathEntry(entry.toString());
     }
     

@@ -21,7 +21,7 @@ public final class DataStoreService implements IDatastoreService {
 
   @Override
   public void change(Configuration configuration) {
-    fManager.configure(configuration.getClassPaths());
+    fManager.configure(configuration.getClasspathsAsURL());
     IDataStore  dataStore = Memoria.openInDataMode(new CreateConfig(), configuration.getDbPath());
     
     dispose();
