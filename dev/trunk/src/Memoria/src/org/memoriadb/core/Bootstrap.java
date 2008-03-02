@@ -16,6 +16,7 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.handler.map.MapHandler;
+import org.memoriadb.handler.url.URLHandler;
 
 public class Bootstrap {
 
@@ -59,6 +60,8 @@ public class Bootstrap {
     registerHandler(trxHandler, new MapHandler(LinkedHashMap.class));
     registerHandler(trxHandler, new MapHandler(TreeMap.class));
     registerHandler(trxHandler, new MapHandler(WeakHashMap.class));
+    
+    registerHandler(trxHandler, new URLHandler());
   }
 
   private static void addValueClasses(TransactionHandler transactionHandler, Iterable<Class<?>> valueClasses) {

@@ -91,8 +91,8 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!getClassName().equals(className)) throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for "
-        + className);
+    if (!getClassName().equals(className)) 
+        throw new SchemaException("I am a handler for type " + getClassName() + " but I was called for " + className);
   }
 
   @Override
