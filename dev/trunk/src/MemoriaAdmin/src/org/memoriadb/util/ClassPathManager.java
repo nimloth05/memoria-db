@@ -1,47 +1,25 @@
 package org.memoriadb.util;
 
-import java.io.File;
 import java.net.*;
 
+/**
+ * Resets the Thread.contextClassLoader with a new URLClassloader so that meomria can load specific Handlers.
+ * @author nienor
+ *
+ */
 public final class ClassPathManager {
 
-  public static class ExpandeableClassLoader extends URLClassLoader {
+  private ClassLoader fOldClassLoader;
 
-    public ExpandeableClassLoader(URL[] urls, ClassLoader parent) {
-      super(urls, parent);
-    }
-
-    @Override
-    public void addURL(URL url) {
-      super.addURL(url);
-    }
-  }
-
-  private final ClassLoader fOldClassLoader;
-
-  public ClassPathManager() {
+  public void configure(URL[] classPaths) {
     fOldClassLoader = Thread.currentThread().getContextClassLoader();
-  }
-
-  public void configure(Iterable<String> classPaths) {
-    ExpandeableClassLoader classLoader = new ExpandeableClassLoader(new URL[0], fOldClassLoader);
-    for (String classPath : classPaths) {
-      classLoader.addURL(createURL(classPath));
-    }
+    URLClassLoader classLoader = new URLClassLoader(classPaths, fOldClassLoader);
     Thread.currentThread().setContextClassLoader(classLoader);
   }
 
   public void resetClassLoader() {
+    if (fOldClassLoader == null) return;
     Thread.currentThread().setContextClassLoader(fOldClassLoader);
-  }
-
-  private URL createURL(String path) {
-    try {
-      return new File(path).toURI().toURL();
-    }
-    catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
   }
 
 }

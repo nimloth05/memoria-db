@@ -2,7 +2,7 @@ package org.memoriadb;
 
 import org.memoriadb.services.configuration.*;
 import org.memoriadb.services.store.*;
-import org.memoriadb.ui.actions.ChangeDataStoreBody;
+import org.memoriadb.ui.actions.ChangeDataStore;
 import org.memoriadb.ui.frames.MainFrame;
 
 import com.google.inject.*;
@@ -17,7 +17,7 @@ public final class ApplicationController {
     MainFrame mainFrame = sInjector.getInstance(MainFrame.class);
     mainFrame.show();
     
-    sInjector.getInstance(ChangeDataStoreBody.class).run();
+    sInjector.getInstance(ChangeDataStore.class).run();
   }
 
   public static void shutdown() {

@@ -15,6 +15,7 @@ public final class ChoosDbDialog {
   private final JDialog fFrame;
   private final ConfigurationPM fModel;
   private boolean fOkButtonPressed = false;
+  private JList fClassPathEntries;
 
   public ChoosDbDialog(ConfigurationPM configPM) {
     if (configPM == null) throw new IllegalArgumentException("Null Argument configPM");
@@ -101,12 +102,15 @@ public final class ChoosDbDialog {
   }
 
   private void createClassPathPart() {
-    JList classPathEntries = new JList();
+    fClassPathEntries = new JList();
     //LookAndFeel.installBorder(classPathEntries, "TextField.border");
-    classPathEntries.setModel(fModel.getClassPath());
-    add(new JScrollPane(classPathEntries), "h :150:, w :150:, grow");
-    add(createAddFolderButton(), "sizegroup classPathButton, aligny top, split, flowy");
-    add(createAddJarButton(), "sizegroup classPathButton, wrap");
+    fClassPathEntries.setModel(fModel.getClassPath());
+    add(new JScrollPane(fClassPathEntries), "h :150:, w :150:, grow");
+    
+    add(createAddFolderButton(), "sg classPathButton, aligny top, split, flowy");
+    add(createAddJarButton(), "sg classPathButton");
+    add(new JSeparator(), "growx 1");
+    add(createRemoveButton(), "sg classPathButton, wrap");
   }
 
   private void createControls() {
@@ -144,6 +148,18 @@ public final class ChoosDbDialog {
       public void actionPerformed(ActionEvent e) {
         fOkButtonPressed = true;
         fFrame.setVisible(false);
+      }
+    });
+  }
+  
+  private JButton createRemoveButton() {
+    return createButton("Remove", new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Object selection = fClassPathEntries.getSelectedValue();
+        if (selection == null) return;
+        fModel.removeClasspathEntry(selection.toString());
       }
     });
   }

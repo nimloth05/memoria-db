@@ -1,6 +1,9 @@
 package org.memoriadb.model;
 
+import java.net.URL;
 import java.util.*;
+
+import org.memoriadb.util.URLUtil;
 
 /**
  * This class holds the filesystem dependant configuration.
@@ -9,16 +12,17 @@ import java.util.*;
  */
 public final class Configuration {
   
-  private final List<String> fClassPath = new ArrayList<String>();
+  private final Set<URL> fClassPath = new LinkedHashSet<URL>();
   private String fDbPath;
   
   public void addClassPath(String path) {
     if (path == null) throw new IllegalArgumentException();
-    fClassPath.add(path);
+    
+    fClassPath.add(URLUtil.createURL(path));
   }
   
-  public Iterable<String> getClassPaths() {
-    return fClassPath;
+  public URL[] getClassPaths() {
+    return fClassPath.toArray(new URL[fClassPath.size()]);
   }
   
   public String getDbPath() {

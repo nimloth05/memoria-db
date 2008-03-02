@@ -13,13 +13,13 @@ import org.memoriadb.ui.moodel.ConfigurationPM;
 
 import com.google.inject.Inject;
 
-public class ChangeDataStoreBody {
+public class ChangeDataStore {
   
   private final IDataStoreConfigurationService fService;
   private final IDatastoreService fDataStoreService;
 
   @Inject
-  public ChangeDataStoreBody(IDataStoreConfigurationService configurationService, IDatastoreService dataStoreService) {
+  public ChangeDataStore(IDataStoreConfigurationService configurationService, IDatastoreService dataStoreService) {
     fService = configurationService;
     fDataStoreService = dataStoreService;
   }
@@ -31,12 +31,13 @@ public class ChangeDataStoreBody {
     do {
       ChoosDbDialog chooseDbFrame = new ChoosDbDialog(configPM);
       if (!chooseDbFrame.show()) return;
+
       configPM.applyTo(configuration);
+      fService.save(configuration);
       
       if (tryToChangeDb(configuration)) break;
     } while (true);
     
-    fService.save(configuration);
   }
 
   private boolean tryToChangeDb(Configuration configuration) {

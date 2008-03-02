@@ -1,5 +1,7 @@
 package org.memoriadb.ui.moodel;
 
+import java.net.URL;
+
 import javax.swing.DefaultListModel;
 import javax.swing.text.*;
 
@@ -12,10 +14,13 @@ public class ConfigurationPM {
 
   public static ConfigurationPM createFrom(Configuration configuration) {
     ConfigurationPM result = createNew();
+    
     result.setDbPathString(configuration.getDbPath());
-    for(String entry: configuration.getClassPaths()) {
-      result.addClasspathEntry(entry);
+    
+    for(URL entry: configuration.getClassPaths()) {
+      result.addClasspathEntry(entry.toString());
     }
+    
     return result;
   }
   
@@ -49,6 +54,10 @@ public class ConfigurationPM {
     return fDBPath;
   }
 
+  public void removeClasspathEntry(String selectedValue) {
+    fClassPath.removeElement(selectedValue);
+  }
+  
   public void setDbPathString(String string) {
     try {
       fDBPath.insertString(0, string, null);
@@ -57,7 +66,7 @@ public class ConfigurationPM {
       throw new IllegalArgumentException(e);
     }
   }
-  
+
   private String getDbPathString()  {
     try {
       return fDBPath.getText(0, fDBPath.getLength());
