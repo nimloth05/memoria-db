@@ -66,15 +66,15 @@ public class DataStore extends AbstractStore implements IDataStore {
   public IRefactor getRefactorApi() {
     return new RefactorApi(this); 
   }
-
+  
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
-  
+ 
   public <T extends IDataObject> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   }
- 
+
   public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
@@ -92,7 +92,7 @@ public class DataStore extends AbstractStore implements IDataStore {
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
-
+  
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }

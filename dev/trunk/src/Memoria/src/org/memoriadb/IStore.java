@@ -30,15 +30,17 @@ public interface IStore {
    */
   public long getHeadRevision();
   
-  /**
-   * @return true, if the update-counter is > 0.  
-   */
-  public boolean isInUpdateMode();
+  public ObjectInformation getObjectInformation(Object object);
   
   /**
    * Clients which need information about the stored java class hierarchy or want to add new memoria
    * classes should work with ghe returned ITypeInfo interface. 
    */
   public ITypeInfo getTypeInfo();
+  
+  /**
+   * @return true, if the update-counter is > 0.  
+   */
+  public boolean isInUpdateMode();
   
 }

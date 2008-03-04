@@ -1,10 +1,7 @@
 package org.memoriadb.ui.frames;
 
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.TableModel;
@@ -18,7 +15,7 @@ import org.memoriadb.core.util.disposable.IDisposable;
 import org.memoriadb.services.store.*;
 import org.memoriadb.ui.controls.tree.JLabelTree;
 import org.memoriadb.ui.moodel.*;
-import org.memoriadb.util.SwingUtil;
+import org.memoriadb.util.*;
 
 import com.google.inject.Inject;
 
@@ -74,6 +71,18 @@ public final class MainFrame {
     addWindowListener();
   }
 
+  private void addSelectionListener() {
+    fClassTree.addTreeSelectionListener(new TreeSelectionListener() {
+
+      @Override
+      public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
+        IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
+        fPM.executeQuery(fNewStore, memoriaClass.getJavaClassName());
+      }
+    });
+  }
+
   private void addWindowListener() {
     fFrame.addWindowListener(new WindowAdapter() {
 
@@ -92,27 +101,8 @@ public final class MainFrame {
   private JComponent createClassTree() {
     fClassTree = new JLabelTree(fPM.createLabelProvider());
     
-    //FIXME: Bilder laden sollte fail-safe sein.
-    ImageIcon icon = new ImageIcon(loadImage("/org/memoriadb/ui/icons/class_obj.gif"));
-    if (icon != null) {
-      DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-      
-      renderer.setLeafIcon(icon);
-      renderer.setOpenIcon(icon);
-      renderer.setClosedIcon(icon);
-      
-      fClassTree.setCellRenderer(renderer);
-    }
-    
-    fClassTree.addTreeSelectionListener(new TreeSelectionListener() {
-
-      @Override
-      public void valueChanged(TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
-        IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
-        fPM.executeQuery(fNewStore, memoriaClass.getJavaClassName());
-      }
-    });
+    setTreeIcon();
+    addSelectionListener();
 
     return asScrollable(fClassTree);
   }
@@ -141,13 +131,16 @@ public final class MainFrame {
     return table;
   }
 
-  private BufferedImage loadImage(String path) {
-    try {
-      return ImageIO.read(getClass().getResource(path));
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  private void setTreeIcon() {
+    ImageIcon icon = ImageLoader.loadImageIcon("/org/memoriadb/ui/icons/class_obj.gif");
+    DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+    
+    renderer.setLeafIcon(icon);
+    renderer.setOpenIcon(icon);
+    renderer.setClosedIcon(icon);
+    
+    fClassTree.setCellRenderer(renderer);
   }
+
 
 }

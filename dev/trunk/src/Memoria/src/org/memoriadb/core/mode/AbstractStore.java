@@ -86,10 +86,15 @@ public abstract class AbstractStore implements IStore {
     return fTransactionHandler.getObjectInfoForId(id);
   }
   
+  public ObjectInformation getObjectInformation(Object object) {
+    ObjectInfo objectInfo = fTransactionHandler.getObjectInfo(object);
+    return new ObjectInformation(objectInfo.getId(), objectInfo.getMemoriaClassId(), objectInfo.getRevision());
+  }
+
   public final SurvivorAgent getSurvivorAgent(Block block) {
     return fTransactionHandler.getSurvivorAgent(block);
   }
-
+  
   @Override
   public final ITypeInfo getTypeInfo() {
     return fTransactionHandler.getTypeInfo();
@@ -99,5 +104,6 @@ public abstract class AbstractStore implements IStore {
   public final boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
   }
+
 
 }

@@ -74,9 +74,11 @@ public class MainFramePM {
     
     Object[] rowData = new Object[3];
     for(IDataObject dataObject: result) {
-      rowData[0] = store.getId(dataObject);
-      rowData[1] = -1;
-      rowData[2] = dataObject.getMemoriaClassId();
+      
+      ObjectInformation objInformation = store.getObjectInformation(dataObject);
+      rowData[0] = objInformation.getObjectId();
+      rowData[1] = objInformation.getRevision();
+      rowData[2] = objInformation.getMemoriaClassId();
       
       model.addRow(rowData);
     }
