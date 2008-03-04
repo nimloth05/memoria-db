@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.model.Configuration;
 import org.memoriadb.services.configuration.IDataStoreConfigurationService;
-import org.memoriadb.services.store.IDatastoreService;
+import org.memoriadb.services.store.IDataStoreService;
 import org.memoriadb.ui.frames.ChoosDbDialog;
 import org.memoriadb.ui.moodel.ConfigurationPM;
 
@@ -16,10 +16,10 @@ import com.google.inject.Inject;
 public class ChangeDataStore {
   
   private final IDataStoreConfigurationService fService;
-  private final IDatastoreService fDataStoreService;
+  private final IDataStoreService fDataStoreService;
 
   @Inject
-  public ChangeDataStore(IDataStoreConfigurationService configurationService, IDatastoreService dataStoreService) {
+  public ChangeDataStore(IDataStoreConfigurationService configurationService, IDataStoreService dataStoreService) {
     fService = configurationService;
     fDataStoreService = dataStoreService;
   }

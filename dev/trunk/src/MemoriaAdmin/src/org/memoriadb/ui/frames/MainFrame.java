@@ -12,7 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.IDisposable;
-import org.memoriadb.services.store.*;
+import org.memoriadb.services.store.IChangeListener;
 import org.memoriadb.ui.controls.tree.JLabelTree;
 import org.memoriadb.ui.moodel.*;
 import org.memoriadb.util.*;
@@ -25,22 +25,16 @@ public final class MainFrame {
 
   private final JFrame fFrame;
   
-  private final IDatastoreService fDataStoreService;
-
   private JTree fClassTree;
   private IDisposable fListenerDisposable;
 
   private final MainFramePM fPM;
-  private IDataStore fNewStore;
 
   @Inject
-  public MainFrame(IDatastoreService service, MainFramePM pm) {
-    fDataStoreService = service;
+  public MainFrame(MainFramePM pm) {
     fPM = pm;
-    fFrame = new JFrame();
-    fFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    fFrame.setSize(FRAME_WIDTH, 600);
-    fFrame.setLocation(SwingUtil.calculateCenter(fFrame.getSize()));
+    
+    fFrame = createFrame();
     createControls();
     addListeners();
   }
@@ -50,12 +44,10 @@ public final class MainFrame {
   }
 
   private void addDatabaseServiceListener() {
-    fListenerDisposable = fDataStoreService.addListener(new IChangeListener() {
-
+    fListenerDisposable = fPM.addDataStoreChangeListener(new IChangeListener() {
 
       @Override
       public void postOpen(IDataStore newStore) {
-        fNewStore = newStore;
         fClassTree.setModel(fPM.getClassTreeModel(newStore.getTypeInfo()));
       }
 
@@ -78,7 +70,7 @@ public final class MainFrame {
       public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
         IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
-        fPM.executeQuery(fNewStore, memoriaClass);
+        fPM.executeQuery(memoriaClass);
       }
     });
   }
@@ -117,6 +109,14 @@ public final class MainFrame {
     splitter.setBorder(null);
     splitter.setDividerLocation((FRAME_WIDTH - 10) / 2);
     fFrame.getContentPane().add(splitter, "grow");
+  }
+
+  private JFrame createFrame() {
+    JFrame result = new JFrame();
+    result.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    result.setSize(FRAME_WIDTH, 600);
+    result.setLocation(SwingUtil.calculateCenter(result.getSize()));
+    return result;
   }
 
   private JComponent createTable() {

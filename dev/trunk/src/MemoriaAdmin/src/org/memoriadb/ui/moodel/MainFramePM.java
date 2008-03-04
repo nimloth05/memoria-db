@@ -11,6 +11,7 @@ import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.services.presenter.*;
+import org.memoriadb.services.store.*;
 import org.memoriadb.ui.controls.tree.*;
 
 import com.google.inject.Inject;
@@ -18,14 +19,21 @@ import com.google.inject.Inject;
 public class MainFramePM {
   
   private final ListenerList<IQueryListener> fQueryListeners = new ListenerList<IQueryListener>();
-  
   private final IClassRendererService fService;
+  private final IDataStoreService fDataStoreService;
+  private IDataStore fOpenStore;
   
   @Inject
-  public MainFramePM(IClassRendererService service) {
+  public MainFramePM(IClassRendererService service, IDataStoreService dataStoreService) {
     fService = service;
+    fDataStoreService = dataStoreService;
+    addDataStoreListener();
   }
   
+  public IDisposable addDataStoreChangeListener(IChangeListener changeListener) {
+    return fDataStoreService.addListener(changeListener);
+  }
+
   public IDisposable addQueryListener(IQueryListener queryListener) {
     return fQueryListeners.add(queryListener);
   }
@@ -34,14 +42,15 @@ public class MainFramePM {
     return new ClassModelLabelProvider();
   }
   
-  public void executeQuery(IDataStore store, IMemoriaClass memoriaClass) {
-    List<IDataObject> query = store.query(memoriaClass.getJavaClassName());
+  public void executeQuery(IMemoriaClass memoriaClass) {
+    if (fOpenStore == null) throw new IllegalStateException("There is no store open at this time.");
     
-    TableModel newModel = createTableModel(store, memoriaClass, query);
+    List<IDataObject> query = fOpenStore.query(memoriaClass.getJavaClassName());
+    
+    TableModel newModel = createTableModel(memoriaClass, query);
     notifyQueryExcuted(newModel);
   }
 
-  //FIXME: Dieser Code ist ein erstes Wurf... so
   public TreeNode getClassTree(ITypeInfo info) {
     Map<IMemoriaClass, DefaultMutableTreeNode> createdNodes = new IdentityHashMap<IMemoriaClass, DefaultMutableTreeNode>();
     for(IMemoriaClass memClass: info.getAllClasses()) {
@@ -78,31 +87,52 @@ public class MainFramePM {
     return new EmptyTreeModel();
   }
 
-  private TableModel createTableModel(IDataStore store, IMemoriaClass memoriaClass, List<IDataObject> result) {
+  private void addDataStoreListener() {
+    fDataStoreService.addListener(new IChangeListener() {
+
+      @Override
+      public void postOpen(IDataStore newStore) {
+        fOpenStore = newStore;
+      }
+
+      @Override
+      public void preClose() {
+        fOpenStore = null;
+      }
+    });
+  }
+  
+  private TableModel createTableModel(IMemoriaClass memoriaClass, List<IDataObject> result) {
     IClassRenderer renderer = fService.getRednerer(memoriaClass);
+    ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator();
     
     DefaultTableModel model = new DefaultTableModel();
+    
     model.addColumn("ObjectId");
     model.addColumn("Revision");
     model.addColumn("Class ObjectId");
-    renderer.addColumnsToTable(model, memoriaClass);
     
-    List<Object> rowData = new ArrayList<Object>();
+    tableModelDecorator.addColumn(model, memoriaClass);
+    
+    
     for(IDataObject dataObject: result) {
-      IObjectInfo objInformation = store.getObjectInfo(dataObject);
+      List<Object> rowData = new ArrayList<Object>(model.getColumnCount());
       
-      rowData.add(objInformation.getId());
-      rowData.add(objInformation.getRevision());
-      rowData.add(objInformation.getMemoriaClassId());
+      IObjectInfo objectInfo = fOpenStore.getObjectInfo(dataObject);
       
-      renderer.addToTableRow(dataObject, memoriaClass, rowData);
+      rowData.add(objectInfo.getId());
+      rowData.add(objectInfo.getRevision());
+      rowData.add(objectInfo.getMemoriaClassId());
+      
+      tableModelDecorator.addRow(dataObject, memoriaClass, rowData);
       
       model.addRow(rowData.toArray());
+      
     }
     
     return model;
   }
-  
+
   private void notifyQueryExcuted(TableModel newModel) {
     for(IQueryListener listener: fQueryListeners) {
       listener.executed(newModel);

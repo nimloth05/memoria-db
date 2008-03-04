@@ -8,7 +8,7 @@ import org.memoriadb.util.ClassPathManager;
 import com.google.inject.Singleton;
 
 @Singleton
-public final class DataStoreService implements IDatastoreService {
+public final class DataStoreService implements IDataStoreService {
   
   private final ListenerList<IChangeListener> fListeners = new ListenerList<IChangeListener>();
   private IDataStore fCurrentStore;

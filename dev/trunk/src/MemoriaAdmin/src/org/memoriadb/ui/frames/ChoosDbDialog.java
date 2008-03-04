@@ -19,6 +19,7 @@ public final class ChoosDbDialog {
 
   public ChoosDbDialog(ConfigurationPM configPM) {
     if (configPM == null) throw new IllegalArgumentException("Null Argument configPM");
+    
     fFrame = new JDialog((Frame) null, true);
     fModel = configPM;
     createControls();
@@ -103,7 +104,6 @@ public final class ChoosDbDialog {
 
   private void createClassPathPart() {
     fClassPathEntries = new JList();
-    //LookAndFeel.installBorder(classPathEntries, "TextField.border");
     fClassPathEntries.setModel(fModel.getClassPath());
     add(new JScrollPane(fClassPathEntries), "h :150:, w :150:, grow");
     
@@ -142,7 +142,7 @@ public final class ChoosDbDialog {
   }
   
   private JButton createOKButton() {
-    return createButton("OK", new ActionListener() {
+    JButton button = createButton("OK", new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -150,6 +150,9 @@ public final class ChoosDbDialog {
         fFrame.setVisible(false);
       }
     });
+    
+    button.requestFocusInWindow();
+    return button;
   }
   
   private JButton createRemoveButton() {

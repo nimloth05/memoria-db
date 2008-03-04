@@ -21,7 +21,7 @@ public final class ApplicationController {
   }
 
   public static void shutdown() {
-    sInjector.getInstance(IDatastoreService.class).dispose();
+    sInjector.getInstance(IDataStoreService.class).dispose();
     sInjector.getInstance(IDataStoreConfigurationService.class).dispose();
     System.exit(0);
   }
@@ -31,7 +31,7 @@ public final class ApplicationController {
 
       @Override
       protected void configure() {
-        bind(IDatastoreService.class).to(DataStoreService.class);
+        bind(IDataStoreService.class).to(DataStoreService.class);
         bind(IDataStoreConfigurationService.class).to(DataStoreConfigurationService.class);
       }
     });

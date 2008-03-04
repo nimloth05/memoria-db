@@ -11,6 +11,7 @@ public class AllTests {
     suite.addTest(org.memoriadb.test.handler.array.AllTests.suite());
     suite.addTest(org.memoriadb.test.handler.map.AllTests.suite());
     suite.addTest(org.memoriadb.test.handler.enu.AllTests.suite());
+    suite.addTest(org.memoriadb.test.handler.url.AllTests.suite());
 
     return suite;
   }
