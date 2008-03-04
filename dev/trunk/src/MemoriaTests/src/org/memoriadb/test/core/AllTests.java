@@ -19,7 +19,6 @@ public class AllTests {
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(TypeTest.class);
     suite.addTestSuite(TypeInfoTest.class);
-    suite.addTestSuite(LifeCycleTest.class);
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(RecoveryTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);

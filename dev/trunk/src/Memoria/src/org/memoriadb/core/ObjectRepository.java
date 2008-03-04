@@ -2,7 +2,6 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.ILifeCycle;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.*;
@@ -10,10 +9,10 @@ import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
 import org.memoriadb.id.*;
 
 /**
- * Holds the main-indexes. 
- * 
+ * Holds the main-indexes.
+ *
  * Objects can be added with no regard to ongoing transactions. The appropriate indexes are updated.
- * 
+ *
  * @author sandro & msc
  *
  */
@@ -33,14 +32,14 @@ public class ObjectRepository implements IObjectRepository {
    * Main-index
    */
   private final Map<Object, ObjectInfo> fObjectMap = new MemoriaIdentityHashMap<Object, ObjectInfo>();
-  
+
   /**
    * MataClass index
    */
   private final Map<String, IMemoriaClassConfig> fMemoriaClasses = new HashMap<String, IMemoriaClassConfig>();
-  
+
   private final IObjectIdFactory fIdFactory;
-  
+
   public ObjectRepository(IObjectIdFactory idFactory) {
     fIdFactory = idFactory;
   }
@@ -55,7 +54,7 @@ public class ObjectRepository implements IObjectRepository {
 
   /**
    * Adds a new object to the repo. A new ObjectInfo is created, with a new id and the version 0.
-   * 
+   *
    * @return The ObjectInfo for the newly added Object.
    */
   public ObjectInfo add(Object obj, IObjectId memoriaClassId) {
@@ -82,7 +81,7 @@ public class ObjectRepository implements IObjectRepository {
   public boolean contains(Object obj) {
     return fObjectMap.containsKey(obj);
   }
-  
+
   @Override
   public IObjectInfo delete(Object obj) {
     ObjectInfo info = fObjectMap.remove(obj);
@@ -138,7 +137,7 @@ public class ObjectRepository implements IObjectRepository {
     if(result == null) return null;
     return result.getId();
   }
-  
+
   @Override
   public IObjectIdFactory getIdFactory() {
     return fIdFactory;
@@ -159,7 +158,7 @@ public class ObjectRepository implements IObjectRepository {
   }
 
   /**
-   * 
+   *
    * @param objectId
    * @return the object for the given id or null.
    */
@@ -203,26 +202,15 @@ public class ObjectRepository implements IObjectRepository {
     return fIdFactory.isNullReference(objectId);
   }
 
-  /**
-   * Calls all {@link ILifeCycle#postReconstitute()}-methods for Objects that support this interface.
-   */
-  public void notifyReconstitute() {
-    for(Object current: fObjectMap.keySet()){
-      if(current instanceof ILifeCycle) {
-        ((ILifeCycle)current).postReconstitute();
-      }
-    }
-  }
-
   private IObjectId generateId() {
     return fIdFactory.createNextId();
   }
 
   private void internalPut(ObjectInfo info) {
-    
+
     Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
-    
+
     previousMapped = fIdMap.put(info.getId(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in id-Map " + info);
 
@@ -231,7 +219,7 @@ public class ObjectRepository implements IObjectRepository {
       previousMapped = fMemoriaClasses.put(metaObject.getJavaClassName(), metaObject);
       if (previousMapped != null) throw new MemoriaException("double registration of memoria class: " + metaObject);
     }
-    
+
  // adjustId here for bootstrapped objects
     fIdFactory.adjustId(info.getId());
   }

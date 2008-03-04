@@ -22,12 +22,12 @@ public class Bootstrap {
 
   public static TransactionHandler openOrCreate(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
     if (file == null) throw new IllegalArgumentException("File was null");
-    
+
     if(file.isEmpty())  return createDb(config, file, strategy);
-    
+
     return openDb(config, file, strategy);
   }
-  
+
   private static void addCustomHandlers(TransactionHandler transactionHandler, Iterable<IHandler> customHandlers) {
     for (IHandler handler : customHandlers) {
       registerHandler(transactionHandler, handler);
@@ -52,7 +52,7 @@ public class Bootstrap {
     registerHandler(trxHandler, new CollectionHandler.SetHandler(CopyOnWriteArraySet.class));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sJumboEnumSet));
     registerHandler(trxHandler, new EnumSetHandler(EnumSetHandler.sRegularEnumSet));
-    
+
     registerHandler(trxHandler, new MapHandler(HashMap.class));
     registerHandler(trxHandler, new MapHandler(ConcurrentHashMap.class));
     registerHandler(trxHandler, new MapHandler(ConcurrentSkipListMap.class));
@@ -60,7 +60,7 @@ public class Bootstrap {
     registerHandler(trxHandler, new MapHandler(LinkedHashMap.class));
     registerHandler(trxHandler, new MapHandler(TreeMap.class));
     registerHandler(trxHandler, new MapHandler(WeakHashMap.class));
-    
+
     registerHandler(trxHandler, new URLHandler());
   }
 
@@ -69,44 +69,42 @@ public class Bootstrap {
     for(Class<?> clazz: valueClasses) {
       transactionHandler.addMemoriaClassIfNecessary(clazz);
     }
-    
+
     for(Class<?> clazz: valueClasses) {
       ((AbstractMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setHasValueObjectAnnotation(true);
     }
-    
+
   }
 
   private static TransactionHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
 
     writeHeader(config, file);
-    
+
     TransactionHandler transactionHandler = openDb(config, file, strategy);
-    
+
     // bootstap memoriaClasses
     transactionHandler.beginUpdate();
       addDefaultMetaClasses(transactionHandler);
       addCustomHandlers(transactionHandler, config.getCustomHandlers());
       addValueClasses(transactionHandler, config.getValueClasses());
     transactionHandler.endUpdate();
-    
+
     return transactionHandler;
-    
+
   }
 
   private static TransactionHandler openDb(OpenConfig config, IMemoriaFile file, IModeStrategy strategy) {
     FileReader fileReader = new FileReader(file);
     Header header = readHeader(fileReader);
-    
+
     ICompressor compressor = header.getCompressor();
-    
+
     ObjectRepository repo = ObjectRepoFactory.create(header.loadIdFactory());
     long headRevision = ObjectLoader.readIn(fileReader, repo, config.getBlockManager(), header.getInstantiator(), strategy, compressor);
 
     TransactionWriter writer = new TransactionWriter(repo, config, file, headRevision, compressor);
     TransactionHandler transactionHandler = new TransactionHandler(writer, header, strategy);
-    
-    repo.notifyReconstitute();
-    
+
     return transactionHandler;
   }
 
@@ -118,7 +116,7 @@ public class Bootstrap {
       throw new MemoriaException(e);
     }
   }
-  
+
   /**
    * @param handler
    *          The handler to handle objects of type <tt>className</tt>.
@@ -128,12 +126,12 @@ public class Bootstrap {
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
     IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
     transactionHandler.save(classConfig);
-    
+
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());
     TypeHierarchyBuilder.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
   }
-  
-  
+
+
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
     try {
       HeaderHelper.writeHeader(file, config);
