@@ -1,5 +1,6 @@
 package org.memoriadb;
 
+import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.id.IObjectId;
 
 public interface IStore {
@@ -30,7 +31,7 @@ public interface IStore {
    */
   public long getHeadRevision();
   
-  public ObjectInformation getObjectInformation(Object object);
+  public IObjectInfo getObjectInfo(Object object);
   
   /**
    * Clients which need information about the stored java class hierarchy or want to add new memoria

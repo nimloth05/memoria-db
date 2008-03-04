@@ -12,8 +12,6 @@ import org.memoriadb.id.IObjectId;
  */
 public interface IObjectInfo {
 
-  public void changeCurrentBlock(Block block);
-
   public Block getCurrentBlock();
 
   public IObjectId getId();

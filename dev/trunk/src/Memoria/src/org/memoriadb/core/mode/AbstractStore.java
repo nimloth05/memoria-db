@@ -86,11 +86,6 @@ public abstract class AbstractStore implements IStore {
     return fTransactionHandler.getObjectInfoForId(id);
   }
   
-  public ObjectInformation getObjectInformation(Object object) {
-    ObjectInfo objectInfo = fTransactionHandler.getObjectInfo(object);
-    return new ObjectInformation(objectInfo.getId(), objectInfo.getMemoriaClassId(), objectInfo.getRevision());
-  }
-
   public final SurvivorAgent getSurvivorAgent(Block block) {
     return fTransactionHandler.getSurvivorAgent(block);
   }

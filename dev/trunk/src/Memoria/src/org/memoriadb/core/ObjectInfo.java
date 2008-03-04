@@ -66,7 +66,6 @@ public class ObjectInfo implements IObjectInfo {
   /**
    * Sets the given block and increments the iodc of the former currentBlock. 
    */
-  @Override
   public void changeCurrentBlock(Block block) {
     fCurrentBlock.incrementInactiveObjectDataCount();
     setCurrentBlock(block);

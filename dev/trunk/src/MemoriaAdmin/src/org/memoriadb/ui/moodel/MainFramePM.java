@@ -6,6 +6,7 @@ import javax.swing.table.*;
 import javax.swing.tree.*;
 
 import org.memoriadb.*;
+import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.handler.IDataObject;
@@ -75,8 +76,9 @@ public class MainFramePM {
     Object[] rowData = new Object[3];
     for(IDataObject dataObject: result) {
       
-      ObjectInformation objInformation = store.getObjectInformation(dataObject);
-      rowData[0] = objInformation.getObjectId();
+      IObjectInfo objInformation = store.getObjectInfo(dataObject);
+      
+      rowData[0] = objInformation.getId();
       rowData[1] = objInformation.getRevision();
       rowData[2] = objInformation.getMemoriaClassId();
       
