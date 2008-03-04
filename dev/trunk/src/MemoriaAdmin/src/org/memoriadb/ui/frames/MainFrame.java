@@ -78,7 +78,7 @@ public final class MainFrame {
       public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
         IMemoriaClass memoriaClass = (IMemoriaClass) node.getUserObject();
-        fPM.executeQuery(fNewStore, memoriaClass.getJavaClassName());
+        fPM.executeQuery(fNewStore, memoriaClass);
       }
     });
   }

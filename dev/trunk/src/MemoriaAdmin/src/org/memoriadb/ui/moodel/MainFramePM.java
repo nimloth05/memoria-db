@@ -10,11 +10,21 @@ import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.services.presenter.*;
 import org.memoriadb.ui.controls.tree.*;
+
+import com.google.inject.Inject;
 
 public class MainFramePM {
   
   private final ListenerList<IQueryListener> fQueryListeners = new ListenerList<IQueryListener>();
+  
+  private final IClassRendererService fService;
+  
+  @Inject
+  public MainFramePM(IClassRendererService service) {
+    fService = service;
+  }
   
   public IDisposable addQueryListener(IQueryListener queryListener) {
     return fQueryListeners.add(queryListener);
@@ -24,9 +34,10 @@ public class MainFramePM {
     return new ClassModelLabelProvider();
   }
   
-  public void executeQuery(IDataStore store, String className) {
-    List<IDataObject> query = store.query(className);
-    TableModel newModel = createTableModel(store, query);
+  public void executeQuery(IDataStore store, IMemoriaClass memoriaClass) {
+    List<IDataObject> query = store.query(memoriaClass.getJavaClassName());
+    
+    TableModel newModel = createTableModel(store, memoriaClass, query);
     notifyQueryExcuted(newModel);
   }
 
@@ -67,22 +78,26 @@ public class MainFramePM {
     return new EmptyTreeModel();
   }
 
-  private TableModel createTableModel(IDataStore store, List<IDataObject> result) {
+  private TableModel createTableModel(IDataStore store, IMemoriaClass memoriaClass, List<IDataObject> result) {
+    IClassRenderer renderer = fService.getRednerer(memoriaClass);
+    
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("ObjectId");
     model.addColumn("Revision");
     model.addColumn("Class ObjectId");
+    renderer.addColumnsToTable(model, memoriaClass);
     
-    Object[] rowData = new Object[3];
+    List<Object> rowData = new ArrayList<Object>();
     for(IDataObject dataObject: result) {
-      
       IObjectInfo objInformation = store.getObjectInfo(dataObject);
       
-      rowData[0] = objInformation.getId();
-      rowData[1] = objInformation.getRevision();
-      rowData[2] = objInformation.getMemoriaClassId();
+      rowData.add(objInformation.getId());
+      rowData.add(objInformation.getRevision());
+      rowData.add(objInformation.getMemoriaClassId());
       
-      model.addRow(rowData);
+      renderer.addToTableRow(dataObject, memoriaClass, rowData);
+      
+      model.addRow(rowData.toArray());
     }
     
     return model;
