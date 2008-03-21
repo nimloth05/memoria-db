@@ -8,6 +8,8 @@ import javax.swing.table.*;
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.loong.LongId;
 
 public class TableModel extends AbstractTableModel {
   
@@ -40,7 +42,8 @@ public class TableModel extends AbstractTableModel {
 
   @Override
   public Class<?> getColumnClass(int columnIndex) {
-    if (columnIndex <= 2) return Integer.class;
+    if (columnIndex <= 2) return Long.class;
+    
     return super.getColumnClass(columnIndex);
   }
   
@@ -62,9 +65,23 @@ public class TableModel extends AbstractTableModel {
   public RowSorter<? extends TableModel> getRowSorter() {
     TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this);
     
-//    sorter.setComparator(column, comparator);
-//    sorter.setComparator(column, comparator);
-//    sorter.setComparator(column, comparator);
+    Comparator<IObjectId> comparator = new Comparator<IObjectId>() {
+
+      @Override
+      public int compare(IObjectId o1, IObjectId o2) {
+        if (o1 instanceof LongId && o2 instanceof LongId) {
+          LongId id1 = (LongId) o1;
+          LongId id2 = (LongId)o2;
+          return id1.getLong() > id2.getLong() ? 1 : (id1.getLong() < id2.getLong() ? -1 : 0);
+        }
+        return o1.toString().compareTo(o2.toString());
+      }
+
+      
+    };
+    
+    sorter.setComparator(0, comparator);
+    sorter.setComparator(2, comparator);
     
     return sorter;
   }
