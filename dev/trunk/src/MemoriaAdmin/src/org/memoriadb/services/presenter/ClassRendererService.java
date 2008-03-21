@@ -11,6 +11,7 @@ public class ClassRendererService implements IClassRendererService {
     if (memoriaClass instanceof FieldbasedMemoriaClass) {
       return new FieldbasedObjectRenderer(); 
     }
+    
     return new IClassRenderer() {
 
       @Override
@@ -19,7 +20,7 @@ public class ClassRendererService implements IClassRendererService {
       }
 
       @Override
-      public ITableModelDecorator getTableModelDecorator() {
+      public ITableModelDecorator getTableModelDecorator(IMemoriaClass memoriaClass) {
         return new NullDecorator();
       }
     };

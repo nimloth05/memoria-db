@@ -2,11 +2,9 @@ package org.memoriadb.ui.moodel;
 
 import java.util.*;
 
-import javax.swing.table.*;
 import javax.swing.tree.*;
 
 import org.memoriadb.*;
-import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.handler.IDataObject;
@@ -104,33 +102,9 @@ public class MainFramePM {
   
   private TableModel createTableModel(IMemoriaClass memoriaClass, List<IDataObject> result) {
     IClassRenderer renderer = fService.getRednerer(memoriaClass);
-    ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator();
+    ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator(memoriaClass);
     
-    DefaultTableModel model = new DefaultTableModel();
-    
-    model.addColumn("ObjectId");
-    model.addColumn("Revision");
-    model.addColumn("Class ObjectId");
-    
-    tableModelDecorator.addColumn(model, memoriaClass);
-    
-    
-    for(IDataObject dataObject: result) {
-      List<Object> rowData = new ArrayList<Object>(model.getColumnCount());
-      
-      IObjectInfo objectInfo = fOpenStore.getObjectInfo(dataObject);
-      
-      rowData.add(objectInfo.getId());
-      rowData.add(objectInfo.getRevision());
-      rowData.add(objectInfo.getMemoriaClassId());
-      
-      tableModelDecorator.addRow(dataObject, memoriaClass, rowData);
-      
-      model.addRow(rowData.toArray());
-      
-    }
-    
-    return model;
+    return TableModel.create(result, tableModelDecorator, fOpenStore);
   }
 
   private void notifyQueryExcuted(TableModel newModel) {

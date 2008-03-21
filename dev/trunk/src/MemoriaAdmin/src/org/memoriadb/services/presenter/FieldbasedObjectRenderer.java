@@ -1,9 +1,6 @@
 package org.memoriadb.services.presenter;
 
-import java.util.Collection;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IDataObject;
@@ -17,11 +14,11 @@ public class FieldbasedObjectRenderer implements IClassRenderer {
   }
 
   @Override
-  public ITableModelDecorator getTableModelDecorator() {
+  public ITableModelDecorator getTableModelDecorator(final IMemoriaClass memoriaClass) {
     return new ITableModelDecorator() {
 
       @Override
-      public void addColumn(DefaultTableModel model, IMemoriaClass memoriaClass) {
+      public void addColumn(TableModel model) {
         FieldbasedMemoriaClass fieldClass = (FieldbasedMemoriaClass) memoriaClass;
         
         for(MemoriaField field: fieldClass.getFields()) {
@@ -30,13 +27,8 @@ public class FieldbasedObjectRenderer implements IClassRenderer {
       }
 
       @Override
-      public void addRow(IDataObject dataObject, IMemoriaClass memoriaClass, Collection<Object> rowData) {
-        IFieldbasedObject fieldObject = (IFieldbasedObject) dataObject;
-        FieldbasedMemoriaClass fieldClass = (FieldbasedMemoriaClass) memoriaClass;
-        
-        for(MemoriaField field: fieldClass.getFields()) {
-          rowData.add(fieldObject.get(field.getName()));
-        }
+      public Object getValue(IDataObject object, String name) {
+        return ((IFieldbasedObject)object).get(name);
       }
       
     };

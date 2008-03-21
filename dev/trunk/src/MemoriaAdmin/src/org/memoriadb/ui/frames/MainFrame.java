@@ -124,10 +124,14 @@ public final class MainFrame {
     fPM.addQueryListener(new IQueryListener() {
 
       @Override
-      public void executed(TableModel model) {
+      public void executed(org.memoriadb.services.presenter.TableModel model) {
         table.setModel(model);
+        table.setRowSorter(model.getRowSorter());
       }
     });
+    
+    table.setAutoCreateRowSorter(true);
+    
     return table;
   }
 
