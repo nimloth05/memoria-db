@@ -62,9 +62,9 @@ public class TableModel extends AbstractTableModel {
   public RowSorter<? extends TableModel> getRowSorter() {
     TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this);
     
-    sorter.setComparator(column, comparator);
-    sorter.setComparator(column, comparator);
-    sorter.setComparator(column, comparator);
+//    sorter.setComparator(column, comparator);
+//    sorter.setComparator(column, comparator);
+//    sorter.setComparator(column, comparator);
     
     return sorter;
   }

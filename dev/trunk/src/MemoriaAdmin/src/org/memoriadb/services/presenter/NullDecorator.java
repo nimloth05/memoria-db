@@ -1,8 +1,5 @@
 package org.memoriadb.services.presenter;
 
-import java.util.Collection;
-
-
 import org.memoriadb.handler.IDataObject;
 
 public class NullDecorator implements ITableModelDecorator {
@@ -11,6 +8,9 @@ public class NullDecorator implements ITableModelDecorator {
   public void addColumn(TableModel model) {}
 
   @Override
-  public void addRow(IDataObject dataObject, Collection<Object> rowData) {}
+  public Object getValue(IDataObject object, String name) {
+    return null;
+  }
 
+  
 }
