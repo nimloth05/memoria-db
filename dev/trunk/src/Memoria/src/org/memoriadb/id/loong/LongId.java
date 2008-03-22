@@ -2,9 +2,9 @@ package org.memoriadb.id.loong;
 
 import java.io.*;
 
-import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.*;
 
-public final class LongId implements IObjectId {
+public final class LongId implements IObjectId, IIntegralId {
 
   private final long fValue;
 
@@ -26,10 +26,20 @@ public final class LongId implements IObjectId {
     return fValue == other.fValue;
   }
 
+  /**
+   * @deprecated use {@link IIntegralId#getValue()) now.
+   * @return
+   */
+  @Deprecated
   public long getLong() {
     return fValue;
   }
   
+  @Override
+  public long getValue() {
+    return fValue;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

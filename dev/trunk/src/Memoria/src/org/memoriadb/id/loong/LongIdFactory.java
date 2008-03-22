@@ -22,7 +22,7 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   @Override
   public void adjustId(IObjectId id) {
     LongId longValue = (LongId) id;
-    fCurrentObjectId = Math.max(fCurrentObjectId, longValue.getLong()); 
+    fCurrentObjectId = Math.max(fCurrentObjectId, longValue.getValue()); 
   }
 
   @Override
