@@ -30,7 +30,7 @@ public class Main {
   }
 
   private static IObjectStore getStore(CreateConfig config) {
-    File file = new File("test2.mia");
+    File file = new File("test2.db");
     file.delete();
     IObjectStore store = Memoria.open(config, file.getAbsolutePath());
     return store;

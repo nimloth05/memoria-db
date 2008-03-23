@@ -122,7 +122,7 @@ public final class MainFrame {
 
   private JComponent createTablePart() {
     JPanel panel = new JPanel();
-    panel.setLayout(new MigLayout("fill"));
+    panel.setLayout(new MigLayout("fill, insets 0 5 0 5"));
     
     JLabel label = new JLabel("Filter reg-ex supported");
     panel.add(label, "span");

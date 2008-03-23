@@ -43,16 +43,19 @@ public class TableModel extends AbstractTableModel {
   }
 
   public void filter(String filterText) {
-    RowFilter<TableModel, Object> rf = null;
-
+    RowFilter<TableModel, Object> rowFilter = null;
+    
+    int[] columns = new int[getColumnCount()];
+    for(int i = 0; i < getColumnCount(); ++i) columns[i] = i;
+    
     try {
-      rf = RowFilter.regexFilter(filterText, 0);
+      rowFilter = RowFilter.regexFilter(filterText, columns);
     } 
     catch (PatternSyntaxException e) {
       return;
     }
     
-    fSorter.setRowFilter(rf);
+    fSorter.setRowFilter(rowFilter);
   }
   
   @Override
