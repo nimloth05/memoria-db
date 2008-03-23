@@ -1,8 +1,9 @@
 package org.memoriadb.services.presenter;
 
 import java.util.*;
+import java.util.regex.PatternSyntaxException;
 
-import javax.swing.RowSorter;
+import javax.swing.*;
 import javax.swing.table.*;
 
 import org.memoriadb.IDataStore;
@@ -17,6 +18,8 @@ public class TableModel extends AbstractTableModel {
   private final List<IDataObject> fQuery;
   private final ITableModelDecorator fDecorator;
   private final IDataStore fStore;
+
+  private TableRowSorter<TableModel> fSorter;
   
   public static TableModel create(List<IDataObject> query, ITableModelDecorator decorator, IDataStore store) {
     TableModel model = new TableModel(query, decorator, store);
@@ -39,6 +42,19 @@ public class TableModel extends AbstractTableModel {
     fColumnNames.add(name);
   }
 
+  public void filter(String filterText) {
+    RowFilter<TableModel, Object> rf = null;
+
+    try {
+      rf = RowFilter.regexFilter(filterText, 0);
+    } 
+    catch (PatternSyntaxException e) {
+      return;
+    }
+    
+    fSorter.setRowFilter(rf);
+  }
+  
   @Override
   public Class<?> getColumnClass(int columnIndex) {
     if (columnIndex <= 2) return Long.class;
@@ -55,21 +71,20 @@ public class TableModel extends AbstractTableModel {
   public String getColumnName(int column) {
     return fColumnNames.get(column);
   }
-  
+
   @Override
   public int getRowCount() {
     return fQuery.size();
   }
 
   public RowSorter<? extends TableModel> getRowSorter() {
-    TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(this);
-    
+    fSorter = new TableRowSorter<TableModel>(this);
     Comparator<IObjectId> objectIdComparator = new ObjectIdComparator();
     
-    sorter.setComparator(0, objectIdComparator);
-    sorter.setComparator(2, objectIdComparator);
+    fSorter.setComparator(0, objectIdComparator);
+    fSorter.setComparator(2, objectIdComparator);
     
-    return sorter;
+    return fSorter;
   }
 
   @Override

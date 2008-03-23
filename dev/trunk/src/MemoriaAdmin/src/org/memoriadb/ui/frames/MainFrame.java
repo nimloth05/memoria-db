@@ -4,7 +4,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.TableModel;
 import javax.swing.tree.*;
 
 import net.miginfocom.swing.MigLayout;
@@ -20,6 +19,8 @@ import org.memoriadb.util.*;
 import com.google.inject.Inject;
 
 public final class MainFrame {
+
+  private static final int FRAME_HEIGHT = 600;
 
   private static final int FRAME_WIDTH = 800;
 
@@ -103,7 +104,7 @@ public final class MainFrame {
     fFrame.getContentPane().setLayout(new MigLayout("fill"));
 
     JComponent tree = createClassTree();
-    JComponent table = asScrollable(createTable());
+    JComponent table = createTablePart();
 
     JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, tree, table);
     splitter.setBorder(null);
@@ -114,12 +115,23 @@ public final class MainFrame {
   private JFrame createFrame() {
     JFrame result = new JFrame();
     result.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    result.setSize(FRAME_WIDTH, 600);
+    result.setSize(FRAME_WIDTH, FRAME_HEIGHT);
     result.setLocation(SwingUtil.calculateCenter(result.getSize()));
     return result;
   }
 
-  private JComponent createTable() {
+  private JComponent createTablePart() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new MigLayout("fill"));
+    
+    JLabel label = new JLabel("Filter reg-ex supported");
+    panel.add(label, "span");
+    
+    JTextField filterText = new JTextField();
+    filterText.setDocument(fPM.getFilterModel());
+    panel.add(filterText, "wrap, growx");
+    
+    
     final JTable table = new JTable();
     fPM.addQueryListener(new IQueryListener() {
 
@@ -131,8 +143,10 @@ public final class MainFrame {
     });
     
     table.setAutoCreateRowSorter(true);
+    panel.add(asScrollable(table), "grow");
     
-    return table;
+    
+    return panel;
   }
 
   private void setTreeIcon() {

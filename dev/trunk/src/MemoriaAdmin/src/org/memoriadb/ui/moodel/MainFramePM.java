@@ -2,6 +2,8 @@ package org.memoriadb.ui.moodel;
 
 import java.util.*;
 
+import javax.swing.event.*;
+import javax.swing.text.*;
 import javax.swing.tree.*;
 
 import org.memoriadb.*;
@@ -17,9 +19,12 @@ import com.google.inject.Inject;
 public class MainFramePM {
   
   private final ListenerList<IQueryListener> fQueryListeners = new ListenerList<IQueryListener>();
+  private final Document fFilterModel = new PlainDocument(); 
+  
   private final IClassRendererService fService;
   private final IDataStoreService fDataStoreService;
   private IDataStore fOpenStore;
+  private IDisposable fFilterDisposable;
   
   @Inject
   public MainFramePM(IClassRendererService service, IDataStoreService dataStoreService) {
@@ -46,6 +51,8 @@ public class MainFramePM {
     List<IDataObject> query = fOpenStore.query(memoriaClass.getJavaClassName());
     
     TableModel newModel = createTableModel(memoriaClass, query);
+    setUpFilter(newModel);
+    
     notifyQueryExcuted(newModel);
   }
 
@@ -85,6 +92,10 @@ public class MainFramePM {
     return new EmptyTreeModel();
   }
 
+  public Document getFilterModel() {
+    return fFilterModel;
+  }
+
   private void addDataStoreListener() {
     fDataStoreService.addListener(new IChangeListener() {
 
@@ -100,6 +111,51 @@ public class MainFramePM {
     });
   }
   
+  private DocumentListener createDocumentListener(final TableModel newModel) {
+    return new DocumentListener() {
+
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        filterChanged(e);
+      }
+
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        filterChanged(e);
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        filterChanged(e);
+      }
+
+      private void filterChanged(DocumentEvent e2) {
+        Document document = e2.getDocument();
+        String filterText;
+        try {
+          filterText = document.getText(0, document.getLength());
+        }
+        catch (BadLocationException e) {
+          e.printStackTrace();
+          return;
+        }
+        newModel.filter(filterText);
+      }
+    };
+  }
+
+  private void createFilterDisposable(final DocumentListener listener) {
+    if (fFilterDisposable != null) fFilterDisposable.dispose();
+    
+    fFilterDisposable = new IDisposable() {
+
+      @Override
+      public void dispose() {
+        fFilterModel.removeDocumentListener(listener);
+      }
+    };
+  }
+
   private TableModel createTableModel(IMemoriaClass memoriaClass, List<IDataObject> result) {
     IClassRenderer renderer = fService.getRednerer(memoriaClass);
     ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator(memoriaClass);
@@ -111,6 +167,12 @@ public class MainFramePM {
     for(IQueryListener listener: fQueryListeners) {
       listener.executed(newModel);
     }
+  }
+
+  private void setUpFilter(TableModel newModel) {
+    final DocumentListener listener = createDocumentListener(newModel);
+    createFilterDisposable(listener);
+    fFilterModel.addDocumentListener(listener);
   }
   
 }
