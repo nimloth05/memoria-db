@@ -3,7 +3,7 @@ package org.memoriadb.services.presenter;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
-import javax.swing.*;
+import javax.swing.RowSorter;
 import javax.swing.table.*;
 
 import org.memoriadb.IDataStore;
@@ -20,7 +20,7 @@ public class TableModel extends AbstractTableModel {
   private final IDataStore fStore;
 
   private TableRowSorter<TableModel> fSorter;
-  
+
   public static TableModel create(List<IDataObject> query, ITableModelDecorator decorator, IDataStore store) {
     TableModel model = new TableModel(query, decorator, store);
     
@@ -43,13 +43,10 @@ public class TableModel extends AbstractTableModel {
   }
 
   public void filter(String filterText) {
-    RowFilter<TableModel, Object> rowFilter = null;
-    
-    int[] columns = new int[getColumnCount()];
-    for(int i = 0; i < getColumnCount(); ++i) columns[i] = i;
+    RegexRowFilter rowFilter;
     
     try {
-      rowFilter = RowFilter.regexFilter(filterText, columns);
+      rowFilter = new RegexRowFilter(filterText);
     } 
     catch (PatternSyntaxException e) {
       return;

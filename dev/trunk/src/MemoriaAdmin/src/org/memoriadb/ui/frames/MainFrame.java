@@ -4,6 +4,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.*;
 
 import net.miginfocom.swing.MigLayout;
@@ -11,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.disposable.IDisposable;
+import org.memoriadb.services.presenter.FilterDefalutTableCellRenderer;
 import org.memoriadb.services.store.IChangeListener;
 import org.memoriadb.ui.controls.tree.JLabelTree;
 import org.memoriadb.ui.moodel.*;
@@ -42,6 +44,13 @@ public final class MainFrame {
 
   public void show() {
     fFrame.setVisible(true);
+  }
+
+  protected void setUpCellRenderers(final JTable table) {
+    for (int i = 0; i < table.getColumnModel().getColumnCount(); ++i) {
+      TableColumn column = table.getColumnModel().getColumn(i);
+      column.setCellRenderer(new FilterDefalutTableCellRenderer());
+    }
   }
 
   private void addDatabaseServiceListener() {
@@ -131,20 +140,22 @@ public final class MainFrame {
     filterText.setDocument(fPM.getFilterModel());
     panel.add(filterText, "wrap, growx");
     
-    
     final JTable table = new JTable();
+    table.setAutoCreateRowSorter(false);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    
     fPM.addQueryListener(new IQueryListener() {
 
       @Override
       public void executed(org.memoriadb.services.presenter.TableModel model) {
         table.setModel(model);
         table.setRowSorter(model.getRowSorter());
+        setUpCellRenderers(table);
       }
     });
     
     table.setAutoCreateRowSorter(true);
     panel.add(asScrollable(table), "grow");
-    
     
     return panel;
   }

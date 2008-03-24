@@ -18,13 +18,56 @@ import com.google.inject.Inject;
 
 public class MainFramePM {
   
-  private final ListenerList<IQueryListener> fQueryListeners = new ListenerList<IQueryListener>();
-  private final Document fFilterModel = new PlainDocument(); 
+  private class FilterDocumentListener implements DocumentListener {
+    
+    private TableModel fModel;
+    private Collection<Integer> fColumns;
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+      filterChanged(e);
+    }
   
+    public Collection<Integer> getColums() {
+      return fColumns;
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+      filterChanged(e);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+      filterChanged(e);
+    }
+
+    public void setModel(TableModel model) {
+      fModel = model;
+    }
+    
+    private void filterChanged(DocumentEvent event) {
+      Document document = event.getDocument();
+      String filterText;
+      try {
+        filterText = document.getText(0, document.getLength());
+      }
+      catch (BadLocationException e) {
+        e.printStackTrace();
+        return;
+      }
+      fModel.filter(filterText);
+    }
+  }
+  
+  private final ListenerList<IQueryListener> fQueryListeners = new ListenerList<IQueryListener>(); 
+  
+  private final Document fFilterDocument = new PlainDocument();
   private final IClassRendererService fService;
   private final IDataStoreService fDataStoreService;
   private IDataStore fOpenStore;
-  private IDisposable fFilterDisposable;
+
+  private FilterDocumentListener fFilterListener;
   
   @Inject
   public MainFramePM(IClassRendererService service, IDataStoreService dataStoreService) {
@@ -93,7 +136,7 @@ public class MainFramePM {
   }
 
   public Document getFilterModel() {
-    return fFilterModel;
+    return fFilterDocument;
   }
 
   private void addDataStoreListener() {
@@ -111,51 +154,6 @@ public class MainFramePM {
     });
   }
   
-  private DocumentListener createDocumentListener(final TableModel newModel) {
-    return new DocumentListener() {
-
-      @Override
-      public void changedUpdate(DocumentEvent e) {
-        filterChanged(e);
-      }
-
-      @Override
-      public void insertUpdate(DocumentEvent e) {
-        filterChanged(e);
-      }
-
-      @Override
-      public void removeUpdate(DocumentEvent e) {
-        filterChanged(e);
-      }
-
-      private void filterChanged(DocumentEvent e2) {
-        Document document = e2.getDocument();
-        String filterText;
-        try {
-          filterText = document.getText(0, document.getLength());
-        }
-        catch (BadLocationException e) {
-          e.printStackTrace();
-          return;
-        }
-        newModel.filter(filterText);
-      }
-    };
-  }
-
-  private void createFilterDisposable(final DocumentListener listener) {
-    if (fFilterDisposable != null) fFilterDisposable.dispose();
-    
-    fFilterDisposable = new IDisposable() {
-
-      @Override
-      public void dispose() {
-        fFilterModel.removeDocumentListener(listener);
-      }
-    };
-  }
-
   private TableModel createTableModel(IMemoriaClass memoriaClass, List<IDataObject> result) {
     IClassRenderer renderer = fService.getRednerer(memoriaClass);
     ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator(memoriaClass);
@@ -170,9 +168,11 @@ public class MainFramePM {
   }
 
   private void setUpFilter(TableModel newModel) {
-    final DocumentListener listener = createDocumentListener(newModel);
-    createFilterDisposable(listener);
-    fFilterModel.addDocumentListener(listener);
+    if (fFilterListener == null) {
+      fFilterListener = new FilterDocumentListener();
+      fFilterDocument.addDocumentListener(fFilterListener);
+    }
+    fFilterListener.setModel(newModel);
   }
   
 }
