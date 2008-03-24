@@ -111,7 +111,6 @@ public final class ObjectLoader implements IReaderContext {
 
       return headRevision;
     }
-    // FIXME GenericMemoriaExceptions für nicht-Memoria Exceptions
     catch (MemoriaException e) {
       throw e;
     }
