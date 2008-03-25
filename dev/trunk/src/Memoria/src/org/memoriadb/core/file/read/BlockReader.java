@@ -21,7 +21,7 @@ public class BlockReader {
 
   private long fRevision = 0;
   private final ICompressor fCompressor;
-  
+
   public BlockReader(ICompressor compressor) {
     fCompressor = compressor;
   }
@@ -35,54 +35,53 @@ public class BlockReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  public void readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler,
-      IBlockErrorHandler errorHandler) throws IOException {
-    if (!FileLayout.testBlockTag(stream))  {
+  public void readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IBlockErrorHandler errorHandler) throws IOException {
+    if (!FileLayout.testBlockTag(stream)) {
       errorHandler.blockTagCorrupt(stream, block);
       return;
     }
 
     // block size
     long blockSize = stream.readLong();
-    
+
     // blockSize + size-crc + trx-crc
-    if(blockSize+FileLayout.CRC_LEN+FileLayout.CRC_LEN > stream.available()) {
+    if (blockSize + FileLayout.CRC_LEN + FileLayout.CRC_LEN > stream.available()) {
       errorHandler.transactionCorrupt(stream, block);
       return;
     }
-    
+
     long readCrc = stream.readLong();
 
-    //long blockSize = stream.readUnsignedLong(); 
+    // long blockSize = stream.readUnsignedLong();
     MemoriaCRC32 crc = new MemoriaCRC32();
     crc.updateLong(blockSize);
     if (readCrc != crc.getValue()) {
       errorHandler.blockSizeCorrupt(stream, block);
       return;
     }
-    
+
     block.setBodySize(blockSize);
-    
-    byte[] body = new byte[(int)blockSize];
+
+    byte[] body = new byte[(int) blockSize];
     stream.readFully(body);
     readCrc = stream.readLong();
-    
+
     crc = new MemoriaCRC32();
     crc.update(body);
-    if (readCrc != crc.getValue()){
+    if (readCrc != crc.getValue()) {
       errorHandler.transactionCorrupt(stream, block);
       return;
     }
-    
+
     // now expand the transaction
     body = fCompressor.decompress(body);
-    
+
     DataInputStream dis = new DataInputStream(new ByteArrayInputStream(body));
     fRevision = dis.readLong(); // transaction-revision
 
     long objectDataCount = dis.readLong();
     block.setObjectDataCount(objectDataCount);
-    
+
     // no state was changed before this line!
     handler.block(block);
 
@@ -91,14 +90,13 @@ public class BlockReader {
     return;
   }
 
-  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size)
-      throws IOException {
+  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
 
-    byte[] objectData = Arrays.copyOfRange(data, offset+2*idFactory.getIdSize(), offset+size);
+    byte[] objectData = Arrays.copyOfRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
 
     if (idFactory.isObjectDeletionMarker(typeId)) {
       handler.objectDeleted(objectId, revision);
@@ -119,16 +117,16 @@ public class BlockReader {
   }
 
   /**
-   * @param objectDataCount 
+   * @param objectDataCount
    * @return The number of read ObjectData
    */
   private int readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, long objectDataCount) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
-    for(int i = 0; i < objectDataCount; ++i) {
+    for (int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
       byte[] objectData = new byte[size];
       stream.readFully(objectData);
-      
+
       readObject(idFactory, handler, revision, objectData, 0, size);
     }
     return 0;

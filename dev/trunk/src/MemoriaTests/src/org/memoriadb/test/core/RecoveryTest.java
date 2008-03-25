@@ -211,8 +211,8 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
   /**
    * length: 2822
-   * 
-   * |__head__|__boot__|2734|__block_tag__|2742|__size_crc__|2758|__trxa__|2814|__crc__
+   *
+   * |__head__|__boot__|<pos>|__block_tag__|<pos>+8|__size_crc__|<pos>+24|__trxa__|<pos>+80|__crc__
    */
   public void test_shrunk_block_crc_in_last_appended_repairs() {
     beginUpdate();
@@ -220,15 +220,17 @@ public class RecoveryTest extends AbstractMemoriaTest {
       save(new Object());
     endUpdate();
 
+    int pos = (int)getBlock(1).getPosition();
+
     assertEquals(2, getBlockManager().getBlockCount());
 
-    getFile().shrink(2821);
+    getFile().shrink(pos+87);
 
     reopen();
 
     assertEquals(0, fObjectStore.query(Object.class).size());
 
-    assertEquals(2734, getBlock(1).getPosition());
+    assertEquals(pos, getBlock(1).getPosition());
     assertEquals(87, getBlock(1).getWholeSize());
     assertTrue(getBlock(1).isFree());
 
@@ -238,27 +240,29 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertBlocks(getBlock(1), getObjectInfo(id).getCurrentBlock());
     assertEquals(87, getBlock(1).getWholeSize());
   }
-  
+
   /**
    * length: 2822
-   * 
-   * |__head__|__boot__|2734|__block_tag__|2742|__size_crc__|2758|__trxa__|2814|__crc__
+   *
+   * |__head__|__boot__|<pos>|__block_tag__|<pos>+8|__size_crc__|<pos>+24|__trxa__|<pos>+80|__crc__
    */
-  public void test_shrunk_trx_in_last_appended_repairs() {
+  public void test_shrunk_trx_in_last_appended_repairs_() {
     beginUpdate();
       save(new Object());
       save(new Object());
     endUpdate();
 
+    int pos = (int)getBlock(1).getPosition();
+
     assertEquals(2, getBlockManager().getBlockCount());
 
-    getFile().shrink(2813);
+    getFile().shrink(pos+79);
 
     reopen();
 
     assertEquals(0, fObjectStore.query(Object.class).size());
 
-    assertEquals(2734, getBlock(1).getPosition());
+    assertEquals(pos, getBlock(1).getPosition());
     assertEquals(79, getBlock(1).getWholeSize());
     assertTrue(getBlock(1).isFree());
 
