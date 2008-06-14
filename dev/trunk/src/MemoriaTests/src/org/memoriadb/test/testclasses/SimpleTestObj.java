@@ -5,9 +5,9 @@ import org.memoriadb.handler.field.*;
 import org.memoriadb.id.IObjectId;
 
 public class SimpleTestObj implements Comparable<SimpleTestObj> {
-  
+
   private String fString;
-  
+
   public static IFieldbasedObject createFieldObject(DataStore dataStore, String stringValue) {
     IObjectId memoriaClassId = dataStore.getId(dataStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
     return setField(stringValue, memoriaClassId);
@@ -17,15 +17,15 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
     IObjectId memoriaClassId = objectStore.getId(objectStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
     return setField(stringValue, memoriaClassId);
   }
-  
+
   private static IFieldbasedObject setField(String stringValue, IObjectId memoriaClassId) {
     IFieldbasedObject result = new FieldbasedDataObject(memoriaClassId);
     result.set("fString", stringValue);
     return result;
   }
-  
+
   public SimpleTestObj() {}
-  
+
   public SimpleTestObj(String string) {
     fString = string;
   }
@@ -47,11 +47,11 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
     else if (!fString.equals(other.fString)) return false;
     return true;
   }
-  
+
   public String getString() {
     return fString;
   }
-  
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -64,5 +64,5 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
   public String toString() {
     return "s: "+fString;
   }
-  
+
 }

@@ -8,5 +8,5 @@ public class HashMapTest extends AbstractMapTest {
   protected <K, V> Map<K, V> createMap() {
     return new HashMap<K, V>();
   }
-  
+
 }

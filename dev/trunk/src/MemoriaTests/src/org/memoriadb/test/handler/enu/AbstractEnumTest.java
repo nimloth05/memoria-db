@@ -5,6 +5,7 @@ import java.util.*;
 import org.memoriadb.handler.enu.*;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
+import org.memoriadb.test.testclasses.ObjectReferencer;
 import org.memoriadb.test.testclasses.enums.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -28,6 +29,20 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
       // pass
     }
 
+  }
+
+  /**
+   * enum is aggregated from a field ob type Object.
+   */
+  public void test_aggregated_enum() {
+    ObjectReferencer obj = new ObjectReferencer(TestEnum.a);
+    IObjectId id = save(obj);
+    
+    reopen();
+    assertNotSame(obj, get(id));
+    obj = get(id);
+    
+    assertSame(TestEnum.a, obj.getObject());
   }
 
   public void test_data_mode() {
@@ -181,7 +196,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     ObjectEnumUse l1_obj = get(id);
     assertEquals(TestEnum.b, l1_obj.getEnum());
   }
-
+  
   public void test_use_enum_list() {
     List<Object> list = new LinkedList<Object>();
     list.add(TestEnum.a);

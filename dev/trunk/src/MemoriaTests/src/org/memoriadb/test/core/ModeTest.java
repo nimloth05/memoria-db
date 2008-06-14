@@ -7,21 +7,28 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class ModeTest extends AbstractMemoriaTest {
 
-  public void test_add_obejct() {
+  public void test_add_object() {
     SimpleTestObj obj = new SimpleTestObj("1");
-    save(obj);
+    IObjectId id1 = save(obj);
     
     IObjectId memoriaClassId = fObjectStore.getTypeInfo().getMemoriaClassId(obj);
     
     reopenDataMode();
     
     IFieldbasedObject obj2 = new FieldbasedDataObject(memoriaClassId);
-    obj2.set("fString", 2);
-    save(obj2);
+    obj2.set("fString", "2");
+    IObjectId id2 = save(obj2);
     
     reopen();
     
     assertEquals(2, query(SimpleTestObj.class).size());
+    
+    obj = get(id1);
+    assertEquals("1", obj.getString());
+
+    obj = get(id2);
+    assertEquals("2", obj.getString());
+
   }
   
   public void test_delete_object_in_data_mode() {

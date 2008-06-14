@@ -88,7 +88,7 @@ public class ValueObjectTest extends AbstractMemoriaTest {
   
   public void test_Object_is_stored_inline() {
     ObjectReferencer ref = new ObjectReferencer(new Object());
-    IObjectId id = save(ref);
+    IObjectId id = saveAll(ref);
     assertTrue(fObjectStore.contains(ref));
     assertFalse(fObjectStore.contains(ref.getObject()));
     assertEquals(1, fObjectStore.query(Object.class).size());
@@ -120,7 +120,6 @@ public class ValueObjectTest extends AbstractMemoriaTest {
     ref = get(id);
     assertTrue(fObjectStore.contains(ref));
     assertFalse(fObjectStore.contains(ref.getObject()));
-
     
   }
 

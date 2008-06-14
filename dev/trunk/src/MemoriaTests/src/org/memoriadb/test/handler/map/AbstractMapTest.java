@@ -8,6 +8,18 @@ import org.memoriadb.testutil.*;
 
 public abstract class AbstractMapTest extends AbstractMemoriaTest {
   
+  public void test_aggregated_map() {
+    ObjectReferencer obj = new ObjectReferencer();
+    obj.setObject(createMap());
+    
+    IObjectId id = saveAll(obj);
+    
+    reopen();
+    
+    obj = get(id);
+    assertTrue(obj.getObject() instanceof Map);
+  }
+  
   public void test_map_containing_array() {
     SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1")};
     Map<Integer, SimpleTestObj[]> map = createMap();
