@@ -4,7 +4,7 @@ import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IDataObject;
 
 public interface IEnumObject extends IDataObject {
-  
+
   public Object getObject(IMemoriaClass memoriaClass);
   
   public int getOrdinal();

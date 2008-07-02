@@ -39,6 +39,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     IObjectId id = save(obj);
     
     reopen();
+    
     assertNotSame(obj, get(id));
     obj = get(id);
     

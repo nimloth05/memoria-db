@@ -8,10 +8,13 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.javaapi");
     //$JUnit-BEGIN$
     suite.addTestSuite(FileTest.class);
+    suite.addTestSuite(IdentityHashMapTest.class);
+    suite.addTestSuite(NestedClassTest.class);
     suite.addTestSuite(ListTest.class);
     suite.addTestSuite(LinkedSet.class);
     suite.addTestSuite(EnumTest.class);
     suite.addTestSuite(CrcTest.class);
+    suite.addTestSuite(SetTest.class);
     //$JUnit-END$
     return suite;
   }
