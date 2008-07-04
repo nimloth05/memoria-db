@@ -7,7 +7,7 @@ import org.memoriadb.core.util.*;
 
 public class PhysicalFileTest extends junit.framework.TestCase {
   
-  private static final String PATH = "testfile.txt";
+  private static final File PATH = new File("testfile.txt");
   private IMemoriaFile fPf;
 
   public void test() throws IOException {
@@ -38,8 +38,14 @@ public class PhysicalFileTest extends junit.framework.TestCase {
     stream.close();
   }
   
-  public void test_getPosition() {
+  public void test_create_file_in_temp_dir() {
     
+  }
+  
+  public void test_getPosition() throws IOException {
+    File path = new File(System.getProperty("java.io.tmpdir") + "/tempTestMemoriaDir/test.mia");
+    PhysicalFile physicalFile = new PhysicalFile(path);
+    assertTrue(physicalFile.getFilePath().exists());
   }
   
   public void test_stream_seek() throws IOException {
@@ -52,9 +58,8 @@ public class PhysicalFileTest extends junit.framework.TestCase {
   }
   
   @Override
-  protected void setUp() {
-    File file = new File(PATH);
-    if(file.exists()) if(!file.delete()) throw new RuntimeException("unable to delete file " + file);
+  protected void setUp() throws IOException {
+    if(PATH.exists()) if(!PATH.delete()) throw new RuntimeException("unable to delete file " + PATH);
     fPf = new PhysicalFile(PATH);
   }
 

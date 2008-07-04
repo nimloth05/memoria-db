@@ -1,5 +1,7 @@
 package org.memoriadb.services.store;
 
+import java.io.*;
+
 import org.memoriadb.*;
 import org.memoriadb.core.util.disposable.*;
 import org.memoriadb.model.Configuration;
@@ -22,14 +24,14 @@ public final class DataStoreService implements IDataStoreService {
   @Override
   public void change(Configuration configuration) {
     fManager.configure(configuration.getClasspathsAsURL());
-    IDataStore  dataStore = Memoria.openInDataMode(new CreateConfig(), configuration.getDbPath());
+    IDataStore dataStore = openStore(configuration);
     
     dispose();
       
     fCurrentStore = dataStore;
     notifyPostOpen();
   }
-  
+
   public void dispose() {
     if (fCurrentStore == null) return;
     notifyPreClose();
@@ -37,7 +39,7 @@ public final class DataStoreService implements IDataStoreService {
     fCurrentStore = null;
     fManager.resetClassLoader();
   }
-
+  
   private void notifyPostOpen() {
     for(IChangeListener listener: fListeners) {
       listener.postOpen(fCurrentStore);
@@ -47,6 +49,16 @@ public final class DataStoreService implements IDataStoreService {
   private void notifyPreClose() {
     for(IChangeListener listener: fListeners) {
       listener.preClose();
+    }
+  }
+
+  private IDataStore openStore(Configuration configuration) {
+    try {
+      IDataStore  dataStore = Memoria.openInDataMode(new CreateConfig(), new File(configuration.getDbPath()));
+      return dataStore;
+    }
+    catch (IOException e) {
+      throw new RuntimeException("DB-File could not be opened", e);
     }
   }
 

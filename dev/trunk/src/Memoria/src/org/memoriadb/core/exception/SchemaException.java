@@ -1,11 +1,7 @@
 package org.memoriadb.core.exception;
 
-
 /**
- * 
- *   
  * @author sandro
- *
  */
 public class SchemaException extends MemoriaException {
 

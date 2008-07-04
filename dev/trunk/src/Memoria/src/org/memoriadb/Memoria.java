@@ -1,5 +1,7 @@
 package org.memoriadb;
 
+import java.io.*;
+
 import org.memoriadb.core.Bootstrap;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.*;
@@ -38,27 +40,35 @@ public final class Memoria {
     return open(config, new InMemoryFile());
   }
 
+  public static IObjectStore open(CreateConfig config, File path) throws IOException {
+    return open(config, new PhysicalFile(path));
+  }
+  
   public static IObjectStore open(CreateConfig config, IMemoriaFile file) {
     return new ObjectStore(Bootstrap.openOrCreate(config, file, new ObjectModeStrategy()));
   }
 
-  public static IObjectStore open(CreateConfig config, String path) {
-    return open(config, new PhysicalFile(path));
+  public static IObjectStore open(CreateConfig config, String path) throws IOException {
+    return open(config, new File(path));
   }
   
+  public static IDataStore openIndataMode(CreateConfig config, String path) throws IOException {
+    return openInDataMode(config, new File(path));
+  }
+
   /**
    * @return An ObjectStore backed with an in-memory file
    */
   public static IDataStore openInDataMode(CreateConfig config) {
     return openInDataMode(config, new InMemoryFile());
   }
+  
+  public static IDataStore openInDataMode(CreateConfig config, File path) throws IOException {
+    return openInDataMode(config, new PhysicalFile(path));
+  }
 
   public static IDataStore openInDataMode(CreateConfig config, IMemoriaFile file) {
     return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
-  }
-
-  public static IDataStore openInDataMode(CreateConfig config, String path) {
-    return openInDataMode(config, new PhysicalFile(path));
   }
   
   private Memoria() {}

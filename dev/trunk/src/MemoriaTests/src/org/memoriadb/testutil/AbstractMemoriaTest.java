@@ -1,6 +1,6 @@
 package org.memoriadb.testutil;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -18,7 +18,7 @@ import org.memoriadb.id.IObjectId;
 
 public abstract class AbstractMemoriaTest extends TestCase {
   
-  private static final String PATH = "file.mia";
+  private static final File PATH = new File("file.mia");
   
   protected ObjectStore fObjectStore;
   protected DataStore fDataStore;
@@ -123,11 +123,11 @@ public abstract class AbstractMemoriaTest extends TestCase {
       file.reset();
       fDataStore = openStoreDataMode(file, config);
     } else {
-      fDataStore = openStoreDataMode(new PhysicalFile(PATH), config);
+      fDataStore = openStoreDataMode(createPhysicalFile(), config);
     }
     fObjectStore = null;
   }
-  
+
   protected final void recreateObjectStore() {
     closeStores();
     
@@ -139,19 +139,19 @@ public abstract class AbstractMemoriaTest extends TestCase {
       file.reset();
       fObjectStore = openStore(file, config);
     } else {
-      fObjectStore = openStore(new PhysicalFile(PATH), config);
+      fObjectStore = openStore(createPhysicalFile(), config);
     }
     fDataStore = null;
   }
-   
+  
   protected final void reopen() {
     recreateObjectStore();
   }
-
+   
   protected void reopenDataMode() {
     recreateDataStore();
   }
-  
+
   protected final IObjectId save(IDataObject obj) {
     return fDataStore.save(obj);
   }
@@ -163,11 +163,11 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected final IObjectId saveAll(IDataObject obj) {
     return fDataStore.saveAll(obj);
   }
-
+  
   protected final IObjectId saveAll(Object obj) {
     return fObjectStore.saveAll(obj);
   }
-  
+
   @Override
   protected void setUp() {
    CreateConfig config = new CreateConfig();
@@ -177,9 +177,8 @@ public abstract class AbstractMemoriaTest extends TestCase {
      fObjectStore = openStore(new InMemoryFile(), config);
    } 
    else {
-     File file = new File(PATH);
-     file.delete(); 
-     fObjectStore = openStore(new PhysicalFile(PATH), config);
+     PATH.delete(); 
+     fObjectStore = openStore(createPhysicalFile(), config);
    }
   }
   
@@ -191,6 +190,15 @@ public abstract class AbstractMemoriaTest extends TestCase {
   private void closeStores() {
     if(fObjectStore != null) fObjectStore.close();
     if(fDataStore != null) fDataStore.close();
+  }
+  
+  private PhysicalFile createPhysicalFile() {
+    try {
+      return new PhysicalFile(PATH);
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   private ObjectStore openStore(IMemoriaFile file, CreateConfig config) {

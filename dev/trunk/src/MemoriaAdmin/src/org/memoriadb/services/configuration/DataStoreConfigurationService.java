@@ -1,6 +1,6 @@
 package org.memoriadb.services.configuration;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 import org.memoriadb.*;
@@ -18,7 +18,7 @@ public class DataStoreConfigurationService implements IDataStoreConfigurationSer
 
   public IObjectStore getStore() {
     if (fStore == null) {
-      fStore = Memoria.open(new CreateConfig(), new File("config.db").getAbsolutePath());
+      createDB();
     }
     return fStore;
   }
@@ -37,12 +37,21 @@ public class DataStoreConfigurationService implements IDataStoreConfigurationSer
     if (!getStore().contains(configuration)) throw new RuntimeException("Dieses API unterstützt keine neuen Configuration, es muss zuerst über loadConfig bezogen werden");
     getStore().saveAll(configuration);
   }
-  
+
   private Configuration createAndSaveConfiguraiton() {
     Configuration configuration = new Configuration();
     getStore().saveAll(configuration);
     
     return configuration;
+  }
+  
+  private void createDB() {
+    try {
+      fStore = Memoria.open(new CreateConfig(), new File("config.db").getAbsolutePath());
+    }
+    catch (IOException e) {
+      throw new RuntimeException("Could not open DB!", e);
+    }
   }
 
 }

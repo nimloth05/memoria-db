@@ -13,17 +13,12 @@ import org.memoriadb.core.util.io.BufferedRandomInputStream;
 public class PhysicalFile extends AbstractMemoriaFile {
 
   private final RandomAccessFile fRandomAccessFile;
-  private final String fPath;
-
-  public PhysicalFile(String path) {
-    fPath = path;
-    try {
-      fRandomAccessFile = new RandomAccessFile(path, "rw");
-    }
-    catch (Exception e) {
-      throw new MemoriaException(e);
-    }
-
+  private final File fPath;
+  
+  public PhysicalFile(File path) throws IOException {
+    fPath = path.getAbsoluteFile();
+    makeDirs();
+    fRandomAccessFile = new RandomAccessFile(path, "rw");
   }
 
   @Override
@@ -85,6 +80,10 @@ public class PhysicalFile extends AbstractMemoriaFile {
     internalWrite(data, offset);
   }
 
+  public File getFilePath() {
+    return fPath;
+  }
+
   @Override
   public void sync() {
     try {
@@ -97,7 +96,7 @@ public class PhysicalFile extends AbstractMemoriaFile {
 
   @Override
   public String toString() {
-    return fPath;
+    return fPath.toString();
   }
   
   /**
@@ -116,5 +115,12 @@ public class PhysicalFile extends AbstractMemoriaFile {
     catch (IOException e) {
       throw new MemoriaException(e);
     }
+  }
+
+  private void makeDirs() throws IOException {
+    File directory = fPath.getParentFile();
+    if (directory.exists()) return;
+    if (directory.mkdirs()) return;
+    throw new IOException("Could not create DB-Directory: " + directory);
   }
 }
