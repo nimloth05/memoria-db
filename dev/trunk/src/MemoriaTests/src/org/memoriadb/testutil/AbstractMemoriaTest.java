@@ -84,14 +84,17 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
   
   protected IMemoriaFile getFile() {
-    if(fObjectStore!=null) return (fObjectStore).getFile();
-    return (fDataStore).getFile();
+    IMemoriaFile file = getCurrentFile();
+    if (file instanceof IMemoriaFileDecorator) {
+      file = ((IMemoriaFileDecorator)file).getFile();
+    }
+    return file; 
   }
 
   protected LastWrittenBlockInfo getLastBlockInfo() {
     return fObjectStore.getHeader().getLastWrittenBlockInfo();
   }
-  
+
   protected IObjectInfo getObjectInfo(IObjectId id) {
     return fObjectStore.getObjectInfoForId(id);
   }
@@ -103,15 +106,15 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected int getOPO() {
     return FileLayout.getOPO(fObjectStore);
   }
-
+  
   protected TestMode getTestMode() {
     return TestMode.memory;
   }
-  
+
   protected <T> List<T> query(Class<T> clazz) {
     return fObjectStore.query(clazz);
   }
-
+  
   protected final void recreateDataStore() {
     closeStores();
     
@@ -143,19 +146,19 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
     fDataStore = null;
   }
-  
+
   protected final void reopen() {
     recreateObjectStore();
   }
-   
+  
   protected void reopenDataMode() {
     recreateDataStore();
   }
-
+   
   protected final IObjectId save(IDataObject obj) {
     return fDataStore.save(obj);
   }
-  
+
   protected final IObjectId save(Object obj) {
     return fObjectStore.save(obj);
   }
@@ -167,7 +170,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected final IObjectId saveAll(Object obj) {
     return fObjectStore.saveAll(obj);
   }
-
+  
   @Override
   protected void setUp() {
    CreateConfig config = new CreateConfig();
@@ -181,7 +184,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
      fObjectStore = openStore(createPhysicalFile(), config);
    }
   }
-  
+
   @Override
   protected void tearDown() {
     closeStores();
@@ -201,6 +204,11 @@ public abstract class AbstractMemoriaTest extends TestCase {
     }
   }
   
+  private IMemoriaFile getCurrentFile() {
+    if(fObjectStore != null) return (fObjectStore).getFile();
+    return (fDataStore).getFile();
+  }
+  
   private ObjectStore openStore(IMemoriaFile file, CreateConfig config) {
     return (ObjectStore) Memoria.open(config, file);
   }
@@ -208,6 +216,5 @@ public abstract class AbstractMemoriaTest extends TestCase {
   private DataStore openStoreDataMode(IMemoriaFile file, CreateConfig config) {
     return (DataStore) Memoria.openInDataMode(config, file);
   }
-
   
 }

@@ -22,6 +22,7 @@ public class Bootstrap {
 
   public static TransactionHandler openOrCreate(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
     if (file == null) throw new IllegalArgumentException("File was null");
+    //file = new AsynchronousFile(file);
 
     if(file.isEmpty())  return createDb(config, file, strategy);
 
