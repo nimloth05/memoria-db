@@ -30,12 +30,10 @@ public class ObjectInfo implements IObjectInfo {
   private long fRevision;
   private int fOldGenerationCount;
   
-  private Block fCurrentBlock;
-  
   /**
    * From this block the active HydratedObject comes from
    */
-  private Block fBlock;
+  private Block fCurrentBlock;
   
   /**
    * Use this ctor only when an object is initially added to the container.
@@ -82,10 +80,6 @@ public class ObjectInfo implements IObjectInfo {
     }
   }
   
-  public Block getBlock() {
-    return fBlock;
-  }
-
   @Override
   public Block getCurrentBlock() {
     return fCurrentBlock;
