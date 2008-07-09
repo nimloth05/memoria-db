@@ -2,7 +2,6 @@ package org.memoriadb.core.file.read;
 
 import java.io.*;
 
-import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
@@ -28,7 +27,7 @@ public interface IReaderContext {
 
   /**
    * @return the object for the given <tt>id</tt>
-   * throw new {@link MemoriaException} if the given <tt>id</tt> is not found. 
+   * @throws {@link MemoriaException} if the given <tt>id</tt> is not found. 
    */
   public Object getExistingObject(IObjectId id);
   
