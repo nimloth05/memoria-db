@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="libs/migLayout/miglayout-swing.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Memoria"/>
+	<classpathentry kind="lib" path="libs/jgraph-latest-lgpl-src/lib/jgraph.jar" sourcepath="libs/jgraph-latest-lgpl-src/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
