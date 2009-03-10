@@ -107,7 +107,7 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
   public void test_save_private_inner_scoped_object() {
     OuterClass obj = new OuterClass();
     try {
-      save(obj.getInnerClass());
+      save(obj.getPrivateInnerClass());
       fail("SchemaCorruptException expected");
     } catch (SchemaException e) {
       //passed
