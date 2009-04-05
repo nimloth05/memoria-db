@@ -57,7 +57,6 @@ public class ObjectStore extends AbstractStore implements IObjectStore  {
     return fTransactionHandler.getId(obj);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> List<T> query(Class<T> clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);

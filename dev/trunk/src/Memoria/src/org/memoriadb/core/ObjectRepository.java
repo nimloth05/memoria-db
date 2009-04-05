@@ -207,7 +207,6 @@ public class ObjectRepository implements IObjectRepository {
   }
 
   private void internalPut(ObjectInfo info) {
-
     Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
 

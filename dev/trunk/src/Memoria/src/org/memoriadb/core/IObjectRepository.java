@@ -64,6 +64,7 @@ public interface IObjectRepository {
   public IMemoriaClass getMemoriaClass(Object object);
   
   /**
+   * @param klass full qualified class name. 
    * @return The MetaClass for the given java-type. Array-Metaclass is the given <tt>klass</tt>
    * is an array.
    * @throws MemoriaException if no MetaClass can be found
@@ -72,8 +73,8 @@ public interface IObjectRepository {
 
 
   /**
-   * @return The object or null, if no Object exists for the given id. 
-   *         It is not considered if the object is persistent or not.
+   * @return The object for the given Id even if the transaction is not completed.
+   *         <code>null</code> if the object was not found. 
    */
   public Object getObject(IObjectId id);
 

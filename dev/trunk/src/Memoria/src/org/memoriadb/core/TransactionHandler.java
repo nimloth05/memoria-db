@@ -13,7 +13,7 @@ import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.id.*;
 
-public class TransactionHandler {
+public final class TransactionHandler {
 
   private final IObjectRepository fObjectRepository;
 
@@ -226,6 +226,12 @@ public class TransactionHandler {
     return fObjectRepository.getMemoriaClass(klass);
   }
   
+  /**
+   * Saves the given memoriaClass as Object.
+   * 
+   * @param clazz memoriaClass to save
+   * @return id of the class.
+   */
   public IObjectId internalSave(IMemoriaClass clazz) {
     return internalSave(clazz, clazz.getMemoriaClassId());
   }

@@ -12,7 +12,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
   public void test_corrupt_block_size_in_last_written() {
     Object o1 = new Object();
 
-    IObjectId id = save(o1);
+    save(o1);
     save(o1);
     save(o1);
     // |o1''|~o1'|
@@ -26,7 +26,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
   public void test_corrupt_block_tag_in_last_written() {
     Object o1 = new Object();
 
-    IObjectId id = save(o1);
+    save(o1);
     save(o1);
     save(o1);
     // |o1''|~o1'|

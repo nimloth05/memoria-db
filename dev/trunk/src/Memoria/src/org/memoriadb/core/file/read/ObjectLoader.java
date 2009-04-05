@@ -26,22 +26,22 @@ public final class ObjectLoader implements IReaderContext {
   private Block fCurrentBlock;
   private final IInstantiator fInstantiator;
   private final IObjectIdFactory fIdFactory;
-  private final IModeStrategy fStore;
+  private final IModeStrategy fModeStrategy;
   private final ICompressor fCompressor;
 
   public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
     return new ObjectLoader(fileReader, repo, blockManager, instantiator, store, compressor).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
+  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy mode, ICompressor compressor) {
     if (instantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
-    if (store == null) throw new IllegalArgumentException("store is null");
+    if (mode == null) throw new IllegalArgumentException("mode is null");
     if (compressor == null) throw new IllegalArgumentException("compressor is null");
 
-    fStore = store;
+    fModeStrategy = mode;
     fFileReader = fileReader;
     fRepo = repo;
     fBlockManager = blockManager;
@@ -87,7 +87,7 @@ public final class ObjectLoader implements IReaderContext {
 
   @Override
   public boolean isInDataMode() {
-    return fStore.isDataMode();
+    return fModeStrategy.isDataMode();
   }
 
   @Override

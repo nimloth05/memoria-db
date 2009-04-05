@@ -7,7 +7,7 @@ import org.memoriadb.handler.enu.EnumHandler;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.id.IObjectId;
 
-public class TypeHierarchyBuilder {
+public final class TypeHierarchyBuilder {
 
   public static IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Class<?> clazz, IModeStrategy modeStrategy) {
     if (clazz.isArray()) {
@@ -45,7 +45,7 @@ public class TypeHierarchyBuilder {
     
     // enum class added, add enum-instances
     for(Enum<?> current: (Enum<?>[]) javaClass.getEnumConstants()) {
-      // FIXME ist es korrekt, hier result als Klassen-Id mitzugeben? ich nid sicher sein, msc
+      //result is the objectId for the memoriaClass which represents the given enum-class. 04.04.2009, so
       transactionHandler.internalAddObject(modeStrategy.createEnum(current, result), result);
     }
     
@@ -85,5 +85,7 @@ public class TypeHierarchyBuilder {
     
     return result;
   }
+  
+  private TypeHierarchyBuilder() {}
   
 }

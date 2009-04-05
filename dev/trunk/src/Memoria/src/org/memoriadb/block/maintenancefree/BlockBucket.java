@@ -65,6 +65,4 @@ public class BlockBucket implements Comparable<BlockBucket> {
     if(!fBlocks.remove(block)) throw new MemoriaException("block not found: " + block);
   }
   
-  
-  
 }

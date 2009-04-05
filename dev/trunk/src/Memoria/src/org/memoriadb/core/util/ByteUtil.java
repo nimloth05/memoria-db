@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import org.memoriadb.core.exception.MemoriaException;
 
-
-
 public final class ByteUtil {
   
   public static final int INT_SIZE = 4;

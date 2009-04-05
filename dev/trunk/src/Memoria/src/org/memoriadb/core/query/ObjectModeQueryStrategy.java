@@ -8,7 +8,6 @@ import org.memoriadb.core.util.ReflectionUtil;
 
 public class ObjectModeQueryStrategy {
 
-  @SuppressWarnings("unchecked")
   public <T> List<T> query(IObjectRepository objectRepository, Class<T> clazz) {
     return query(objectRepository, clazz, new IFilter<T>() {
 
