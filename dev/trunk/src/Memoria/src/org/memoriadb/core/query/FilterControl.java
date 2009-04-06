@@ -4,11 +4,11 @@ import java.util.*;
 
 import org.memoriadb.IFilterControl;
 
-public class FilterControl implements IFilterControl {
+public class FilterControl<T> implements IFilterControl {
 
   private static final int INITIAL_SIZE = 32;
   
-  private final List<Object> fResult = new ArrayList<Object>(INITIAL_SIZE);
+  private final List<T> fResult = new ArrayList<T>(INITIAL_SIZE);
   private boolean fAbort = false;
   
   @Override
@@ -16,7 +16,7 @@ public class FilterControl implements IFilterControl {
     fAbort = true;
   }
   
-  public void add(Object object){
+  public void add(T object){
     fResult.add(object);
   }
 
@@ -25,7 +25,7 @@ public class FilterControl implements IFilterControl {
     return fResult.size();
   }
   
-  public List<Object> getResult() {
+  public List<T> getResult() {
     return fResult;
   }
 

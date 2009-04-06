@@ -45,8 +45,13 @@ public class EnumSetHandler extends SetHandler {
   @Override
   protected Set<Object> createCollectionForObjectMode() {
     Class<Enum> enumClass = (Class<Enum>) ReflectionUtil.getClass(fEnumClass.getJavaClassName());
-    EnumSet<?> noneOf = EnumSet.noneOf(enumClass);
-    return (Set<Object>) noneOf;
+    Set<Enum> enumSet = EnumSet.noneOf(enumClass);
+    return convert(enumSet);
+  }
+  
+  @SuppressWarnings("unchecked")
+  private <T> Set<T> convert(Set<Enum> enumSet) {
+    return (Set<T>) enumSet;
   }
 
   @SuppressWarnings("unchecked")

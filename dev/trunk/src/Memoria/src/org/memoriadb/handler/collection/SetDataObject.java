@@ -28,13 +28,10 @@ public class SetDataObject implements ISetDataObject {
   public Set<Object> getSet() {
     return fSet;
   }
-
   
   @Override
   public String toString() {
     return fSet.toString();
   }
-  
-  
 
 }

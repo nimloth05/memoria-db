@@ -10,7 +10,7 @@ public class DefaultInstantiator implements IInstantiator {
 
   @Override
   public <T> T newInstance(String className) {
-    return ReflectionUtil.createInstance(className);
+    return ReflectionUtil.<T>createInstance(className);
   }
 
 }

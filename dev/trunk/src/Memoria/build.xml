@@ -1,0 +1,74 @@
+<project default="build">
+  
+  <property name="jar-name" value="memoria.jar"/>
+	<property name="src-zip-name" value="src.zip" />
+	
+  <property name="destdir" value="build/"/>
+  <property name="srcdir" value="./src/"/>
+	
+	
+  <!--*********************************************************** -->
+  <!-- clean                                                    * -->
+  <!--*********************************************************** -->
+  <target name="clean" description="Deletes all class files">
+    <delete failonerror="false">
+      <fileset dir="${destdir}" includes="**/*.class"/>
+    </delete>
+  </target>	
+	
+  <!--*********************************************************** -->
+  <!--               Compile                                    * -->            
+  <!--*********************************************************** -->
+  <target name="compile" description="Compile">
+  	<mkdir dir="${destdir}"/>
+    <javac srcdir="${srcdir}"
+       destdir="${destdir}"
+       debug="on"
+       source="1.6"
+       target="1.6"
+	   optimize="true">
+     <include name="**/*.java"/>
+    </javac>
+  </target>
+	
+	
+  <!--*********************************************************** -->
+  <!--               Build Jar                                  * -->            
+  <!--*********************************************************** -->
+  <target name="buildJar" description="Build jar">
+    <delete file="${jar-name}"/>
+    <jar destfile="${jar-name}">
+      <fileset dir="${destdir}">
+        <include name="**/*.*"/>
+      	<exclude name="**/_*.**"/>
+      </fileset>    	
+    </jar>
+  </target>
+	
+  <!--*********************************************************** -->
+  <!--               Build src Zip                              * -->            
+  <!--*********************************************************** -->
+  <target name="buildSrcZip" description="Build src zip">
+    <delete file="${src-zip-name}}"/>
+    <zip destfile="${src-zip-name}">
+      <fileset dir="${srcdir}">
+        <include name="**/*.*"/>
+      	<exclude name="**/_*.**"/>
+      </fileset>    	
+    </zip>
+  </target>
+	
+	
+
+	
+  <!--*********************************************************** -->
+  <!--               Build Main Target                          * -->            
+  <!--*********************************************************** -->
+  <target name="build" description="Build Sajotris">
+    <antcall target="clean"/>
+  	<antcall target="compile"/>
+  	<antcall target="buildJar"/>
+  	<antcall target="buildSrcZip" />
+  </target>
+
+</project>

@@ -20,18 +20,20 @@ public class DataModeQueryStrategy {
     });
   }
 
+  
   @SuppressWarnings("unchecked")
   public <T extends IDataObject> List<T> query(IObjectRepository objectRepository, String clazz, IFilter<T> filter) {
-    FilterControl control = new FilterControl();
+    FilterControl<T> control = new FilterControl<T>();
 
     for (IObjectInfo objectInfo : objectRepository.getAllObjectInfos()) {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectRepository.getObject(objectInfo.getMemoriaClassId());
 
       if (!memoriaClass.isTypeFor(clazz)) continue;
-      if (filter.accept((T)objectInfo.getObject(), control)) control.add(objectInfo.getObject());
+      T currentObject = (T)objectInfo.getObject();
+      if (filter.accept(currentObject, control)) control.add(currentObject);
       if(control.isAbort()) break;
     }
 
-    return (List<T>) control.getResult();
+    return control.getResult();
   }
 }

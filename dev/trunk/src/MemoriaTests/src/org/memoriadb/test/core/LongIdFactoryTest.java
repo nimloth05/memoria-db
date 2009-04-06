@@ -11,7 +11,7 @@ public class LongIdFactoryTest extends AbstractMemoriaTest {
     LongIdFactory factory = (LongIdFactory)fObjectStore.getIdFactory();
     
     LongId nextId = factory.peekNexId();
-    assertEquals(nextId.getLong(), id.getLong()+1);
+    assertEquals(nextId.getValue(), id.getValue() + 1);
     assertEquals(nextId, factory.peekNexId());
     assertEquals(nextId, factory.peekNexId());
     
@@ -29,7 +29,7 @@ public class LongIdFactoryTest extends AbstractMemoriaTest {
     delete(get(id1));
     reopen();
     LongId id2 = (LongId) save(new Object());
-    assertEquals(id1.getLong()+1, id2.getLong());
+    assertEquals(id1.getValue() + 1, id2.getValue());
   }
   
   public void test_peek_nex_id() {
@@ -37,7 +37,7 @@ public class LongIdFactoryTest extends AbstractMemoriaTest {
     LongIdFactory factory = (LongIdFactory)fObjectStore.getIdFactory();
     
     LongId nextId = factory.peekNexId();
-    assertEquals(nextId.getLong(), id.getLong()+1);
+    assertEquals(nextId.getValue(), id.getValue() + 1);
     
     LongId id2 = (LongId) save(new Object());
     assertEquals(nextId, id2);

@@ -168,7 +168,7 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   }
 
   protected T createCollectionForObjectMode() {
-    return ReflectionUtil.createInstance(getClassName());
+    return ReflectionUtil.<T>createInstance(getClassName());
   }
 
   protected abstract IDataObject createDataObject(T collection, IObjectId typeId);

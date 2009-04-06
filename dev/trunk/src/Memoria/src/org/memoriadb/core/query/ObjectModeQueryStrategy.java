@@ -19,21 +19,20 @@ public class ObjectModeQueryStrategy {
     });
   }
 
-  @SuppressWarnings("unchecked")
-   public <FILTER, T extends FILTER> List<T> query(IObjectRepository objectRepository, Class<T> clazz, IFilter<FILTER> filter) {
-    
-    FilterControl control = new FilterControl();
+   @SuppressWarnings("unchecked")
+  public <FILTER, T extends FILTER> List<T> query(IObjectRepository objectRepository, Class<T> clazz, IFilter<FILTER> filter) {
+    FilterControl<T> control = new FilterControl<T>();
 
     for (Object object : objectRepository.getAllUserSpaceObjects()) {
       if (!clazz.isInstance(object)) continue;
 
-      T t = (T) object;
-      if (filter.accept(t, control)) control.add(t);
+      T currentObject = (T) object;
+      if (filter.accept(currentObject, control)) control.add(currentObject);
       
       if(control.isAbort()) break;
       
     }
-    return (List<T>) control.getResult();
+    return control.getResult();
   }
 
   @SuppressWarnings("unchecked")

@@ -14,10 +14,7 @@ import org.memoriadb.testutil.*;
  */
 public class TreeLoadTest extends AbstractMemoriaTest {
 
-  private int fCounter;
-  
   public void test() {
-    
     System.out.println("max VM Mem: "+ Runtime.getRuntime().maxMemory()/1000);
     long start1 = System.nanoTime();
     Node root = createTree(5, 2);
