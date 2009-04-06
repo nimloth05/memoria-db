@@ -9,7 +9,7 @@ import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.instantiator.IInstantiator;
+import org.memoriadb.instantiator.*;
 
 public class FieldbasedObjectHandler implements IHandler {
 
@@ -21,7 +21,12 @@ public class FieldbasedObjectHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!instantiator.canInstantiateObject(className)) throw new SchemaException("Can not instantiate Object of type: " + className);
+    try {
+      instantiator.checkCanInstantiateObject(className);
+    }
+    catch (CannotInstantiateException e) {
+      throw new SchemaException("Cannot instantiate Object of type: " + className, e);
+    }
   }
 
   @Override

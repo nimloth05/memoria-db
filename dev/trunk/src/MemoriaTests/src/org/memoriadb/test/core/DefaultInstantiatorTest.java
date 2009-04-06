@@ -10,8 +10,15 @@ public class DefaultInstantiatorTest extends TestCase {
   
   private IInstantiator fInstantiator;
   
-  public void test_can_not_instantiate_object_with_no_default_ctor() {
-    assertFalse(fInstantiator.canInstantiateObject(NoDefault.class.getName()));
+  public void test_cannot_instantiate_object_with_no_default_ctor() {
+    try {
+      fInstantiator.checkCanInstantiateObject(NoDefault.class.getName());
+      fail("exception expected");
+    }
+    catch (Exception e) {
+      //passed
+    }
+    
     try {
       fInstantiator.newInstance(NoDefault.class.getName());
       fail("Can not instantiate an Object with no default ctor");
@@ -21,13 +28,13 @@ public class DefaultInstantiatorTest extends TestCase {
     }
   }
   
-  public void test_instantiate_object_with_private_ctor() {
-    assertTrue(fInstantiator.canInstantiateObject(Private.class.getName()));
+  public void test_instantiate_object_with_private_ctor() throws Exception {
+    fInstantiator.checkCanInstantiateObject(Private.class.getName());
     assertNotNull(fInstantiator.newInstance(Private.class.getName()));
   }
   
-  public void test_instantiate_object_with_protected_ctor() {
-    assertTrue(fInstantiator.canInstantiateObject(Protected.class.getName()));
+  public void test_instantiate_object_with_protected_ctor() throws Exception {
+    fInstantiator.checkCanInstantiateObject(Protected.class.getName());
     assertNotNull(fInstantiator.newInstance(Protected.class.getName()));
   }
     

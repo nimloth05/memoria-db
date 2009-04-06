@@ -8,6 +8,11 @@ import org.memoriadb.core.meta.Type;
 
 public final class ReflectionUtil {
 
+  public static void checkHasDefaultConstructor(String className) throws SecurityException, NoSuchMethodException {
+    Class<?> clazz = getClass(className);
+    clazz.getDeclaredConstructor();
+  }
+
   @SuppressWarnings("unchecked")
   public static <T> T createInstance(String className) {
     try {
@@ -65,6 +70,15 @@ public final class ReflectionUtil {
 
   public static Class<?> getClass(String javaClassName) {
     try {
+      return getClassUnsave(javaClassName);
+    }
+    catch (ClassNotFoundException e) {
+      throw new MemoriaException(e);
+    }
+  }
+  
+  public static Class<?> getClassUnsave(String javaClassName) throws ClassNotFoundException {
+    try {
       return Class.forName(javaClassName);
     }
     catch (ClassNotFoundException e) {
@@ -72,12 +86,7 @@ public final class ReflectionUtil {
     }
 
     // try the context-class-loader assotiated with the current thread
-    try {
-      return Class.forName(javaClassName, true, Thread.currentThread().getContextClassLoader());
-    }
-    catch (ClassNotFoundException e) {
-      throw new MemoriaException(e);
-    }
+    return Class.forName(javaClassName, true, Thread.currentThread().getContextClassLoader());
   }
 
   public static ArrayTypeInfo getComponentTypeInfo(Class<?> componentType) {
@@ -136,7 +145,7 @@ public final class ReflectionUtil {
       throw new MemoriaException(e);
     }
   }
-
+  
   public static boolean hasNoArgCtor(String className) {
     try {
       Class<?> clazz = getClass(className);
