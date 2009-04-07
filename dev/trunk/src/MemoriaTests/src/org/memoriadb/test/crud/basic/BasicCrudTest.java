@@ -139,11 +139,14 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     catch (MemoriaException e) {}
   }
 
-  public void test_save_aggregated_primitive() {
-    ObjectReferencer object = new ObjectReferencer("Primitive!");
-    saveAll(object);
+  public void test_save_aggregated_integer_primitive() {
+    test_aggregated_primitive(new Integer(1));
   }
-
+  
+  public void test_save_aggregated_string_primitive() {
+    test_aggregated_primitive("Primitive!");
+  }
+  
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fObjectStore.save(b);
@@ -229,7 +232,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id));
   }
 
-
   public void test_save_object_with_static_field() {
     StaticFieldObject obj = new StaticFieldObject();
     IObjectId id = save(obj);
@@ -238,6 +240,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
     assertTrue(fObjectStore.containsId(id));
   }
+
 
   public void test_save_primitive_fails() {
 
@@ -298,7 +301,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertSame(SimpleTestObj.class, o_l1.getClass());
   }
 
-
   public void test_save_unsaved_reference() {
     A a = new A(null); // b is not saved
     IObjectId id = fObjectStore.save(a);
@@ -308,6 +310,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l1_a = fObjectStore.get(id);
     assertNull(l1_a.getB());
   }
+
 
   public void test_self_reference() {
     SelfReference obj = new SelfReference();
@@ -440,6 +443,16 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     saveAll(ref);
 
     assertEquals(expectedRevision, fObjectStore.getObjectInfo(obj).getRevision());
+  }
+
+  private void test_aggregated_primitive(Object primitive) {
+    ObjectReferencer object = new ObjectReferencer(primitive);
+    IObjectId id = saveAll(object);
+    
+    reopen();
+    
+    ObjectReferencer object_l1 = get(id);
+    assertEquals(primitive, object_l1.getObject());
   }
 
 

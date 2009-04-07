@@ -31,7 +31,10 @@ public class SaveAllTraversal implements IObjectTraversal {
     IMemoriaClass clazz = fTransactionHandler.getObject(memoriaClassId);
     
     if(fTransactionHandler.isEnum(obj)) return;
-    if (clazz.isValueObject()) return;
+    if(clazz.isValueObject()) {
+      new AddMemoriaClassesTraversal(fTransactionHandler).handle(obj);
+      return;
+    }
     
     fTransactionHandler.internalSave(obj, memoriaClassId);
     fTransactionHandler.getMemoriaClass(obj).getHandler().traverseChildren(obj, this);

@@ -198,7 +198,7 @@ public final class TransactionHandler {
     if (contains(obj)) throw new MemoriaException("obj already added: " + obj);
 
     fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fHeader.getInstantiator());
-    if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("ValueObject can not be added: " + obj);    
+    if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("A ValueObject can not be added. Type: " + obj.getClass().getName() + " .toString() " + obj);    
 
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(result);

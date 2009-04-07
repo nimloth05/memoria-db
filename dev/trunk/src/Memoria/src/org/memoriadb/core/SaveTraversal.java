@@ -30,7 +30,7 @@ public class SaveTraversal implements IObjectTraversal {
       public void handle(Object object) {
         IObjectId classId = fTransactionHandler.addMemoriaClassIfNecessary(object);
         IMemoriaClass clazz = fTransactionHandler.getObject(classId);
-        if(clazz.isValueObject())new AddMemoriaClassesTraversal(fTransactionHandler).handle(object);
+        if(clazz.isValueObject()) new AddMemoriaClassesTraversal(fTransactionHandler).handle(object);
       }
       
     });

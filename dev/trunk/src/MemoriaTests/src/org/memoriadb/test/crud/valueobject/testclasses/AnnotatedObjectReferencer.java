@@ -12,6 +12,7 @@ public class AnnotatedObjectReferencer extends SimpleTestObj {
   }
   
   public AnnotatedObjectReferencer(Object object) {
+    super(object.toString());
     fObject = object;
   }
 
