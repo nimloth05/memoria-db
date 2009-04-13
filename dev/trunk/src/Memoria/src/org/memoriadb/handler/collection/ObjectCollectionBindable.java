@@ -7,6 +7,7 @@ import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
 public class ObjectCollectionBindable implements IBindable {
+  
   private final Collection<Object> fResult;
   private final IObjectId fObjectId;
 
@@ -17,7 +18,8 @@ public class ObjectCollectionBindable implements IBindable {
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    fResult.add(context.getExistingObject(fObjectId));
+    Object object = context.getExistingObject(fObjectId);
+    fResult.add(object);
   }
 
   @Override

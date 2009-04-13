@@ -12,7 +12,7 @@ public final class DataModeStrategy implements IModeStrategy {
  
   @Override
   public IObjectId addMemoriaClassIfNecessary(final TransactionHandler transactionHandler, Object obj) {
-    if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject");
+    if (!(obj instanceof IDataObject)) throw new MemoriaException("We are in DBMode.data, but the added object is not of type IDataObject. Java-Class: " + obj.getClass() + " toString " + obj);
     
     IDataObject dataObject = (IDataObject) obj;
     if (!transactionHandler.containsId(dataObject.getMemoriaClassId())) throw new MemoriaException("DataObject has no valid memoriaClassId: " + obj);

@@ -61,6 +61,9 @@ public class ArrayHandler implements IHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {
     IArray array = getArray(obj);
+    
+    //We must not traverse primitives like ints etc.
+    if (array.getTypeInfo().getDimension() == 1 && array.getTypeInfo().getComponentType().isPrimitive()) return;
 
     int length = array.length();
     for (int i = 0; i < length; ++i) {

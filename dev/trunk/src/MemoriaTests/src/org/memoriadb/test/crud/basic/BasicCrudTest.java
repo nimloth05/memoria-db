@@ -139,8 +139,36 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     catch (MemoriaException e) {}
   }
 
+  public void test_save_aggregated_boolean_primitive() {
+    test_aggregated_primitive(Boolean.FALSE);
+  }
+  
+  public void test_save_aggregated_byte_primitive() {
+    test_aggregated_primitive((byte)1);
+  }
+  
+  public void test_save_aggregated_character_primitive() {
+    test_aggregated_primitive('c');
+  }
+  
+  public void test_save_aggregated_double_primitive() {
+    test_aggregated_primitive((double)1);
+  }
+  
+  public void test_save_aggregated_float_primitive() {
+    test_aggregated_primitive((float)1);
+  }
+  
   public void test_save_aggregated_integer_primitive() {
     test_aggregated_primitive(new Integer(1));
+  }
+  
+  public void test_save_aggregated_long_primitive() {
+    test_aggregated_primitive((long)1);
+  }
+  
+  public void test_save_aggregated_short_primitive() {
+    test_aggregated_primitive((short)1);
   }
   
   public void test_save_aggregated_string_primitive() {

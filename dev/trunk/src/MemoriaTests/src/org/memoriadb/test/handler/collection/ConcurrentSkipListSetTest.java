@@ -30,6 +30,19 @@ public class ConcurrentSkipListSetTest extends SetTest {
   }
   
   @Override
+  public void test_list_in_list_in_multple_save_calls() {
+    try {
+      super.test_list_in_list_in_multple_save_calls();
+      fail("Its not possible to add a TreeSet to a TreeSet beacuse it does not implement the Comparable");
+    } 
+    catch (ClassCastException e) {
+      //Its not possible to add a TreeSet to a TreeSet beacuse it does not implement the Comparable
+    }
+  }
+  
+  
+  
+  @Override
   public void test_mixed_list() {
     try {
       Collection<Object> collection = createCollection();

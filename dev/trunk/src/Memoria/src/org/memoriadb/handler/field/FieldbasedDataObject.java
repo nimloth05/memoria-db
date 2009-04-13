@@ -2,6 +2,7 @@ package org.memoriadb.handler.field;
 
 import java.util.*;
 
+import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
 
 public class FieldbasedDataObject implements IFieldbasedObject {
@@ -11,6 +12,11 @@ public class FieldbasedDataObject implements IFieldbasedObject {
   
   public FieldbasedDataObject(IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
+  }
+
+  @Override
+  public boolean equalsLangValueObject(String fieldName, Object value) {
+    return ((LangValueObject<?>)get(fieldName)).get().equals(value);
   }
 
   public Object get(String string) {

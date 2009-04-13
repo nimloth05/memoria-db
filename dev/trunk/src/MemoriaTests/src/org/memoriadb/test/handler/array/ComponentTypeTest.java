@@ -13,7 +13,7 @@ public class ComponentTypeTest extends TestCase {
     assertEquals(3, arrayTypeInfo.getDimension());
 
     arrayTypeInfo = ReflectionUtil.getTypeInfo(new Integer[0][][]);
-    assertEquals(Type.typeIntegerC, arrayTypeInfo.getComponentType());
+    assertEquals(Type.typeClass, arrayTypeInfo.getComponentType());
     assertEquals(3, arrayTypeInfo.getDimension());
 
     arrayTypeInfo = ReflectionUtil.getTypeInfo(new Object[0][][]);
@@ -28,7 +28,7 @@ public class ComponentTypeTest extends TestCase {
     assertEquals(1, arrayTypeInfo.getDimension());
 
     arrayTypeInfo = ReflectionUtil.getTypeInfo(new Integer[0]);
-    assertEquals(Type.typeIntegerC, arrayTypeInfo.getComponentType());
+    assertEquals(Type.typeClass, arrayTypeInfo.getComponentType());
     assertEquals(1, arrayTypeInfo.getDimension()); 
 
     arrayTypeInfo = ReflectionUtil.getTypeInfo(new Object[0]);

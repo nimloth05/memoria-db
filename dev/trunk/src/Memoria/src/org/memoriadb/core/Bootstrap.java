@@ -17,6 +17,7 @@ import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.handler.url.URLHandler;
+import org.memoriadb.handler.value.LangValueObjectHandler;
 
 public class Bootstrap {
 
@@ -39,6 +40,16 @@ public class Bootstrap {
     // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = new FieldbasedMemoriaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
+    
+    registerHandler(trxHandler, new LangValueObjectHandler.BooleanValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.CharacterValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.ByteValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.ShortValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.IntegerValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.LongValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.FloatValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.DoubleValueObjectHandler(), true);
+    registerHandler(trxHandler, new LangValueObjectHandler.StringValueObjectHandler(), true);
 
     registerHandler(trxHandler, new CollectionHandler.ListHandler(ArrayList.class));
     registerHandler(trxHandler, new CollectionHandler.ListHandler(LinkedList.class));
@@ -119,19 +130,20 @@ public class Bootstrap {
   }
 
   /**
-   * @param handler
-   *          The handler to handle objects of type <tt>className</tt>.
-   * @param className
-   *          Name of the class the given <tt>handler</tt> can deal with.
+   * @param handler to handle objects of type <tt>className</tt>.
+   * @param className Name of the class the given <tt>handler</tt> can deal with.
    */
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
-    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
+    registerHandler(transactionHandler, handler, false);
+  }
+  
+  private static void registerHandler(TransactionHandler transactionHandler, IHandler handler, boolean isValueObject) {
+    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), isValueObject);
     transactionHandler.save(classConfig);
-
+    
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());
     TypeHierarchyBuilder.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
   }
-
 
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
     try {

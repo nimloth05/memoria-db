@@ -19,6 +19,11 @@ public class FieldbasedObject implements IFieldbasedObject {
   }
   
   @Override
+  public boolean equalsLangValueObject(String fieldName, Object value) {
+    return get(fieldName).equals(value);
+  }
+
+  @Override
   public Object get(String fieldName) {
     return ReflectionUtil.getValueFromField(fObejct, fieldName);
   }

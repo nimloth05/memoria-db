@@ -11,7 +11,7 @@ public class AllTests {
     suite.addTestSuite(IdentityHashMapTest.class);
     suite.addTestSuite(NestedClassTest.class);
     suite.addTestSuite(ListTest.class);
-    suite.addTestSuite(LinkedSet.class);
+    suite.addTestSuite(LinkedSetTest.class);
     suite.addTestSuite(EnumTest.class);
     suite.addTestSuite(CrcTest.class);
     suite.addTestSuite(SetTest.class);

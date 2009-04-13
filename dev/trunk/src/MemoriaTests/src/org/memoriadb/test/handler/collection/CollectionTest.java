@@ -82,20 +82,28 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   }
   
   public void test_int_object() {
-    Collection<Integer> collection = getIntObjectCollection();
+    Collection<Integer> collection = getIntCollection();
     reopen(collection);
-  }
-  
-  public void test_int_primitive() {
-    Collection<Integer> list = getIntPrimitiveCollection();
-    reopen(list);
   }
   
   public void test_list_in_list() {
     Collection<Collection<?>> collection = createCollection();
-    collection.add(getIntObjectCollection());
-    collection.add(getIntPrimitiveCollection());
+    collection.add(getIntCollection());
+    collection.add(getShortCollection());
     collection.add(getObjectCollection());
+    
+    reopen(collection);
+  }
+  
+  public void test_list_in_list_in_multple_save_calls() {
+    Collection<Collection<?>> collection = createCollection();
+    collection.add(getIntCollection());
+    collection.add(getShortCollection());
+    collection.add(getObjectCollection());
+    
+    for(Collection<?> subCollection: collection) {
+      saveAll(subCollection);
+    }
     
     reopen(collection);
   }
@@ -118,12 +126,12 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   public void test_mixed_list() {
     Collection<Object> collection = createCollection();
     collection.add("1");
-    collection.add(getIntObjectCollection());
+    collection.add(getIntCollection());
     collection.add(new SimpleTestObj());
     
     reopen(collection);
   }
-  
+
   public void test_null_reference() {
     Collection<SimpleTestObj> collection = createCollection();
     collection.add(new SimpleTestObj("1"));
@@ -137,7 +145,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(3, l1_collection.size());
     
   }
-
+  
   public void test_object() {
     Collection<SimpleTestObj> collection = getObjectCollection();
     reopen(collection);
@@ -145,6 +153,13 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   
   public void test_save_all_data_mode() {
     reopenDataMode();
+  }
+
+  public void test_short_collection() {
+    Collection<Short> collection = getShortCollection();
+    assertEquals(Short.class, collection.iterator().next().getClass());
+    
+    reopen(collection);
   }
   
   public void test_string() {
@@ -156,17 +171,10 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   
   protected abstract <T> Collection<T> createCollection();
   
-  protected Collection<Integer> getIntObjectCollection() {
+  protected Collection<Integer> getIntCollection() {
     Collection<Integer> collection = createCollection();
     collection.add(new Integer(1));
     collection.add(new Integer(2));
-    return collection;
-  }
-
-  protected Collection<Integer> getIntPrimitiveCollection() {
-    Collection<Integer> collection = createCollection();
-    collection.add(1);
-    collection.add(1);
     return collection;
   }
   
@@ -174,6 +182,15 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     Collection<SimpleTestObj> collection = createCollection();
     collection.add(new SimpleTestObj("1"));
     collection.add(new SimpleTestObj("2"));
+    return collection;
+  }
+
+  protected Collection<Short> getShortCollection() {
+    Collection<Short> collection = createCollection();
+    collection.add(Short.valueOf("200"));
+    collection.add(Short.valueOf("210"));
+    collection.add(Short.valueOf("211"));
+    
     return collection;
   }
   
@@ -189,6 +206,14 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
       iterator.next();
     }
     return iterator.next();
+  }
+  
+  private Collection<?> getStringCollection(int intEntryCount) {
+    Collection<String> result = createCollection();
+    for(int i = 0; i < intEntryCount; ++i) {
+      result.add("A String " + i);
+    }
+    return result;
   }
   
 }

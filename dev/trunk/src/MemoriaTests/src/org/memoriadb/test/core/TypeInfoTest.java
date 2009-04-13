@@ -81,8 +81,6 @@ public class TypeInfoTest extends AbstractMemoriaTest {
   public void test_primitives_can_not_be_added() {
     checkAddFails(int.class);
     checkAddFails(int[][].class);
-    checkAddFails(Integer.class);
-    checkAddFails(String.class);
   }
 
   public void test_TypeInfo() {

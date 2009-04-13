@@ -57,8 +57,8 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     
     IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj[].class, 2);
     
-    arr.set(0, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("0")));
-    arr.set(1, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("1")));
+    arr.set(0, SimpleTestObj.createFieldObject(fDataStore, "0"));
+    arr.set(1, SimpleTestObj.createFieldObject(fDataStore, "1"));
     
     IObjectId id = saveAll(arr);
     
@@ -76,9 +76,9 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj.class.getName(), 1, 2);
-     
-    arr.set(0, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("0")));
-    arr.set(1, fDataStore.getRefactorApi().asFieldDataObject(new SimpleTestObj("1")));
+    
+    arr.set(0, SimpleTestObj.createFieldObject(fDataStore, "0"));
+    arr.set(1, SimpleTestObj.createFieldObject(fDataStore, "1"));
     
     IObjectId id = saveAll(arr);
     
@@ -90,7 +90,7 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   }
 
   public void test_int_array() {
-    int[] arr = new int[]{0,1};
+    int[] arr = new int[] {0, 1};
     IObjectId id = save(arr);
     
     reopenDataMode();
@@ -119,8 +119,6 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     saveAll(arr);
     
     reopenDataMode();
-    
-    //fDataStore.getTypeInfo().addMemoriaClass(TestEnum.class);
     
     IArray dataArray = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
 

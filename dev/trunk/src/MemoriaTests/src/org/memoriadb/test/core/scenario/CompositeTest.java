@@ -6,6 +6,7 @@ import org.memoriadb.*;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.collection.IListDataObject;
 import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.test.testclasses.composite.*;
@@ -26,10 +27,12 @@ public class CompositeTest extends AbstractMemoriaTest {
     
     IFieldbasedObject l1_root = fDataStore.query(Composite.class.getName(), new IFilter<IFieldbasedObject>() {
 
+      @SuppressWarnings("unchecked")
       @Override
       public boolean accept(IFieldbasedObject object, IFilterControl control) {
         IFieldbasedObject obj = object;
-        return obj.get("fData").equals("root");     
+        LangValueObject<String> stringData = (LangValueObject<String>) obj.get("fData");
+        return stringData.get().equals("root");     
       }
     }).get(0);
     
@@ -42,26 +45,26 @@ public class CompositeTest extends AbstractMemoriaTest {
     IFieldbasedObject fieldObject1 = (IFieldbasedObject) list.get(0);
     IFieldbasedObject fieldObject2 = (IFieldbasedObject) list.get(1);
     
-    assertEquals("comp1", fieldObject1.get("fData"));
-    assertEquals("comp2", fieldObject2.get("fData"));
+    assertTrue(fieldObject1.equalsLangValueObject("fData", "comp1"));
+    assertTrue(fieldObject2.equalsLangValueObject("fData", "comp2"));
     
     listDataObject = (IListDataObject) fieldObject1.get("fComponents");
     list = listDataObject.getList();
     assertEquals(1, list.size());
     
     IFieldbasedObject l1_leaf1 = (IFieldbasedObject) list.get(0);
-    assertEquals("leaf for comp1", l1_leaf1.get("fData"));
+    assertTrue(l1_leaf1.equalsLangValueObject("fData", "leaf for comp1"));
     
     //UPDATE the objects
     fDataStore.beginUpdate();
 
-    l1_leaf1.set("fData", "dataModeLeaf");
+    l1_leaf1.set("fData", fDataStore.getRefactorApi().getLangValueObject("dataModeLeaf"));
     save(l1_leaf1);
     
     IObjectId memoriaClassIdForLeafObject = l1_leaf1.getMemoriaClassId();
     
     IFieldbasedObject leaf2 = new FieldbasedDataObject(memoriaClassIdForLeafObject);
-    leaf2.set("fData", "dataModeLeaf");
+    leaf2.set("fData", fDataStore.getRefactorApi().getLangValueObject("dataModeLeaf"));
     leaf2.set("fTestObj", l1_leaf1.get("fTestObj"));
     save(leaf2);
     

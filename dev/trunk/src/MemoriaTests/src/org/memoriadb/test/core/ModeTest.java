@@ -16,7 +16,7 @@ public class ModeTest extends AbstractMemoriaTest {
     reopenDataMode();
     
     IFieldbasedObject obj2 = new FieldbasedDataObject(memoriaClassId);
-    obj2.set("fString", "2");
+    obj2.set("fString", fDataStore.getRefactorApi().getLangValueObject("2"));
     IObjectId id2 = save(obj2);
     
     reopen();
@@ -50,9 +50,8 @@ public class ModeTest extends AbstractMemoriaTest {
     
     reopenDataMode();
     
-    //We get a special object, because we are in the data mode
     IFieldbasedObject l1_obj = fDataStore.get(id);
-    assertEquals(obj.getString(), l1_obj.get("fString"));
+    assertTrue(l1_obj.equalsLangValueObject("fString", obj.getString()));
   }
   
   public void test_update_obj() {
@@ -63,12 +62,12 @@ public class ModeTest extends AbstractMemoriaTest {
     
     //We get a special object, because we are in the data mode
     IFieldbasedObject l1_obj = fDataStore.get(id);
-    l1_obj.set("fString", "2");
+    l1_obj.set("fString", fDataStore.getRefactorApi().getLangValueObject("2"));
     save(l1_obj);
     
     reopen();
     
     SimpleTestObj l2_obj = fObjectStore.get(id);
-    assertEquals(l1_obj.get("fString"), l2_obj.getString());
+    l1_obj.equalsLangValueObject("fString", l2_obj.getString());
   }
 }

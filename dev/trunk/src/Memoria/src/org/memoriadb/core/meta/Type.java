@@ -579,31 +579,31 @@ public enum Type {
   private static Map<Class<?>, Type> createTypeMap() {
     Map<Class<?>, Type> result = new HashMap<Class<?>, Type>();
 
-    result.put(Boolean.class, typeBooleanC);
+//    result.put(Boolean.class, typeBooleanC);
     result.put(Boolean.TYPE, typeBoolean);
 
-    result.put(Character.class, typeCharC);
+//    result.put(Character.class, typeCharC);
     result.put(Character.TYPE, typeChar);
 
-    result.put(Byte.class, typeByteC);
+//    result.put(Byte.class, typeByteC);
     result.put(Byte.TYPE, typeByte);
 
-    result.put(Short.class, typeShortC);
+//    result.put(Short.class, typeShortC);
     result.put(Short.TYPE, typeShort);
 
-    result.put(Integer.class, typeIntegerC);
+//    result.put(Integer.class, typeIntegerC);
     result.put(Integer.TYPE, typeInteger);
 
-    result.put(Long.class, typeLongC);
+//    result.put(Long.class, typeLongC);
     result.put(Long.TYPE, typeLong);
 
-    result.put(Float.class, typeFloatC);
+//    result.put(Float.class, typeFloatC);
     result.put(Float.TYPE, typeFloat);
 
-    result.put(Double.class, typeDoubleC);
+//    result.put(Double.class, typeDoubleC);
     result.put(Double.TYPE, typeDouble);
 
-    result.put(String.class, typeString);
+//    result.put(String.class, typeString);
 
     return result;
   }

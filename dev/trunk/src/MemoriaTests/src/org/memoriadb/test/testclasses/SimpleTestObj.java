@@ -1,7 +1,8 @@
 package org.memoriadb.test.testclasses;
 
-import org.memoriadb.core.mode.*;
+import org.memoriadb.core.mode.DataStore;
 import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
 
 public class SimpleTestObj implements Comparable<SimpleTestObj> {
@@ -10,15 +11,10 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
 
   public static IFieldbasedObject createFieldObject(DataStore dataStore, String stringValue) {
     IObjectId memoriaClassId = dataStore.getId(dataStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
-    return setField(stringValue, memoriaClassId);
+    return setField(dataStore.getRefactorApi().getLangValueObject(stringValue), memoriaClassId);
   }
 
-  public static IFieldbasedObject createFieldObject(ObjectStore objectStore, String stringValue) {
-    IObjectId memoriaClassId = objectStore.getId(objectStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
-    return setField(stringValue, memoriaClassId);
-  }
-
-  private static IFieldbasedObject setField(String stringValue, IObjectId memoriaClassId) {
+  private static IFieldbasedObject setField(LangValueObject<String> stringValue, IObjectId memoriaClassId) {
     IFieldbasedObject result = new FieldbasedDataObject(memoriaClassId);
     result.set("fString", stringValue);
     return result;

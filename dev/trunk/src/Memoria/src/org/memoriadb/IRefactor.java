@@ -3,6 +3,7 @@ package org.memoriadb;
 import org.memoriadb.handler.array.IArray;
 import org.memoriadb.handler.enu.IEnumObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
+import org.memoriadb.handler.value.LangValueObject;
 
 
 public interface IRefactor {
@@ -29,5 +30,7 @@ public interface IRefactor {
    * is created which is not yet saved.
    */
   public IEnumObject getEnum(String name, int i);
+  
+  public <T> LangValueObject<T> getLangValueObject(T value);
 
 }

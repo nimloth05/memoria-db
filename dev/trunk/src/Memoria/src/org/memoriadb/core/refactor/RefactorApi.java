@@ -10,6 +10,7 @@ import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.array.*;
 import org.memoriadb.handler.enu.*;
 import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
 
 public class RefactorApi implements IRefactor {
@@ -23,7 +24,8 @@ public class RefactorApi implements IRefactor {
   @Override
   public IFieldbasedObject asFieldDataObject(Object object) {
     if (object instanceof IFieldbasedObject) return (IFieldbasedObject) object;
-    if (object instanceof IDataObject) throw new MemoriaException("no a field object " + object);
+    if (object instanceof IDataObject) throw new MemoriaException("object is a DataObject but not of type IFieldbasedObject. " + object);
+    
     IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(object.getClass());
     return new FieldbasedObject(object, memoriaClassId);
   }
@@ -59,6 +61,12 @@ public class RefactorApi implements IRefactor {
     IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(name);
     if (memoriaClassId == null) throw new MemoriaException("can not create enum, because enum-class has not yet been saved: " + name);
     return new EnumDataObject(memoriaClassId, ordinal);
+  }
+
+  @Override
+  public <T> LangValueObject<T> getLangValueObject(T value) {
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(value.getClass());
+    return new LangValueObject<T>(value, memoriaClassId);
   }
 
   private IObjectId getArrayClass() {

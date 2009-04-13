@@ -4,7 +4,8 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-public class LinkedSet extends TestCase {
+public class LinkedSetTest extends TestCase {
+  
   public void test_linked_HashSet() {
     Set<Integer> s1 = new LinkedHashSet<Integer>();
     s1.add(1);
@@ -22,6 +23,5 @@ public class LinkedSet extends TestCase {
     
     // WRONG!
     assertTrue(s1.equals(s3));
-    
   }
 }
