@@ -51,10 +51,7 @@ public class FieldbasedObjectHandler implements IHandler {
       output.writeInt(metaField.getId());
       Object value = fieldObject.get(metaField.getName());
 
-
-      // FIXME habe folgende Zeile ersetzt, ist das korrekt? Wird Ist der Typ des Feldes überhaupt noch relevant?
       metaField.getFieldType().writeValue(output, value, context);
-//      Type.writeValueWithType(output, value, context);
     }
 
     if (fClassObject.getSuperClass() == null) return;
@@ -73,8 +70,8 @@ public class FieldbasedObjectHandler implements IHandler {
       Object referencee = fFieldObject.get(field.getName());
       if (referencee == null) continue;
 
-      // FIXME primitives werden nicht mehr berücksichtigt beim Traversal.
-      // Das erhaltene Objekt kann immer noch ein Primitive oder ein enum sein. Auch in diesem Fall muss NICHT traversiert werden! (bug #1749) msc
+      //Primitives werden nicht mehr berücksichtigt beim Traversal. 
+      //Das erhaltene Objekt kann immer noch ein Primitive oder ein enum sein. Auch in diesem Fall muss NICHT traversiert werden! (bug #1749) msc
 
       if (Type.isPrimitive(referencee)) continue;
 
@@ -111,10 +108,7 @@ public class FieldbasedObjectHandler implements IHandler {
       int fieldId = input.readInt();
       final MemoriaField field = (fClassObject).getField(fieldId);
 
-      // FIXME Folgende Zeige
-      //siehe Kommentar bei serialize
       field.getFieldType().readValue(input, context, new ITypeVisitor() {
-      ///Type.readValueWithType(input, context, new ITypeVisitor() {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {

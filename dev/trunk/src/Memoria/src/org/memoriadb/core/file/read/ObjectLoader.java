@@ -197,9 +197,10 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObjects() throws Exception {
-    // FIXME über das entry-set iterieren und sofot entfernen, damit Speicher freigegeben wird.
-    for (HydratedInfo info : fHydratedObjects.values()) {
-      dehydrateObject(info);
+    Iterator<HydratedInfo> iterator = fHydratedObjects.values().iterator();
+    while(iterator.hasNext()) {
+      dehydrateObject(iterator.next());
+      iterator.remove();
     }
     fHydratedObjects = null;
   }

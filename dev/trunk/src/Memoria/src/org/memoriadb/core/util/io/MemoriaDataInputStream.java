@@ -72,7 +72,4 @@ public class MemoriaDataInputStream extends DataInputStream {
     return ((CountInputStream)in).skip(n);
   }
   
-  
-  
-  
 }
