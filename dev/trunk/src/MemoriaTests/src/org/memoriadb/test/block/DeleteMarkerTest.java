@@ -17,7 +17,7 @@ public class DeleteMarkerTest extends AbstractMemoriaTest {
     Object o2 = new Object();
     Object o3 = new Object();
 
-    IObjectId id1 = save(o1);
+    save(o1);
     beginUpdate();
     delete(o1);
     IObjectId id2 = save(o2);

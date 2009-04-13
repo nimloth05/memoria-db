@@ -16,13 +16,11 @@ public class SurvivorTest extends AbstractMemoriaTest {
 
   public void scenarioTest() {
     Object o1 = new Object();
-    Object o2 = new Object();
-    Object o3 = new Object();
     
     beginUpdate();
-    IObjectId id1 = save(o1);
-    IObjectId id2 = save(o1);
-    IObjectId id3 = save(o1);
+    save(o1);
+    save(o1);
+    save(o1);
     endUpdate();
     // |o1,o2,o3|
     
@@ -77,7 +75,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
   public void test_inactiveCount() {
     Object obj = new Object();
 
-    IObjectId id = save(obj);
+    save(obj);
     assertEquals(0, getBlock(1).getInactiveRatio());
 
     save(obj);

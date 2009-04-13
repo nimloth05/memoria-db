@@ -4,6 +4,7 @@ import org.memoriadb.block.IBlockManager;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.listener.*;
 
+//FIXME API Doc
 public class OpenConfig {
   
   private final IMemoriaListeners fListeners = new MemoriaListeners();

@@ -8,7 +8,7 @@ import org.memoriadb.core.meta.*;
 import org.memoriadb.handler.array.*;
 import org.memoriadb.id.IObjectId;
 
-// FIXME allenfalls 2 Klassen für primitive und \primitive
+// FIXME allenfalls 2 Klassen für primitive und nicht-primitive
 public class ArrayTypeInfo {
 
   private final Type fComponentType;
@@ -83,7 +83,6 @@ public class ArrayTypeInfo {
   }
 
   public void writeTypeInfo(int length, DataOutput output, IWriterContext context) throws IOException {
-
     output.writeInt(getDimension());
     output.writeInt(length);
 
@@ -95,4 +94,5 @@ public class ArrayTypeInfo {
       context.getMemoriaClassId(getClassName()).writeTo(output);
     }
   }
+  
 }

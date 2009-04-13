@@ -7,6 +7,7 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.loong.LongIdFactory;
 import org.memoriadb.instantiator.DefaultInstantiator;
 
+//FIXME: API Doc
 public class CreateConfig extends OpenConfig {
 
   private String fIdFactoryClassName;
@@ -80,6 +81,5 @@ public class CreateConfig extends OpenConfig {
   public void setUseCompression(boolean useCompression) {
     fUseCompression = useCompression;
   }
-  
 
 }

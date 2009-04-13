@@ -3,12 +3,18 @@ package org.memoriadb;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
 
+/**
+ * TypeInformation API is not stable, the getters returns null - which is not desirable.
+ * 
+ * @author Nienor
+ *
+ */
 public interface ITypeInfo {
 
   /**
-   * Adds a MemoriaClass (if not already present) for the given java class.
+   * Adds a MemoriaClass (if not already present) for the given java class.  
    * 
-   * @return Id if the added are already present memoria class
+   * @return Id for the memoria class
    */
   public IObjectId addMemoriaClassIfNecessary(Class<?> clazz);
 

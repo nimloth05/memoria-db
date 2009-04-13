@@ -4,7 +4,7 @@ import javax.swing.JTree;
 
 /**
  * This Tree implementaiton accepts a LabelProvider like in JFace. Additionally, it will create and set an empty TreeModel.
- * @author nienor
+ * @author Sandro
  *
  */
 public class JLabelTree extends JTree {

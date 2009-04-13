@@ -196,9 +196,9 @@ public final class TransactionHandler {
 
   public IObjectId internalAddObject(Object obj, IObjectId memoriaClassId) {
     if (contains(obj)) throw new MemoriaException("obj already added: " + obj);
+    if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("A ValueObject can not be added. Type: " + obj.getClass().getName() + " .toString() " + obj);    
 
     fModeStrategy.checkCanInstantiateObject(this, memoriaClassId, fHeader.getInstantiator());
-    if(((IMemoriaClass)getObject(memoriaClassId)).isValueObject()) throw new MemoriaException("A ValueObject can not be added. Type: " + obj.getClass().getName() + " .toString() " + obj);    
 
     ObjectInfo result = fObjectRepository.add(obj, memoriaClassId);
     fAdd.add(result);
