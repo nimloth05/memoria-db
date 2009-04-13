@@ -5,7 +5,6 @@ import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.*;
-import org.memoriadb.test.handler.testclassses.IntObject;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.ctor.NoDefault;
 import org.memoriadb.test.testclasses.weakref.WeakOwner;
@@ -29,7 +28,25 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     }
   }
 
-  public void test_change_int_value_object_in_dataMode() {
+  public void test_change_int_value_and_integer_value_in_dataMode() {
+    IntIntegerObject object = new IntIntegerObject(1, new Integer(2));
+    IObjectId id = save(object);
+    
+    reopenDataMode();
+    
+    IFieldbasedObject l1_object = fDataStore.get(id);
+    l1_object.set("fInt", 3);
+    l1_object.set("fInteger", fDataStore.getRefactorApi().getLangValueObject(4));
+    
+    fDataStore.save(l1_object);
+    
+    reopen();
+    
+    assertEquals(3, ((IntIntegerObject)get(id)).getInt());
+    assertEquals(new Integer(4), ((IntIntegerObject)get(id)).getInteger());
+  }
+  
+  public void test_change_int_value_in_dataMode() {
     IntObject object = new IntObject(1);
     IObjectId id = save(object);
     
@@ -43,6 +60,24 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     reopen();
     
     assertEquals(2, ((IntObject)get(id)).getInt());
+  }
+  
+  public void test_change_int_value_with_LangaugeValueObject() {
+    IntObject object = new IntObject(1);
+    IObjectId id = save(object);
+    
+    reopenDataMode();
+    
+    IFieldbasedObject l1_object = fDataStore.get(id);
+    l1_object.set("fInt", fDataStore.getRefactorApi().getLangValueObject(2));
+    
+    try {
+      fDataStore.save(l1_object);
+      fail("Should throw a ClassCastException because the LangValueObject can not be cast to the Integer which the TypeEnum expects");
+    }
+    catch(MemoriaException e) {
+      //passed
+    }
   }
 
   public void test_cyclic_reference() {

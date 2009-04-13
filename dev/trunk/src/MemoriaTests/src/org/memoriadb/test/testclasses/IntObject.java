@@ -1,4 +1,4 @@
-package org.memoriadb.test.handler.testclassses;
+package org.memoriadb.test.testclasses;
 
 public class IntObject {
   
