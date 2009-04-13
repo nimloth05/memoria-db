@@ -2,8 +2,10 @@ package org.memoriadb.test.crud.basic;
 
 import org.memoriadb.core.exception.*;
 import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.*;
+import org.memoriadb.test.handler.testclassses.IntObject;
 import org.memoriadb.test.testclasses.*;
 import org.memoriadb.test.testclasses.ctor.NoDefault;
 import org.memoriadb.test.testclasses.weakref.WeakOwner;
@@ -25,6 +27,22 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     } catch (SchemaException e) {
       //passed;
     }
+  }
+
+  public void test_change_int_value_object_in_dataMode() {
+    IntObject object = new IntObject(1);
+    IObjectId id = save(object);
+    
+    reopenDataMode();
+    
+    IFieldbasedObject l1_object = fDataStore.get(id);
+    l1_object.set("fInt", 2);
+    
+    fDataStore.save(l1_object);
+    
+    reopen();
+    
+    assertEquals(2, ((IntObject)get(id)).getInt());
   }
 
   public void test_cyclic_reference() {
@@ -138,7 +156,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     }
     catch (MemoriaException e) {}
   }
-
+  
   public void test_save_aggregated_boolean_primitive() {
     test_aggregated_primitive(Boolean.FALSE);
   }
@@ -174,7 +192,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   public void test_save_aggregated_string_primitive() {
     test_aggregated_primitive("Primitive!");
   }
-  
+
   public void test_save_attribute() {
     B b = new B("b");
     IObjectId id = fObjectStore.save(b);
@@ -211,7 +229,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     }
     catch (MemoriaException e) {}
   }
-
+  
   public void test_save_null_attribute() {
     B b = new B(null);
     IObjectId id = fObjectStore.save(b);

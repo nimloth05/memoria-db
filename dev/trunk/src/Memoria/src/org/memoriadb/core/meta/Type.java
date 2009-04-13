@@ -36,30 +36,6 @@ public enum Type {
     
   },
 
-  typeBooleanC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Boolean.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readBoolean());
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeBoolean(((Boolean) value).booleanValue());
-    }
-
-  },
-
   typeChar {
 
     @Override
@@ -84,58 +60,11 @@ public enum Type {
 
   },
 
-  typeCharC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Character.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readChar());
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeChar(((Character) value).charValue());
-    }
-  },
-
   typeByte {
 
     @Override
     public Class<?> getClassLiteral() {
       return byte.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readByte());
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeByte(((Byte) value).byteValue());
-    }
-
-  },
-
-  typeByteC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Byte.class;
     }
 
     @Override
@@ -179,32 +108,6 @@ public enum Type {
 
   },
 
-  typeShortC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Short.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      
-      visitor.visitPrimitive(this, input.readShort());
-
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeShort(((Short) value).shortValue());
-    }
-
-  },
-
   typeInteger {
 
     @Override
@@ -220,32 +123,6 @@ public enum Type {
     @Override
     protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readInt());
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeInt(((Integer) value).intValue());
-    }
-
-  },
-
-  typeIntegerC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Integer.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      
-      visitor.visitPrimitive(this, input.readInt());
-
     }
     
     @Override
@@ -279,31 +156,6 @@ public enum Type {
 
   },
 
-  typeLongC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Long.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readLong());
-
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeLong(((Long) value).longValue());
-    }
-
-  },
-
   typeFloat {
 
     @Override
@@ -319,31 +171,6 @@ public enum Type {
     @Override
     protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
       visitor.visitPrimitive(this, input.readFloat());
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeFloat(((Float) value).floatValue());
-    }
-
-  },
-
-  typeFloatC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Float.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readFloat());
-
     }
     
     @Override
@@ -377,56 +204,6 @@ public enum Type {
 
   },
 
-  typeDoubleC {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return Double.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readDouble());
-
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeDouble(((Double) value).doubleValue());
-    }
-
-  },
-
-  typeString {
-
-    @Override
-    public Class<?> getClassLiteral() {
-      return String.class;
-    }
-
-    @Override
-    protected boolean canBeNull() {
-      return true;
-    }
-
-    @Override
-    protected void internalReadValue(DataInputStream input, ITypeVisitor visitor, IReaderContext context) throws IOException {
-      visitor.visitPrimitive(this, input.readUTF());
-
-    }
-    
-    @Override
-    protected void internalWriteValue(DataOutput output, Object value, IWriterContext context) throws IOException {
-      output.writeUTF(value.toString());
-    }
-
-  },
-  
   typeObjectId {
     
     @Override
@@ -579,31 +356,21 @@ public enum Type {
   private static Map<Class<?>, Type> createTypeMap() {
     Map<Class<?>, Type> result = new HashMap<Class<?>, Type>();
 
-//    result.put(Boolean.class, typeBooleanC);
     result.put(Boolean.TYPE, typeBoolean);
 
-//    result.put(Character.class, typeCharC);
     result.put(Character.TYPE, typeChar);
 
-//    result.put(Byte.class, typeByteC);
     result.put(Byte.TYPE, typeByte);
 
-//    result.put(Short.class, typeShortC);
     result.put(Short.TYPE, typeShort);
 
-//    result.put(Integer.class, typeIntegerC);
     result.put(Integer.TYPE, typeInteger);
 
-//    result.put(Long.class, typeLongC);
     result.put(Long.TYPE, typeLong);
 
-//    result.put(Float.class, typeFloatC);
     result.put(Float.TYPE, typeFloat);
 
-//    result.put(Double.class, typeDoubleC);
     result.put(Double.TYPE, typeDouble);
-
-//    result.put(String.class, typeString);
 
     return result;
   }
