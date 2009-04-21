@@ -1,4 +1,4 @@
-package org.memoriadb.handler.url;
+package org.memoriadb.handler.jdk.url;
 
 import java.io.*;
 import java.net.URL;
@@ -8,6 +8,7 @@ import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.jdk.JDKDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
@@ -23,7 +24,7 @@ public class URLHandler implements IHandler {
     String url = input.readUTF();
     URL urlObject = new URL(url); 
     
-    return !context.isInDataMode() ? urlObject : new URLDataObject(typeId, urlObject);
+    return !context.isInDataMode() ? urlObject : JDKDataObject.create(typeId, urlObject);
   }
 
   @Override
@@ -40,8 +41,9 @@ public class URLHandler implements IHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {}
 
+  @SuppressWarnings("unchecked")
   private URL getURLObject(Object obj) {
-    if (obj instanceof URLDataObject) return ((URLDataObject)obj).getURL();
+    if (obj instanceof JDKDataObject<?>) return ((JDKDataObject<URL>)obj).getObject();
     return (URL) obj;
   }
 

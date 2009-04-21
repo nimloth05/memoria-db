@@ -15,8 +15,9 @@ import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.field.FieldbasedMemoriaClass;
+import org.memoriadb.handler.jdk.awt.color.ColorHandler;
+import org.memoriadb.handler.jdk.url.URLHandler;
 import org.memoriadb.handler.map.MapHandler;
-import org.memoriadb.handler.url.URLHandler;
 import org.memoriadb.handler.value.LangValueObjectHandler;
 
 public class Bootstrap {
@@ -73,7 +74,8 @@ public class Bootstrap {
     registerHandler(trxHandler, new MapHandler(TreeMap.class));
     registerHandler(trxHandler, new MapHandler(WeakHashMap.class));
 
-    registerHandler(trxHandler, new URLHandler());
+    registerHandler(trxHandler, new URLHandler(), true);
+    registerHandler(trxHandler, new ColorHandler(), true);
   }
 
   private static void addValueClasses(TransactionHandler transactionHandler, Iterable<Class<?>> valueClasses) {

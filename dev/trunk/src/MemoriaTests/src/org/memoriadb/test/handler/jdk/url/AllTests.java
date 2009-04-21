@@ -1,4 +1,4 @@
-package org.memoriadb.test.handler.url;
+package org.memoriadb.test.handler.jdk.url;
 
 import junit.framework.*;
 

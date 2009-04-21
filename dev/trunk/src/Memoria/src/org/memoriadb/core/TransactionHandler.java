@@ -16,7 +16,6 @@ import org.memoriadb.id.*;
 public final class TransactionHandler {
 
   private final IObjectRepository fObjectRepository;
-
   private final TransactionWriter fTransactionWriter;
 
   // use IdentityHashSets for better performance
