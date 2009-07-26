@@ -1,24 +1,35 @@
 package org.memoriadb.core;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
-
-import org.memoriadb.*;
+import org.memoriadb.CreateConfig;
+import org.memoriadb.OpenConfig;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.read.*;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.HeaderHelper;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.read.FileReader;
+import org.memoriadb.core.file.read.ObjectLoader;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.AbstractMemoriaClass;
+import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
-import org.memoriadb.handler.collection.*;
-import org.memoriadb.handler.field.FieldbasedMemoriaClass;
+import org.memoriadb.handler.collection.CollectionHandler;
+import org.memoriadb.handler.collection.EnumSetHandler;
+import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.handler.jdk.awt.color.ColorHandler;
 import org.memoriadb.handler.jdk.url.URLHandler;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.handler.value.LangValueObjectHandler;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Bootstrap {
 
@@ -39,7 +50,7 @@ public class Bootstrap {
 
   private static void addDefaultMetaClasses(TransactionHandler trxHandler) {
     // These classObjects don't need a fix known ID.
-    IMemoriaClassConfig objectMemoriaClass = new FieldbasedMemoriaClass(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
+    IMemoriaClassConfig objectMemoriaClass = ReflectionHandlerFactory.createNewType(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
     
     registerHandler(trxHandler, new LangValueObjectHandler.BooleanValueObjectHandler(), true);

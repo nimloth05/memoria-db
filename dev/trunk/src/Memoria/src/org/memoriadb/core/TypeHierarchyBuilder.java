@@ -1,10 +1,12 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.mode.IModeStrategy;
-import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.ArrayTypeInfo;
+import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.enu.EnumHandler;
-import org.memoriadb.handler.field.FieldbasedMemoriaClass;
+import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.id.IObjectId;
 
 public final class TypeHierarchyBuilder {
@@ -30,7 +32,7 @@ public final class TypeHierarchyBuilder {
       return;
     }
     
-    classObject = new FieldbasedMemoriaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = ReflectionHandlerFactory.createNewType(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     transactionHandler.internalSave(classObject);
     subClassconfig.setSuperClass(classObject);
     
@@ -78,7 +80,7 @@ public final class TypeHierarchyBuilder {
     }
     
     // add the current class and all its superclasses to the store
-    classObject = new FieldbasedMemoriaClass(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
+    classObject = ReflectionHandlerFactory.createNewType(javaClass, transactionHandler.getDefaultIdProvider().getFieldMetaClass());
     IObjectId result = transactionHandler.internalSave(classObject);
     
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);

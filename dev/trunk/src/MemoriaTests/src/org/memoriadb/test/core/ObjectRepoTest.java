@@ -1,14 +1,15 @@
 package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
-
 import org.memoriadb.block.Block;
-import org.memoriadb.core.*;
+import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.core.ObjectRepository;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.handler.field.FieldbasedMemoriaClass;
+import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.loong.*;
+import org.memoriadb.id.loong.LongId;
+import org.memoriadb.id.loong.LongIdFactory;
 import org.memoriadb.test.testclasses.SimpleTestObj;
 import org.memoriadb.testutil.CollectionUtil;
 
@@ -30,7 +31,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_getAllUserSpaceObjects() {
-    IMemoriaClass classObject = new FieldbasedMemoriaClass(SimpleTestObj.class, new LongId(1));
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1));
     fRepo.add(new LongId(2), classObject);
     
     assertEquals(1, CollectionUtil.count(fRepo.getAllObjects()));
@@ -43,7 +44,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_in_cache() {
-    IMemoriaClass classObject = new FieldbasedMemoriaClass(SimpleTestObj.class, fRepo.getIdFactory().getFieldMetaClass());
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, fRepo.getIdFactory().getFieldMetaClass());
     IObjectId id = fRepo.add(classObject, classObject.getMemoriaClassId()).getId();
     
     assertSame(classObject, fRepo.getExistingObject(id));
@@ -51,7 +52,7 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_put_meta_object_with_id_in_cache() {
-    IMemoriaClass classObject = new FieldbasedMemoriaClass(SimpleTestObj.class, new LongId(1));
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1));
     IObjectId id = new LongId(20);
     fRepo.handleAdd(new ObjectInfo(id, new LongId(1), classObject, Block.getDefaultBlock(), 0, 0));
     
@@ -81,9 +82,9 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_try_double_registration_of_a_memoria_class() {
-    fRepo.add(new LongId(2), new FieldbasedMemoriaClass(SimpleTestObj.class, new LongId(1)));
+    fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1)));
     try {
-      fRepo.add(new LongId(2), new FieldbasedMemoriaClass(SimpleTestObj.class, new LongId(1)));
+      fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1)));
       fail("double registration of a Memoria-Class is not allowed");
     }
     catch (MemoriaException e) {

@@ -1,7 +1,5 @@
 package org.memoriadb.handler.field;
 
-import java.io.*;
-
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
@@ -11,20 +9,26 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.IOException;
+
 public class FieldbasedClassHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!FieldbasedMemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + FieldbasedMemoriaClass.class.getName() +" but I was called for " + className);
+    if (!FieldbasedMemoriaClass.class.getName().equals(className))
+      throw new SchemaException("I am a handler for type " + FieldbasedMemoriaClass.class.getName() +" but I was called for " + className);
   }
   
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
-    boolean hasValueObejctAnnotation = input.readBoolean();
-    
-    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(className, typeId, hasValueObejctAnnotation);
-    
+    boolean hasValueObjectAnnotation = input.readBoolean();
+
+    FieldbasedObjectHandler handler = new FieldbasedObjectHandler(className);
+    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
+
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
     
@@ -34,7 +38,7 @@ public class FieldbasedClassHandler implements IHandler {
       int ordinal = input.readInt();
       boolean isWeakRef = input.readBoolean();
       MemoriaField metaField = new MemoriaField(fieldId, name, Type.values()[ordinal], isWeakRef);
-      classObject.addMetaField(metaField);
+      handler.addMetaField(metaField);
     }
     return classObject;
   }
@@ -47,15 +51,16 @@ public class FieldbasedClassHandler implements IHandler {
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws IOException {
     FieldbasedMemoriaClass classObject = (FieldbasedMemoriaClass) obj;
+    FieldbasedObjectHandler handler = (FieldbasedObjectHandler) classObject.getHandler();
     
-    output.writeUTF(classObject.getClassName());
+    output.writeUTF(handler.getClassName());
     output.writeBoolean(classObject.isValueObject());
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) superClassId = context.getExistingtId(classObject.getSuperClass());
     superClassId.writeTo(output);
     
-    for(MemoriaField field: classObject.getFields()) {
+    for(MemoriaField field: handler.getFields()) {
       output.writeInt(field.getId());
       output.writeUTF(field.getName());
       output.writeInt(field.getType().ordinal());

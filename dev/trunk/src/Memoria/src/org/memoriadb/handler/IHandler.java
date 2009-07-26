@@ -1,18 +1,19 @@
 package org.memoriadb.handler;
 
-import java.io.*;
-
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+
 /**
  * 
  * Knows how to serialize/deserialize objects of a particular type.
  * 
- * @author msc
+ * @author sandro
  *
  */
 public interface IHandler {
@@ -24,14 +25,15 @@ public interface IHandler {
   public void checkCanInstantiateObject(String className, IInstantiator instantiator);
 
   /**
-   * @param 
-   * @param context TODO
+   * @param
+   * @param context reader context Object for deserialize.
    * @param typeId the typeId of the object
    * @return the new object
    */
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
+  
   /**
-   * @return Name of the java-type this handler han deal with.
+   * @return Name of the java-type this handler can deal with.
    */
   public String getClassName();
 

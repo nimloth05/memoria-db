@@ -1,25 +1,40 @@
 package org.memoriadb.handler.field;
 
-import java.io.*;
-
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.ITypeVisitor;
+import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.IHandlerConfig;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.instantiator.*;
+import org.memoriadb.instantiator.CannotInstantiateException;
+import org.memoriadb.instantiator.IInstantiator;
+
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Persists normal objects via Java Reflection.
  */
-public class FieldbasedObjectHandler implements IHandler {
+public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
-  private final FieldbasedMemoriaClass fClassObject;
+  private IMemoriaClass fSuperClass;
 
-  public FieldbasedObjectHandler(FieldbasedMemoriaClass classObject) {
-    fClassObject = classObject;
+  private String fClassName;
+
+  private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
+  private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
+
+  public FieldbasedObjectHandler(final String className) {
+    fClassName = className;
   }
 
   @Override
@@ -43,22 +58,22 @@ public class FieldbasedObjectHandler implements IHandler {
 
   @Override
   public String getClassName() {
-    return fClassObject.getClassName();
+    return fClassName;
   }
 
   @Override
   public void serialize(final Object obj, final DataOutput output, final IWriterContext context) throws Exception {
     IFieldbasedObject fieldObject = getFieldObject(obj);
 
-    for (MemoriaField metaField : (fClassObject).getFields()) {
+    for (MemoriaField metaField : getFields()) {
       output.writeInt(metaField.getId());
       Object value = fieldObject.get(metaField.getName());
 
       metaField.getFieldType().writeValue(output, value, context);
     }
 
-    if (fClassObject.getSuperClass() == null) return;
-    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fClassObject.getSuperClass().getHandler();
+    if (fSuperClass == null) return;
+    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fSuperClass.getHandler();
     superHandler.serialize(obj, output, context);
   }
 
@@ -66,7 +81,7 @@ public class FieldbasedObjectHandler implements IHandler {
   public void traverseChildren(final Object obj, final IObjectTraversal traversal) {
     final IFieldbasedObject fFieldObject = getFieldObject(obj);
 
-    for (MemoriaField field : fClassObject.getFields()) {
+    for (MemoriaField field : getFields()) {
       if (field.getFieldType() != Type.typeClass) continue;
       if (field.isWeakRef()) continue;
 
@@ -81,20 +96,19 @@ public class FieldbasedObjectHandler implements IHandler {
         traversal.handle(referencee);
       }
       catch (Exception e) {
-        throw new MemoriaException("Exception during object traversel. Java Class: '" + fClassObject.getJavaClassName() + "' Java-Field: '" + field + "' type of the field: '" + field.getFieldType()
-            + "'", e);
+        throw new MemoriaException("Exception during object traversel. Java Class: '" + getClassName()
+          + "' Java-Field: '" + field + "' type of the field: '" + field.getFieldType() + "'", e);
       }
     }
 
-    IMemoriaClass superClass = fClassObject.getSuperClass();
-    if (superClass != null) {
-      superClass.getHandler().traverseChildren(obj, traversal);
+    if (fSuperClass != null) {
+      fSuperClass.getHandler().traverseChildren(obj, traversal);
     }
   }
 
   private IFieldbasedObject createObject(IReaderContext context, IObjectId typeId) {
     if (context.isInDataMode()) { return new FieldbasedDataObject(typeId); }
-    return new FieldbasedObject(context.getDefaultInstantiator().newInstance(fClassObject.getClassName()));
+    return new FieldbasedObject(context.getDefaultInstantiator().newInstance(getClassName()));
   }
 
   private IFieldbasedObject getFieldObject(Object obj) {
@@ -106,9 +120,9 @@ public class FieldbasedObjectHandler implements IHandler {
   private void deserializeObject(IFieldbasedObject object, DataInputStream input, final IReaderContext context) throws Exception {
     final IFieldbasedObject result = object;
 
-    for (int i = 0; i < (fClassObject).getFieldCount(); ++i) {
+    for (int i = 0; i < getFieldCount(); ++i) {
       int fieldId = input.readInt();
-      final MemoriaField field = (fClassObject).getField(fieldId);
+      final MemoriaField field = getField(fieldId);
 
       field.getFieldType().readValue(input, context, new ITypeVisitor() {
 
@@ -135,9 +149,53 @@ public class FieldbasedObjectHandler implements IHandler {
       });
     }
 
-    if (fClassObject.getSuperClass() == null) return;
-    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fClassObject.getSuperClass().getHandler();
+    if (fSuperClass == null) return;
+    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fSuperClass.getHandler();
     superHandler.deserializeObject(object, input, context);
   }
 
+  public void addMetaField(MemoriaField metaField) {
+    fFieldIdToInfo.put(metaField.getId(), metaField);
+    fFieldNameToInfo.put(metaField.getName(), metaField);
+  }
+
+  public MemoriaField getField(int fieldId) {
+    return fFieldIdToInfo.get(fieldId);
+  }
+
+  public int getFieldCount() {
+    return fFieldIdToInfo.values().size();
+  }
+
+  public Iterable<MemoriaField> getFields() {
+    return fFieldIdToInfo.values();
+  }
+
+  public void setClassName(String name) {
+    fClassName = name;
+  }
+
+  public static FieldbasedObjectHandler createNewType(Class<?> klass) {
+    if(klass.isArray()) throw new IllegalArgumentException("Array not allowed. This is an internal error.");
+    
+    FieldbasedObjectHandler handler = new FieldbasedObjectHandler(klass.getName());
+    handler.initializeMetaInfo(klass);
+    return handler;
+  }
+
+  private void initializeMetaInfo(Class<?> klass) {
+    Field[] fields = klass.getDeclaredFields();
+    int fieldId = 0;
+    for (Field field : fields) {
+      if (ReflectionUtil.isStatic(field)) continue;
+      if (ReflectionUtil.isMemoriaTransient(field)) continue;
+
+      MemoriaField metaField = MemoriaField.create(++fieldId, field);
+      addMetaField(metaField);
+    }
+  }
+
+  public void setSuperClass(IMemoriaClass superClass) {
+    fSuperClass = superClass;
+  }
 }

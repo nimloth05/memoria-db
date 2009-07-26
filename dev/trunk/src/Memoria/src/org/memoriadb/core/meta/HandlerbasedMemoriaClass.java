@@ -1,6 +1,7 @@
 package org.memoriadb.core.meta;
 
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.IHandlerConfig;
 import org.memoriadb.id.IObjectId;
 
 public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
@@ -41,6 +42,9 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
   @Override
   public void setSuperClass(IMemoriaClass metaClass) {
     fSuperClass = metaClass;
+    if (fHandler instanceof IHandlerConfig) {
+      ((IHandlerConfig)fHandler).setSuperClass(fSuperClass);
+    }
   }
 
   @Override
