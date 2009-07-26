@@ -1,14 +1,15 @@
 package org.memoriadb.test.handler.testclassses;
 
-import java.util.*;
+import org.memoriadb.test.testclasses.StringObject;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleTestObjectArrayListContainer implements IArrayListContainer {
   
-  private final List<SimpleTestObj> fList = new ArrayList<SimpleTestObj>();
+  private final List<StringObject> fList = new ArrayList<StringObject>();
 
-  public Iterable<SimpleTestObj> elements() {
+  public Iterable<StringObject> elements() {
     return fList;
   }
   
@@ -27,11 +28,11 @@ public class SimpleTestObjectArrayListContainer implements IArrayListContainer {
   
   public void fill(int count) {
     for(int i = 0; i < count; ++i) {
-      fList.add(new SimpleTestObj(Integer.toString(i)));
+      fList.add(new StringObject(Integer.toString(i)));
     }
   }
   
-  public SimpleTestObj get(int index) {
+  public StringObject get(int index) {
     return fList.get(index);
   }
 

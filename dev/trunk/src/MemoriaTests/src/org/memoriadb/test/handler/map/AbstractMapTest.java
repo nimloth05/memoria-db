@@ -1,10 +1,13 @@
 package org.memoriadb.test.handler.map;
 
-import java.util.Map;
-
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
-import org.memoriadb.testutil.*;
+import org.memoriadb.test.testclasses.ObjectReferencer;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.TestValueObject;
+import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.CollectionUtil;
+
+import java.util.Map;
 
 public abstract class AbstractMapTest extends AbstractMemoriaTest {
   
@@ -21,8 +24,8 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
   }
   
   public void test_map_containing_array() {
-    SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1")};
-    Map<Integer, SimpleTestObj[]> map = createMap();
+    StringObject[] arr = new StringObject[]{new StringObject("1")};
+    Map<Integer, StringObject[]> map = createMap();
     map.put(1, arr);
     
     saveAll(arr);
@@ -32,7 +35,7 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
     
     map = get(id);
     
-    assertEquals(new SimpleTestObj("1"), map.get(1)[0]);
+    assertEquals(new StringObject("1"), map.get(1)[0]);
   }
   
   public void test_map_containing_itself() {
@@ -72,8 +75,8 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
     Map<Object, Object> map = createMap();
     map.put(1, map);
     map.put("1", 1);
-    map.put(2, new SimpleTestObj("2"));
-    map.put(new SimpleTestObj("key"), new SimpleTestObj("value"));
+    map.put(2, new StringObject("2"));
+    map.put(new StringObject("key"), new StringObject("value"));
     
     IObjectId id = saveAll(map);
     
@@ -82,8 +85,8 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
     assertEquals(4, l1_map.size());
     assertSame(l1_map, l1_map.get(1));
     assertEquals(1, l1_map.get("1"));
-    assertEquals(new SimpleTestObj("2"), l1_map.get(2));
-    map.put(new SimpleTestObj("value"), l1_map.get(new SimpleTestObj("key")));
+    assertEquals(new StringObject("2"), l1_map.get(2));
+    map.put(new StringObject("value"), l1_map.get(new StringObject("key")));
   }
   
   public void test_null_value() {
@@ -99,17 +102,17 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
   }
   
   public void test_objects() {
-    Map<Integer, SimpleTestObj> map = createMap();
-    map.put(1, new SimpleTestObj("one"));
-    map.put(2, new SimpleTestObj("two"));
+    Map<Integer, StringObject> map = createMap();
+    map.put(1, new StringObject("one"));
+    map.put(2, new StringObject("two"));
     IObjectId id = saveAll(map);
     
     reopen();
     
     Map<Integer, String> l1_map = get(id);
     assertEquals(2, l1_map.size());
-    assertEquals(new SimpleTestObj("one"), l1_map.get(1));
-    assertEquals(new SimpleTestObj("two"), l1_map.get(2));
+    assertEquals(new StringObject("one"), l1_map.get(1));
+    assertEquals(new StringObject("two"), l1_map.get(2));
   }
   
   public void test_primitives() {
@@ -130,23 +133,23 @@ public abstract class AbstractMapTest extends AbstractMemoriaTest {
   }
   
   public void test_updating_object_map() {
-    Map<Integer, SimpleTestObj> map = createMap();
-    map.put(1, new SimpleTestObj("1"));
+    Map<Integer, StringObject> map = createMap();
+    map.put(1, new StringObject("1"));
     IObjectId id = saveAll(map);
     
     reopen();
     
     map = get(id);
-    assertEquals(new SimpleTestObj("1"), map.put(1, new SimpleTestObj("2")));
-    map.put(3, new SimpleTestObj("3"));
+    assertEquals(new StringObject("1"), map.put(1, new StringObject("2")));
+    map.put(3, new StringObject("3"));
     saveAll(map);
     
     reopen();
     
     map = get(id);
     
-    assertEquals(new SimpleTestObj("2"), map.get(1));
-    assertEquals(new SimpleTestObj("3"), map.get(3));
+    assertEquals(new StringObject("2"), map.get(1));
+    assertEquals(new StringObject("3"), map.get(3));
   }
   
   public void test_updating_primitive_map() {

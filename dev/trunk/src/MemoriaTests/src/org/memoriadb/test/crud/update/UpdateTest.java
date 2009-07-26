@@ -3,7 +3,7 @@ package org.memoriadb.test.crud.update;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.OneInt;
+import org.memoriadb.test.testclasses.IntObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class UpdateTest extends AbstractMemoriaTest {
@@ -28,7 +28,7 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
   }
 
   public void test_revision_for_change_on_original_and_on_l1() {
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     IObjectInfo info = fObjectStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
@@ -43,7 +43,7 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
 
     reopen();
 
-    OneInt a_l1 = fObjectStore.get(a_id);
+    IntObject a_l1 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
@@ -56,14 +56,14 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
 
     reopen();
 
-    OneInt a_l2 = fObjectStore.get(a_id);
+    IntObject a_l2 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l2);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 4, info.getRevision());
     assertEquals(2, info.getOldGenerationCount());
   }
 
   public void test_version_for_many_changes_in_one_transaction_on_original() {
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     IObjectInfo info = fObjectStore.getObjectInfo(a);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
@@ -87,20 +87,20 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
     assertEquals(1, info.getOldGenerationCount());
 
     reopen();
-    OneInt a_l1 = fObjectStore.get(a_id);
+    IntObject a_l1 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
     assertEquals(1, info.getOldGenerationCount());
   }
 
   public void test_version_for_no_change() {
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     a = null;
 
     reopen();
 
-    OneInt a_l1 = fObjectStore.get(a_id);
+    IntObject a_l1 = fObjectStore.get(a_id);
     IObjectInfo info = fObjectStore.getObjectInfo(a_l1);
     assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
     assertEquals(0, info.getOldGenerationCount());

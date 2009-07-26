@@ -10,7 +10,7 @@ import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.loong.LongId;
 import org.memoriadb.id.loong.LongIdFactory;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.CollectionUtil;
 
 public class ObjectRepoTest extends TestCase {
@@ -18,7 +18,7 @@ public class ObjectRepoTest extends TestCase {
   private ObjectRepository fRepo;
   
   public void test_deleted_object_is_not_contained() {
-    SimpleTestObj obj = new SimpleTestObj();
+    StringObject obj = new StringObject();
     IObjectId id = fRepo.add(obj, new LongId(1)).getId();
     
     fRepo.contains(id);
@@ -31,49 +31,49 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_getAllUserSpaceObjects() {
-    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1));
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1));
     fRepo.add(new LongId(2), classObject);
     
     assertEquals(1, CollectionUtil.count(fRepo.getAllObjects()));
     assertEquals(0, CollectionUtil.count(fRepo.getAllUserSpaceObjects()));
     
-    fRepo.add(new SimpleTestObj(), new LongId(3));
+    fRepo.add(new StringObject(), new LongId(3));
     
     assertEquals(2, CollectionUtil.count(fRepo.getAllObjects()));
     assertEquals(1, CollectionUtil.count(fRepo.getAllUserSpaceObjects()));
   }
   
   public void test_put_meta_object_in_cache() {
-    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, fRepo.getIdFactory().getFieldMetaClass());
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(StringObject.class, fRepo.getIdFactory().getFieldMetaClass());
     IObjectId id = fRepo.add(classObject, classObject.getMemoriaClassId()).getId();
     
     assertSame(classObject, fRepo.getExistingObject(id));
-    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
+    assertSame(classObject, fRepo.getMemoriaClass(StringObject.class.getName()));
   }
   
   public void test_put_meta_object_with_id_in_cache() {
-    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1));
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1));
     IObjectId id = new LongId(20);
     fRepo.handleAdd(new ObjectInfo(id, new LongId(1), classObject, Block.getDefaultBlock(), 0, 0));
     
     assertSame(classObject, fRepo.getExistingObject(id));
-    assertSame(classObject, fRepo.getMemoriaClass(SimpleTestObj.class.getName()));
+    assertSame(classObject, fRepo.getMemoriaClass(StringObject.class.getName()));
   }
   
   public void test_put_new_object_in_cache() {
-    SimpleTestObj obj = new SimpleTestObj();
+    StringObject obj = new StringObject();
     IObjectId id = fRepo.add(obj, new LongId(1)).getId();
     Object obj2 = fRepo.getExistingObject(id);
     assertSame(obj, obj2);
   }
   
   public void test_put_object_with_id_in_cache() {
-    SimpleTestObj obj = new SimpleTestObj();
+    StringObject obj = new StringObject();
     //Wir starten hier absichtlich mit 20.
     IObjectId objectId = new LongId(20);
     fRepo.handleAdd(new ObjectInfo(objectId, new LongId(1), obj, Block.getDefaultBlock(), 0, 0));
     
-    SimpleTestObj obj2 = new SimpleTestObj();
+    StringObject obj2 = new StringObject();
     IObjectId id = fRepo.add(obj2, new LongId(1)).getId();
     assertEquals(new LongId(21), id);
     
@@ -82,9 +82,9 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_try_double_registration_of_a_memoria_class() {
-    fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1)));
+    fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1)));
     try {
-      fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(SimpleTestObj.class, new LongId(1)));
+      fRepo.add(new LongId(2), ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1)));
       fail("double registration of a Memoria-Class is not allowed");
     }
     catch (MemoriaException e) {
@@ -93,10 +93,10 @@ public class ObjectRepoTest extends TestCase {
   }
   
   public void test_try_double_registration_of_object() {
-    SimpleTestObj simpleTestObj = new SimpleTestObj();
-    fRepo.add(simpleTestObj, new LongId(1));
+    StringObject stringObject = new StringObject();
+    fRepo.add(stringObject, new LongId(1));
     try {
-      fRepo.add(simpleTestObj, new LongId(2));
+      fRepo.add(stringObject, new LongId(2));
       fail("Double registration for the same object is not allowed.");
     } 
     catch (MemoriaException e) {
@@ -106,9 +106,9 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_try_double_use_of_id() {
     IObjectId id = new LongId(1);
-    fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new SimpleTestObj(), Block.getDefaultBlock()));
+    fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject(), Block.getDefaultBlock()));
     try {
-      fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new SimpleTestObj(), Block.getDefaultBlock()));
+      fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject(), Block.getDefaultBlock()));
       fail("Double use of an objectId is not allowed.");
     } 
     catch (MemoriaException e) {

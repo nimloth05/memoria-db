@@ -1,6 +1,6 @@
 package org.memoriadb.test.testclasses.inheritance;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 
 public class C extends B {
   
@@ -11,7 +11,7 @@ public class C extends B {
     
   }
   
-  public C(int i, Long l, String string, boolean b, SimpleTestObj testObj, short s) {
+  public C(int i, Long l, String string, boolean b, StringObject testObj, short s) {
     super(i, l, string, b, testObj);
     fShort = s;
   }

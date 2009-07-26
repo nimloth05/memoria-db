@@ -1,10 +1,10 @@
 package org.memoriadb.test.testclasses.composite;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 
 public class Leaf extends AbstractComponent {
   
-  private SimpleTestObj fTestObj;
+  private StringObject fTestObj;
 
   @Override
   public void addChild(IComponent component) {
@@ -16,11 +16,11 @@ public class Leaf extends AbstractComponent {
     return 0;
   }
 
-  public SimpleTestObj getTestObj() {
+  public StringObject getTestObj() {
     return fTestObj;
   }
 
-  public void setTestObj(SimpleTestObj testObj) {
+  public void setTestObj(StringObject testObj) {
     fTestObj = testObj;
   }
 }

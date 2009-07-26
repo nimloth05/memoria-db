@@ -2,7 +2,8 @@ package org.memoriadb.test.crud.delete;
 
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
+import org.memoriadb.test.testclasses.ObjectReferencer;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 /**
@@ -13,7 +14,7 @@ import org.memoriadb.testutil.AbstractMemoriaTest;
 public class DeleteReferencedObjectTest extends AbstractMemoriaTest {
 
   public void test_error_message() {
-    SimpleTestObj referencee = new SimpleTestObj("SimpleTestObj");
+    StringObject referencee = new StringObject("StringObject");
     ObjectReferencer referencer = new ObjectReferencer(referencee);
 
     IObjectId id = saveAll(referencer);

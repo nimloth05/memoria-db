@@ -1,17 +1,21 @@
 package org.memoriadb.test.core;
 
-import java.util.*;
-
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.*;
-import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.CollectionUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class ObjectContainerTest extends AbstractMemoriaTest {
 
   public void test_contains() {
-    SimpleTestObj obj = new SimpleTestObj();
+    StringObject obj = new StringObject();
     IObjectId id = save(obj);
     
     assertTrue(fObjectStore.contains(obj));
@@ -63,10 +67,10 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
   }
   
   public void test_save_object() {
-    List<SimpleTestObj> objects = new ArrayList<SimpleTestObj>();
+    List<StringObject> objects = new ArrayList<StringObject>();
     fObjectStore.beginUpdate();
     for (int i = 0; i < 5; ++i) {
-      objects.add(new SimpleTestObj("Hallo Welt " + i));
+      objects.add(new StringObject("Hallo Welt " + i));
       save(objects.get(i));
     }
     fObjectStore.endUpdate();
@@ -74,17 +78,17 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
     saveAll(objects.toArray());
     reopen();
 
-    List<SimpleTestObj> loadedObjs = query(SimpleTestObj.class);
+    List<StringObject> loadedObjs = query(StringObject.class);
     loadedObjs.removeAll(objects);
     assertEquals("Save/load mismatch: " + loadedObjs, 0, loadedObjs.size());
   }
   
   public void test_save_object_ref() throws Exception {
-    internalTestSaveObjectRef(SimpleTestObj.class);
+    internalTestSaveObjectRef(StringObject.class);
   }
   
   public void test_save_object_ref_first() throws Exception {
-    internalTestSaveObjectRefFirst(SimpleTestObj.class);
+    internalTestSaveObjectRefFirst(StringObject.class);
   }
 
   public void test_save_object_ref_first_with_wrongHashCodeObj() throws Exception {
@@ -115,7 +119,7 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
   }
 
   public void test_save_referencee_in_antoher_transaction() throws Exception {
-    internalTestReferenceeInAnotherTransaction(SimpleTestObj.class);
+    internalTestReferenceeInAnotherTransaction(StringObject.class);
   }
 
   public void test_save_referencee_in_antoher_transaction_with_wrongHashCodeObj() throws Exception {
@@ -133,15 +137,15 @@ public class ObjectContainerTest extends AbstractMemoriaTest {
   }
 
   public void test_save_two_objects_in_two_transactions() {
-    SimpleTestObj obj1 = new SimpleTestObj("1");
-    SimpleTestObj obj2 = new SimpleTestObj("2");
+    StringObject obj1 = new StringObject("1");
+    StringObject obj2 = new StringObject("2");
 
     save(obj1);
     save(obj2);
 
     reopen();
 
-    CollectionUtil.containsAll(query(SimpleTestObj.class), obj1, obj2);
+    CollectionUtil.containsAll(query(StringObject.class), obj1, obj2);
   }
 
   private void internalTestReferenceeInAnotherTransaction(Class<?> referenceeType) throws Exception {

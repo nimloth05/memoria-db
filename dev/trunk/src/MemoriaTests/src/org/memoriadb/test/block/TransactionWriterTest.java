@@ -3,8 +3,9 @@ package org.memoriadb.test.block;
 import org.memoriadb.CreateConfig;
 import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.OneInt;
-import org.memoriadb.testutil.*;
+import org.memoriadb.test.testclasses.IntObject;
+import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.FileStructure;
 import org.memoriadb.testutil.FileStructure.ObjectInfo;
 
 public class TransactionWriterTest extends AbstractMemoriaTest {
@@ -33,8 +34,8 @@ public class TransactionWriterTest extends AbstractMemoriaTest {
   
   public void test_opo_and_opf() {
     save(new Object());
-    save(new OneInt(0)); // add class
-    save(new OneInt(0));
+    save(new IntObject(0)); // add class
+    save(new IntObject(0));
     
     FileStructure file = new FileStructure(getFile());
     assertEquals(getOPO(), file.getBlock(1).getObject(0).getSize());

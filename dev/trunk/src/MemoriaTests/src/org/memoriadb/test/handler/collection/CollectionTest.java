@@ -1,11 +1,15 @@
 package org.memoriadb.test.handler.collection;
 
-import java.util.*;
-
 import org.memoriadb.handler.collection.ICollectionDataObject;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.TestValueObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class CollectionTest extends AbstractMemoriaTest {
   
@@ -39,7 +43,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   }
 
   public void test_data_mode() {
-    Collection<SimpleTestObj> objectList = getObjectCollection();
+    Collection<StringObject> objectList = getObjectCollection();
     IObjectId objectId = saveAll(objectList);
     
     reopenDataMode();
@@ -51,12 +55,12 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     
     reopen();
     
-    Collection<SimpleTestObj> l2_collection = fObjectStore.get(objectId);
+    Collection<StringObject> l2_collection = fObjectStore.get(objectId);
     assertEquals(l1_collection.getCollection(), l2_collection);
   }
 
   public void test_data_mode_scenario() {
-    Collection<SimpleTestObj> objectList = getObjectCollection();
+    Collection<StringObject> objectList = getObjectCollection();
     IObjectId objectId = saveAll(objectList);
     
     reopenDataMode();
@@ -65,15 +69,15 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     assertEquals(objectList.size(), l1_collection.getCollection().size());
     
     l1_collection.getCollection().clear();
-    l1_collection.getCollection().add(SimpleTestObj.createFieldObject(fDataStore, "newObj"));
+    l1_collection.getCollection().add(StringObject.createFieldObject(fDataStore, "newObj"));
     
     saveAll(l1_collection);
     
     reopen();
     
-    Collection<SimpleTestObj> l2_collection = fObjectStore.get(objectId);
+    Collection<StringObject> l2_collection = fObjectStore.get(objectId);
     assertEquals(l1_collection.getCollection().size(), l2_collection.size());
-    assertEquals("newObj", ((SimpleTestObj)getElement(0, l2_collection)).getString());
+    assertEquals("newObj", ((StringObject)getElement(0, l2_collection)).getString());
   }
   
   public void test_empty_collection() {
@@ -109,14 +113,14 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
   }
   
   public void test_list_lifecycle() {
-    Collection<SimpleTestObj> collection = getObjectCollection();
-    SimpleTestObj obj1 = collection.iterator().next();
+    Collection<StringObject> collection = getObjectCollection();
+    StringObject obj1 = collection.iterator().next();
     reopen(collection);
     
     collection.clear();
     reopen(collection);
     
-    collection.add(new SimpleTestObj("3"));
+    collection.add(new StringObject("3"));
     reopen(collection);
     
     collection.add(obj1);
@@ -127,27 +131,27 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     Collection<Object> collection = createCollection();
     collection.add("1");
     collection.add(getIntCollection());
-    collection.add(new SimpleTestObj());
+    collection.add(new StringObject());
     
     reopen(collection);
   }
 
   public void test_null_reference() {
-    Collection<SimpleTestObj> collection = createCollection();
-    collection.add(new SimpleTestObj("1"));
+    Collection<StringObject> collection = createCollection();
+    collection.add(new StringObject("1"));
     collection.add(null);
-    collection.add(new SimpleTestObj("3"));
+    collection.add(new StringObject("3"));
     
     IObjectId id = saveAll(collection);
     reopen();
     
-    Collection<SimpleTestObj> l1_collection = get(id);
+    Collection<StringObject> l1_collection = get(id);
     assertEquals(3, l1_collection.size());
     
   }
   
   public void test_object() {
-    Collection<SimpleTestObj> collection = getObjectCollection();
+    Collection<StringObject> collection = getObjectCollection();
     reopen(collection);
   }
   
@@ -178,10 +182,10 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     return collection;
   }
   
-  protected Collection<SimpleTestObj> getObjectCollection() {
-    Collection<SimpleTestObj> collection = createCollection();
-    collection.add(new SimpleTestObj("1"));
-    collection.add(new SimpleTestObj("2"));
+  protected Collection<StringObject> getObjectCollection() {
+    Collection<StringObject> collection = createCollection();
+    collection.add(new StringObject("1"));
+    collection.add(new StringObject("2"));
     return collection;
   }
 

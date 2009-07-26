@@ -1,9 +1,9 @@
 package org.memoriadb.test.crud.valueobject.testclasses;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 
 
-public class AnnotatedObjectReferencer extends SimpleTestObj {
+public class AnnotatedObjectReferencer extends StringObject {
   
   private Object fObject;
 

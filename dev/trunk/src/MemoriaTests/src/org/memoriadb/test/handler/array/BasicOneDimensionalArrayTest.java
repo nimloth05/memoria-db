@@ -1,13 +1,16 @@
-package org.memoriadb.test.handler.array; 
+package org.memoriadb.test.handler.array;
 
-
-import java.util.Arrays;
 
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
-import org.memoriadb.test.testclasses.inheritance.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.TestValueObject;
+import org.memoriadb.test.testclasses.inheritance.A;
+import org.memoriadb.test.testclasses.inheritance.B;
+import org.memoriadb.test.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.Arrays;
 
 public abstract class BasicOneDimensionalArrayTest extends AbstractMemoriaTest {
   
@@ -54,7 +57,7 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractMemoriaTest {
   }
   
   public void test_mixed_Object_array() {
-    Object[] arr = new Object[]{1,"2", new SimpleTestObj("3")};
+    Object[] arr = new Object[]{1,"2", new StringObject("3")};
     IObjectId id = saveAll(arr);
     
     reopen();
@@ -65,35 +68,35 @@ public abstract class BasicOneDimensionalArrayTest extends AbstractMemoriaTest {
   }
   
   public void test_Object_array() {
-    SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1"), new SimpleTestObj("2"), new SimpleTestObj("3")};
+    StringObject[] arr = new StringObject[]{new StringObject("1"), new StringObject("2"), new StringObject("3")};
     IObjectId id = saveAll(arr);
     
     assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getTypeInfo().getMemoriaClassId(arr));
     
     reopen();
     
-    SimpleTestObj[] arr_l1 = get(id);
+    StringObject[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
     assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Object_array_width_null_value() {
-    SimpleTestObj[] arr = new SimpleTestObj[]{new SimpleTestObj("1"), null, new SimpleTestObj("3"), };
+    StringObject[] arr = new StringObject[]{new StringObject("1"), null, new StringObject("3"), };
     IObjectId id = saveAll(arr);
     
     assertEquals(fObjectStore.getIdFactory().getArrayMemoriaClass(), fObjectStore.getTypeInfo().getMemoriaClassId(arr));
     
     reopen();
     
-    SimpleTestObj[] arr_l1 = get(id);
+    StringObject[] arr_l1 = get(id);
 
     assertNotSame(arr, arr_l1);
     assertTrue(Arrays.equals(arr, arr_l1));
   }
   
   public void test_Object_array_with_inheritance() {
-    C[] arr = new C[]{new C(1,2l,"3", true, new SimpleTestObj("4"), (short)5), new C(2,2l,"3", true, new SimpleTestObj("4"), (short)5)};
+    C[] arr = new C[]{new C(1,2l,"3", true, new StringObject("4"), (short)5), new C(2,2l,"3", true, new StringObject("4"), (short)5)};
 
     IObjectId id = saveAll(arr);
     

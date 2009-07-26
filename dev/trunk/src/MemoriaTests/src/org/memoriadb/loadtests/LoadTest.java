@@ -1,11 +1,13 @@
 package org.memoriadb.loadtests;
 
-import java.util.*;
-
 import org.memoriadb.TestMode;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
+import org.memoriadb.test.testclasses.Referencer;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoadTest extends AbstractMemoriaTest {
   
@@ -17,7 +19,7 @@ public class LoadTest extends AbstractMemoriaTest {
     
     for(int i = 0; i < 30000; ++i) {
       Referencer composite = new Referencer();
-      composite.set(SimpleTestObj.class, "1");
+      composite.set(StringObject.class, "1");
       objects.add(composite);
       saveAll(composite);
     }

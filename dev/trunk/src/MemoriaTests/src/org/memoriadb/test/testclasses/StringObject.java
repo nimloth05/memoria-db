@@ -1,16 +1,17 @@
 package org.memoriadb.test.testclasses;
 
 import org.memoriadb.core.mode.DataStore;
-import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.field.FieldbasedDataObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
 
-public class SimpleTestObj implements Comparable<SimpleTestObj> {
+public class StringObject implements Comparable<StringObject> {
 
   private String fString;
 
   public static IFieldbasedObject createFieldObject(DataStore dataStore, String stringValue) {
-    IObjectId memoriaClassId = dataStore.getId(dataStore.getTypeInfo().getMemoriaClass(SimpleTestObj.class));
+    IObjectId memoriaClassId = dataStore.getId(dataStore.getTypeInfo().getMemoriaClass(StringObject.class));
     return setField(dataStore.getRefactorApi().getLangValueObject(stringValue), memoriaClassId);
   }
 
@@ -20,14 +21,14 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
     return result;
   }
 
-  public SimpleTestObj() {}
+  public StringObject() {}
 
-  public SimpleTestObj(String string) {
+  public StringObject(String string) {
     fString = string;
   }
 
   @Override
-  public int compareTo(SimpleTestObj o) {
+  public int compareTo(StringObject o) {
     return this.fString.compareTo(o.fString);
   }
 
@@ -36,7 +37,7 @@ public class SimpleTestObj implements Comparable<SimpleTestObj> {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    final SimpleTestObj other = (SimpleTestObj) obj;
+    final StringObject other = (StringObject) obj;
     if (fString == null) {
       if (other.fString != null) return false;
     }

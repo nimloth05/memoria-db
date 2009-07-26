@@ -4,14 +4,15 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.IHandlerConfig;
 import org.memoriadb.id.IObjectId;
 
-public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
+public final class HandlerbasedMemoriaClass implements IMemoriaClassConfig {
 
   private final IHandler fHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
+  private boolean fIsValueObject;
 
   public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean isValueObject) {
-    super(isValueObject);
+    fIsValueObject = isValueObject();
     fHandler = handler;
     fMemoriaClassId = memoriaClassId;
   }
@@ -52,4 +53,20 @@ public final class HandlerbasedMemoriaClass extends AbstractMemoriaClass {
     return "javaClass: "+ getJavaClassName() + " handler: " + getHandlerName();
   }
 
+  @Override
+  public final boolean isTypeFor(String javaClass) {
+    if(getJavaClassName().equals(javaClass)) return true;
+    IMemoriaClass superClass = getSuperClass();
+    if(superClass == null) return false;
+    return superClass.isTypeFor(javaClass);
+  }
+
+  @Override
+  public boolean isValueObject() {
+    return fIsValueObject;
+  }
+
+  public void setValueObject(boolean value) {
+    fIsValueObject = value;
+  }
 }

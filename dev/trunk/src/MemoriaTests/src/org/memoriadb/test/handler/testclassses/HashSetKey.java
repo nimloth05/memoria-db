@@ -1,17 +1,17 @@
 package org.memoriadb.test.handler.testclassses;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 
 public class HashSetKey {
   
-  private SimpleTestObj fTestObj;
+  private StringObject fTestObj;
 
   public HashSetKey() {
     
   }
   
   public HashSetKey(String str) {
-    fTestObj = new SimpleTestObj(str);
+    fTestObj = new StringObject(str);
   }
 
   @Override

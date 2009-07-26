@@ -10,7 +10,6 @@ import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.FileReader;
 import org.memoriadb.core.file.read.ObjectLoader;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.AbstractMemoriaClass;
 import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.mode.IModeStrategy;
@@ -96,7 +95,7 @@ public class Bootstrap {
     }
 
     for(Class<?> clazz: valueClasses) {
-      ((AbstractMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
+      ((HandlerbasedMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
     }
 
   }
@@ -142,8 +141,8 @@ public class Bootstrap {
   }
 
   /**
+   * @param transactionHandler the current transactionHandler 
    * @param handler to handle objects of type <tt>className</tt>.
-   * @param className Name of the class the given <tt>handler</tt> can deal with.
    */
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
     registerHandler(transactionHandler, handler, false);

@@ -1,33 +1,34 @@
 package org.memoriadb.test.core.query;
 
-import java.util.List;
-
-import org.memoriadb.*;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.List;
 
 public class BasicQueryTest extends AbstractMemoriaTest {
   
   public void test_getAll_by_class_literal() {
-    SimpleTestObj obj = new SimpleTestObj("1");
+    StringObject obj = new StringObject("1");
     save(obj);
     
     reopen();
     
-    assertEquals(1, fObjectStore.query(SimpleTestObj.class).size());
+    assertEquals(1, fObjectStore.query(StringObject.class).size());
   }
   
   public void test_getAll_by_class_name() {
-    SimpleTestObj obj = new SimpleTestObj("1");
+    StringObject obj = new StringObject("1");
     save(obj);
     
     reopen();
     
-    assertEquals(1, fObjectStore.query(SimpleTestObj.class.getName()).size());
+    assertEquals(1, fObjectStore.query(StringObject.class.getName()).size());
   }
   
   public void test_getAll_class_name_with_filter() {
-    SimpleTestObj obj = new SimpleTestObj("1");
+    StringObject obj = new StringObject("1");
     save(obj);
     
     reopen();

@@ -1,16 +1,20 @@
 package org.memoriadb.test.core.scenario;
 
-import java.util.List;
-
-import org.memoriadb.*;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.collection.IListDataObject;
-import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.field.FieldbasedDataObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.test.testclasses.composite.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.composite.Composite;
+import org.memoriadb.test.testclasses.composite.IComponent;
+import org.memoriadb.test.testclasses.composite.Leaf;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.List;
 
 public class CompositeTest extends AbstractMemoriaTest {
   
@@ -137,7 +141,7 @@ public class CompositeTest extends AbstractMemoriaTest {
     
     Leaf leaf1 = new Leaf();
     leaf1.setData("leaf for comp1");
-    leaf1.setTestObj(new SimpleTestObj("Leaf1 TestData"));
+    leaf1.setTestObj(new StringObject("Leaf1 TestData"));
     
     comp1.addChild(leaf1);
     

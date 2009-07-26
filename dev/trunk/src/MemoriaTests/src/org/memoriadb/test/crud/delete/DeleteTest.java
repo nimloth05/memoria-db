@@ -3,15 +3,16 @@ package org.memoriadb.test.crud.delete;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.crud.testclass.*;
-import org.memoriadb.test.testclasses.OneInt;
+import org.memoriadb.test.crud.testclass.A;
+import org.memoriadb.test.crud.testclass.B;
+import org.memoriadb.test.testclasses.IntObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class DeleteTest extends AbstractMemoriaTest {
   
   public void test_add_and_delete_in_same_transaction(){
     
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     beginUpdate();
       IObjectId a_id = save(a);
       delete(a);
@@ -25,7 +26,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_basic_delete() {
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     delete(a);
     
@@ -143,12 +144,12 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_save_and_delete_in_same_transaction() {
-    OneInt a = new OneInt(0);
+    IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     
     reopen();
     
-    OneInt a_l1 = fObjectStore.get(a_id);
+    IntObject a_l1 = fObjectStore.get(a_id);
     
     a_l1.setInt(1);
     beginUpdate();

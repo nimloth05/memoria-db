@@ -1,27 +1,26 @@
 package org.memoriadb.test.handler.array;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
-
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.Arrays;
 
 public class ArrayTest extends AbstractMemoriaTest {
   
   public static interface IArrayContainer {
-    public void assertSame(SimpleTestObj obj);
+    public void assertSame(StringObject obj);
     public void set();
   }
   
   public static class MultiDimensionalArrayContainer implements IArrayContainer {
     
-    public SimpleTestObj[][] fArray = new SimpleTestObj[1][1];
+    public StringObject[][] fArray = new StringObject[1][1];
     
     public MultiDimensionalArrayContainer() {}
     
-    public void assertSame(SimpleTestObj obj) {
+    public void assertSame(StringObject obj) {
       Assert.assertSame(obj, fArray[0][0]);
     }
     
@@ -44,17 +43,17 @@ public class ArrayTest extends AbstractMemoriaTest {
     }
 
     public void set() {
-      fArray[0][0] = new SimpleTestObj("1");
+      fArray[0][0] = new StringObject("1");
     }
   }
   
   private static class ArrayContainer implements IArrayContainer {
     
-    public SimpleTestObj[] fArray = new SimpleTestObj[1];
+    public StringObject[] fArray = new StringObject[1];
     
     public ArrayContainer() {}
     
-    public void assertSame(SimpleTestObj obj) {
+    public void assertSame(StringObject obj) {
       Assert.assertSame(obj, fArray[0]);
     }
     
@@ -77,7 +76,7 @@ public class ArrayTest extends AbstractMemoriaTest {
     }
 
     public void set() {
-      fArray[0] = new SimpleTestObj("1");
+      fArray[0] = new StringObject("1");
     }
   }
   
@@ -96,7 +95,7 @@ public class ArrayTest extends AbstractMemoriaTest {
     reopen();
 
     IArrayContainer l1_Container = get(id);
-    SimpleTestObj loadedObj = query(SimpleTestObj.class).get(0);
+    StringObject loadedObj = query(StringObject.class).get(0);
 
     l1_Container.assertSame(loadedObj);
     assertEquals(container, l1_Container);

@@ -1,6 +1,7 @@
 package org.memoriadb.test.crud.basic;
 
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
@@ -19,7 +20,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertEquals(id, fromString);
   }
 
-  public void test_cannot_save_an_object_with_no_default_ctor() {
+  public void test_cannot_save_an_object_with_no_default_constructor() {
     try {
       fObjectStore.save(new NoDefault("1"));
       fail("InstantiationCheckException expected");
@@ -62,7 +63,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     assertEquals(2, ((IntObject)get(id)).getInt());
   }
   
-  public void test_change_int_value_with_LangaugeValueObject() {
+  public void test_change_int_value_with_LanguageValueObject() {
     IntObject object = new IntObject(1);
     IObjectId id = save(object);
     
@@ -120,7 +121,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
 
   public void test_get_memoria_class_data_mode() {
-    IObjectId id = save(new SimpleTestObj("1"));
+    IObjectId id = save(new StringObject("1"));
     reopenDataMode();
 
     IDataObject l1_obj = fDataStore.get(id);
@@ -300,10 +301,10 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
   public void test_save_object_twice_with_save_all() {
     ObjectReferencer referencer = new ObjectReferencer();
-    referencer.setObject(new SimpleTestObj());
+    referencer.setObject(new StringObject());
     IObjectId id = saveAll(referencer);
 
-    referencer.setObject(new SimpleTestObj());
+    referencer.setObject(new StringObject());
     saveAll(referencer);
 
     saveAll(referencer);
@@ -324,7 +325,6 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
 
 
   public void test_save_primitive_fails() {
-
     beginUpdate();
 
     try{
@@ -345,8 +345,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
       save("str");
       fail("primitive was saved");
     }
-    catch(MemoriaException e) {
-    }
+    catch(MemoriaException e) {}
 
   }
 
@@ -373,13 +372,13 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
 
   public void test_save_single_object() {
-    Object o = new SimpleTestObj("1");
+    Object o = new StringObject("1");
     IObjectId id = save(o);
 
     reopen();
 
     Object o_l1 = fObjectStore.get(id);
-    assertSame(SimpleTestObj.class, o_l1.getClass());
+    assertSame(StringObject.class, o_l1.getClass());
   }
 
   public void test_save_unsaved_reference() {

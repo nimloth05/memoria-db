@@ -1,13 +1,14 @@
 package org.memoriadb.loadtests;
 
-import java.util.*;
-
 import junit.framework.TestCase;
-
 import org.memoriadb.core.ObjectRepository;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.loong.*;
-import org.memoriadb.test.testclasses.*;
+import org.memoriadb.id.loong.LongId;
+import org.memoriadb.id.loong.LongIdFactory;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.WrongHashCode;
+
+import java.util.*;
 
 public class ObjectRepoTest extends TestCase {
   
@@ -31,7 +32,7 @@ public class ObjectRepoTest extends TestCase {
     Map<Object, Integer> objects = new IdentityHashMap<Object, Integer>();
     int count = 600000;
     for(int i = 0; i < count; ++i) {
-      Object key = new SimpleTestObj("Hallo Welt ");
+      Object key = new StringObject("Hallo Welt ");
       objects.put(key, i);
       expected.add(key);
     }

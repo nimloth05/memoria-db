@@ -1,12 +1,13 @@
 package org.memoriadb.test.handler.array;
 
-import java.util.Arrays;
-
-import org.memoriadb.handler.array.*;
+import org.memoriadb.handler.array.IArray;
+import org.memoriadb.handler.array.IDataArray;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.test.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.Arrays;
 
 public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   
@@ -53,38 +54,38 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
   public void test_create_Object_array_when_java_class_is_known() {
     reopenDataMode();
     
-    fDataStore.getTypeInfo().addMemoriaClassIfNecessary(SimpleTestObj.class);
+    fDataStore.getTypeInfo().addMemoriaClassIfNecessary(StringObject.class);
     
-    IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj[].class, 2);
+    IArray arr = fDataStore.getRefactorApi().createArray(StringObject[].class, 2);
     
-    arr.set(0, SimpleTestObj.createFieldObject(fDataStore, "0"));
-    arr.set(1, SimpleTestObj.createFieldObject(fDataStore, "1"));
+    arr.set(0, StringObject.createFieldObject(fDataStore, "0"));
+    arr.set(1, StringObject.createFieldObject(fDataStore, "1"));
     
     IObjectId id = saveAll(arr);
     
     reopen();
     
-    SimpleTestObj[] l1_arr = get(id);
+    StringObject[] l1_arr = get(id);
     
     assertEquals(2, l1_arr.length);
   }
   
   public void test_create_Object_array_when_java_class_is_unknown() {
     // add class
-    fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(SimpleTestObj.class);
+    fObjectStore.getTypeInfo().addMemoriaClassIfNecessary(StringObject.class);
     
     reopenDataMode();
     
-    IArray arr = fDataStore.getRefactorApi().createArray(SimpleTestObj.class.getName(), 1, 2);
+    IArray arr = fDataStore.getRefactorApi().createArray(StringObject.class.getName(), 1, 2);
     
-    arr.set(0, SimpleTestObj.createFieldObject(fDataStore, "0"));
-    arr.set(1, SimpleTestObj.createFieldObject(fDataStore, "1"));
+    arr.set(0, StringObject.createFieldObject(fDataStore, "0"));
+    arr.set(1, StringObject.createFieldObject(fDataStore, "1"));
     
     IObjectId id = saveAll(arr);
     
     reopen();
     
-    SimpleTestObj[] l1_arr = get(id);
+    StringObject[] l1_arr = get(id);
     
     assertEquals(2, l1_arr.length);
   }

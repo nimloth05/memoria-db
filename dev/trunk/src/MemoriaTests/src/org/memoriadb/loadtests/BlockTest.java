@@ -1,7 +1,7 @@
 package org.memoriadb.loadtests;
 
 import org.memoriadb.TestMode;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public class BlockTest extends AbstractMemoriaTest {
@@ -10,7 +10,7 @@ public class BlockTest extends AbstractMemoriaTest {
 
   public void test_many_trxs() {
     for(int i = 0; i < COUNT; ++i) {
-      save(new SimpleTestObj(Integer.toString(i)));
+      save(new StringObject(Integer.toString(i)));
     }
     read(COUNT + " objs many trxs ");
   }
@@ -19,7 +19,7 @@ public class BlockTest extends AbstractMemoriaTest {
     
     beginUpdate();
     for(int i = 0; i < COUNT; ++i) {
-      save(new SimpleTestObj(Integer.toString(i)));
+      save(new StringObject(Integer.toString(i)));
     }
     endUpdate();
     

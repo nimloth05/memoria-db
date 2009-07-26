@@ -1,12 +1,18 @@
 package org.memoriadb.test.core.query;
 
-import java.util.*;
-
-import org.memoriadb.*;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.test.testclasses.inheritance.*;
-import org.memoriadb.testutil.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.inheritance.A;
+import org.memoriadb.test.testclasses.inheritance.B;
+import org.memoriadb.test.testclasses.inheritance.C;
+import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.CollectionUtil;
+
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -17,15 +23,15 @@ import org.memoriadb.testutil.*;
 public class ObjectModeQueryTest extends AbstractMemoriaTest {
   
   public void test_getAll_class_literal_with_filter() {
-    SimpleTestObj obj = new SimpleTestObj("1");
+    StringObject obj = new StringObject("1");
     save(obj);
     
     reopen();
     
-    List<SimpleTestObj> result = fObjectStore.query(SimpleTestObj.class, new IFilter<SimpleTestObj>() {
+    List<StringObject> result = fObjectStore.query(StringObject.class, new IFilter<StringObject>() {
 
       @Override
-      public boolean accept(SimpleTestObj object, IFilterControl control) {
+      public boolean accept(StringObject object, IFilterControl control) {
         return false;
       }
     });
@@ -43,7 +49,7 @@ public class ObjectModeQueryTest extends AbstractMemoriaTest {
   }
   
   public void test_polymorph_query() {
-    SimpleTestObj obj = new SimpleTestObj("1");
+    StringObject obj = new StringObject("1");
     save(obj);
     
     reopen();

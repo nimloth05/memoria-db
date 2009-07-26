@@ -1,10 +1,10 @@
 package org.memoriadb.test.handler.collection;
 
-import java.util.List;
-
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.CollectionUtil;
+
+import java.util.List;
 
 
 public abstract class ListTest extends CollectionTest {
@@ -13,7 +13,7 @@ public abstract class ListTest extends CollectionTest {
     List<Object> list = (List<Object>) createCollection();
     
     for(int i = 0; i < 10; ++i) {
-      list.add(new SimpleTestObj(Integer.toString(i)));
+      list.add(new StringObject(Integer.toString(i)));
       list.add(i*3);
     }
     
@@ -29,7 +29,7 @@ public abstract class ListTest extends CollectionTest {
     List<Object> list = (List<Object>) createCollection();
     
     for(int i = 0; i < 10; ++i) {
-      list.add(new SimpleTestObj(Integer.toString(i)));
+      list.add(new StringObject(Integer.toString(i)));
     }
     
     IObjectId id = saveAll(list);

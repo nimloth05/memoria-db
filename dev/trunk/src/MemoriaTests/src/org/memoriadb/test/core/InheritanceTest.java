@@ -1,10 +1,12 @@
 package org.memoriadb.test.core;
 
-import java.util.ArrayList;
-
-import org.memoriadb.test.testclasses.SimpleTestObj;
-import org.memoriadb.test.testclasses.inheritance.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.inheritance.A;
+import org.memoriadb.test.testclasses.inheritance.B;
+import org.memoriadb.test.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.ArrayList;
 
 
 public class InheritanceTest extends AbstractMemoriaTest {
@@ -27,7 +29,7 @@ public class InheritanceTest extends AbstractMemoriaTest {
 
   public void test_save_inheritance_obj() {
     B b = createB();
-    b.fTestObj = new SimpleTestObj();
+    b.setTestObj(new StringObject());
     saveAll(b);
     
     assertTypeHierachy(B.class);
@@ -40,14 +42,14 @@ public class InheritanceTest extends AbstractMemoriaTest {
 
   public void test_save_object_which_super_class_has_a_object_ref() {
     C c = new C();
-    c.fTestObj = new SimpleTestObj("1");
+    c.setTestObj(new StringObject("1"));
     c.setLong(1L);
     saveAll(c);
     
     reopen();
     
     C loadedC = query(C.class).get(0);
-    assertEquals(c.fTestObj, loadedC.fTestObj);
+    assertEquals(c.getTestObj(), loadedC.getTestObj());
   }
   
   public void test_save_super_type_first() {
@@ -56,7 +58,7 @@ public class InheritanceTest extends AbstractMemoriaTest {
     a.setLong(1l);
     
     B b  = createB();
-    b.fTestObj = new SimpleTestObj();
+    b.setTestObj(new StringObject());
     
     save(a);
     saveAll(b);
@@ -70,16 +72,16 @@ public class InheritanceTest extends AbstractMemoriaTest {
   }
   
   private void assertB(B b, B loadedB) {
-    assertEquals(b.fBoolean, loadedB.fBoolean);
-    assertEquals(b.fString, loadedB.fString);
+    assertEquals(b.isBoolean(), loadedB.isBoolean());
+    assertEquals(b.getString(), loadedB.getString());
     assertEquals(b.getInt(), loadedB.getInt());
     assertEquals(b.getLong(), loadedB.getLong());
   }
   
   private B createB() {
     B b = new B();
-    b.fBoolean = true;
-    b.fString = "1";
+    b.setBoolean(true);
+    b.setString("1");
     b.setInt(1);
     b.setLong(1L);
     return b;

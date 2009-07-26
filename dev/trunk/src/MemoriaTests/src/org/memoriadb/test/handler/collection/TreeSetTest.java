@@ -1,8 +1,9 @@
 package org.memoriadb.test.handler.collection;
 
-import java.util.*;
+import org.memoriadb.test.testclasses.StringObject;
 
-import org.memoriadb.test.testclasses.SimpleTestObj;
+import java.util.Collection;
+import java.util.TreeSet;
 
 public class TreeSetTest extends SetTest {
 
@@ -43,7 +44,7 @@ public class TreeSetTest extends SetTest {
   public void test_mixed_list() {
     try {
       Collection<Object> collection = createCollection();
-      collection.add(new SimpleTestObj("1"));
+      collection.add(new StringObject("1"));
       collection.add(1);
       fail("It's not possible to add multiple types to a TreeSet");
     }

@@ -1,11 +1,15 @@
 package org.memoriadb.test.handler.array;
 
-import java.util.*;
-
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.testclasses.*;
-import org.memoriadb.test.testclasses.inheritance.*;
+import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.TestValueObject;
+import org.memoriadb.test.testclasses.inheritance.A;
+import org.memoriadb.test.testclasses.inheritance.B;
+import org.memoriadb.test.testclasses.inheritance.C;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest {
 
@@ -65,12 +69,12 @@ public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest
   }
   
   public void test_Object_array() {
-    SimpleTestObj[][] arr = new SimpleTestObj[][]{new SimpleTestObj[]{new SimpleTestObj("1"),new SimpleTestObj("2")}, new SimpleTestObj[]{new SimpleTestObj("3"),new SimpleTestObj("4")}};
+    StringObject[][] arr = new StringObject[][]{new StringObject[]{new StringObject("1"),new StringObject("2")}, new StringObject[]{new StringObject("3"),new StringObject("4")}};
     IObjectId id = saveAll(arr);
     
     reopen();
     
-    SimpleTestObj[][] l1_arr = get(id);
+    StringObject[][] l1_arr = get(id);
     assertNotSame(arr, l1_arr);
     assertTrue(Arrays.deepEquals(arr, l1_arr));
   }
@@ -95,12 +99,12 @@ public abstract class BasicMultiDimensionalArrayTest extends AbstractMemoriaTest
   }
   
   public void test_Object_array_with_null_value() {
-    SimpleTestObj[][] arr = new SimpleTestObj[][]{new SimpleTestObj[]{new SimpleTestObj("1"),null}, null};
+    StringObject[][] arr = new StringObject[][]{new StringObject[]{new StringObject("1"),null}, null};
     IObjectId id = saveAll(arr);
     
     reopen();
     
-    SimpleTestObj[][] l1_arr = get(id);
+    StringObject[][] l1_arr = get(id);
     assertNotSame(arr, l1_arr);
     assertTrue(Arrays.deepEquals(arr, l1_arr));
   }
