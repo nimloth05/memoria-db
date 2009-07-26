@@ -58,5 +58,9 @@ public class LangValueObject<T> implements IDataObject {
   public void set(T t) {
     fObject = t;
   }
-  
+
+  @Override
+  public String toString() {
+    return String.valueOf(fObject);
+  }
 }
