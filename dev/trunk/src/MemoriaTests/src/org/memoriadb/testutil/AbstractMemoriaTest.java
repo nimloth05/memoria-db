@@ -76,7 +76,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
 
   protected <T> T get(IObjectId id) {
-    return fObjectStore.get(id);
+    return fObjectStore.<T>get(id);
   }
   
   protected Block getBlock(int index) {

@@ -95,7 +95,7 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     reopen(collection);
   }
   
-  public void test_list_in_list_in_multple_save_calls() {
+  public void test_list_in_list_in_multiple_save_calls() {
     Collection<Collection<?>> collection = createCollection();
     collection.add(getIntCollection());
     collection.add(getShortCollection());
@@ -215,5 +215,5 @@ public abstract class CollectionTest extends AbstractMemoriaTest {
     }
     return result;
   }
-  
+
 }

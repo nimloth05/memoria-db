@@ -17,7 +17,7 @@ public interface IRefactor {
   
   /**
    * 
-   * @param klass Array-type: int[].class, int[][].class, etc.
+   * @param klass type of the array: int[].class, int[][].class, etc.
    * @param length
    * @return
    */

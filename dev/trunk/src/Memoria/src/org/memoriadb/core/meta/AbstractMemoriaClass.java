@@ -22,8 +22,8 @@ public abstract class AbstractMemoriaClass implements IMemoriaClassConfig {
     return fIsValueObject;
   }
   
-  public void setHasValueObjectAnnotation(boolean value) {
+  public void setValueObject(boolean value) {
     fIsValueObject = value;
   }
-  
+
 }

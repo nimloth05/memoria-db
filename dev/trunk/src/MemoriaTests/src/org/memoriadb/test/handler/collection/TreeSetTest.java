@@ -29,9 +29,9 @@ public class TreeSetTest extends SetTest {
   }
   
   @Override
-  public void test_list_in_list_in_multple_save_calls() {
+  public void test_list_in_list_in_multiple_save_calls() {
     try {
-      super.test_list_in_list_in_multple_save_calls();
+      super.test_list_in_list_in_multiple_save_calls();
       fail("Its not possible to add a TreeSet to a TreeSet beacuse it does not implement the Comparable");
     } 
     catch (ClassCastException e) {
@@ -66,7 +66,6 @@ public class TreeSetTest extends SetTest {
   protected <T> Collection<T> createCollection() {
     return new TreeSet<T>();
   }
-  
-  
+
 
 }

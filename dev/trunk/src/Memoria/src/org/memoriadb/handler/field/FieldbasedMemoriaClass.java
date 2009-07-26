@@ -21,7 +21,7 @@ public final class FieldbasedMemoriaClass extends AbstractMemoriaClass {
   /**
    * Introspects the given klass and adds all fields. Used to initially create a MetaClass, when the first object of a
    * given type enters the memoria-reference-space.
-   * 
+   *
    */
   public FieldbasedMemoriaClass(Class<?> klass, IObjectId memoriaClassId) {
     this(klass, memoriaClassId, ReflectionUtil.hasValueObjectAnnotation(klass));

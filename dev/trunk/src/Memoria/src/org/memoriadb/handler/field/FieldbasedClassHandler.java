@@ -28,7 +28,6 @@ public class FieldbasedClassHandler implements IHandler {
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
     
-    // ok, because MemoriaClasses are never stored inline!
     while (input.available() > 0) {
       int fieldId = input.readInt();
       String name = input.readUTF();

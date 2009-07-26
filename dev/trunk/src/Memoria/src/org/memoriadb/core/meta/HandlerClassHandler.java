@@ -56,12 +56,10 @@ public class HandlerClassHandler implements IHandler {
   }
 
   @Override
-  public void traverseChildren(Object obj, IObjectTraversal traversal) {
-  }
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {}
 
   private IHandler instantiateHandler(String handlerName, String javaClassName) {
     return ReflectionUtil.createInstanceWithDefaultOrStringCtor(handlerName, javaClassName);
   }
-
 
 }

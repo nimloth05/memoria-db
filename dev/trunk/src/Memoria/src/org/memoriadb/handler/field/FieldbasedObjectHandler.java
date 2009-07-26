@@ -11,6 +11,9 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.*;
 
+/**
+ * Persists normal objects via Java Reflection.
+ */
 public class FieldbasedObjectHandler implements IHandler {
 
   private final FieldbasedMemoriaClass fClassObject;
@@ -33,7 +36,7 @@ public class FieldbasedObjectHandler implements IHandler {
   public Object deserialize(final DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
     final IFieldbasedObject result = createObject(context, typeId);
 
-    superDeserialize(result, input, context);
+    deserializeObject(result, input, context);
 
     return result.getObject();
   }
@@ -72,7 +75,6 @@ public class FieldbasedObjectHandler implements IHandler {
 
       //Primitives werden nicht mehr berücksichtigt beim Traversal. 
       //Das erhaltene Objekt kann immer noch ein Primitive oder ein enum sein. Auch in diesem Fall muss NICHT traversiert werden! (bug #1749) msc
-
       if (Type.isPrimitive(referencee)) continue;
 
       try {
@@ -100,9 +102,9 @@ public class FieldbasedObjectHandler implements IHandler {
 
     return new FieldbasedObject(obj);
   }
-
-  private void superDeserialize(Object object, DataInputStream input, final IReaderContext context) throws Exception {
-    final IFieldbasedObject result = getFieldObject(object);
+  
+  private void deserializeObject(IFieldbasedObject object, DataInputStream input, final IReaderContext context) throws Exception {
+    final IFieldbasedObject result = object;
 
     for (int i = 0; i < (fClassObject).getFieldCount(); ++i) {
       int fieldId = input.readInt();
@@ -135,7 +137,7 @@ public class FieldbasedObjectHandler implements IHandler {
 
     if (fClassObject.getSuperClass() == null) return;
     FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fClassObject.getSuperClass().getHandler();
-    superHandler.superDeserialize(object, input, context);
+    superHandler.deserializeObject(object, input, context);
   }
 
 }

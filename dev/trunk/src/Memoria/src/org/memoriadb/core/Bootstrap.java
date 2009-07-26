@@ -85,13 +85,12 @@ public class Bootstrap {
     }
 
     for(Class<?> clazz: valueClasses) {
-      ((AbstractMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setHasValueObjectAnnotation(true);
+      ((AbstractMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
     }
 
   }
 
   private static TransactionHandler createDb(CreateConfig config, IMemoriaFile file, IModeStrategy strategy) {
-
     writeHeader(config, file);
 
     TransactionHandler transactionHandler = openDb(config, file, strategy);
