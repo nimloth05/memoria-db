@@ -10,8 +10,8 @@ import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.FileReader;
 import org.memoriadb.core.file.read.ObjectLoader;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.MemoriaClass;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
@@ -95,7 +95,7 @@ public class Bootstrap {
     }
 
     for(Class<?> clazz: valueClasses) {
-      ((HandlerbasedMemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
+      ((MemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
     }
 
   }
@@ -149,7 +149,7 @@ public class Bootstrap {
   }
   
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler, boolean isValueObject) {
-    IMemoriaClassConfig classConfig = new HandlerbasedMemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), isValueObject);
+    IMemoriaClassConfig classConfig = new MemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), isValueObject);
     transactionHandler.save(classConfig);
     
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());

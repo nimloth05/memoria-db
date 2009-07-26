@@ -4,14 +4,14 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.IHandlerConfig;
 import org.memoriadb.id.IObjectId;
 
-public final class HandlerbasedMemoriaClass implements IMemoriaClassConfig {
+public final class MemoriaClass implements IMemoriaClassConfig {
 
   private final IHandler fHandler;
   private IMemoriaClass fSuperClass;
   private final IObjectId fMemoriaClassId;
   private boolean fIsValueObject;
 
-  public HandlerbasedMemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean isValueObject) {
+  public MemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean isValueObject) {
     fIsValueObject = isValueObject();
     fHandler = handler;
     fMemoriaClassId = memoriaClassId;

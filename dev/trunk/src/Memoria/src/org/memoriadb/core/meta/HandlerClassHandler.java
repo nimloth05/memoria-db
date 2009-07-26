@@ -1,7 +1,5 @@
 package org.memoriadb.core.meta;
 
-import java.io.*;
-
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
@@ -12,11 +10,15 @@ import org.memoriadb.handler.field.ClassInheritanceBinding;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.IOException;
+
 public class HandlerClassHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!HandlerbasedMemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + HandlerbasedMemoriaClass.class.getName() +" but I was called for " + className);
+    if (!MemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + MemoriaClass.class.getName() +" but I was called for " + className);
   }
 
   @Override
@@ -28,7 +30,7 @@ public class HandlerClassHandler implements IHandler {
     
     IHandler handler = instantiateHandler(handlerName, javaClassName);
     
-    HandlerbasedMemoriaClass memoriaClass = new HandlerbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
+    MemoriaClass memoriaClass = new MemoriaClass(handler, typeId, hasValueObjectAnnotation);
     
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(memoriaClass, superClassId));
       
@@ -37,12 +39,12 @@ public class HandlerClassHandler implements IHandler {
 
   @Override
   public String getClassName() {
-    return HandlerbasedMemoriaClass.class.getName();
+    return MemoriaClass.class.getName();
   }
 
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws IOException {
-    HandlerbasedMemoriaClass classObject = (HandlerbasedMemoriaClass) obj;
+    MemoriaClass classObject = (MemoriaClass) obj;
     
     output.writeUTF(classObject.getJavaClassName());
     output.writeUTF(classObject.getHandlerName());

@@ -4,7 +4,7 @@ import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
+import org.memoriadb.core.meta.MemoriaClass;
 import org.memoriadb.core.meta.Type;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
@@ -31,7 +31,7 @@ public class FieldBasedHandlerHandler implements IHandler {
     boolean hasValueObjectAnnotation = input.readBoolean();
 
     FieldbasedObjectHandler handler = new FieldbasedObjectHandler(className);
-    HandlerbasedMemoriaClass classObject = new HandlerbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
+    MemoriaClass classObject = new MemoriaClass(handler, typeId, hasValueObjectAnnotation);
 
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
@@ -54,7 +54,7 @@ public class FieldBasedHandlerHandler implements IHandler {
 
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws IOException {
-    HandlerbasedMemoriaClass classObject = (HandlerbasedMemoriaClass) obj;
+    MemoriaClass classObject = (MemoriaClass) obj;
     FieldbasedObjectHandler handler = (FieldbasedObjectHandler) classObject.getHandler();
     
     output.writeUTF(handler.getClassName());

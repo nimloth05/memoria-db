@@ -1,7 +1,7 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.MemoriaClass;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ArrayTypeInfo;
 import org.memoriadb.core.util.ReflectionUtil;
@@ -41,7 +41,7 @@ public final class TypeHierarchyBuilder {
 
   private static IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass, IModeStrategy modeStrategy) {
     IMemoriaClassConfig classObject;
-    classObject = new HandlerbasedMemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
+    classObject = new MemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
     IObjectId result = transactionHandler.internalSave(classObject);
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     
