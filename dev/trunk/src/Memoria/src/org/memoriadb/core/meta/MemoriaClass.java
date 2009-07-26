@@ -12,7 +12,7 @@ public final class MemoriaClass implements IMemoriaClassConfig {
   private boolean fIsValueObject;
 
   public MemoriaClass(IHandler handler, IObjectId memoriaClassId, boolean isValueObject) {
-    fIsValueObject = isValueObject();
+    fIsValueObject = isValueObject;
     fHandler = handler;
     fMemoriaClassId = memoriaClassId;
   }

@@ -18,7 +18,8 @@ public class HandlerClassHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!MemoriaClass.class.getName().equals(className)) throw new SchemaException("I am a handler for type " + MemoriaClass.class.getName() +" but I was called for " + className);
+    if (!MemoriaClass.class.getName().equals(className))
+      throw new SchemaException("I am a handler for type " + MemoriaClass.class.getName() +" but I was called for " + className);
   }
 
   @Override
