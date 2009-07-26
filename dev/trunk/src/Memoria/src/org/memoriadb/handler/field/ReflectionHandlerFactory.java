@@ -1,5 +1,7 @@
 package org.memoriadb.handler.field;
 
+import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.id.IObjectId;
 
@@ -17,7 +19,7 @@ public final class ReflectionHandlerFactory {
    * @param memoriaClassId id of the memoria-type of this class.
    *
    */
-  public static FieldbasedMemoriaClass createNewType(Class<?> klass, IObjectId memoriaClassId) {
+  public static IMemoriaClassConfig createNewType(Class<?> klass, IObjectId memoriaClassId) {
     return createNewType(klass, memoriaClassId, ReflectionUtil.hasValueObjectAnnotation(klass));
   }
  /**
@@ -29,8 +31,8 @@ public final class ReflectionHandlerFactory {
    * @param isValueObject <tt>true</tt> if this class represent a valueObject.
    *
    */
-  public static FieldbasedMemoriaClass createNewType(Class<?> klass, IObjectId memoriaClassId, boolean isValueObject) {
+  public static IMemoriaClassConfig createNewType(Class<?> klass, IObjectId memoriaClassId, boolean isValueObject) {
     FieldbasedObjectHandler handler = FieldbasedObjectHandler.createNewType(klass);
-    return new FieldbasedMemoriaClass(handler, memoriaClassId, isValueObject);
+    return new HandlerbasedMemoriaClass(handler, memoriaClassId, isValueObject);
   }
 }

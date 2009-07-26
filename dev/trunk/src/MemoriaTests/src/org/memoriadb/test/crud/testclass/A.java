@@ -9,10 +9,8 @@ public class A {
 
   private B fB;
 
-  public A() {
-
-  }
-
+  public A() {}
+  
   public A(B b) {
     super();
     fB = b;

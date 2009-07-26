@@ -1,9 +1,12 @@
 package org.memoriadb.core;
 
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.HandlerClassHandler;
+import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.handler.array.ArrayHandler;
-import org.memoriadb.handler.field.FieldbasedClassHandler;
-import org.memoriadb.id.*;
+import org.memoriadb.handler.field.FieldBasedHandlerHandler;
+import org.memoriadb.id.IIdProvider;
+import org.memoriadb.id.IObjectIdFactory;
 
 public final class ObjectRepoFactory {
 
@@ -13,16 +16,16 @@ public final class ObjectRepoFactory {
     return repo;
   }
 
-  private static void registerMetaClasses(ObjectRepository repo, IIdProvider factory) {
+  private static void registerMetaClasses(ObjectRepository repo, IIdProvider idProvider) {
     // super meta mega class.
-    IMemoriaClassConfig handlerMetaClass = new HandlerbasedMemoriaClass(new HandlerClassHandler(), factory.getHandlerMetaClass(), false);
-    repo.add(factory.getHandlerMetaClass(), handlerMetaClass);
+    IMemoriaClassConfig handlerMetaClass = new HandlerbasedMemoriaClass(new HandlerClassHandler(), idProvider.getHandlerMetaClass(), false);
+    repo.add(idProvider.getHandlerMetaClass(), handlerMetaClass);
 
-    IMemoriaClassConfig fieldMetaClass = new HandlerbasedMemoriaClass(new FieldbasedClassHandler(), factory.getHandlerMetaClass(), false);
-    repo.add(factory.getFieldMetaClass(), fieldMetaClass);
+    IMemoriaClassConfig fieldMetaClass = new HandlerbasedMemoriaClass(new FieldBasedHandlerHandler(), idProvider.getHandlerMetaClass(), false);
+    repo.add(idProvider.getFieldMetaClass(), fieldMetaClass);
 
     // array-handler
-    repo.add(factory.getArrayMemoriaClass(), new HandlerbasedMemoriaClass(new ArrayHandler(), factory.getHandlerMetaClass(), false));
+    repo.add(idProvider.getArrayMemoriaClass(), new HandlerbasedMemoriaClass(new ArrayHandler(), idProvider.getHandlerMetaClass(), false));
   }
 
   private ObjectRepoFactory() {}

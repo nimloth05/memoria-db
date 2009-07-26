@@ -4,6 +4,7 @@ import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
+import org.memoriadb.core.meta.HandlerbasedMemoriaClass;
 import org.memoriadb.core.meta.Type;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
@@ -13,12 +14,15 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class FieldbasedClassHandler implements IHandler {
+/**
+ * Handler which persists FieldBasedHandlers. This handler will always return a complete memoriaClass.
+ */
+public class FieldBasedHandlerHandler implements IHandler {
 
   @Override
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {
-    if (!FieldbasedMemoriaClass.class.getName().equals(className))
-      throw new SchemaException("I am a handler for type " + FieldbasedMemoriaClass.class.getName() +" but I was called for " + className);
+    if (!getClassName().equals(className))
+      throw new SchemaException("I am a handler for type " + getClassName() +" but I was called for " + className);
   }
   
   @Override
@@ -27,7 +31,7 @@ public class FieldbasedClassHandler implements IHandler {
     boolean hasValueObjectAnnotation = input.readBoolean();
 
     FieldbasedObjectHandler handler = new FieldbasedObjectHandler(className);
-    FieldbasedMemoriaClass classObject = new FieldbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
+    HandlerbasedMemoriaClass classObject = new HandlerbasedMemoriaClass(handler, typeId, hasValueObjectAnnotation);
 
     IObjectId superClassId = context.readObjectId(input);
     if (!context.isRootClassId(superClassId)) context.addGenOneBinding(new ClassInheritanceBinding(classObject, superClassId)); 
@@ -45,12 +49,12 @@ public class FieldbasedClassHandler implements IHandler {
 
   @Override
   public String getClassName() {
-    return FieldbasedMemoriaClass.class.getName();
+    return "ReflectionBasedHandlers";
   }
 
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws IOException {
-    FieldbasedMemoriaClass classObject = (FieldbasedMemoriaClass) obj;
+    HandlerbasedMemoriaClass classObject = (HandlerbasedMemoriaClass) obj;
     FieldbasedObjectHandler handler = (FieldbasedObjectHandler) classObject.getHandler();
     
     output.writeUTF(handler.getClassName());
@@ -69,7 +73,6 @@ public class FieldbasedClassHandler implements IHandler {
   }
 
   @Override
-  public void traverseChildren(Object obj, IObjectTraversal traversal) {
-  }
+  public void traverseChildren(Object obj, IObjectTraversal traversal) {}
 
 }

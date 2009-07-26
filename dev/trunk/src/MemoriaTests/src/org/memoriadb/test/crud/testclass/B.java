@@ -1,6 +1,7 @@
 package org.memoriadb.test.crud.testclass;
 
 public class B {
+  
   private String fName;
 
   public B() {

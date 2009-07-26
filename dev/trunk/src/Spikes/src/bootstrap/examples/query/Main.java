@@ -1,11 +1,12 @@
 package bootstrap.examples.query;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
+import bootstrap.examples.query.subb.Y;
 import org.memoriadb.core.exception.MemoriaException;
 
-import bootstrap.examples.query.subb.Y;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Main {
   
@@ -25,7 +26,6 @@ public class Main {
 
       @Override
       public boolean include(String obj) {
-        // TODO Auto-generated method stub
         return false;
       }
       
