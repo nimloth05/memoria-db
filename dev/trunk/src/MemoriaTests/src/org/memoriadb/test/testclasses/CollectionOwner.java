@@ -1,15 +1,16 @@
 package org.memoriadb.test.testclasses;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CollectionOwner {
   
   private Map<String, String> fMap = new HashMap<String, String>();
   private List<String> fList = new ArrayList<String>();
   
-  public CollectionOwner() {
-    
-  }
+  public CollectionOwner() {}
   
   public CollectionOwner(Map<String, String> map, List<String> list) {
     fMap = map;

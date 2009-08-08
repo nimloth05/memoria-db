@@ -230,14 +230,14 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
 
   public void test_save_attribute() {
-    B b = new B("b");
-    IObjectId id = fObjectStore.save(b);
+    StringObject object = new StringObject("object");
+    IObjectId id = save(object);
 
     reopen();
 
-    B b_l1 = (B) fObjectStore.get(id);
-    assertNotSame(b_l1, b);
-    assertEquals("b", b_l1.getName());
+    StringObject b_l1 = get(id);
+    assertNotSame(b_l1, object);
+    assertEquals("object", b_l1.getString());
   }
 
   public void test_save_cyclic_save_all() {
@@ -267,13 +267,13 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
   
   public void test_save_null_attribute() {
-    B b = new B(null);
-    IObjectId id = fObjectStore.save(b);
+    StringObject object = new StringObject(null);
+    IObjectId id = save(object);
 
     reopen();
 
-    B l1_b = (B) fObjectStore.get(id);
-    assertNull(l1_b.getName());
+    StringObject l1_b = get(id);
+    assertNull(l1_b.getString());
   }
 
   public void test_save_null_reference() {
@@ -350,25 +350,25 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
 
   public void test_save_reference() {
-    B b = new B("b");
+    StringObject b = new StringObject("b");
     A a = new A(b);
     IObjectId id = saveAll(a);
 
     reopen();
 
     A a_l1 = (A) fObjectStore.get(id);
-    assertEquals("b", a_l1.getB().getName());
+    assertEquals("b", a_l1.getB().getString());
   }
 
   public void test_save_same_object_twice() {
-    B b = new B("b");
-    IObjectId id = save(b);
-    save(b);
+    StringObject object = new StringObject("object");
+    IObjectId id = save(object);
+    save(object);
 
     reopen();
 
-    B b_l1 = (B) fObjectStore.get(id);
-    assertEquals("b", b_l1.getName());
+    StringObject b_l1 = get(id);
+    assertEquals("object", b_l1.getString());
   }
 
   public void test_save_single_object() {
@@ -444,16 +444,16 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
   }
 
   public void test_update_attribute() {
-    B b = new B("b");
-    IObjectId idb = fObjectStore.save(b);
-    b.setName("bb");
-    IObjectId idbb = fObjectStore.save(b);
-    assertEquals(idb, idbb);
+    StringObject object = new StringObject("1");
+    IObjectId id1 = save(object);
+    object.setString("2");
+    IObjectId id2 = save(object);
+    assertEquals(id1, id2);
 
     reopen();
 
-    B l1_b = (B) fObjectStore.get(idbb);
-    assertEquals("bb", l1_b.getName());
+    StringObject l1_b = get(id2);
+    assertEquals("2", l1_b.getString());
   }
 
   public void test_update_unsaved_reference() {
@@ -465,7 +465,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l1_a = fObjectStore.get(id);
     assertNull(l1_a.getB());
 
-    B b = new B();
+    StringObject b = new StringObject();
     fObjectStore.beginUpdate();
     a.setB(b);
     fObjectStore.save(b);
@@ -475,7 +475,7 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     A l2_a = fObjectStore.get(id);
     assertNull(l2_a.getB());
 
-    B l2_b = fObjectStore.query(B.class).get(0);
+    StringObject l2_b = fObjectStore.query(StringObject.class).get(0);
     l2_a.setB(l2_b);
     fObjectStore.save(l2_a);
     reopen();
@@ -534,6 +534,5 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     ObjectReferencer object_l1 = get(id);
     assertEquals(primitive, object_l1.getObject());
   }
-
 
 }

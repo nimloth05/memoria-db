@@ -1,6 +1,7 @@
 package org.memoriadb.test.crud.testclass;
 
 public class TransientClass {
+  
   public transient int fInt;
   public transient A fA;
   

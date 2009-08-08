@@ -49,6 +49,10 @@ public class StringObject implements Comparable<StringObject> {
     return fString;
   }
 
+  public void setString(String string) {
+    fString = string;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -59,7 +63,7 @@ public class StringObject implements Comparable<StringObject> {
 
   @Override
   public String toString() {
-    return "s: "+fString;
+    return "s: " + fString;
   }
 
 }

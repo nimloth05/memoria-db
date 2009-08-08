@@ -1,5 +1,7 @@
 package org.memoriadb.test.crud.testclass;
 
+import org.memoriadb.test.testclasses.StringObject;
+
 /**
  * Simple Test-class with a reference to B
  * 
@@ -7,11 +9,11 @@ package org.memoriadb.test.crud.testclass;
  */
 public class A {
 
-  private B fB;
+  private StringObject fB;
 
   public A() {}
   
-  public A(B b) {
+  public A(StringObject b) {
     super();
     fB = b;
   }
@@ -29,7 +31,7 @@ public class A {
     return true;
   }
 
-  public B getB() {
+  public StringObject getB() {
     return fB;
   }
 
@@ -41,7 +43,7 @@ public class A {
     return result;
   }
 
-  public void setB(B b) {
+  public void setB(StringObject b) {
     fB = b;
   }
 

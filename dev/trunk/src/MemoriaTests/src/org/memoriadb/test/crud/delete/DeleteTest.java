@@ -4,8 +4,8 @@ import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.A;
-import org.memoriadb.test.crud.testclass.B;
 import org.memoriadb.test.testclasses.IntObject;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class DeleteTest extends AbstractMemoriaTest {
@@ -46,7 +46,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_delete_aggregate() {
-    A a = new A(new B("b"));
+    A a = new A(new StringObject("b"));
     IObjectId a_id = saveAll(a);
     IObjectId b_id = fObjectStore.getId(a.getB());
     
@@ -73,7 +73,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_delete_aggregate_and_add_it_again() {
-    A a = new A(new B("b"));
+    A a = new A(new StringObject("b"));
     saveAll(a);
     
     deleteAll(a);
@@ -116,7 +116,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_delete_referencee() {
-    A a = new A(new B("b"));
+    A a = new A(new StringObject("b"));
     
     IObjectId id = saveAll(a);
     
@@ -130,17 +130,22 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
   }
   
   public void test_delete_referencee_and_add_it_again() {
-    A a = new A(new B("b"));
+    A a = new A(new StringObject("1"));
     
     IObjectId idA = saveAll(a);
-    
-    // delete the referenced object
     delete(a.getB());
     reopen();
     
     A l1_a = get(idA);
-    
     assertNull(l1_a.getB());
+    StringObject referencee = new StringObject("2");
+    l1_a.setB(referencee);
+    saveAll(l1_a);
+    reopen();
+
+    A l2_a = get(idA);
+    assertNotNull(l2_a.getB());
+    assertEquals(referencee, l2_a.getB());
   }
   
   public void test_save_and_delete_in_same_transaction() {
