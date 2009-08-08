@@ -1,9 +1,11 @@
 package org.memoriadb.test.handler.collection;
 
-import java.util.*;
-
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.handler.testclassses.HashSetKey;
+import org.memoriadb.test.testclasses.HashSetKey;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class HashSetTest extends SetTest {

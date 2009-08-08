@@ -1,14 +1,10 @@
-package org.memoriadb.test.handler.testclassses;
-
-import org.memoriadb.test.testclasses.StringObject;
+package org.memoriadb.test.testclasses;
 
 public class HashSetKey {
   
   private StringObject fTestObj;
 
-  public HashSetKey() {
-    
-  }
+  public HashSetKey() {}
   
   public HashSetKey(String str) {
     fTestObj = new StringObject(str);
@@ -34,6 +30,5 @@ public class HashSetKey {
     result = prime * result + ((fTestObj == null) ? 0 : fTestObj.hashCode());
     return result;
   }
-  
   
 }

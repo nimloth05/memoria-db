@@ -150,7 +150,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
     assertEquals(3, fObjectStore.query(TestEnum.class).size());
   }
 
-  public void test_save_enum_thorws() {
+  public void test_save_enum_is_not_possible() {
     try {
       save(TestEnum.a);
       fail("it is not possible to explicitly save an enum-instance");
