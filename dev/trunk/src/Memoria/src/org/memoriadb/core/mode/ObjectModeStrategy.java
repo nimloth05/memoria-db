@@ -1,8 +1,12 @@
 package org.memoriadb.core.mode;
 
-import org.memoriadb.core.*;
-import org.memoriadb.core.exception.*;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.TransactionHandler;
+import org.memoriadb.core.TypeHierarchyBuilder;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.SchemaException;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.IObjectId;
@@ -33,7 +37,7 @@ public final class ObjectModeStrategy implements IModeStrategy {
   }
 
   @Override
-  public Object createEnum(Enum<?> current, IObjectId memoriaClassId) {
+  public Object createEnum(Enum<? extends Enum<?>> current, IObjectId memoriaClassId) {
     return current;
   }
 

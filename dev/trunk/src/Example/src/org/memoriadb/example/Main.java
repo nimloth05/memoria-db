@@ -1,8 +1,11 @@
 package org.memoriadb.example;
 
-import java.io.File;
+import org.memoriadb.CreateConfig;
+import org.memoriadb.IObjectStore;
+import org.memoriadb.Memoria;
 
-import org.memoriadb.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Main {
 
@@ -10,8 +13,6 @@ public class Main {
    * @param args
    */
   public static void main(String[] args) {
-    
-    
     CreateConfig config = new CreateConfig();
     config.addCustomHandler(new PersonHandler());
     IObjectStore store = getStore(config);
@@ -31,9 +32,14 @@ public class Main {
 
   private static IObjectStore getStore(CreateConfig config) {
     File file = new File("test2.db");
+    System.out.println("path to db: " + file.getAbsolutePath());
     file.delete();
-    IObjectStore store = Memoria.open(config, file.getAbsolutePath());
-    return store;
+    try {
+      return Memoria.open(config, file.getAbsolutePath());
+    }
+    catch(IOException  e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

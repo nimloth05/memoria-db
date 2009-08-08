@@ -1,11 +1,13 @@
 package org.memoriadb.core.query;
 
-import java.util.List;
-
-import org.memoriadb.*;
-import org.memoriadb.core.*;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
+import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.IObjectRepository;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IDataObject;
+
+import java.util.List;
 
 public class DataModeQueryStrategy {
 
@@ -25,7 +27,7 @@ public class DataModeQueryStrategy {
   public <T extends IDataObject> List<T> query(IObjectRepository objectRepository, String clazz, IFilter<T> filter) {
     FilterControl<T> control = new FilterControl<T>();
 
-    for (IObjectInfo objectInfo : objectRepository.getAllObjectInfos()) {
+    for (IObjectInfo objectInfo : objectRepository.getAllObjectInfo()) {
       IMemoriaClass memoriaClass = (IMemoriaClass) objectRepository.getObject(objectInfo.getMemoriaClassId());
 
       if (!memoriaClass.isTypeFor(clazz)) continue;

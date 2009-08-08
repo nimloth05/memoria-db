@@ -40,13 +40,14 @@ public final class TypeHierarchyBuilder {
   }
 
   private static IObjectId addEnumClass(TransactionHandler transactionHandler, Class<?> javaClass, IModeStrategy modeStrategy) {
-    IMemoriaClassConfig classObject;
-    classObject = new MemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
+    IMemoriaClassConfig classObject =
+      new MemoriaClass(new EnumHandler(javaClass), transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), false);
+    
     IObjectId result = transactionHandler.internalSave(classObject);
     recursiveAddTypeHierarchy(transactionHandler, javaClass, classObject);
     
     // enum class added, add enum-instances
-    for(Enum<?> current: (Enum<?>[]) javaClass.getEnumConstants()) {
+    for(Enum<? extends Enum<?>> current: (Enum<?>[]) javaClass.getEnumConstants()) {
       //result is the objectId for the memoriaClass which represents the given enum-class. 04.04.2009, so
       transactionHandler.internalAddObject(modeStrategy.createEnum(current, result), result);
     }
@@ -58,7 +59,7 @@ public final class TypeHierarchyBuilder {
    * 
    * @param transactionHandler 
    * 
-   * @return The id of the classObject for the given javaClass.  
+   * @return objectId of the memoriaClass for the given Object.  
    * 
    * Idempotent, already stored classes are ignored.
    */

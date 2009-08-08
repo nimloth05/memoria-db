@@ -7,17 +7,17 @@ import org.memoriadb.id.IObjectId;
 public class EnumObject implements IEnumObject {
   
   private IObjectId fMemoriaClassId;
-  private int fOrdinal;
-  
-  public EnumObject(Enum<?> enumObj) {
-    fOrdinal = enumObj.ordinal();
+  private String fName;
+
+  public EnumObject(Enum<? extends Enum<?>> enumObj) {
+    fName = enumObj.name();
   }
 
   public EnumObject(IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
   }
   
-  public EnumObject(IObjectId memoriaClassId, Enum<?> enumObj) {
+  public EnumObject(IObjectId memoriaClassId, Enum<? extends Enum<?>> enumObj) {
     this(enumObj);
     fMemoriaClassId = memoriaClassId;
   }
@@ -30,18 +30,18 @@ public class EnumObject implements IEnumObject {
   @SuppressWarnings("unchecked")
   @Override
   public Object getObject(IMemoriaClass memoriaClass) {
-    Class<Enum<?>> enumClass = (Class<Enum<?>>) ReflectionUtil.getClass(memoriaClass.getJavaClassName());
-    return enumClass.getEnumConstants()[fOrdinal];
+    Class enumClass = (Class) ReflectionUtil.getClass(memoriaClass.getJavaClassName());
+    return Enum.valueOf(enumClass, fName);
   }
 
   @Override
-  public int getOrdinal() {
-    return fOrdinal;
+  public String getName() {
+    return fName;
   }
 
   @Override
-  public void setOrdinal(int ordinal) {
-    fOrdinal = ordinal;
+  public void setName(String name) {
+    fName = name;
   }
 
 }

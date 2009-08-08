@@ -1,16 +1,18 @@
 package org.memoriadb.core;
 
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.IObjectIdFactory;
+
 import java.util.Collection;
 
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.*;
-import org.memoriadb.id.*;
-
 /**
- * This interfaces encapsulates the indexes to the ObjectInfos. The methods are only intended 
+ * This interfaces encapsulates the indexes to the ObjectInfo. The methods are only intended 
  * for normal use, i.e. after bootstrapping and loading from file.
  * 
- * @author msc
+ * @author sandro
  *
  */
 public interface IObjectRepository {
@@ -23,7 +25,7 @@ public interface IObjectRepository {
   public ObjectInfo add(Object obj, IObjectId memoriaClassId);
 
   
-  public void checkIndexConsistancy();
+  public void checkIndexConsistency();
   
   public boolean contains(IObjectId id);
   
@@ -31,13 +33,13 @@ public interface IObjectRepository {
   
   /**
    * Called when an object is deleted in the same transaction as it was added.
-   * @param id
+   * @param obj object to delete.
    */
   public IObjectInfo delete(Object obj);
   
   public Iterable<IMemoriaClass> getAllClasses();
 
-  public Collection<IObjectInfo> getAllObjectInfos();
+  public Collection<IObjectInfo> getAllObjectInfo();
 
   /**
    * @return All objects in the repository, including all bootstrapped or class-objects

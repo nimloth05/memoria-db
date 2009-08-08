@@ -1,17 +1,24 @@
 package org.memoriadb.core;
 
-import java.util.*;
-
-import org.memoriadb.block.*;
+import org.memoriadb.block.Block;
+import org.memoriadb.block.IBlockManager;
 import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.exception.*;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.SchemaException;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IIdProvider;
+import org.memoriadb.id.IObjectId;
+
+import java.util.Collection;
+import java.util.Set;
 
 public final class TransactionHandler {
 
@@ -34,7 +41,7 @@ public final class TransactionHandler {
     fObjectRepository = writer.getRepo();
   }
 
-  public IObjectId addMemoriaClassIfNecessary(Class<?> clazz) {
+  public IObjectId addMemoriaClassIfNecessary(final Class<?> clazz) {
     Class<?> type = clazz;
     
     if (clazz.isArray()) {
@@ -56,8 +63,8 @@ public final class TransactionHandler {
     ++fUpdateCounter;
   }
 
-  public void checkIndexConsistancy() {
-    fObjectRepository.checkIndexConsistancy();
+  public void checkIndexConsistency() {
+    fObjectRepository.checkIndexConsistency();
   }
   
   public void close() {
@@ -95,7 +102,7 @@ public final class TransactionHandler {
   }
   
   public Collection<IObjectInfo> getAllObjectInfos() {
-    return fObjectRepository.getAllObjectInfos();
+    return fObjectRepository.getAllObjectInfo();
   }
   
   public Iterable<Object> getAllObjects() {

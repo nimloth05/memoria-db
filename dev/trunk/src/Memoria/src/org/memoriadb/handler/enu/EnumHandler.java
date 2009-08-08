@@ -1,7 +1,5 @@
 package org.memoriadb.handler.enu;
 
-import java.io.*;
-
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
@@ -9,6 +7,9 @@ import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
+
+import java.io.DataInputStream;
+import java.io.DataOutput;
 
 public class EnumHandler implements IHandler {
 
@@ -28,7 +29,7 @@ public class EnumHandler implements IHandler {
   @Override
   public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
     IEnumObject enumObject = createEnumObject(context, typeId);
-    enumObject.setOrdinal(input.readInt());
+    enumObject.setName(input.readUTF());
     return enumObject.getObject((IMemoriaClass) context.getExistingObject(typeId));
   }
 
@@ -40,7 +41,7 @@ public class EnumHandler implements IHandler {
   @Override
   public void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception {
     IEnumObject enumObject = createEnumObject(obj);
-    output.writeInt(enumObject.getOrdinal());
+    output.writeUTF(enumObject.getName());
   }
   
   @Override

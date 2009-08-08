@@ -18,9 +18,9 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     
     IArray arr = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
     
-    arr.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 0));
-    arr.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 1));
-    arr.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 2));
+    arr.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.a.name()));
+    arr.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.b.name()));
+    arr.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.c.name()));
     
     IObjectId id = saveAll(arr);
     
@@ -123,9 +123,9 @@ public class DataModeOneDimensionalTest extends AbstractMemoriaTest {
     
     IArray dataArray = fDataStore.getRefactorApi().createArray(TestEnum[].class, 3);
 
-    dataArray.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 0));
-    dataArray.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 1));
-    dataArray.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), 2));
+    dataArray.set(0, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.a.name()));
+    dataArray.set(1, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.b.name()));
+    dataArray.set(2, fDataStore.getRefactorApi().getEnum(TestEnum.class.getName(), TestEnum.c.name()));
     
     IObjectId id = saveAll(dataArray);
     

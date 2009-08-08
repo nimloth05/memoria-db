@@ -1,11 +1,16 @@
 package org.memoriadb.core.mode;
 
-import org.memoriadb.*;
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
+import org.memoriadb.IStore;
+import org.memoriadb.ITypeInfo;
+import org.memoriadb.block.Block;
+import org.memoriadb.block.IBlockManager;
+import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.file.*;
-import org.memoriadb.id.*;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.id.IIdProvider;
+import org.memoriadb.id.IObjectId;
 
 /**
  * Abstract base class for a IStore implementation. 
@@ -27,8 +32,8 @@ public abstract class AbstractStore implements IStore {
     fTransactionHandler.beginUpdate();
   }
 
-  public final void checkIndexConsistancy() {
-    fTransactionHandler.checkIndexConsistancy();
+  public final void checkIndexConsistency() {
+    fTransactionHandler.checkIndexConsistency();
   }
 
   @Override
@@ -99,6 +104,5 @@ public abstract class AbstractStore implements IStore {
   public final boolean isInUpdateMode() {
     return fTransactionHandler.isInUpdateMode();
   }
-
 
 }

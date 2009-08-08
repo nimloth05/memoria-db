@@ -5,16 +5,16 @@ import org.memoriadb.id.IObjectId;
 
 public class EnumDataObject implements IEnumObject {
   
-  private int fOrdinal;
+  private String fName;
   private final IObjectId fMemoriaClassId;
-  
+
   public EnumDataObject(IObjectId memoriaClassId) {
     fMemoriaClassId = memoriaClassId;
   }
 
-  public EnumDataObject(IObjectId memoriaClassId, int ordinal) {
+  public EnumDataObject(IObjectId memoriaClassId, String name) {
     fMemoriaClassId = memoriaClassId;
-    fOrdinal = ordinal;
+    fName = name;
   }
 
   @Override
@@ -28,17 +28,13 @@ public class EnumDataObject implements IEnumObject {
   }
 
   @Override
-  public int getOrdinal() {
-    return fOrdinal;
+  public String getName() {
+    return fName;
   }
 
   @Override
-  public void setOrdinal(int ordinal) {
-    fOrdinal = ordinal;
+  public void setName(String name) {
+    fName = name;
   }
-  
-  
-  
-  
 
 }

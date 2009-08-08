@@ -1,10 +1,12 @@
 package org.memoriadb.services.presenter;
 
-import javax.swing.*;
-
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IDataObject;
-import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.field.FieldbasedObjectHandler;
+import org.memoriadb.handler.field.IFieldbasedObject;
+import org.memoriadb.handler.field.MemoriaField;
+
+import javax.swing.*;
 
 public class FieldbasedObjectRenderer implements IClassRenderer {
 
@@ -19,9 +21,9 @@ public class FieldbasedObjectRenderer implements IClassRenderer {
 
       @Override
       public void addColumn(TableModel model) {
-        FieldbasedMemoriaClass fieldClass = (FieldbasedMemoriaClass) memoriaClass;
-        
-        for(MemoriaField field: fieldClass.getFields()) {
+        FieldbasedObjectHandler handler = (FieldbasedObjectHandler) memoriaClass.getHandler();
+
+        for(MemoriaField field: handler.getFields()) {
           model.addColumn(field.getName());
         }        
       }

@@ -7,8 +7,8 @@ public interface IEnumObject extends IDataObject {
 
   public Object getObject(IMemoriaClass memoriaClass);
   
-  public int getOrdinal();
+  public String getName();
 
-  public void setOrdinal(int ordinal);
+  public void setName(String ordinal);
 
 }

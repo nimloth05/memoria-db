@@ -26,8 +26,6 @@ public final class Constants {
    */
   public static final int LONG_LEN = 8;
 
-  public static final int DEFAULT_OBJECT_SIZE = 80;
-
   public static final long NO_HOST_BRANCH_REVISION = -1;
 
   /**
@@ -36,16 +34,11 @@ public final class Constants {
   public static final byte NULL_VALUE = -1;
 
   /**
-   * Marker, that a primtive Object such as Integer was not null.
+   * Marker, that a primitive Object such as Integer was not null.
    */
   public static final byte ASSIGNED_VALUE = 1;
 
   public static final long INITIAL_HEAD_REVISION = 0;
-
-  /**
-   * Default value for a enum ref which is null.
-   */
-  public static final int NO_ENUM_REF = -1;
 
   /**
    * The Object is a value object and will be saved inline.

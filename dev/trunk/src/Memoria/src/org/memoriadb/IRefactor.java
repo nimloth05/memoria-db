@@ -26,10 +26,10 @@ public interface IRefactor {
   public IArray createArray(String componentType, int dimension, int length);
 
   /**
-   * @return the wrappend enum-object, if it is found in the repo. else, a new EnumDataObject
+   * @return the wrapped enum-object, if it is found in the repo. else, a new EnumDataObject
    * is created which is not yet saved.
    */
-  public IEnumObject getEnum(String name, int i);
+  public IEnumObject getEnum(String className, String name);
   
   public <T> LangValueObject<T> getLangValueObject(T value);
 

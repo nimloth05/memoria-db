@@ -1,13 +1,19 @@
 package org.memoriadb.test.handler.enu;
 
-import java.util.*;
-
-import org.memoriadb.handler.enu.*;
+import org.memoriadb.handler.enu.EnumObject;
+import org.memoriadb.handler.enu.IEnumObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.ObjectReferencer;
-import org.memoriadb.test.testclasses.enums.*;
+import org.memoriadb.test.testclasses.enums.EnumUse;
+import org.memoriadb.test.testclasses.enums.ObjectEnumUse;
+import org.memoriadb.test.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class AbstractEnumTest extends AbstractMemoriaTest {
 
@@ -56,7 +62,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
 
     IFieldbasedObject l1_obj = fDataStore.get(objId);
     IEnumObject l1_enumObjet = (IEnumObject) l1_obj.get("fEnum");
-    assertEquals(TestEnum.b.ordinal(), l1_enumObjet.getOrdinal());
+    assertEquals(TestEnum.b.name(), l1_enumObjet.getName());
   }
 
   public void test_deleteAll_does_not_remove_enum() {
@@ -199,7 +205,7 @@ public abstract class AbstractEnumTest extends AbstractMemoriaTest {
   }
   
   public void test_use_enum_list() {
-    List<Object> list = new LinkedList<Object>();
+    List<TestEnum> list = new LinkedList<TestEnum>();
     list.add(TestEnum.a);
     IObjectId id = saveAll(list);
 

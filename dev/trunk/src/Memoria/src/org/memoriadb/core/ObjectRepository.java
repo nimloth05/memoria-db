@@ -1,12 +1,17 @@
 package org.memoriadb.core;
 
-import java.util.*;
-
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.IObjectIdFactory;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds the main-indexes.
@@ -19,7 +24,7 @@ import org.memoriadb.id.*;
 public class ObjectRepository implements IObjectRepository {
 
   /**
-   * Holds all objectInfos for deleted objects. The reference to the Object in those ObjectInfos is always null.
+   * Holds all objectInfo for deleted objects. The reference to the Object in those ObjectInfo is always null.
    */
   private final Map<IObjectId, ObjectInfo> fDeletedMap = new HashMap<IObjectId, ObjectInfo>();
 
@@ -64,12 +69,12 @@ public class ObjectRepository implements IObjectRepository {
     return result;
   }
 
-  public void checkIndexConsistancy() {
+  public void checkIndexConsistency() {
     for (IObjectId id : fIdMap.keySet()) {
       Object object = fIdMap.get(id).getObject();
 
       IObjectId idInObjectMap = fObjectMap.get(object).getId();
-      if (!id.equals(idInObjectMap)) throw new MemoriaException("diffrent IDs for object: id in id-Map " + id + " id in adress map "
+      if (!id.equals(idInObjectMap)) throw new MemoriaException("different IDs for object: id in id-Map " + id + " id in address map "
           + idInObjectMap);
     }
   }
@@ -100,7 +105,7 @@ public class ObjectRepository implements IObjectRepository {
   }
 
   @Override
-  public Collection<IObjectInfo> getAllObjectInfos() {
+  public Collection<IObjectInfo> getAllObjectInfo() {
     return Collections.<IObjectInfo>unmodifiableCollection(fObjectMap.values());
   }
 

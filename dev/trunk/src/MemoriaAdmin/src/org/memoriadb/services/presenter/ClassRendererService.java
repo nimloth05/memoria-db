@@ -1,14 +1,16 @@
 package org.memoriadb.services.presenter;
 
-import javax.swing.JComponent;
-
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.handler.field.FieldbasedMemoriaClass;
+import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.field.FieldbasedObjectHandler;
+
+import javax.swing.*;
 
 public class ClassRendererService implements IClassRendererService {
   
   public IClassRenderer getRednerer(IMemoriaClass memoriaClass) {
-    if (memoriaClass instanceof FieldbasedMemoriaClass) {
+    IHandler handler = memoriaClass.getHandler();
+    if (handler instanceof FieldbasedObjectHandler) {
       return new FieldbasedObjectRenderer(); 
     }
     

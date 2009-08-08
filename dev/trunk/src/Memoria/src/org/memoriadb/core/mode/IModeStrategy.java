@@ -1,6 +1,7 @@
 package org.memoriadb.core.mode;
 
-import org.memoriadb.core.*;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
@@ -23,7 +24,7 @@ public interface IModeStrategy {
 
   public void checkObject(Object obj);
 
-  public Object createEnum(Enum<?> current, IObjectId memoriaClassId);
+  public Object createEnum(Enum<? extends Enum<?>> current, IObjectId memoriaClassId);
 
   public IMemoriaClass getMemoriaClass(Object object, IObjectRepository objectRepository);
 

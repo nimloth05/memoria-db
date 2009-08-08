@@ -1,17 +1,24 @@
 package org.memoriadb.core.refactor;
 
-import java.util.List;
-
-import org.memoriadb.*;
+import org.memoriadb.IDataStore;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
+import org.memoriadb.IRefactor;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.Type;
-import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.ArrayTypeInfo;
+import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IDataObject;
-import org.memoriadb.handler.array.*;
-import org.memoriadb.handler.enu.*;
-import org.memoriadb.handler.field.*;
+import org.memoriadb.handler.array.DataArray;
+import org.memoriadb.handler.array.IArray;
+import org.memoriadb.handler.enu.EnumDataObject;
+import org.memoriadb.handler.enu.IEnumObject;
+import org.memoriadb.handler.field.FieldbasedObject;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
+
+import java.util.List;
 
 public class RefactorApi implements IRefactor {
 
@@ -42,12 +49,12 @@ public class RefactorApi implements IRefactor {
   }
 
   @Override
-  public IEnumObject getEnum(String name, final int ordinal) {
-    List<IEnumObject> query = fDataStore.query(name, new IFilter<IEnumObject>() {
+  public IEnumObject getEnum(String className, final String name) {
+    List<IEnumObject> query = fDataStore.query(className, new IFilter<IEnumObject>() {
 
       @Override
       public boolean accept(IEnumObject object, IFilterControl control) {
-        if (object.getOrdinal() == ordinal) {
+        if (object.getName().equals(name)) {
           control.abort();
           return true;
         }
@@ -58,9 +65,9 @@ public class RefactorApi implements IRefactor {
 
     if (!query.isEmpty()) return query.get(0);
 
-    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(name);
-    if (memoriaClassId == null) throw new MemoriaException("can not create enum, because enum-class has not yet been saved: " + name);
-    return new EnumDataObject(memoriaClassId, ordinal);
+    IObjectId memoriaClassId = fDataStore.getTypeInfo().getMemoriaClassId(className);
+    if (memoriaClassId == null) throw new MemoriaException("can not create enum, because enum-class has not yet been saved: " + className);
+    return new EnumDataObject(memoriaClassId, name);
   }
 
   @Override
