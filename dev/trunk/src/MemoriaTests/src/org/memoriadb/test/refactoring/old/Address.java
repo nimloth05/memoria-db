@@ -1,4 +1,4 @@
-package org.memoriadb.test.refactoring.oldcls;
+package org.memoriadb.test.refactoring.old;
 
 public class Address {
   
@@ -16,4 +16,8 @@ public class Address {
     fAddress = address;
   }
   
+  @Override
+  public String toString() {
+    return getAddress();
+  }
 }

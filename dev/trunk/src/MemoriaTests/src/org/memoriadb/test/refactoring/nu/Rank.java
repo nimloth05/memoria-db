@@ -1,4 +1,4 @@
-package org.memoriadb.test.refactoring.newcls;
+package org.memoriadb.test.refactoring.nu;
 
 public enum Rank {
   freshman,

@@ -1,5 +1,6 @@
 package org.memoriadb;
 
+import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.array.IArray;
 import org.memoriadb.handler.enu.IEnumObject;
 import org.memoriadb.handler.field.IFieldbasedObject;
@@ -32,5 +33,12 @@ public interface IRefactor {
   public IEnumObject getEnum(String className, String name);
   
   public <T> LangValueObject<T> getLangValueObject(T value);
+
+  /**
+   * 
+   * @param string
+   * @param string2
+   */
+  public IMemoriaClass renameClass(String string, String string2);
 
 }

@@ -1,13 +1,12 @@
-package org.memoriadb.test.refactoring.oldcls;
+package org.memoriadb.test.refactoring.nu;
 
 import java.util.*;
 
-public class Person implements Iterable<Address> {
+public abstract class Person implements Iterable<Address> {
 
   private String fName;
   private final List<Address> fAddresses;
-  private String fStudentId;
-  
+
   public Person() {
     fAddresses = new ArrayList<Address>();
   }
@@ -23,16 +22,8 @@ public class Person implements Iterable<Address> {
     return fName;
   }
 
-  public String getStudentId() {
-    return fStudentId;
-  }
-
   @Override
   public Iterator<Address> iterator() {
     return fAddresses.iterator();
-  }
-
-  public void setStudentId(String studentId) {
-    fStudentId = studentId;
   }
 }
