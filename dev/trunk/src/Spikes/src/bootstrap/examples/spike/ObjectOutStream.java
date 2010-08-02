@@ -50,10 +50,12 @@ public final class ObjectOutStream implements Flushable, Closeable {
     }
   }
 
+  @Override
   public void flush() throws IOException {
     fFileStrem.flush();
   }
 
+  @Override
   public void close() throws IOException {
     fFileStrem.close();
   }

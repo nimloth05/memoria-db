@@ -1,15 +1,34 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.mode;
 
-import java.util.List;
-
-import org.memoriadb.*;
+import org.memoriadb.IDataStore;
+import org.memoriadb.IFilter;
+import org.memoriadb.IRefactor;
 import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
 import org.memoriadb.handler.IDataObject;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IIdProvider;
+import org.memoriadb.id.IObjectId;
+
+import java.util.List;
 
 public class DataStore extends AbstractStore implements IDataStore {
 
@@ -71,19 +90,23 @@ public class DataStore extends AbstractStore implements IDataStore {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
  
+  @Override
   public <T extends IDataObject> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
   }
 
+  @Override
   public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz, filter);
   }
 
+  @Override
   public IObjectId save(IDataObject obj) {
     if(obj == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.save(obj);
   }
 
+  @Override
   public IObjectId saveAll(IDataObject root) {
     if(root == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.saveAll(root);

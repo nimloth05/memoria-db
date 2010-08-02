@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core;
 
 import org.memoriadb.block.Block;
@@ -51,6 +67,10 @@ public class ObjectRepository implements IObjectRepository {
 
   /**
    * This method is only used for bootstrapping
+   * @param id
+   * @param id
+   * @param object
+   * @param object
    */
   public void add(IObjectId id, IMemoriaClass object) {
     ObjectInfo result = new ObjectInfo(id, object.getMemoriaClassId(), object, Block.getDefaultBlock());
@@ -62,6 +82,7 @@ public class ObjectRepository implements IObjectRepository {
    *
    * @return The ObjectInfo for the newly added Object.
    */
+  @Override
   public ObjectInfo add(Object obj, IObjectId memoriaClassId) {
     IObjectId id = generateId();
     ObjectInfo result = new ObjectInfo(id, memoriaClassId, obj, Block.getDefaultBlock());
@@ -69,6 +90,7 @@ public class ObjectRepository implements IObjectRepository {
     return result;
   }
 
+  @Override
   public void checkIndexConsistency() {
     for (IObjectId id : fIdMap.keySet()) {
       Object object = fIdMap.get(id).getObject();
@@ -79,10 +101,12 @@ public class ObjectRepository implements IObjectRepository {
     }
   }
 
+  @Override
   public boolean contains(IObjectId id) {
     return fIdMap.containsKey(id);
   }
 
+  @Override
   public boolean contains(Object obj) {
     return fObjectMap.containsKey(obj);
   }
@@ -109,6 +133,7 @@ public class ObjectRepository implements IObjectRepository {
     return Collections.<IObjectInfo>unmodifiableCollection(fObjectMap.values());
   }
 
+  @Override
   public Iterable<Object> getAllObjects() {
     return fObjectMap.keySet();
   }
@@ -125,6 +150,7 @@ public class ObjectRepository implements IObjectRepository {
     return result;
   }
 
+  @Override
   public Object getExistingObject(IObjectId id) {
     IObjectInfo objectInfo = fIdMap.get(id);
     if (objectInfo == null) throw new MemoriaException("Unknown id: " + id);
@@ -137,6 +163,7 @@ public class ObjectRepository implements IObjectRepository {
    * @throws MemoriaException
    *           if object can not be found
    */
+  @Override
   public IObjectId getId(Object obj) {
     IObjectInfo result = fObjectMap.get(obj);
     if(result == null) return null;
@@ -158,6 +185,7 @@ public class ObjectRepository implements IObjectRepository {
   /**
    * @return the metaObject for the given object or null, if the metaClass does not exists
    */
+  @Override
   public IMemoriaClassConfig getMemoriaClass(String klass) {
     return fMemoriaClasses.get(klass);
   }
@@ -167,16 +195,19 @@ public class ObjectRepository implements IObjectRepository {
    * @param objectId
    * @return the object for the given id or null.
    */
+  @Override
   public Object getObject(IObjectId objectId) {
     IObjectInfo objectInfo = fIdMap.get(objectId);
     if (objectInfo == null) return null;
     return objectInfo.getObject();
   }
 
+  @Override
   public ObjectInfo getObjectInfo(Object obj) {
     return fObjectMap.get(obj);
   }
 
+  @Override
   public ObjectInfo getObjectInfoForId(IObjectId id) {
     ObjectInfo result = fIdMap.get(id);
     if(result == null) result = fDeletedMap.get(id);
@@ -185,6 +216,8 @@ public class ObjectRepository implements IObjectRepository {
 
   /**
    * Adds an object after dehydration
+   * @param objectInfo
+   * @param objectInfo
    */
   public void handleAdd(ObjectInfo objectInfo) {
     internalPut(objectInfo);

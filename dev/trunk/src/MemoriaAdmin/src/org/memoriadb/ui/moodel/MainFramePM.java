@@ -1,20 +1,50 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.ui.moodel;
 
-import java.util.*;
-
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.tree.*;
-
-import org.memoriadb.*;
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.util.disposable.*;
-import org.memoriadb.handler.IDataObject;
-import org.memoriadb.services.presenter.*;
-import org.memoriadb.services.store.*;
-import org.memoriadb.ui.controls.tree.*;
-
 import com.google.inject.Inject;
+import org.memoriadb.IDataStore;
+import org.memoriadb.ITypeInfo;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.util.disposable.IDisposable;
+import org.memoriadb.core.util.disposable.ListenerList;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.services.presenter.IClassRenderer;
+import org.memoriadb.services.presenter.IClassRendererService;
+import org.memoriadb.services.presenter.ITableModelDecorator;
+import org.memoriadb.services.presenter.TableModel;
+import org.memoriadb.services.store.IChangeListener;
+import org.memoriadb.services.store.IDataStoreService;
+import org.memoriadb.ui.controls.tree.EmptyTreeModel;
+import org.memoriadb.ui.controls.tree.ILabelProvider;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainFramePM {
   

@@ -51,13 +51,13 @@ public class ObjectInStream implements Closeable {
       
       if (String.class.equals(fieldType)) {
         field.set(obj, in.readUTF());
-        continue;
       }
       
     }
     return obj;
   }
 
+  @Override
   public void close() throws IOException {
     fStream.close();
   }

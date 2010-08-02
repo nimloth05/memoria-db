@@ -1,13 +1,33 @@
-package org.memoriadb.testutil;
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
-import java.io.IOException;
-import java.util.*;
+package org.memoriadb.testutil;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.read.*;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.read.FileReader;
+import org.memoriadb.core.file.read.HydratedObject;
+import org.memoriadb.core.file.read.IFileReaderHandler;
 import org.memoriadb.id.IObjectId;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stores the structure of a IMemoriaFile for test and debug reasons.

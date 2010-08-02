@@ -18,7 +18,7 @@ public class Inheritance {
     }
   }
   
-  public static final void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
+  public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
     Method method = B.class.getMethod("f");
     method.invoke(new B());
     System.out.println(Arrays.toString(B.class.getMethods()));

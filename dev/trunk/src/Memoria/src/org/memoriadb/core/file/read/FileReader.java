@@ -1,14 +1,36 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.file.read;
 
-import java.io.IOException;
-
 import org.memoriadb.block.Block;
-import org.memoriadb.core.block.*;
+import org.memoriadb.core.block.AlwaysThrowErrorHandler;
+import org.memoriadb.core.block.IBlockErrorHandler;
+import org.memoriadb.core.block.LastAppendedErrorHandler;
+import org.memoriadb.core.block.LastWrittenErrorHandler;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.HeaderHelper;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
 import org.memoriadb.id.IObjectIdFactory;
+
+import java.io.IOException;
 
 /**
  * Reads the content of a {@link IMemoriaFile}.
@@ -23,7 +45,7 @@ public class FileReader {
 
   private enum State {
     created, headerRead, blockRead, closed
-  };
+  }
 
   private final IMemoriaFile fFile;
   private State fState = State.created;

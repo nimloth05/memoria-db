@@ -7,6 +7,9 @@ import org.memoriadb.Memoria;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Copyright
+ */
 public class Main {
 
   /**

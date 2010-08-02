@@ -1,17 +1,36 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.handler.map;
 
-import java.io.*;
-import java.util.Map;
-
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.exception.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.ITypeVisitor;
+import org.memoriadb.core.meta.Type;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
+
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.util.Map;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
@@ -29,7 +48,9 @@ public class MapHandler implements IHandler {
   }
   
   /**
-   * Called from Memoria 
+   * Called from Memoria
+   * @param className
+   * @param className
    */
   private MapHandler(String className) {
     fClassName = className;

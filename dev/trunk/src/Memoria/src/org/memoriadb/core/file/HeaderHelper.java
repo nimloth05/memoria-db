@@ -1,13 +1,35 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.file;
 
-import java.io.*;
-import java.util.*;
-
-import org.memoriadb.*;
+import org.memoriadb.CreateConfig;
+import org.memoriadb.Memoria;
 import org.memoriadb.block.Block;
-import org.memoriadb.core.exception.*;
-import org.memoriadb.core.util.*;
+import org.memoriadb.core.exception.FileCorruptException;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.util.ByteUtil;
+import org.memoriadb.core.util.Constants;
+import org.memoriadb.core.util.MemoriaCRC32;
+import org.memoriadb.core.util.Version;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.UUID;
 
 public class HeaderHelper {
 

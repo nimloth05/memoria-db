@@ -1,17 +1,35 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.test.core.util;
 
-import java.util.*;
-
 import junit.framework.TestCase;
-
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.test.testclasses.WrongHashCode;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class IdentityHashSetTest extends TestCase {
   
   public void test_add_remove() {
-    Set<WrongHashCode> set = IdentityHashSet.create();;
-    
+    Set<WrongHashCode> set = IdentityHashSet.create();
+
     assertTrue( set.add(new WrongHashCode()) );
     
     WrongHashCode obj = new WrongHashCode();
@@ -25,7 +43,7 @@ public class IdentityHashSetTest extends TestCase {
     List<WrongHashCode> add = new ArrayList<WrongHashCode>();
     add.add(new WrongHashCode("1"));
     
-    Set<WrongHashCode> set = IdentityHashSet.create();;
+    Set<WrongHashCode> set = IdentityHashSet.create();
     set.add(new WrongHashCode("4"));
     
     assertTrue(set.addAll(add));
@@ -33,16 +51,16 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_clear() {
-    Set<WrongHashCode> set = IdentityHashSet.create();;
-    
+    Set<WrongHashCode> set = IdentityHashSet.create();
+
     set.add(new WrongHashCode());
     set.clear();
     assertEquals(0, set.size());
   }
   
   public void test_contains() {
-    Set<WrongHashCode> set = IdentityHashSet.create();;
-    
+    Set<WrongHashCode> set = IdentityHashSet.create();
+
     set.add(new WrongHashCode());
     assertFalse(set.contains(new WrongHashCode()));
   }
@@ -51,14 +69,14 @@ public class IdentityHashSetTest extends TestCase {
     List<WrongHashCode> contain = new ArrayList<WrongHashCode>();
     contain.add(new WrongHashCode("1"));
     
-    Set<WrongHashCode> set = IdentityHashSet.create();;
+    Set<WrongHashCode> set = IdentityHashSet.create();
     set.add(new WrongHashCode("4"));
     
     assertFalse(set.containsAll(contain));
   }
   
   public void test_iterator() {
-    Set<WrongHashCode> set = IdentityHashSet.create();;
+    Set<WrongHashCode> set = IdentityHashSet.create();
     WrongHashCode expected = new WrongHashCode(); 
     set.add(expected);
     Iterator<WrongHashCode> iterator = set.iterator();
@@ -67,8 +85,8 @@ public class IdentityHashSetTest extends TestCase {
   }
   
   public void test_remove() {
-    Set<WrongHashCode> set = IdentityHashSet.create();;
-    
+    Set<WrongHashCode> set = IdentityHashSet.create();
+
     WrongHashCode obj = new WrongHashCode("1");
     WrongHashCode remain = new WrongHashCode("2");
     
@@ -86,7 +104,7 @@ public class IdentityHashSetTest extends TestCase {
       List<WrongHashCode> removed = new ArrayList<WrongHashCode>();
       removed.add(new WrongHashCode("1"));
       
-      Set<WrongHashCode> set = IdentityHashSet.create();;
+      Set<WrongHashCode> set = IdentityHashSet.create();
       set.add(new WrongHashCode("4"));
       
       set.removeAll(removed);
@@ -105,7 +123,7 @@ public class IdentityHashSetTest extends TestCase {
       List<WrongHashCode> retain = new ArrayList<WrongHashCode>();
       retain.add(new WrongHashCode("1"));
     
-      Set<WrongHashCode> set = IdentityHashSet.create();;
+      Set<WrongHashCode> set = IdentityHashSet.create();
       set.add(new WrongHashCode("2"));
     
       assertTrue(set.retainAll(retain));

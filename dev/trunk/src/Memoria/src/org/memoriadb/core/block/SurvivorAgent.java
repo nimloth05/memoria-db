@@ -1,16 +1,37 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.block;
+
+import org.memoriadb.block.Block;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.read.BlockReader;
+import org.memoriadb.core.file.read.HydratedObject;
+import org.memoriadb.core.file.read.IFileReaderHandler;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.core.util.io.IOUtil;
+import org.memoriadb.core.util.io.MemoriaDataInputStream;
+import org.memoriadb.id.IObjectId;
 
 import java.io.IOException;
 import java.util.Set;
-
-import org.memoriadb.block.Block;
-import org.memoriadb.core.*;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.read.*;
-import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.core.util.io.*;
-import org.memoriadb.id.IObjectId;
 
 /**
  * Computes the survivors in a block.

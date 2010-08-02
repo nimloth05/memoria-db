@@ -1,17 +1,42 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.file.write;
 
-import java.io.IOException;
-import java.util.*;
-
 import org.memoriadb.OpenConfig;
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
+import org.memoriadb.block.Block;
+import org.memoriadb.block.IBlockManager;
+import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.core.file.HeaderHelper;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class TransactionWriter {
 
@@ -96,6 +121,12 @@ public final class TransactionWriter {
 
   /**
    * Saves the survivors of the given <tt>block</tt>;
+   * @param block
+   * @param block
+   * @param tabooBlocks
+   * @param tabooBlocks
+   * @param mode
+   * @param mode
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
    * 
    * @throws IOException
@@ -124,7 +155,15 @@ public final class TransactionWriter {
   }
 
   /**
+   * @param tabooBlocks
+   * @param tabooBlocks
+   * @param mode
+   * @param mode
+   * @param survivorAgent
+   * @param survivorAgent
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
+   * @throws java.io.IOException
+   * @throws Exception
    */
   private void saveSurvivors(Set<Block> tabooBlocks, IModeStrategy mode, SurvivorAgent survivorAgent, List<ObjectInfo> decOGC) throws Exception, IOException {
     
@@ -200,7 +239,17 @@ public final class TransactionWriter {
 
   /**
    * Called recursively
-   * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented. 
+   * @param trxData
+   * @param trxData
+   * @param objectDataCount
+   * @param objectDataCount
+   * @param tabooBlocks
+   * @param tabooBlocks
+   * @param mode
+   * @param mode
+   * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
+   * @throws Exception
+   * @return
    */
   private Block write(byte[] trxData, long objectDataCount, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/migLayout/miglayout15-swing.jar" sourcepath="libs/migLayout/miglayout-src.zip"/>
-	<classpathentry kind="lib" path="libs/guice/guice-1.0.jar" sourcepath="libs/guice/guice-src.zip"/>
-	<classpathentry kind="lib" path="libs/glazedList/glazedlists-1.7.0_java15.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Memoria"/>
-	<classpathentry kind="output" path="bin"/>
+    <classpathentry kind="src" path="src" />
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+    <classpathentry kind="lib" path="libs/migLayout/miglayout15-swing.jar" sourcepath="libs/migLayout/miglayout-src.zip" />
+    <classpathentry kind="lib" path="libs/guice/guice-1.0.jar" sourcepath="libs/guice/guice-src.zip" />
+    <classpathentry kind="lib" path="libs/glazedList/glazedlists-1.7.0_java15.jar" />
+    <classpathentry kind="src" path="/org.memoria" combineaccessrules="false" />
+    <classpathentry combineaccessrules="false" kind="src" path="/Memoria" />
+    <classpathentry kind="output" path="bin" />
 </classpath>
+

@@ -1,7 +1,20 @@
-package org.memoriadb.handler.jdk.url;
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
-import java.io.*;
-import java.net.URL;
+package org.memoriadb.handler.jdk.url;
 
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
@@ -11,6 +24,10 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.jdk.JDKDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
+
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.net.URL;
 
 public class URLHandler implements IHandler {
 

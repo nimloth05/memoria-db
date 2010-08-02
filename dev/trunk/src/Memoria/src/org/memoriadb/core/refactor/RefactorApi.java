@@ -1,17 +1,43 @@
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.memoriadb.core.refactor;
 
-import java.util.List;
-
-import org.memoriadb.*;
+import org.memoriadb.IDataStore;
+import org.memoriadb.IFilter;
+import org.memoriadb.IFilterControl;
+import org.memoriadb.IRefactor;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.*;
-import org.memoriadb.core.util.*;
-import org.memoriadb.handler.*;
-import org.memoriadb.handler.array.*;
-import org.memoriadb.handler.enu.*;
-import org.memoriadb.handler.field.*;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.util.ArrayTypeInfo;
+import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.handler.IDataObject;
+import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.array.DataArray;
+import org.memoriadb.handler.array.IArray;
+import org.memoriadb.handler.enu.EnumDataObject;
+import org.memoriadb.handler.enu.IEnumObject;
+import org.memoriadb.handler.field.FieldbasedObject;
+import org.memoriadb.handler.field.FieldbasedObjectHandler;
+import org.memoriadb.handler.field.IFieldbasedObject;
 import org.memoriadb.handler.value.LangValueObject;
 import org.memoriadb.id.IObjectId;
+
+import java.util.List;
 
 public class RefactorApi implements IRefactor {
 
@@ -30,6 +56,7 @@ public class RefactorApi implements IRefactor {
     return new FieldbasedObject(object, memoriaClassId);
   }
 
+  @Override
   public IArray createArray(Class<?> klass, int length) {
     if (!klass.isArray()) throw new MemoriaException("not an array " + klass);
     return new DataArray(getArrayClass(), ReflectionUtil.getComponentTypeInfo(klass), length);

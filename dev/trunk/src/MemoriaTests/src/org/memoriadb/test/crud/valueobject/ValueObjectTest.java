@@ -1,14 +1,36 @@
-package org.memoriadb.test.crud.valueobject;
+/*
+ * Copyright 2010 Sandro Orlando
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
-import java.util.*;
+package org.memoriadb.test.crud.valueobject;
 
 import org.memoriadb.CreateConfig;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.test.crud.valueobject.testclasses.*;
-import org.memoriadb.test.testclasses.*;
-import org.memoriadb.test.testclasses.composite.*;
+import org.memoriadb.test.crud.valueobject.testclasses.AnnotatedObjectReferencer;
+import org.memoriadb.test.crud.valueobject.testclasses.EnumValueObject;
+import org.memoriadb.test.testclasses.ObjectReferencer;
+import org.memoriadb.test.testclasses.ValueObjectReferencer;
+import org.memoriadb.test.testclasses.composite.Composite;
+import org.memoriadb.test.testclasses.composite.IComponent;
+import org.memoriadb.test.testclasses.composite.Leaf;
 import org.memoriadb.test.testclasses.enums.TestEnum;
 import org.memoriadb.testutil.AbstractMemoriaTest;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 //FIXME Kontrollieren, ob es einen Test gibt, welcher prüft ob "halb/halb"-ValueObject Aggregate funktionieren.
 public class ValueObjectTest extends AbstractMemoriaTest {
