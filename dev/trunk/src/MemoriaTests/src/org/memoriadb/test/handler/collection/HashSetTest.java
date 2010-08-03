@@ -16,12 +16,10 @@
 
 package org.memoriadb.test.handler.collection;
 
+import java.util.*;
+
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.testclasses.HashSetKey;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class HashSetTest extends SetTest {
@@ -54,9 +52,18 @@ public class HashSetTest extends SetTest {
   }
   
   @Override
+  public void test_list_in_list() {
+    // sets in sets cannot be serialized
+  }
+  
+  @Override
+  public void test_list_in_list_in_multiple_save_calls() {
+    // sets in sets cannot be serialized    
+  }
+  
+  @Override
   protected <T> Collection<T> createCollection() {
     return new HashSet<T>();
   }
-  
 
 }

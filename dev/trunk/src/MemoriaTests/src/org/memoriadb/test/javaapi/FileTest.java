@@ -16,11 +16,9 @@
 
 package org.memoriadb.test.javaapi;
 
-import junit.framework.TestCase;
+import java.io.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import junit.framework.TestCase;
 
 public class FileTest extends TestCase {
   

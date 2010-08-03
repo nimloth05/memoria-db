@@ -22,6 +22,16 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class CopyOnWriteArraySetTest extends SetTest {
 
   @Override
+  public void test_list_in_list() {
+    // sets in sets cannot be serialized
+  }
+  
+  @Override
+  public void test_list_in_list_in_multiple_save_calls() {
+    // sets in sets cannot be serialized    
+  }
+  
+  @Override
   protected <T> Collection<T> createCollection() {
     return new CopyOnWriteArraySet<T>();
   }

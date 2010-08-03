@@ -16,11 +16,20 @@
 
 package org.memoriadb.test.handler.collection;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 public class LinkedHashSetTest extends SetTest {
 
+  @Override
+  public void test_list_in_list() {
+    // sets in sets cannot be serialized
+  }
+  
+  @Override
+  public void test_list_in_list_in_multiple_save_calls() {
+    // sets in sets cannot be serialized    
+  }
+  
   @Override
   protected <T> Collection<T> createCollection() {
     return new LinkedHashSet<T>();
