@@ -30,7 +30,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
 
   private final List<Block> fBlocks = new ArrayList<Block>();
 
-  private final TreeSet<BlockBucket> fRecycleList = new TreeSet<BlockBucket>();
+  private final TreeSet<BlockBucket> fRecycleList = new TreeSet<BlockBucket>(new BlockBucketComparator());
 
   /**
    * 
