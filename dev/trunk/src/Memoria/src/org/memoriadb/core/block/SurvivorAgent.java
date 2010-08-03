@@ -16,17 +16,22 @@
 
 package org.memoriadb.core.block;
 
+import org.memoriadb.block.Block;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.read.BlockReader;
+import org.memoriadb.core.file.read.HydratedObject;
+import org.memoriadb.core.file.read.IFileReaderHandler;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.core.util.io.IOUtil;
+import org.memoriadb.core.util.io.MemoriaDataInputStream;
+import org.memoriadb.id.IObjectId;
+
 import java.io.IOException;
 import java.util.Set;
-
-import org.memoriadb.block.Block;
-import org.memoriadb.core.*;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.read.*;
-import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.core.util.io.*;
-import org.memoriadb.id.IObjectId;
 
 /**
  * Computes the survivors in a block.
@@ -39,7 +44,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   private final Set<ObjectInfo> fActiveObjectData = IdentityHashSet.create();
   private final Set<ObjectInfo> fActiveDeleteMarkers =  IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveObjectDatas = IdentityHashSet.create();
-  private int fInactiveDeleteMarkerCount = 0;
+  private final Set<ObjectInfo> fInactiveDeleteMarkers = IdentityHashSet.create();
   
   private final IObjectRepository fRepo;
   private final IMemoriaFile fFile;
@@ -81,9 +86,9 @@ public class SurvivorAgent implements IFileReaderHandler  {
     return fActiveObjectData;
   }
   
-//  public Set<ObjectInfo> getInactiveDeleteMarkers() {
-//    return fInactiveDeleteMarkers;
-//  }
+  public Set<ObjectInfo> getInactiveDeleteMarkers() {
+    return fInactiveDeleteMarkers;
+  }
 
   public Set<ObjectInfo> getInactiveObjectData() {
     return fInactiveObjectDatas;
@@ -114,11 +119,11 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
 
   private int getInactiveObjectDataCount() {
-    return fInactiveDeleteMarkerCount + fInactiveObjectDatas.size();
+    return fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size();
   }
 
   private int getObjectDataCount() {
-    return fActiveDeleteMarkers.size() + fInactiveDeleteMarkerCount + fInactiveObjectDatas.size() + fActiveObjectData.size();
+    return fActiveDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fActiveObjectData.size();
   }
   
   private void handleDelete(IObjectId id, long revision) {
@@ -129,7 +134,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
     // check if deletionMarker must be saved.
     if(info.getOldGenerationCount() == 0) {
       // the DeletionMarker is not used anymore...
-      fInactiveDeleteMarkerCount++;
+      fInactiveDeleteMarkers.add(info);
     }
     else {
       fActiveDeleteMarkers.add(info);

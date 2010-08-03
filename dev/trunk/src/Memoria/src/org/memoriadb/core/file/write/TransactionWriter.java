@@ -137,8 +137,11 @@ public final class TransactionWriter {
 
       decOGC.add(info);
     }
-
-    // silently discard inactive delete-markers
+    
+    for(ObjectInfo info : survivorAgent.getInactiveDeleteMarkers()) {
+      fRepo.removeFromIndex(info);
+    }
+    
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
@@ -178,6 +181,7 @@ public final class TransactionWriter {
       info.changeCurrentBlock(survivorsBlock);
       info.setRevision(revision);
     }
+    
   }
 
   private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block, long revision) {
@@ -282,9 +286,7 @@ public final class TransactionWriter {
 
     // must done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {
-      if (info.decrementOldGenerationCount() == 0 && info.isDeleted()) {
-//        fRepo.removeFromIndex(info);
-      }
+      info.decrementOldGenerationCount();
     }
   }
 

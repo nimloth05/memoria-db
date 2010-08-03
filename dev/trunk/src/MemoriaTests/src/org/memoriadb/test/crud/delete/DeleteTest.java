@@ -20,8 +20,7 @@ import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.A;
-import org.memoriadb.test.testclasses.IntObject;
-import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class DeleteTest extends AbstractMemoriaTest {
@@ -200,6 +199,25 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id));
   }
   
+  public void test_save_object_after_deletion_gets_new_id() {
+    Object obj = new Object();
+    IObjectId id = save(obj);
+    
+    assertTrue(fObjectStore.contains(obj));
+    assertTrue(fObjectStore.containsId(id));
+    
+    delete(obj);
+    
+    assertFalse(fObjectStore.contains(obj));
+    assertFalse(fObjectStore.containsId(id));
+
+    IObjectId id2 = save(obj);
+    assertFalse(id2.equals(id));
+    assertTrue(fObjectStore.contains(obj));
+    assertTrue(fObjectStore.containsId(id2));
+    assertFalse(fObjectStore.containsId(id));
+  }
+  
   public void test_save_twice_and_delete_in_same_transaction() {
     Object obj = new Object();
     
@@ -237,5 +255,6 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.contains(obj));
     assertFalse(fObjectStore.containsId(id));
   }
+  
   
 }

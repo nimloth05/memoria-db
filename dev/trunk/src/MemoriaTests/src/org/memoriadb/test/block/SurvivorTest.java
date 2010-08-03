@@ -286,7 +286,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     save(get(id3));
     // |o3~|o3'|o2'|
     
-    assertEquals(0, getObjectInfo(id1).getOldGenerationCount());
+    assertFalse(fObjectStore.containsId(id1));
+    assertNull(getObjectInfo(id1));
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
     assertEquals(1, getObjectInfo(id3).getOldGenerationCount());
 
