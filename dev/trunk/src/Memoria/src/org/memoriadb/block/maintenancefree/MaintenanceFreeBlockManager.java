@@ -16,14 +16,11 @@
 
 package org.memoriadb.block.maintenancefree;
 
+import java.util.*;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.exception.MemoriaException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class MaintenanceFreeBlockManager implements IBlockManagerExt {
 
@@ -45,7 +42,7 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
    *          inactive
    * 
    * @param sizeThreshold
-   *          0..100%: 0 means: every block qualifies for recycling, 100% menas: A block only qualifies for recycling
+   *          0..100%: 0 means: every block qualifies for recycling, 100% means: A block only qualifies for recycling
    *          when it's size matches the requested size.
    */
   public MaintenanceFreeBlockManager(int inactiveThreshold, int sizeThreshold) {

@@ -80,14 +80,14 @@ public class SurvivorTest extends AbstractMemoriaTest {
     // |o2'|~o2,d1|
 
     save(o2);
-    // |d1'|o2 |
+    // |~o2|o2''|
 
     reopen();
 
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
   }
-
+  
   public void test_inactiveCount() {
     Object obj = new Object();
 
@@ -185,7 +185,7 @@ public class SurvivorTest extends AbstractMemoriaTest {
 
     reopen();
 
-    // deleting the object, waht results in a free block and a deletionMarker.
+    // deleting the object, what results in a free block and a deletionMarker.
     save(get(id1));
 
     // let o2 reuse the free block

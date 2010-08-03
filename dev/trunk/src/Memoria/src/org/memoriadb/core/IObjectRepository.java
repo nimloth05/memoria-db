@@ -16,13 +16,11 @@
 
 package org.memoriadb.core;
 
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
-
 import java.util.Collection;
+
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.meta.*;
+import org.memoriadb.id.*;
 
 /**
  * This interfaces encapsulates the indexes to the ObjectInfo. The methods are only intended 
@@ -130,5 +128,11 @@ public interface IObjectRepository {
    * @param obj
    */
   public boolean isMemoriaClass(Object obj);
+  
+  /**
+   * Removes an object completely from the index. The object must previously have been deleted.
+   * @param objectInfo
+   */
+  public void removeFromIndex(IObjectInfo objectInfo);
 
 }

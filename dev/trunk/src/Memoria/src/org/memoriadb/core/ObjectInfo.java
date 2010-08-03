@@ -32,12 +32,6 @@ import org.memoriadb.id.IObjectId;
 public class ObjectInfo implements IObjectInfo {
   
   /**
-   * true, when the deletion-marker for this object has been written
-   * FIXME remove flag, msc
-   */
-  private boolean fDeleteMarkerPersistent;
-  
-  /**
    *  null for deleted object
    */
   private Object fObj;
@@ -54,12 +48,8 @@ public class ObjectInfo implements IObjectInfo {
   /**
    * Use this ctor only when an object is initially added to the container.
    * @param id
-   * @param id
-   * @param memoriaClassId
    * @param memoriaClassId
    * @param obj
-   * @param obj
-   * @param currentBlock
    * @param currentBlock
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock) {
@@ -87,9 +77,6 @@ public class ObjectInfo implements IObjectInfo {
     
     fObj = obj;
     
-    // when the object is deleted, there must be a persistent delete-marker
-    fDeleteMarkerPersistent = isDeleted();
-    
     fId = id;
     fCurrentBlock = currentBlock;
     fMemoriaClassId = memoriaClassId;
@@ -107,7 +94,7 @@ public class ObjectInfo implements IObjectInfo {
     setCurrentBlock(block);
   }
 
-  public void decrementOldGenerationCount() {
+  public int decrementOldGenerationCount() {
     --fOldGenerationCount;
     
     if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
@@ -116,6 +103,7 @@ public class ObjectInfo implements IObjectInfo {
     if(fOldGenerationCount==0 && isDeleted()) {
       fCurrentBlock.incrementInactiveObjectDataCount();
     }
+    return fOldGenerationCount;
   }
   
   @Override
@@ -157,11 +145,6 @@ public class ObjectInfo implements IObjectInfo {
     return fObj == null;
   }
   
-  @Override
-  public boolean isDeleteMarkerPersistent() {
-    return fDeleteMarkerPersistent;
-  }
-  
   public void setCurrentBlock(Block block) {
     fCurrentBlock = block;
   }
@@ -170,11 +153,6 @@ public class ObjectInfo implements IObjectInfo {
     fObj = null;
   }
   
-  public void setDeleteMarkerPersistent() {
-    if(!isDeleted()) throw new MemoriaException("object must be deleted before deleteMarker can be persistent");
-    fDeleteMarkerPersistent = true;
-  }
-
   public void setObj(Object obj) {
     fObj = obj;
   }

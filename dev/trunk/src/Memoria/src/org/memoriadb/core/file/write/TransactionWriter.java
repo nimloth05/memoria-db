@@ -16,27 +16,18 @@
 
 package org.memoriadb.core.file.write;
 
+import java.io.IOException;
+import java.util.*;
+
 import org.memoriadb.OpenConfig;
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.IObjectInfo;
-import org.memoriadb.core.IObjectRepository;
-import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.block.*;
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.file.HeaderHelper;
-import org.memoriadb.core.file.ICompressor;
-import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public final class TransactionWriter {
 
@@ -201,7 +192,6 @@ public final class TransactionWriter {
       info.changeCurrentBlock(block);
       info.setRevision(revision);
       info.incrementOldGenerationCount();
-      info.setDeleteMarkerPersistent();
     }
   }
 
@@ -292,7 +282,9 @@ public final class TransactionWriter {
 
     // must done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {
-      info.decrementOldGenerationCount();
+      if (info.decrementOldGenerationCount() == 0 && info.isDeleted()) {
+//        fRepo.removeFromIndex(info);
+      }
     }
   }
 

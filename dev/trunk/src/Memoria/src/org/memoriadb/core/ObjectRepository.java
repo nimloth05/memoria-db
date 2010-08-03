@@ -16,18 +16,13 @@
 
 package org.memoriadb.core;
 
+import java.util.*;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.memoriadb.id.*;
 
 /**
  * Holds the main-indexes.
@@ -238,6 +233,12 @@ public class ObjectRepository implements IObjectRepository {
 
   public boolean isNullReference(IObjectId objectId) {
     return fIdFactory.isNullReference(objectId);
+  }
+  
+  @Override
+  public void removeFromIndex(IObjectInfo objectInfo) {
+    if (!objectInfo.isDeleted() || !fDeletedMap.containsKey(objectInfo.getId())) throw new MemoriaException("object is not deleted"+objectInfo);
+    fDeletedMap.remove(objectInfo.getId());
   }
 
   private IObjectId generateId() {
