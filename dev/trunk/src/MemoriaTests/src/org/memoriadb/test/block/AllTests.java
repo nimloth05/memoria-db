@@ -28,7 +28,7 @@ public class AllTests {
     suite.addTestSuite(SurvivorTest.class);
     suite.addTestSuite(CurrentBlockScenarioTest.class);
     suite.addTestSuite(SurvivorAgentTest.class);
-    suite.addTestSuite(BlockTest.class);
+    suite.addTestSuite(BlockBucketComparatorTest.class);
     suite.addTestSuite(BlockManagerTest.class);
     suite.addTestSuite(TransactionWriterTest.class);
     suite.addTestSuite(DeleteMarkerTest.class);
