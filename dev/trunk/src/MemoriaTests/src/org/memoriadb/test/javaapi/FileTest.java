@@ -32,9 +32,15 @@ public class FileTest extends TestCase {
     RandomAccessFile rf = new RandomAccessFile(NAME, "rws");
     assertTrue(file.exists());
 
-    assertFalse(file.delete());
-    rf.close();
-    assertTrue(file.delete());
+    if (!"Linux".equals(System.getProperty("os.name"))) {
+      assertFalse(file.delete());
+      rf.close();
+      assertTrue(file.delete());
+    } else {
+      assertTrue(file.delete());
+      rf.close();
+      assertFalse(file.delete());
+    }
 
     assertFalse(file.exists());
   }
