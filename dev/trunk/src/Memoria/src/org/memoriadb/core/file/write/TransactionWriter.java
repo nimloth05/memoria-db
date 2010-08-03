@@ -33,10 +33,10 @@ public final class TransactionWriter {
 
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
-  private long fHeadRevision;
   private final IObjectRepository fRepo;
   private final OpenConfig fConfig;
   private final ICompressor fCompressor;
+  private long fHeadRevision;
 
   public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision, ICompressor compressor) {
     fConfig = config;

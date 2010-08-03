@@ -16,14 +16,14 @@
 
 package org.memoriadb.test.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 public class AllTests {
 
   public static Test suite() {
     TestSuite suite = new TestSuite("Test for org.memoriadb.core");
 
+    suite.addTest(org.memoriadb.test.core.block.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.backend.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.scenario.AllTests.suite());
     suite.addTest(org.memoriadb.test.core.query.AllTests.suite());
