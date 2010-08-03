@@ -40,7 +40,7 @@ public class ObjectModeQueryStrategy {
   public <FILTER, T extends FILTER> List<T> query(IObjectRepository objectRepository, Class<T> clazz, IFilter<FILTER> filter) {
     FilterControl<T> control = new FilterControl<T>();
 
-    for (Object object : objectRepository.getAllUserSpaceObjects()) {
+    for (Object object : objectRepository.getAllUserSpaceObjects(clazz)) {
       if (!clazz.isInstance(object)) continue;
 
       T currentObject = (T) object;

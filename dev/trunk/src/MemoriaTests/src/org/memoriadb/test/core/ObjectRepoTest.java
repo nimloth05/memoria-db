@@ -17,16 +17,15 @@
 package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
+
 import org.memoriadb.block.Block;
-import org.memoriadb.core.ObjectInfo;
-import org.memoriadb.core.ObjectRepository;
+import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.loong.LongId;
-import org.memoriadb.id.loong.LongIdFactory;
-import org.memoriadb.test.testclasses.StringObject;
+import org.memoriadb.id.loong.*;
+import org.memoriadb.test.testclasses.*;
 import org.memoriadb.testutil.CollectionUtil;
 
 public class ObjectRepoTest extends TestCase {
@@ -57,6 +56,17 @@ public class ObjectRepoTest extends TestCase {
     
     assertEquals(2, CollectionUtil.count(fRepo.getAllObjects()));
     assertEquals(1, CollectionUtil.count(fRepo.getAllUserSpaceObjects()));
+  }
+  
+  public void test_getAllUserSpaceObjects_by_class() {
+    IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1));
+    fRepo.add(new LongId(2), classObject);
+    fRepo.add(new StringObject(), new LongId(3));
+    fRepo.add(new IntObject(1), new LongId(3));
+    
+    assertEquals(1, CollectionUtil.count(fRepo.getAllUserSpaceObjects(StringObject.class)));
+    assertEquals(2, CollectionUtil.count(fRepo.getAllUserSpaceObjects(Object.class)));
+    assertEquals(0, CollectionUtil.count(fRepo.getAllUserSpaceObjects(IMemoriaClass.class)));
   }
   
   public void test_put_meta_object_in_cache() {

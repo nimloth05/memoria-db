@@ -67,6 +67,8 @@ public interface IObjectRepository {
   
   public Iterable<Object> getAllUserSpaceObjects();
 
+  public Iterable<Object> getAllUserSpaceObjects(Class<?> clazz);
+
   public IObjectId getExistingId(Object obj);
 
   public Object getExistingObject(IObjectId id);
