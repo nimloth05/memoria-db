@@ -16,29 +16,25 @@
 
 package org.memoriadb.core.file.read;
 
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.ObjectInfo;
-import org.memoriadb.core.ObjectRepository;
+import java.io.*;
+import java.util.*;
+
+import org.memoriadb.block.*;
+import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
+import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInput;
-import java.io.IOException;
-import java.util.*;
 
 public final class ObjectLoader implements IReaderContext {
 
   private Map<IObjectId, HydratedInfo> fHydratedObjects = new HashMap<IObjectId, HydratedInfo>();
   private Map<IObjectId, HydratedInfo> fHydratedMetaClasses = new HashMap<IObjectId, HydratedInfo>();
 
-  private final Set<IBindable> fGenOneBindings = new LinkedHashSet<IBindable>();
-  private final Set<IBindable> fGenTwoBindings = new LinkedHashSet<IBindable>();
+  private final List<IBindable> fGenOneBindings = new ArrayList<IBindable>();
+  private final List<IBindable> fGenTwoBindings = new ArrayList<IBindable>();
 
   private final ObjectRepository fRepo;
   private final FileReader fFileReader;
@@ -187,7 +183,7 @@ public final class ObjectLoader implements IReaderContext {
         bindable.bind(this);
       }
       fGenOneBindings.clear();
-      
+
       for (IBindable bindable : fGenTwoBindings) {
         bindable.bind(this);
       }
