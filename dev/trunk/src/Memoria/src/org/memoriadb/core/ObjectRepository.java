@@ -18,7 +18,6 @@ package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.collection.identity.*;
@@ -73,7 +72,7 @@ public class ObjectRepository implements IObjectRepository {
    * @param object
    */
   public void add(IObjectId id, IMemoriaClass object) {
-    ObjectInfo result = new ObjectInfo(id, object.getMemoriaClassId(), object, Block.getDefaultBlock());
+    ObjectInfo result = new ObjectInfo(id, object.getMemoriaClassId(), object);
     internalPut(result);
   }
 
@@ -85,7 +84,7 @@ public class ObjectRepository implements IObjectRepository {
   @Override
   public ObjectInfo add(Object obj, IObjectId memoriaClassId) {
     IObjectId id = generateId();
-    ObjectInfo result = new ObjectInfo(id, memoriaClassId, obj, Block.getDefaultBlock());
+    ObjectInfo result = new ObjectInfo(id, memoriaClassId, obj);
     internalPut(result);
     return result;
   }

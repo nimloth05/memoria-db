@@ -68,13 +68,13 @@ public class DeleteMarkerTest extends AbstractMemoriaTest {
     assertEquals(100, getBlockManager().getBlock(1).getInactiveRatio());
     assertEquals(0, getBlockManager().getBlock(2).getInactiveRatio());
     assertEquals(1, getObjectInfo(id2).getOldGenerationCount());
-    assertBlocks(getBlock(2), getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(2), getBlockForObjectId(id2));
     reopen();
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(100, getBlockManager().getBlock(1).getInactiveRatio());
     assertEquals(0, getBlockManager().getBlock(2).getInactiveRatio());
     assertEquals(1, getObjectInfo(id2).getOldGenerationCount());
-    assertBlocks(getBlock(2), getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(2), getBlockForObjectId(id2));
 
     delete(get(id2));
     // |d2|~o2''|
@@ -96,16 +96,16 @@ public class DeleteMarkerTest extends AbstractMemoriaTest {
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(100, getBlockManager().getBlock(1).getInactiveRatio());
     assertEquals(0, getBlockManager().getBlock(2).getInactiveRatio());
-    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id3).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id2));
+    assertBlocks(getBlock(2), getBlockForObjectId(id3));
     assertTrue(getObjectInfo(id2).isDeleted());
     assertFalse(getObjectInfo(id3).isDeleted());
     reopen();
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(100, getBlockManager().getBlock(1).getInactiveRatio());
     assertEquals(0, getBlockManager().getBlock(2).getInactiveRatio());
-    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id3).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id2));
+    assertBlocks(getBlock(2), getBlockForObjectId(id3));
 
     save(get(id3));
     // |o3'|~o3|
@@ -113,7 +113,7 @@ public class DeleteMarkerTest extends AbstractMemoriaTest {
     assertEquals(3, getBlockManager().getBlockCount());
     assertEquals(0, getBlockManager().getBlock(1).getInactiveRatio());
     assertEquals(100, getBlockManager().getBlock(2).getInactiveRatio());
-    assertBlocks(getBlock(1), getObjectInfo(id3).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id3));
     assertEquals(1, getObjectInfo(id3).getOldGenerationCount());
     reopen();
     assertEquals(3, getBlockManager().getBlockCount());

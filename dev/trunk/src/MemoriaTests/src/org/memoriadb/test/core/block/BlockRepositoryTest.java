@@ -77,9 +77,9 @@ public class BlockRepositoryTest extends TestCase {
     fBlockRepository = new BlockRepository();
     fBlock1 = new Block(1);
     fBlock2 = new Block(2);
-    fObjectInfoA = new ObjectInfo(new LongId(7), new LongId(1), new Object(), fBlock1);
-    fObjectInfoB = new ObjectInfo(new LongId(8), new LongId(1), new Object(), fBlock1);
-    fObjectInfoC = new ObjectInfo(new LongId(9), new LongId(1), new Object(), fBlock2);
+    fObjectInfoA = new ObjectInfo(new LongId(7), new LongId(1), new Object());
+    fObjectInfoB = new ObjectInfo(new LongId(8), new LongId(1), new Object());
+    fObjectInfoC = new ObjectInfo(new LongId(9), new LongId(1), new Object());
   }
   
 }

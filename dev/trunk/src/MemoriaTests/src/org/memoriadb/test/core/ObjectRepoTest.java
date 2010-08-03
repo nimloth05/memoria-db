@@ -18,7 +18,6 @@ package org.memoriadb.test.core;
 
 import junit.framework.TestCase;
 
-import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
@@ -80,7 +79,7 @@ public class ObjectRepoTest extends TestCase {
   public void test_put_meta_object_with_id_in_cache() {
     IMemoriaClass classObject = ReflectionHandlerFactory.createNewType(StringObject.class, new LongId(1));
     IObjectId id = new LongId(20);
-    fRepo.handleAdd(new ObjectInfo(id, new LongId(1), classObject, Block.getDefaultBlock(), 0, 0));
+    fRepo.handleAdd(new ObjectInfo(id, new LongId(1), classObject, 0, 0));
     
     assertSame(classObject, fRepo.getExistingObject(id));
     assertSame(classObject, fRepo.getMemoriaClass(StringObject.class.getName()));
@@ -97,7 +96,7 @@ public class ObjectRepoTest extends TestCase {
     StringObject obj = new StringObject();
     //Wir starten hier absichtlich mit 20.
     IObjectId objectId = new LongId(20);
-    fRepo.handleAdd(new ObjectInfo(objectId, new LongId(1), obj, Block.getDefaultBlock(), 0, 0));
+    fRepo.handleAdd(new ObjectInfo(objectId, new LongId(1), obj, 0, 0));
     
     StringObject obj2 = new StringObject();
     IObjectId id = fRepo.add(obj2, new LongId(1)).getId();
@@ -132,9 +131,9 @@ public class ObjectRepoTest extends TestCase {
   
   public void test_try_double_use_of_id() {
     IObjectId id = new LongId(1);
-    fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject(), Block.getDefaultBlock()));
+    fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject()));
     try {
-      fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject(), Block.getDefaultBlock()));
+      fRepo.handleAdd(new ObjectInfo(id, new LongId(2), new StringObject()));
       fail("Double use of an objectId is not allowed.");
     } 
     catch (MemoriaException e) {

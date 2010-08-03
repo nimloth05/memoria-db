@@ -16,7 +16,6 @@
 
 package org.memoriadb.core;
 
-import org.memoriadb.block.Block;
 import org.memoriadb.id.IObjectId;
 
 /**
@@ -27,8 +26,6 @@ import org.memoriadb.id.IObjectId;
  *
  */
 public interface IObjectInfo {
-
-  public Block getCurrentBlock();
 
   public IObjectId getId();
 

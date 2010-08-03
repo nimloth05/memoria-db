@@ -17,7 +17,6 @@
 package org.memoriadb.test.block;
 
 import org.memoriadb.CreateConfig;
-import org.memoriadb.block.Block;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
@@ -60,8 +59,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(4, getBlockManager().getBlockCount());
 
     assertEquals(2, getBlock(1).getInactiveObjectDataCount());
-    assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(3), getCurrentBlock(id2));
+    assertEquals(getBlock(2), getBlockForObjectId(id1));
+    assertEquals(getBlock(3), getBlockForObjectId(id2));
   }
 
   public void test_deletionMarker_is_survivor() {
@@ -192,8 +191,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     IObjectId id2 = save(new Object());
 
     assertEquals(3, getBlockManager().getBlockCount());
-    assertEquals(getBlock(1), getCurrentBlock(id2));
-    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(1), getBlockForObjectId(id2));
+    assertEquals(getBlock(2), getBlockForObjectId(id1));
     assertFalse(getObjectInfo(id2).isDeleted());
     assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
@@ -201,8 +200,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     reopen();
 
     assertEquals(3, getBlockManager().getBlockCount());
-    assertEquals(getBlock(1), getCurrentBlock(id2));
-    assertEquals(getBlock(2), getCurrentBlock(id1));
+    assertEquals(getBlock(1), getBlockForObjectId(id2));
+    assertEquals(getBlock(2), getBlockForObjectId(id1));
     assertFalse(getObjectInfo(id2).isDeleted());
     assertTrue(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
@@ -253,9 +252,9 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    assertEquals(getBlock(1), getCurrentBlock(id3));
+    assertEquals(getBlock(2), getBlockForObjectId(id1));
+    assertEquals(getBlock(3), getBlockForObjectId(id2));
+    assertEquals(getBlock(1), getBlockForObjectId(id3));
 
     reopen();
 
@@ -279,9 +278,9 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertTrue(fObjectStore.containsId(id2));
     assertTrue(fObjectStore.containsId(id3));
 
-    assertEquals(getBlock(2), getCurrentBlock(id1));
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    assertEquals(getBlock(1), getCurrentBlock(id3));
+    assertEquals(getBlock(2), getBlockForObjectId(id1));
+    assertEquals(getBlock(3), getBlockForObjectId(id2));
+    assertEquals(getBlock(1), getBlockForObjectId(id3));
     
     save(get(id3));
     // |o3~|o3'|o2'|
@@ -295,8 +294,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(100, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
     assertEquals(0, getBlock(3).getInactiveRatio());
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    assertEquals(getBlock(2), getCurrentBlock(id3));
+    assertEquals(getBlock(3), getBlockForObjectId(id2));
+    assertEquals(getBlock(2), getBlockForObjectId(id3));
     
     reopen();
     
@@ -308,8 +307,8 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(100, getBlock(1).getInactiveRatio());
     assertEquals(0, getBlock(2).getInactiveRatio());
     assertEquals(0, getBlock(3).getInactiveRatio());
-    assertEquals(getBlock(3), getCurrentBlock(id2));
-    assertEquals(getBlock(2), getCurrentBlock(id3));
+    assertEquals(getBlock(3), getBlockForObjectId(id2));
+    assertEquals(getBlock(2), getBlockForObjectId(id3));
   }
 
   @Override
@@ -324,10 +323,6 @@ public class SurvivorTest extends AbstractMemoriaTest {
 
   private void configure(CreateConfig config) {
     config.setBlockManager(new MaintenanceFreeBlockManager(0, 0));
-  }
-
-  private Block getCurrentBlock(IObjectId id) {
-    return getObjectInfo(id).getCurrentBlock();
   }
 
 }

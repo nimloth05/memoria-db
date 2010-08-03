@@ -17,8 +17,7 @@
 package org.memoriadb.test.block;
 
 import org.memoriadb.CreateConfig;
-import org.memoriadb.block.AppendBlockManager;
-import org.memoriadb.block.Block;
+import org.memoriadb.block.*;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
@@ -50,8 +49,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(0, block1.getInactiveObjectDataCount());
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block1, getObjectInfo(o2).getCurrentBlock());
+    assertEquals(block1, getBlockForObjectId(o1));
+    assertEquals(block1, getBlockForObjectId(o2));
     
     // o2 is saved again in block2
     save(get(o2));
@@ -61,13 +60,13 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     assertEquals(1, block2.getObjectDataCount());
     assertEquals(0, block2.getInactiveObjectDataCount());
     
-    assertEquals(block1, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block2, getObjectInfo(o2).getCurrentBlock());
+    assertEquals(block1, getBlockForObjectId(o1));
+    assertEquals(block2, getBlockForObjectId(o2));
     
     reopen();
     
-    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getBlockForObjectId(o1));
+    assertBlocks(block2, getBlockForObjectId(o2));
     
     // o1 and o2 are saved in block3
     beginUpdate();
@@ -87,8 +86,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     assertEquals(0, block3.getInactiveObjectDataCount());
     
     reopen();
-    assertBlocks(block3, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block3, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block3, getBlockForObjectId(o1));
+    assertBlocks(block3, getBlockForObjectId(o2));
     
     block1 = getBlockManager().getBlock(1);
     block2 = getBlockManager().getBlock(2);
@@ -105,8 +104,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     block3 = getBlockManager().getBlock(3);
     Block block4 = getBlockManager().getBlock(4);
     
-    assertBlocks(block4, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block3, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block4, getBlockForObjectId(o1));
+    assertBlocks(block3, getBlockForObjectId(o2));
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());
@@ -134,8 +133,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     assertEquals(0, block4.getInactiveObjectDataCount());
     assertEquals(1, block5.getObjectDataCount());
     assertEquals(0, block5.getInactiveObjectDataCount());
-    assertEquals(block4, getObjectInfo(o1).getCurrentBlock());
-    assertEquals(block5, getObjectInfo(o2).getCurrentBlock());
+    assertEquals(block4, getBlockForObjectId(o1));
+    assertEquals(block5, getBlockForObjectId(o2));
     
     assertTrue(getObjectInfo(o1).isDeleted());
     assertTrue(getObjectInfo(o2).isDeleted());
@@ -145,8 +144,8 @@ public class CurrentBlockScenarioTest extends AbstractMemoriaTest {
     block2 = getBlockManager().getBlock(2);
     block3 = getBlockManager().getBlock(3);
     
-    assertBlocks(block4, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block5, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block4, getBlockForObjectId(o1));
+    assertBlocks(block5, getBlockForObjectId(o2));
     
     assertEquals(2, block1.getObjectDataCount());
     assertEquals(2, block1.getInactiveObjectDataCount());

@@ -65,10 +65,10 @@ public class LastWrittenBlockAfterCrashTest extends AbstractMemoriaTest {
     assertEquals(2, getBlockManager().getBlock(1).getInactiveObjectDataCount());
     
     // o2 is the survivor that is now in block3
-    assertEquals(getBlockManager().getBlock(3), getObjectInfo(id2).getCurrentBlock());
+    assertEquals(getBlockManager().getBlock(3), getBlockForObjectId(id2));
     assertFalse(getObjectInfo(id2).isDeleted());
     
-    assertEquals(getBlockManager().getBlock(2), getObjectInfo(id1).getCurrentBlock());
+    assertEquals(getBlockManager().getBlock(2), getBlockForObjectId(id1));
 
   }
 

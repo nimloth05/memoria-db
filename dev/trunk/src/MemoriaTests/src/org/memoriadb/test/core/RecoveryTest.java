@@ -19,11 +19,9 @@ package org.memoriadb.test.core;
 import org.memoriadb.CreateConfig;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.exception.FileCorruptException;
-import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.file.InMemoryFile;
+import org.memoriadb.core.file.*;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.testutil.AbstractMemoriaTest;
-import org.memoriadb.testutil.FileStructure;
+import org.memoriadb.testutil.*;
 
 public class RecoveryTest extends AbstractMemoriaTest {
 
@@ -117,24 +115,24 @@ public class RecoveryTest extends AbstractMemoriaTest {
     endUpdate();
     // |o1, o2|
     assertEquals(2, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id1));
+    assertBlocks(getBlock(1), getBlockForObjectId(id2));
     assertEquals(2, getObjectInfo(id1).getRevision());
     assertEquals(2, getObjectInfo(id2).getRevision());
 
     save(o1);
     // |~o1, o2|o1'|
     assertEquals(3, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(2), getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(1), getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(2), getBlockForObjectId(id1));
+    assertBlocks(getBlock(1), getBlockForObjectId(id2));
     assertEquals(3, getObjectInfo(id1).getRevision());
     assertEquals(2, getObjectInfo(id2).getRevision());
 
     save(o1);
     // |o1'',garbage|~o1'|o2'|
     assertEquals(4, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(3), getObjectInfo(id2).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id1));
+    assertBlocks(getBlock(3), getBlockForObjectId(id2));
     assertEquals(4, getObjectInfo(id1).getRevision());
     assertEquals(5, getObjectInfo(id2).getRevision());
 
@@ -201,9 +199,9 @@ public class RecoveryTest extends AbstractMemoriaTest {
 
     assertEquals(4, getBlockManager().getBlockCount());
     assertEquals(1, getBlockManager().getBlock(1).getObjectDataCount());
-    assertEquals(getBlockManager().getBlock(1), getObjectInfo(id1).getCurrentBlock());
+    assertEquals(getBlockManager().getBlock(1), getBlockForObjectId(id1));
     assertEquals(100, getBlockManager().getBlock(2).getInactiveRatio());
-    assertEquals(getBlockManager().getBlock(3), getObjectInfo(id2).getCurrentBlock());
+    assertEquals(getBlockManager().getBlock(3), getBlockForObjectId(id2));
 
     // garbage is expected at position 78
     FileStructure fs = new FileStructure(getFile());
@@ -255,7 +253,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     // add a new element, the corrupt block must be reused
     IObjectId id = save(new Object());
 
-    assertBlocks(getBlock(1), getObjectInfo(id).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id));
     assertEquals(87, getBlock(1).getWholeSize());
   }
 
@@ -287,7 +285,7 @@ public class RecoveryTest extends AbstractMemoriaTest {
     // add a new element, the corrupt block must be reused
     IObjectId id = save(new Object());
 
-    assertBlocks(getBlock(1), getObjectInfo(id).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id));
     assertEquals(79, getBlock(1).getWholeSize());
   }
 

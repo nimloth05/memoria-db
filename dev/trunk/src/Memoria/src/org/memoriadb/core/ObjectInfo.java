@@ -16,7 +16,6 @@
 
 package org.memoriadb.core;
 
-import org.memoriadb.block.Block;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
@@ -41,75 +40,43 @@ public class ObjectInfo implements IObjectInfo {
   private int fOldGenerationCount;
   
   /**
-   * From this block the active HydratedObject comes from
-   */
-  private Block fCurrentBlock;
-  
-  /**
    * Use this ctor only when an object is initially added to the container.
    * @param id
    * @param memoriaClassId
    * @param obj
    * @param currentBlock
    */
-  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock) {
-    this(id, memoriaClassId, obj, currentBlock,  Constants.INITIAL_HEAD_REVISION, 0);
+  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj) {
+    this(id, memoriaClassId, obj, Constants.INITIAL_HEAD_REVISION, 0);
     if(obj == null) throw new MemoriaException("new object can not be null");
   }
 
   /**
    * Use this ctor for ojects after dehydration
    * @param id
-   * @param id
-   * @param memoriaClassId
    * @param memoriaClassId
    * @param obj
-   * @param obj
-   * @param currentBlock
    * @param currentBlock
    * @param version
-   * @param version
-   * @param oldGenerationCount
    * @param oldGenerationCount
    */
-  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, Block currentBlock, long version, int oldGenerationCount) {
+  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, long version, int oldGenerationCount) {
     if (memoriaClassId == null) throw new IllegalArgumentException("MemoriaClassId is null.");
     
     fObj = obj;
     
     fId = id;
-    fCurrentBlock = currentBlock;
     fMemoriaClassId = memoriaClassId;
     fRevision = version;
     fOldGenerationCount = oldGenerationCount;
   }
 
-  /**
-   * Sets the given block and increments the iodc of the former currentBlock.
-   * @param block
-   * @param block
-   */
-  public void changeCurrentBlock(Block block) {
-    fCurrentBlock.incrementInactiveObjectDataCount();
-    setCurrentBlock(block);
-  }
-
-  public int decrementOldGenerationCount() {
+  public void decrementOldGenerationCount() {
     --fOldGenerationCount;
     
     if(fOldGenerationCount < 0) throw new MemoriaException("invalid oldgenerationCount: " + fOldGenerationCount);
-    
-    if(fOldGenerationCount==0 && isDeleted()) {
-      fCurrentBlock.incrementInactiveObjectDataCount();
-    }
-    return fOldGenerationCount;
   }
   
-  @Override
-  public Block getCurrentBlock() {
-    return fCurrentBlock;
-  }
-
   @Override
   public IObjectId getId(){
     return fId;
@@ -144,10 +111,6 @@ public class ObjectInfo implements IObjectInfo {
     return fObj == null;
   }
   
-  public void setCurrentBlock(Block block) {
-    fCurrentBlock = block;
-  }
-
   public void setDeleted() {
     fObj = null;
   }

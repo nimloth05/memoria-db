@@ -22,7 +22,7 @@ import java.util.*;
 import org.memoriadb.OpenConfig;
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
-import org.memoriadb.core.block.SurvivorAgent;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
@@ -34,17 +34,19 @@ public final class TransactionWriter {
   private final IMemoriaFile fFile;
   private final IBlockManager fBlockManager;
   private final IObjectRepository fRepo;
+  private final BlockRepository fBlockRepo;
   private final OpenConfig fConfig;
   private final ICompressor fCompressor;
   private long fHeadRevision;
 
-  public TransactionWriter(IObjectRepository repo, OpenConfig config, IMemoriaFile file, long headRevision, ICompressor compressor) {
+  public TransactionWriter(IObjectRepository repo, BlockRepository blockRepo, OpenConfig config, IMemoriaFile file, long headRevision, ICompressor compressor) {
     fConfig = config;
     if (repo == null) throw new IllegalArgumentException("objectRepo is null");
     if (config == null) throw new IllegalArgumentException("config is null");
     if (file == null) throw new IllegalArgumentException("file is null");
 
     fRepo = repo;
+    fBlockRepo = blockRepo;
     fFile = file;
     fBlockManager = config.getBlockManager();
     fHeadRevision = headRevision;
@@ -57,6 +59,10 @@ public final class TransactionWriter {
 
   public IBlockManager getBlockManager() {
     return fBlockManager;
+  }
+
+  public BlockRepository getBlockRepository() {
+    return fBlockRepo;
   }
 
   public IMemoriaFile getFile() {
@@ -140,8 +146,13 @@ public final class TransactionWriter {
     
     for(ObjectInfo info : survivorAgent.getInactiveDeleteMarkers()) {
       fRepo.removeFromIndex(info);
+      fBlockRepo.remove(info);
     }
     
+  }
+
+  private boolean isDeletionMarkerWithoutOldGenerationObjectInfos(ObjectInfo info) {
+    return info.getOldGenerationCount()==0 && info.isDeleted();
   }
 
   private void markAsLastWrittenBlock(Block block, int writeMode) throws IOException {
@@ -172,28 +183,27 @@ public final class TransactionWriter {
 
     Block survivorsBlock = write(stream.toByteArray(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode, decOGC);
 
-    for (ObjectInfo info : survivorAgent.getActiveObjectData()) {
-      info.changeCurrentBlock(survivorsBlock);
-      info.setRevision(revision);
-    }
-
-    for (ObjectInfo info : survivorAgent.getActiveDeleteMarkers()) {
-      info.changeCurrentBlock(survivorsBlock);
-      info.setRevision(revision);
-    }
+    updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveObjectData());
+    updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveDeleteMarkers());
     
+  }
+
+  private void setObjectInactive(ObjectInfo info, Block oldBlock) {
+    if (oldBlock == null) throw new IllegalArgumentException("oldBlock is null");
+    oldBlock.incrementInactiveObjectDataCount();
   }
 
   private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
-      info.changeCurrentBlock(block);
+      fBlockRepo.update(info, block);
       info.setRevision(revision);
     }
   }
 
   private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
-      info.changeCurrentBlock(block);
+      Block oldBlock = fBlockRepo.update(info, block);
+      setObjectInactive(info, oldBlock);
       info.setRevision(revision);
       info.incrementOldGenerationCount();
     }
@@ -201,9 +211,24 @@ public final class TransactionWriter {
 
   private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block, long revision) {
     for (ObjectInfo info : infos) {
-      info.changeCurrentBlock(block);
+      Block oldBlock = fBlockRepo.update(info, block);
+      setObjectInactive(info, oldBlock);
       info.setRevision(revision);
       info.incrementOldGenerationCount();
+    }
+  }
+
+  /**
+   * Updates the revision and block of the given {@link ObjectInfo}s 
+   * @param revision
+   * @param newBlock
+   * @param activeObjectData
+   */
+  private void updateObjectInfo(long revision, Block newBlock, Iterable<ObjectInfo> activeObjectData) {
+    for (ObjectInfo info : activeObjectData) {
+      Block oldBlock = fBlockRepo.update(info, newBlock);
+      setObjectInactive(info, oldBlock);
+      info.setRevision(revision);
     }
   }
 
@@ -287,13 +312,18 @@ public final class TransactionWriter {
     // must done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {
       info.decrementOldGenerationCount();
+      
+      if(isDeletionMarkerWithoutOldGenerationObjectInfos(info)) {
+        fBlockRepo.getBlock(info).incrementInactiveObjectDataCount();
+      }
+      
     }
   }
 
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
     for (IObjectInfo info : add) {
       serializer.serialize(info);
-      tabooBlocks.add(info.getCurrentBlock());
+      tabooBlocks.add(fBlockRepo.getBlock(info));
     }
   }
 
@@ -301,7 +331,7 @@ public final class TransactionWriter {
     for (IObjectInfo info : delete) {
       if (!info.isDeleted()) throw new MemoriaException("trying to delete live object: " + info);
       serializer.markAsDeleted(info);
-      tabooBlocks.add(info.getCurrentBlock());
+      tabooBlocks.add(fBlockRepo.getBlock(info));
     }
   }
 
@@ -312,4 +342,5 @@ public final class TransactionWriter {
     stream.writeLong(objectDataCount);
     return fHeadRevision;
   }
+  
 }

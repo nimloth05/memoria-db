@@ -16,25 +16,18 @@
 
 package org.memoriadb.core;
 
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.exception.SchemaException;
-import org.memoriadb.core.file.Header;
-import org.memoriadb.core.file.IMemoriaFile;
+import java.util.*;
+
+import org.memoriadb.block.*;
+import org.memoriadb.core.block.*;
+import org.memoriadb.core.exception.*;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.id.IIdProvider;
-import org.memoriadb.id.IObjectId;
-
-import java.util.Collection;
-import java.util.Set;
+import org.memoriadb.id.*;
 
 public final class TransactionHandler {
 
@@ -137,6 +130,10 @@ public final class TransactionHandler {
     return fTransactionWriter.getBlockManager();
   }
 
+  public BlockRepository getBlockRepository() {
+    return fTransactionWriter.getBlockRepository();
+  }
+  
   public IIdProvider getDefaultIdProvider() {
     return fObjectRepository.getIdFactory();
   }
@@ -160,7 +157,7 @@ public final class TransactionHandler {
   public IObjectId getId(Object obj) {
     return fObjectRepository.getId(obj);
   }
-  
+
   public int getIdSize() {
     return fObjectRepository.getIdFactory().getIdSize();
   }
@@ -172,11 +169,11 @@ public final class TransactionHandler {
   public IMemoriaClass getMemoriaClass(Object object) {
     return fModeStrategy.getMemoriaClass(object, fObjectRepository);
   }
-
+  
   public IMemoriaClass getMemoriaClass(String className) {
     return fObjectRepository.getMemoriaClass(className);
   }
-  
+
   public IObjectId getMemoriaClassId(Object object) {
     IObjectInfo info = getObjectInfo(object);
     if(info == null) return null;
@@ -245,11 +242,11 @@ public final class TransactionHandler {
     fObjectRepository.delete(obj);
     fDelete.add(info);
   }
-
+  
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fObjectRepository.getMemoriaClass(klass);
   }
-  
+
   /**
    * Saves the given memoriaClass as Object.
    * 
@@ -334,4 +331,5 @@ public final class TransactionHandler {
     fUpdate.add(info);
     return info.getId();
   }
+  
 }

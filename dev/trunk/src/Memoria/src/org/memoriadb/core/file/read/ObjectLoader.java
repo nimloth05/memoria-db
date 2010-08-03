@@ -21,6 +21,7 @@ import java.util.*;
 
 import org.memoriadb.block.*;
 import org.memoriadb.core.*;
+import org.memoriadb.core.block.BlockRepository;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
@@ -44,15 +45,17 @@ public final class ObjectLoader implements IReaderContext {
   private final IObjectIdFactory fIdFactory;
   private final IModeStrategy fModeStrategy;
   private final ICompressor fCompressor;
+  private final BlockRepository fBlockRepository;
 
-  public static long readIn(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
-    return new ObjectLoader(fileReader, repo, blockManager, instantiator, store, compressor).read();
+  public static long readIn(FileReader fileReader, ObjectRepository repo, BlockRepository blockRepository, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy store, ICompressor compressor) {
+    return new ObjectLoader(fileReader, repo, blockRepository, blockManager, instantiator, store, compressor).read();
   }
 
-  public ObjectLoader(FileReader fileReader, ObjectRepository repo, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy mode, ICompressor compressor) {
+  public ObjectLoader(FileReader fileReader, ObjectRepository repo, BlockRepository blockRepository, IBlockManager blockManager, IInstantiator instantiator, IModeStrategy mode, ICompressor compressor) {
     if (instantiator == null) throw new IllegalArgumentException("defaultInstantiator is null");
     if (fileReader == null) throw new IllegalArgumentException("fileReader is null");
     if (repo == null) throw new IllegalArgumentException("repo is null");
+    if (blockRepository == null) throw new IllegalArgumentException("blockRepository is null");
     if (blockManager == null) throw new IllegalArgumentException("BlockManager is null");
     if (mode == null) throw new IllegalArgumentException("mode is null");
     if (compressor == null) throw new IllegalArgumentException("compressor is null");
@@ -60,6 +63,7 @@ public final class ObjectLoader implements IReaderContext {
     fModeStrategy = mode;
     fFileReader = fileReader;
     fRepo = repo;
+    fBlockRepository = blockRepository;
     fBlockManager = blockManager;
     fInstantiator = instantiator;
     fIdFactory = repo.getIdFactory();
@@ -202,8 +206,9 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
-    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getCurrentBlock(), info.getVersion(), info.getOldGenerationCount());
-
+    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    fBlockRepository.add(objectInfo, info.getCurrentBlock());
+    
     if (info.isDeleted()) {
       fRepo.handleDelete(objectInfo);
 

@@ -16,17 +16,12 @@
 
 package org.memoriadb.core.mode;
 
-import org.memoriadb.IStore;
-import org.memoriadb.ITypeInfo;
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.IObjectInfo;
-import org.memoriadb.core.TransactionHandler;
-import org.memoriadb.core.block.SurvivorAgent;
-import org.memoriadb.core.file.Header;
-import org.memoriadb.core.file.IMemoriaFile;
-import org.memoriadb.id.IIdProvider;
-import org.memoriadb.id.IObjectId;
+import org.memoriadb.*;
+import org.memoriadb.block.*;
+import org.memoriadb.core.*;
+import org.memoriadb.core.block.*;
+import org.memoriadb.core.file.*;
+import org.memoriadb.id.*;
 
 /**
  * Abstract base class for a IStore implementation. 
@@ -69,6 +64,10 @@ public abstract class AbstractStore implements IStore {
 
   public final IBlockManager getBlockManager() {
     return fTransactionHandler.getBlockManager();
+  }
+  
+  public final BlockRepository getBlockRepository() {
+    return fTransactionHandler.getBlockRepository();
   }
   
   public final IMemoriaFile getFile() {

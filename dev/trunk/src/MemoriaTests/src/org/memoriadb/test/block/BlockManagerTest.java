@@ -18,8 +18,7 @@ package org.memoriadb.test.block;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.testutil.AbstractMemoriaTest;
-import org.memoriadb.testutil.FileStructure;
+import org.memoriadb.testutil.*;
 
 public class BlockManagerTest extends AbstractMemoriaTest {
   
@@ -51,21 +50,21 @@ public class BlockManagerTest extends AbstractMemoriaTest {
     endUpdate();
     
     Block block1 = getBlockFromManager(1);
-    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block1, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getBlockForObjectId(o1));
+    assertBlocks(block1, getBlockForObjectId(o2));
     
     // update o2 to block2
     save(get(o2));
     Block block2 = getBlockManager().getBlock(2);
-    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getBlockForObjectId(o1));
+    assertBlocks(block2, getBlockForObjectId(o2));
     
     // after reopen, the referenced blocks must still be equals.
     reopen();
-    assertBlocks(block1, getObjectInfo(o1).getCurrentBlock());
-    assertBlocks(block2, getObjectInfo(o2).getCurrentBlock());
+    assertBlocks(block1, getBlockForObjectId(o1));
+    assertBlocks(block2, getBlockForObjectId(o2));
   }
-
+  
   private Block getBlockFromManager(int index) {
     return getBlockManager().getBlock(index);
   }

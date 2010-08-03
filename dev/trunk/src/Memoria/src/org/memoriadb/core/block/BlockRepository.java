@@ -24,15 +24,17 @@ public final class BlockRepository {
     return fBlockToObjectInfos.get(block);
   }
   
-  public void remove(ObjectInfo objectInfo) {
+  public Block remove(ObjectInfo objectInfo) {
     Block oldBlock = fObjectInfoToBlock.remove(objectInfo);
-    if (oldBlock == null) return;
+    if (oldBlock == null) return null;
     fBlockToObjectInfos.remove(oldBlock, objectInfo);
+    return oldBlock;
   }
 
-  public void update(ObjectInfo objectInfo, Block newBlock) {
-    remove(objectInfo);
+  public Block update(ObjectInfo objectInfo, Block newBlock) {
+    Block oldBlock = remove(objectInfo);
     add(objectInfo, newBlock);
+    return oldBlock;
   }
   
 }

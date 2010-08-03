@@ -54,10 +54,10 @@ public class SurvivorTestWidthDifferentBlockMgr extends AbstractMemoriaTest {
    
     // |d1'|o3,o4|o2'|
     assertEquals(4, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(3), getObjectInfo(id2).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id3).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id4).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id1));
+    assertBlocks(getBlock(3), getBlockForObjectId(id2));
+    assertBlocks(getBlock(2), getBlockForObjectId(id3));
+    assertBlocks(getBlock(2), getBlockForObjectId(id4));
     
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
@@ -81,10 +81,10 @@ public class SurvivorTestWidthDifferentBlockMgr extends AbstractMemoriaTest {
     reopen();
     
     assertEquals(4, getBlockManager().getBlockCount());
-    assertBlocks(getBlock(1), getObjectInfo(id1).getCurrentBlock());
-    assertBlocks(getBlock(3), getObjectInfo(id2).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id3).getCurrentBlock());
-    assertBlocks(getBlock(2), getObjectInfo(id4).getCurrentBlock());
+    assertBlocks(getBlock(1), getBlockForObjectId(id1));
+    assertBlocks(getBlock(3), getBlockForObjectId(id2));
+    assertBlocks(getBlock(2), getBlockForObjectId(id3));
+    assertBlocks(getBlock(2), getBlockForObjectId(id4));
     
     assertTrue(getObjectInfo(id1).isDeleted());
     assertFalse(getObjectInfo(id2).isDeleted());
