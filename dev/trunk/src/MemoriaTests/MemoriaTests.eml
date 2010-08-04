@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component inherit-compiler-output="true" LANGUAGE_LEVEL="JDK_1_6">
+<component inherit-compiler-output="false" LANGUAGE_LEVEL="JDK_1_6">
+    <output url="file://$MODULE_DIR$/bin" />
     <exclude-output />
+    <output-test url="file://$MODULE_DIR$/bin" />
 </component>
 
