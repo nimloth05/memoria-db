@@ -21,7 +21,6 @@ import java.util.Set;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.read.*;
 import org.memoriadb.core.util.collection.identity.IdentityHashSet;
 import org.memoriadb.id.IObjectId;
 
@@ -30,7 +29,7 @@ import org.memoriadb.id.IObjectId;
  * 
  * @author msc
  */
-public class SurvivorAgent implements IFileReaderHandler  {
+public class SurvivorAgent {
   
   // use IdentityHashSet for better performance
   private final Set<ObjectInfo> fActiveObjectDatas = IdentityHashSet.create();
@@ -41,15 +40,17 @@ public class SurvivorAgent implements IFileReaderHandler  {
   private final IObjectRepository fRepo;
   private final BlockRepository fBlockRepo;
   
-  public SurvivorAgent(IObjectRepository repo, BlockRepository blockRepo, Block block) {
+  public static SurvivorAgent create(IObjectRepository repo, BlockRepository blockRepo, Block block) {
+    SurvivorAgent survivorAgent = new  SurvivorAgent(repo, blockRepo, block);
+    survivorAgent.computeSurvivors(block);
+    return survivorAgent;
+  }
+  
+  protected SurvivorAgent(IObjectRepository repo, BlockRepository blockRepo, Block block) {
     fRepo = repo;
     fBlockRepo = blockRepo;
-    computeSurvivors(block);
   }
    
-  @Override
-  public void block(Block block) {}
-
   public void computeSurvivors(Block block) {
     
     for(IObjectId objectId: block.getObjectIds()) {
@@ -60,19 +61,6 @@ public class SurvivorAgent implements IFileReaderHandler  {
         handleObjectData(info, block);
       }
     }
-    
-//    MemoriaDataInputStream stream = new MemoriaDataInputStream(fFile.getInputStream(block.getPosition()));
-//    BlockReader reader = new BlockReader(fCompressor);
-//    
-//    try {
-//      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this, new AlwaysThrowErrorHandler());
-//    }
-//    catch (IOException e) { 
-//      throw new MemoriaException(e);
-//    }
-//    finally {
-//      IOUtil.close(stream);
-//    }
     
     if(block.getObjectDataCount() != getObjectDataCount()) throw new MemoriaException("objectDataCount mismatch. File: " + getObjectDataCount() + " in memory: " + block.getObjectDataCount());
     if(block.getInactiveObjectDataCount() != getInactiveObjectDataCount()) throw new MemoriaException("inactiveObjectDataCount mismatch. File: " + getInactiveObjectDataCount() + " in memory: " + block.getInactiveObjectDataCount());
@@ -98,26 +86,6 @@ public class SurvivorAgent implements IFileReaderHandler  {
     return !fActiveObjectDatas.isEmpty() || !fActiveDeleteMarkers.isEmpty();
   }
 
-  @Override
-  public void memoriaClass(HydratedObject metaClass, IObjectId id, long revision, int size) {
-    handleUpdate(id, revision);
-  }
-  
-  @Override
-  public void memoriaClassDeleted(IObjectId id, long revision) {
-    handleDelete(id, revision);
-  }
-  
-  @Override
-  public void object(HydratedObject object, IObjectId id, long revision, int size) {
-    handleUpdate(id, revision);
-  }
-
-  @Override
-  public void objectDeleted(IObjectId id, long revision) {
-    handleDelete(id, revision);
-  }
-
   private int getInactiveObjectDataCount() {
     return fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size();
   }
@@ -126,21 +94,6 @@ public class SurvivorAgent implements IFileReaderHandler  {
     return fActiveDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fActiveObjectDatas.size();
   }
   
-  private void handleDelete(IObjectId id, long revision) {
-    ObjectInfo info = fRepo.getObjectInfoForId(id);
-    long revisionFromObjectRepo = info.getRevision();
-    if(revision != revisionFromObjectRepo) throw new MemoriaException("Wrong revision for DeletionMarker in repo: " + revisionFromObjectRepo + " expected " + revision);
-    
-    // check if deletionMarker must be saved.
-    if(info.getOldGenerationCount() == 0) {
-      // the DeletionMarker is not used anymore...
-      fInactiveDeleteMarkers.add(info);
-    }
-    else {
-      fActiveDeleteMarkers.add(info);
-    }
-  }
-
   private void handleDeletionMarker(ObjectInfo info, Block block) {
     Set<ObjectInfo> infos = isActiveDeletionMarker(info, block) ? fActiveDeleteMarkers : fInactiveDeleteMarkers;
     infos.add(info);
@@ -149,20 +102,6 @@ public class SurvivorAgent implements IFileReaderHandler  {
   private void handleObjectData(ObjectInfo info, Block block) {
     Set<ObjectInfo> infos = isCurrentBlock(info, block) ? fActiveObjectDatas : fInactiveObjectDatas;
     infos.add(info);
-  }
-
-  private void handleUpdate(IObjectId id, long revision) {
-    ObjectInfo info = fRepo.getObjectInfoForId(id);
-    long revisionFromObjectRepo = info.getRevision();
-    if(revision > revisionFromObjectRepo) throw new MemoriaException("Wrong revision for Object in repo: " + revisionFromObjectRepo + " expected " + revision);
-    
-    if(revisionFromObjectRepo == revision){
-      fActiveObjectDatas.add(info);
-    }
-    else {
-      // return this object to adjust the oldGenerationCount
-      fInactiveObjectDatas.add(info);
-    }
   }
 
   private boolean isActiveDeletionMarker(ObjectInfo info, Block block) {

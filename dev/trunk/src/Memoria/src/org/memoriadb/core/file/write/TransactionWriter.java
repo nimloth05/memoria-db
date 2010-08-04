@@ -140,7 +140,7 @@ public final class TransactionWriter {
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     
-    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fBlockRepo, block);
+    SurvivorAgent survivorAgent = SurvivorAgent.create(fRepo, fBlockRepo, block);
 
     if (survivorAgent.hasSurvivors()) {
       saveSurvivors(tabooBlocks, mode, survivorAgent, decOGC);
@@ -185,7 +185,6 @@ public final class TransactionWriter {
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
     long revision = writeTransaction(stream, survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size());
     
-    // FIXME survivors müssen NICHT nochmals serialisiert werden! besser den buffer kopieren.
     ObjectSerializer serializer = new ObjectSerializer(fRepo, mode, stream);
 
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
