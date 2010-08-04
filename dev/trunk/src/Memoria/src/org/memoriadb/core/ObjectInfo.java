@@ -36,6 +36,7 @@ public class ObjectInfo implements IObjectInfo {
   private Object fObj;
   private final IObjectId fId;
   private final IObjectId fMemoriaClassId;
+  // TODO kann zum Block verschoben werden
   private long fRevision;
   private int fOldGenerationCount;
   
