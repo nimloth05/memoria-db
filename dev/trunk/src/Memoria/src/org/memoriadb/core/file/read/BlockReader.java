@@ -16,19 +16,15 @@
 
 package org.memoriadb.core.file.read;
 
+import java.io.*;
+import java.util.Arrays;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
-import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import org.memoriadb.id.*;
 
 /**
  * Reads in a block, assuming that the given stream is consistent with the given position in the file.
@@ -100,20 +96,21 @@ public class BlockReader {
     fRevision = dis.readLong(); // transaction-revision
 
     long objectDataCount = dis.readLong();
-    block.setObjectDataCount(objectDataCount);
 
     // no state was changed before this line!
     handler.block(block);
 
-    readObjects(idFactory, handler, fRevision, body, FileLayout.TRX_OVERHEAD, objectDataCount);
+    readObjects(block, idFactory, handler, fRevision, body, FileLayout.TRX_OVERHEAD, objectDataCount);
 
   }
 
-  private void readObject(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
+  private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
+    
+    block.addObjectId(objectId);
 
     byte[] objectData = Arrays.copyOfRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
 
@@ -136,17 +133,18 @@ public class BlockReader {
   }
 
   /**
+   * @param block 
    * @param objectDataCount
    * @return The number of read ObjectData
    */
-  private int readObjects(IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, long objectDataCount) throws IOException {
+  private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, long objectDataCount) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
     for (int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
       byte[] objectData = new byte[size];
       stream.readFully(objectData);
 
-      readObject(idFactory, handler, revision, objectData, 0, size);
+      readObject(block, idFactory, handler, revision, objectData, 0, size);
     }
     return 0;
   }

@@ -152,7 +152,7 @@ public final class ObjectLoader implements IReaderContext {
       container.put(id, new HydratedInfo(id, deletionTypeId, null, revision, fCurrentBlock));
       return;
     }
-
+    
     // object already loaded in other version, newer version survives
     info.update(fCurrentBlock, null, deletionTypeId, revision);
     if (info.getVersion() != revision) throw new MemoriaException(id + ": DeletionMarker(" + revision + ") has lower revision then last objectData(" + info.getVersion() + ")");
@@ -176,7 +176,7 @@ public final class ObjectLoader implements IReaderContext {
       container.put(id, new HydratedInfo(id, object.getTypeId(), object, version, fCurrentBlock));
       return;
     }
-
+    
     // object already loaded in other version, newer version survives
     info.update(fCurrentBlock, object, object.getTypeId(), version);
   }
@@ -207,7 +207,8 @@ public final class ObjectLoader implements IReaderContext {
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
     ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
-    fBlockRepository.add(objectInfo, info.getCurrentBlock());
+    
+    fBlockRepository.add(info.getObjectId(), info.getCurrentBlock());
     
     if (info.isDeleted()) {
       fRepo.handleDelete(objectInfo);

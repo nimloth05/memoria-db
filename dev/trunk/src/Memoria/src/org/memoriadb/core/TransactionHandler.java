@@ -207,7 +207,7 @@ public final class TransactionHandler {
   }
 
   public SurvivorAgent getSurvivorAgent(Block block) {
-    return new SurvivorAgent(fObjectRepository, fTransactionWriter.getFile(), block, fHeader.getCompressor());
+    return new SurvivorAgent(fObjectRepository, getBlockRepository(), block);
   }
 
   //FIXME: TypeInfo bereinigen

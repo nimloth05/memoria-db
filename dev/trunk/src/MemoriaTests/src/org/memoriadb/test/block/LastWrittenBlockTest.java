@@ -31,7 +31,7 @@ public class LastWrittenBlockTest extends AbstractMemoriaTest {
     assertTrue(getLastBlockInfo().isAppend());
     assertEquals(getBlockManager().getBlock(1).getPosition(), getLastBlockInfo().getPosition());
 
-    // deleting the object, waht results in a free block and a deletionMarker.
+    // deleting the object, what results in a free block and a deletionMarker.
     delete(get(id1));
 
     reopen();

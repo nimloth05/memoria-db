@@ -27,6 +27,7 @@ import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
+import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
 
 public final class TransactionWriter {
@@ -81,7 +82,16 @@ public final class TransactionWriter {
     write(add, update, delete, new HashSet<Block>(), mode);
   }
 
-  private Block append(byte[] compressedTrx, long objectDataCount) throws IOException {
+  private void addToTabooBlocks(Set<Block> tabooBlocks, ObjectInfo info) {
+    Block block = fBlockRepo.getBlock(info);
+    if (block == null) {
+      // the info corresponds to a new object, so there is no taboo block for it
+      return;
+    }
+    tabooBlocks.add(block);
+  }
+
+  private Block append(byte[] compressedTrx, Iterable<ObjectInfo> objectInfos) throws IOException {
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
 
     stream.write(FileLayout.BLOCK_START_TAG);
@@ -99,7 +109,7 @@ public final class TransactionWriter {
     // first create the block...
     Block block = new Block(compressedTrx.length, fFile.getSize());
     
-    block.setObjectDataCount(objectDataCount);
+    block.addObjectIds(objectInfos);
     fBlockManager.add(block);
 
     fConfig.getListeners().triggerBeforeAppend(block);
@@ -130,7 +140,7 @@ public final class TransactionWriter {
    */
   private void freeBlock(Block block, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     
-    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fFile, block, fCompressor);
+    SurvivorAgent survivorAgent = new SurvivorAgent(fRepo, fBlockRepo, block);
 
     if (survivorAgent.hasSurvivors()) {
       saveSurvivors(tabooBlocks, mode, survivorAgent, decOGC);
@@ -146,7 +156,7 @@ public final class TransactionWriter {
     
     for(ObjectInfo info : survivorAgent.getInactiveDeleteMarkers()) {
       fRepo.removeFromIndex(info);
-      fBlockRepo.remove(info);
+      fBlockRepo.remove(info.getId());
     }
     
   }
@@ -181,7 +191,7 @@ public final class TransactionWriter {
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
     writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
 
-    Block survivorsBlock = write(stream.toByteArray(), survivorAgent.getActiveObjectData().size() + survivorAgent.getActiveDeleteMarkers().size(), tabooBlocks, mode, decOGC);
+    Block survivorsBlock = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(survivorAgent.getActiveObjectData(), survivorAgent.getActiveDeleteMarkers()), tabooBlocks, mode, decOGC);
 
     updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveObjectData());
     updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveDeleteMarkers());
@@ -232,7 +242,7 @@ public final class TransactionWriter {
     }
   }
 
-  private void write(Block block, byte[] trxData, long objectDataCount) throws IOException {
+  private void write(Block block, byte[] trxData) throws IOException {
     MemoriaDataOutputStream stream = new MemoriaDataOutputStream();
 
     stream.write(trxData);
@@ -270,14 +280,14 @@ public final class TransactionWriter {
    * @throws Exception
    * @return
    */
-  private Block write(byte[] trxData, long objectDataCount, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
+  private Block write(byte[] trxData, Iterable<ObjectInfo> objectInfos, Set<Block> tabooBlocks, IModeStrategy mode, List<ObjectInfo> decOGC) throws Exception {
     
     byte[] compressedTrx = fCompressor.compress(trxData);
 
     Block block = fBlockManager.allocatedRecyclebleBlock(compressedTrx.length, tabooBlocks);
     
     // no existing block matched the requirements of the Blockmanager, append the data in a new block.
-    if (block == null) return append(compressedTrx, objectDataCount);
+    if (block == null) return append(compressedTrx, objectInfos);
 
     if(!block.isFree()) {
       freeBlock(block, tabooBlocks, mode, decOGC);
@@ -285,9 +295,10 @@ public final class TransactionWriter {
       if (block.getInactiveRatio() != 100) throw new MemoriaException("active objects in freed block: " + block);
     }
 
-    block.resetBlock(objectDataCount);
+    block.resetBlock();
+    block.addObjectIds(objectInfos);
 
-    write(block, compressedTrx, objectDataCount);
+    write(block, compressedTrx);
     return block;
   }
 
@@ -303,7 +314,7 @@ public final class TransactionWriter {
     writeDelete(delete, tabooBlocks, serializer);
 
     List<ObjectInfo> decOGC = new ArrayList<ObjectInfo>();
-    Block block = write(stream.toByteArray(), add.size() + update.size() + delete.size(), tabooBlocks, mode, decOGC);
+    Block block = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(add, update, delete), tabooBlocks, mode, decOGC);
     
     updateInfoAfterAdd(add, block, revision);
     updateInfoAfterUpdate(update, block, revision);
@@ -321,17 +332,17 @@ public final class TransactionWriter {
   }
 
   private void writeAddOrUpdate(Set<ObjectInfo> add, Set<Block> tabooBlocks, ObjectSerializer serializer) throws Exception {
-    for (IObjectInfo info : add) {
+    for (ObjectInfo info : add) {
       serializer.serialize(info);
-      tabooBlocks.add(fBlockRepo.getBlock(info));
+      addToTabooBlocks(tabooBlocks, info);
     }
   }
 
   private void writeDelete(Set<ObjectInfo> delete, Set<Block> tabooBlocks, ObjectSerializer serializer) throws IOException {
-    for (IObjectInfo info : delete) {
+    for (ObjectInfo info : delete) {
       if (!info.isDeleted()) throw new MemoriaException("trying to delete live object: " + info);
       serializer.markAsDeleted(info);
-      tabooBlocks.add(fBlockRepo.getBlock(info));
+      addToTabooBlocks(tabooBlocks, info);
     }
   }
 

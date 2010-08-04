@@ -16,14 +16,16 @@
 
 package org.memoriadb.test.block;
 
+import java.util.*;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
+import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.block.IBlockManagerExt;
-
-import java.util.HashSet;
+import org.memoriadb.id.loong.LongId;
 
 public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
-
+  
   /**
    * One inactive object is enough to make ready for recycling
    */
@@ -31,7 +33,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b10 = new Block(10, 0);
-    b10.setObjectDataCount(20);
+    b10.addObjectIds(createObjectIdSet(20));
     manager.add(b10);
     
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -43,12 +45,12 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
     assertNotNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
   }
-  
+
   public void test_inactiveThreshold_50_scenario() {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setObjectDataCount(2);
+    b10a.addObjectIds(createObjectIdSet(2));
     manager.add(b10a);
     
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -59,7 +61,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertSame(b10a, manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
     
     Block b10b = new Block(10, 1);
-    b10b.setObjectDataCount(2);
+    b10b.addObjectIds(createObjectIdSet(2));
     manager.add(b10b);
 
     assertNull(manager.allocatedRecyclebleBlock(11, new HashSet<Block>()));
@@ -74,7 +76,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setObjectDataCount(2);
+    b10a.addObjectIds(createObjectIdSet(2));
     manager.add(b10a);
 
     assertNull(manager.allocatedRecyclebleBlock(20, new HashSet<Block>()));
@@ -88,7 +90,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     // block is gone...
     assertNull(manager.allocatedRecyclebleBlock(10, new HashSet<Block>()));
   }
-
+  
   /**
    * Two blocks with the same size are added. The set block-Manager uses 50/50 for inactive- and size-Threshold.
    */
@@ -96,10 +98,10 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(50, 0);
 
     Block b10a = new Block(10, 0);
-    b10a.setObjectDataCount(2);
+    b10a.addObjectIds(createObjectIdSet(2));
 
     Block b10b = new Block(10, 1);
-    b10b.setObjectDataCount(2);
+    b10b.addObjectIds(createObjectIdSet(2));
 
     manager.add(b10b);
     manager.add(b10a);
@@ -127,7 +129,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     Block block = new Block(10, 0);
     block.setBlockManager(manager);
     
-    block.setObjectDataCount(5);
+    block.addObjectIds(createObjectIdSet(5));
     
     assertEquals(0, manager.getRecyclingBlockCount());
     
@@ -149,7 +151,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     assertEquals(0, manager.getRecyclingBlockCount());
     
   }
-  
+
   /**
    * The size doesn't matter
    */
@@ -157,7 +159,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b = new Block(1000, 0);
-    b.setObjectDataCount(20);
+    b.addObjectIds(createObjectIdSet(20));
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -173,7 +175,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 100);
 
     Block b = new Block(1000, 0);
-    b.setObjectDataCount(20);
+    b.addObjectIds(createObjectIdSet(20));
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -190,7 +192,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 50);
 
     Block b = new Block(1000, 0);
-    b.setObjectDataCount(20);
+    b.addObjectIds(createObjectIdSet(20));
     manager.add(b);
     
     b.incrementInactiveObjectDataCount();
@@ -205,7 +207,7 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     IBlockManagerExt manager = new MaintenanceFreeBlockManager(0, 0);
 
     Block b = new Block(1000, 0);
-    b.setObjectDataCount(10);
+    b.addObjectIds(createObjectIdSet(10));
     b.incrementInactiveObjectDataCount();
     
     manager.add(b);
@@ -213,6 +215,14 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     HashSet<Block> hashSet = new HashSet<Block>();
     hashSet.add(b);
     assertNull(manager.allocatedRecyclebleBlock(10, hashSet));
+  }
+  
+  private Set<ObjectInfo> createObjectIdSet(int count) {
+    Set<ObjectInfo> result = new HashSet<ObjectInfo>(count);
+    for(int i=0; i<count; ++i) {
+      result.add(new ObjectInfo(new LongId(i), new LongId(123), new Object()));
+    }
+    return result;
   }
 
 }

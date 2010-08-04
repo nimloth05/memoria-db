@@ -16,22 +16,14 @@
 
 package org.memoriadb.core.block;
 
-import org.memoriadb.block.Block;
-import org.memoriadb.core.IObjectRepository;
-import org.memoriadb.core.ObjectInfo;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.ICompressor;
-import org.memoriadb.core.file.IMemoriaFile;
-import org.memoriadb.core.file.read.BlockReader;
-import org.memoriadb.core.file.read.HydratedObject;
-import org.memoriadb.core.file.read.IFileReaderHandler;
-import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.core.util.io.IOUtil;
-import org.memoriadb.core.util.io.MemoriaDataInputStream;
-import org.memoriadb.id.IObjectId;
-
-import java.io.IOException;
 import java.util.Set;
+
+import org.memoriadb.block.Block;
+import org.memoriadb.core.*;
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.read.*;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.id.IObjectId;
 
 /**
  * Computes the survivors in a block.
@@ -41,19 +33,17 @@ import java.util.Set;
 public class SurvivorAgent implements IFileReaderHandler  {
   
   // use IdentityHashSet for better performance
-  private final Set<ObjectInfo> fActiveObjectData = IdentityHashSet.create();
+  private final Set<ObjectInfo> fActiveObjectDatas = IdentityHashSet.create();
   private final Set<ObjectInfo> fActiveDeleteMarkers =  IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveObjectDatas = IdentityHashSet.create();
   private final Set<ObjectInfo> fInactiveDeleteMarkers = IdentityHashSet.create();
   
   private final IObjectRepository fRepo;
-  private final IMemoriaFile fFile;
-  private final ICompressor fCompressor;
+  private final BlockRepository fBlockRepo;
   
-  public SurvivorAgent(IObjectRepository repo, IMemoriaFile file, Block block, ICompressor compressor) {
-    fFile = file;
+  public SurvivorAgent(IObjectRepository repo, BlockRepository blockRepo, Block block) {
     fRepo = repo;
-    fCompressor = compressor;
+    fBlockRepo = blockRepo;
     computeSurvivors(block);
   }
    
@@ -61,18 +51,28 @@ public class SurvivorAgent implements IFileReaderHandler  {
   public void block(Block block) {}
 
   public void computeSurvivors(Block block) {
-    MemoriaDataInputStream stream = new MemoriaDataInputStream(fFile.getInputStream(block.getPosition()));
-    BlockReader reader = new BlockReader(fCompressor);
     
-    try {
-      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this, new AlwaysThrowErrorHandler());
+    for(IObjectId objectId: block.getObjectIds()) {
+      ObjectInfo info = fRepo.getObjectInfoForId(objectId);
+      if (isDeletionMarker(info, block)) {
+        handleDeletionMarker(info, block);
+      } else {
+        handleObjectData(info, block);
+      }
     }
-    catch (IOException e) { 
-      throw new MemoriaException(e);
-    }
-    finally {
-      IOUtil.close(stream);
-    }
+    
+//    MemoriaDataInputStream stream = new MemoriaDataInputStream(fFile.getInputStream(block.getPosition()));
+//    BlockReader reader = new BlockReader(fCompressor);
+//    
+//    try {
+//      reader.readBlock(stream, new Block(1), fRepo.getIdFactory(), this, new AlwaysThrowErrorHandler());
+//    }
+//    catch (IOException e) { 
+//      throw new MemoriaException(e);
+//    }
+//    finally {
+//      IOUtil.close(stream);
+//    }
     
     if(block.getObjectDataCount() != getObjectDataCount()) throw new MemoriaException("objectDataCount mismatch. File: " + getObjectDataCount() + " in memory: " + block.getObjectDataCount());
     if(block.getInactiveObjectDataCount() != getInactiveObjectDataCount()) throw new MemoriaException("inactiveObjectDataCount mismatch. File: " + getInactiveObjectDataCount() + " in memory: " + block.getInactiveObjectDataCount());
@@ -81,11 +81,11 @@ public class SurvivorAgent implements IFileReaderHandler  {
   public Set<ObjectInfo> getActiveDeleteMarkers() {
     return fActiveDeleteMarkers;
   }
-  
+
   public Set<ObjectInfo> getActiveObjectData() {
-    return fActiveObjectData;
+    return fActiveObjectDatas;
   }
-  
+
   public Set<ObjectInfo> getInactiveDeleteMarkers() {
     return fInactiveDeleteMarkers;
   }
@@ -95,7 +95,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
 
   public boolean hasSurvivors() {
-    return !fActiveObjectData.isEmpty() || !fActiveDeleteMarkers.isEmpty();
+    return !fActiveObjectDatas.isEmpty() || !fActiveDeleteMarkers.isEmpty();
   }
 
   @Override
@@ -107,7 +107,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   public void memoriaClassDeleted(IObjectId id, long revision) {
     handleDelete(id, revision);
   }
-
+  
   @Override
   public void object(HydratedObject object, IObjectId id, long revision, int size) {
     handleUpdate(id, revision);
@@ -123,7 +123,7 @@ public class SurvivorAgent implements IFileReaderHandler  {
   }
 
   private int getObjectDataCount() {
-    return fActiveDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fActiveObjectData.size();
+    return fActiveDeleteMarkers.size() + fInactiveDeleteMarkers.size() + fInactiveObjectDatas.size() + fActiveObjectDatas.size();
   }
   
   private void handleDelete(IObjectId id, long revision) {
@@ -141,20 +141,40 @@ public class SurvivorAgent implements IFileReaderHandler  {
     }
   }
 
+  private void handleDeletionMarker(ObjectInfo info, Block block) {
+    Set<ObjectInfo> infos = isActiveDeletionMarker(info, block) ? fActiveDeleteMarkers : fInactiveDeleteMarkers;
+    infos.add(info);
+  }
+
+  private void handleObjectData(ObjectInfo info, Block block) {
+    Set<ObjectInfo> infos = isCurrentBlock(info, block) ? fActiveObjectDatas : fInactiveObjectDatas;
+    infos.add(info);
+  }
+
   private void handleUpdate(IObjectId id, long revision) {
     ObjectInfo info = fRepo.getObjectInfoForId(id);
     long revisionFromObjectRepo = info.getRevision();
     if(revision > revisionFromObjectRepo) throw new MemoriaException("Wrong revision for Object in repo: " + revisionFromObjectRepo + " expected " + revision);
     
     if(revisionFromObjectRepo == revision){
-      fActiveObjectData.add(info);
+      fActiveObjectDatas.add(info);
     }
     else {
       // return this object to adjust the oldGenerationCount
       fInactiveObjectDatas.add(info);
     }
   }
+
+  private boolean isActiveDeletionMarker(ObjectInfo info, Block block) {
+    return info.getOldGenerationCount() != 0;
+  }
   
-  
+  private boolean isCurrentBlock(ObjectInfo info, Block block) {
+    return block.equals(fBlockRepo.getBlock(info));
+  }
+
+  private boolean isDeletionMarker(ObjectInfo info, Block block) {
+    return info.isDeleted() && (fBlockRepo.getBlock(info).equals(block));
+  }
   
 }
