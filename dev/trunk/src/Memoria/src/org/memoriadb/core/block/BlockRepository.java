@@ -4,11 +4,11 @@ import java.util.*;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.*;
-import org.memoriadb.core.util.collection.MultiMapOrdered;
+import org.memoriadb.core.util.collection.MultiMapUnOrdered;
 
 public final class BlockRepository {
 
-  private final MultiMapOrdered<Block, IObjectInfo> fBlockToObjectInfos = new MultiMapOrdered<Block, IObjectInfo>();
+  private final MultiMapUnOrdered<Block, IObjectInfo> fBlockToObjectInfos = new MultiMapUnOrdered<Block, IObjectInfo>();
   private final Map<IObjectInfo, Block> fObjectInfoToBlock = new HashMap<IObjectInfo, Block>();
   
   public void add(IObjectInfo objectInfo, Block block) {
@@ -20,7 +20,7 @@ public final class BlockRepository {
     return fObjectInfoToBlock.get(objectInfo);
   }
 
-  public List<IObjectInfo> getObjectInfos(Block block) {
+  public Set<IObjectInfo> getObjectInfos(Block block) {
     return fBlockToObjectInfos.get(block);
   }
   
