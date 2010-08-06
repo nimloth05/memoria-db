@@ -17,7 +17,6 @@
 package org.memoriadb.core.file.read;
 
 import org.memoriadb.block.Block;
-import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.id.IObjectId;
 
 /**
@@ -30,16 +29,14 @@ public class HydratedInfo {
   
   private final IObjectId fId;
   private HydratedObject fHydratedObject;
-  private long fVersion;
   private int fOldGenerationCount;
   private Block fCurrentBlock;
   private IObjectId fTypeId;
   
-  public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, long version, Block currentBlock) {
+  public HydratedInfo(IObjectId id, IObjectId typeId, HydratedObject hydratedObject, Block currentBlock) {
     fId = id;
     fTypeId = typeId;
     fHydratedObject = hydratedObject;
-    fVersion = version;
     fCurrentBlock = currentBlock;
     fOldGenerationCount = 0;
   }
@@ -69,10 +66,6 @@ public class HydratedInfo {
     return fOldGenerationCount;
   }
   
-  public long getVersion() {
-    return fVersion;
-  }
-
   public boolean isDeleted() {
     return fHydratedObject == null;
   }
@@ -85,19 +78,18 @@ public class HydratedInfo {
   /**
    * @param hydratedObject pass null to mark this object as deleted
    */
-  public void update(Block block, HydratedObject hydratedObject, IObjectId typeId, long version) {
+  public void update(Block block, HydratedObject hydratedObject, IObjectId typeId) {
     // es kann nicht 2 mal dieselbe Version abgespeichert sein
-    if(fVersion == version) throw new MemoriaException("two object-data have same revision: " + version);
-    
+    //if(fVersion == version) throw new MemoriaException("two object-data have same revision: " + version);
+
     ++fOldGenerationCount;
     
     // if the current version is bigger than the read one, adjust the block where the inactive ObjectData comes from.
-    if(fVersion > version){
+    if(fCurrentBlock.getRevision() > block.getRevision()){
       block.incrementInactiveObjectDataCount();
       return;
     }
     
-    fVersion = version;
     fHydratedObject = hydratedObject;
     fTypeId = typeId;
     

@@ -27,33 +27,33 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
   public void test_basic_revision_handling() {
     Object o1 = new Object();
     IObjectId id1 = save(o1);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getObjectInfo(id1).getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(id1));
 
     Object o2 = new Object();
     IObjectId id2 = save(o2);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getObjectInfo(id2).getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(id2));
 
     delete(o1);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getObjectInfo(id1).getRevision());
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getObjectInfo(id2).getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getRevision(id1));
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(id2));
     
     reopen();
     
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getObjectInfo(id1).getRevision());
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getObjectInfo(id2).getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getRevision(id1));
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(id2));
   }
 
   public void test_revision_for_change_on_original_and_on_l1() {
     IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     IObjectInfo info = fObjectStore.getObjectInfo(a);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(info));
     assertEquals(0, info.getOldGenerationCount());
 
     a.setInt(1);
     save(a);
 
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
     a = null;
 
@@ -61,20 +61,20 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
 
     IntObject a_l1 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l1);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
 
     a_l1.setInt(2);
     save(a_l1);
     a_l1 = null;
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getRevision(info));
     assertEquals(2, info.getOldGenerationCount());
 
     reopen();
 
     IntObject a_l2 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l2);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 4, getRevision(info));
     assertEquals(2, info.getOldGenerationCount());
   }
 
@@ -82,30 +82,30 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
     IntObject a = new IntObject(0);
     IObjectId a_id = save(a);
     IObjectInfo info = fObjectStore.getObjectInfo(a);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(info));
     assertEquals(0, info.getOldGenerationCount());
 
     fObjectStore.beginUpdate();
 
     a.setInt(1);
     save(a);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(info));
     assertEquals(0, info.getOldGenerationCount());
 
     a.setInt(2);
     save(a);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(info));
     assertEquals(0, info.getOldGenerationCount());
 
     fObjectStore.endUpdate();
 
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
 
     reopen();
     IntObject a_l1 = fObjectStore.get(a_id);
     info = fObjectStore.getObjectInfo(a_l1);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 3, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
   }
 
@@ -118,7 +118,7 @@ public abstract class UpdateTest extends AbstractMemoriaTest {
 
     IntObject a_l1 = fObjectStore.get(a_id);
     IObjectInfo info = fObjectStore.getObjectInfo(a_l1);
-    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_HEAD_REVISION + 2, getRevision(info));
     assertEquals(0, info.getOldGenerationCount());
   }
 

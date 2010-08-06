@@ -16,45 +16,45 @@
 
 package org.memoriadb.core.file.read;
 
-import java.io.*;
-import java.util.Arrays;
-
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.IObjectIdFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Reads in a block, assuming that the given stream is consistent with the given position in the file.
  * 
  * The HeadRevision is the highest
  * 
- * @author msc
+ * @author Sandro
  */
 public class BlockReader {
 
-  private long fRevision = 0;
+  private static final long REVISION_FOR_ERROR_CONDITION = 0;
+
   private final ICompressor fCompressor;
 
   public BlockReader(ICompressor compressor) {
     fCompressor = compressor;
   }
 
-  public long getRevision() {
-    return fRevision;
-  }
-
   /**
-   * @param lastWrittenBlockInfo
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  public void readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IBlockErrorHandler errorHandler) throws IOException {
+  public long readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IBlockErrorHandler errorHandler) throws IOException {
     if (!FileLayout.testBlockTag(stream)) {
       errorHandler.blockTagCorrupt(stream, block);
-      return;
+      return REVISION_FOR_ERROR_CONDITION;
     }
 
     // block size
@@ -63,7 +63,7 @@ public class BlockReader {
     // blockSize + size-crc + trx-crc
     if (blockSize + FileLayout.CRC_LEN + FileLayout.CRC_LEN > stream.available()) {
       errorHandler.transactionCorrupt(stream, block);
-      return;
+      return REVISION_FOR_ERROR_CONDITION;
     }
 
     long readCrc = stream.readLong();
@@ -73,7 +73,7 @@ public class BlockReader {
     crc.updateLong(blockSize);
     if (readCrc != crc.getValue()) {
       errorHandler.blockSizeCorrupt(stream, block);
-      return;
+      return REVISION_FOR_ERROR_CONDITION;
     }
 
     block.setBodySize(blockSize);
@@ -86,25 +86,27 @@ public class BlockReader {
     crc.update(body);
     if (readCrc != crc.getValue()) {
       errorHandler.transactionCorrupt(stream, block);
-      return;
+      return REVISION_FOR_ERROR_CONDITION;
     }
 
     // now expand the transaction
     body = fCompressor.decompress(body);
 
     DataInputStream dis = new DataInputStream(new ByteArrayInputStream(body));
-    fRevision = dis.readLong(); // transaction-revision
+    long revision = dis.readLong(); // transaction-revision
+    block.setRevision(revision);
 
     long objectDataCount = dis.readLong();
 
     // no state was changed before this line!
     handler.block(block);
 
-    readObjects(block, idFactory, handler, fRevision, body, FileLayout.TRX_OVERHEAD, objectDataCount);
+    readObjects(block, idFactory, handler, body, FileLayout.TRX_OVERHEAD, objectDataCount);
 
+    return revision;
   }
 
-  private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, int size) throws IOException {
+  private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
@@ -115,20 +117,20 @@ public class BlockReader {
     byte[] objectData = Arrays.copyOfRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
 
     if (idFactory.isObjectDeletionMarker(typeId)) {
-      handler.objectDeleted(objectId, revision);
+      handler.objectDeleted(objectId);
       return;
     }
     else if (idFactory.isMemoriaClassDeletionMarker(typeId)) {
-      handler.memoriaClassDeleted(objectId, revision);
+      handler.memoriaClassDeleted(objectId);
       return;
     }
 
     // no deleteMarker encountered
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, objectData), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.memoriaClass(new HydratedObject(typeId, objectData), objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, objectData), objectId, revision, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.object(new HydratedObject(typeId, objectData), objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
   }
 
@@ -137,14 +139,14 @@ public class BlockReader {
    * @param objectDataCount
    * @return The number of read ObjectData
    */
-  private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, long revision, byte[] data, int offset, long objectDataCount) throws IOException {
+  private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, long objectDataCount) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
     for (int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
       byte[] objectData = new byte[size];
       stream.readFully(objectData);
 
-      readObject(block, idFactory, handler, revision, objectData, 0, size);
+      readObject(block, idFactory, handler, objectData, 0, size);
     }
     return 0;
   }

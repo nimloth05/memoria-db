@@ -39,12 +39,12 @@ public class TransactionWriterTest extends AbstractMemoriaTest {
     
     assertEquals(false, o1.isClass());
     assertEquals(false, o1.isDeleteMarker());
-    assertEquals(2, o1.getVersion());
+    assertEquals(2, file.getBlock(1).getBlock().getRevision());
     assertEquals(id, o1.getId());
 
     assertEquals(false, o2.isClass());
     assertEquals(true, o2.isDeleteMarker());
-    assertEquals(3, o2.getVersion());
+    assertEquals(3, file.getBlock(2).getBlock().getRevision());
     assertEquals(id, o2.getId());
   }
   

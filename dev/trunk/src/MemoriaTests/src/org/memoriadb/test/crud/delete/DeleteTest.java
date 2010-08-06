@@ -20,7 +20,8 @@ import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.test.crud.testclass.A;
-import org.memoriadb.test.testclasses.*;
+import org.memoriadb.test.testclasses.IntObject;
+import org.memoriadb.test.testclasses.StringObject;
 import org.memoriadb.testutil.AbstractMemoriaTest;
 
 public abstract class DeleteTest extends AbstractMemoriaTest {
@@ -48,7 +49,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(a_id));
     IObjectInfo info = fObjectStore.getObjectInfoForId(a_id);
     assertTrue(info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
     
     reopen();
@@ -56,7 +57,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     assertFalse(fObjectStore.containsId(a_id));
     
     info = fObjectStore.getObjectInfoForId(a_id);
-    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
   }
   
@@ -77,12 +78,12 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     
     IObjectInfo a_info = fObjectStore.getObjectInfoForId(a_id);
     assertTrue(a_info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION + 2, a_info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, getRevision(a_info));
     assertEquals(1, a_info.getOldGenerationCount());
 
     IObjectInfo b_info = fObjectStore.getObjectInfoForId(b_id);
     assertTrue(b_info.isDeleted());
-    assertEquals(Constants.INITIAL_REVISION + 2, b_info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, getRevision(b_info));
     assertEquals(1, b_info.getOldGenerationCount());
 
   }
@@ -178,7 +179,7 @@ public abstract class DeleteTest extends AbstractMemoriaTest {
     endUpdate();
     
     IObjectInfo info = fObjectStore.getObjectInfoForId(a_id);
-    assertEquals(Constants.INITIAL_REVISION + 2, info.getRevision());
+    assertEquals(Constants.INITIAL_REVISION + 2, getRevision(info));
     assertEquals(1, info.getOldGenerationCount());
     assertTrue(info.isDeleted());
     

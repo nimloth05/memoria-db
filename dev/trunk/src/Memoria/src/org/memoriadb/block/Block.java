@@ -16,12 +16,13 @@
 
 package org.memoriadb.block;
 
-import java.util.*;
-
 import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.id.IObjectId;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to
@@ -55,6 +56,7 @@ public class Block {
 
   // if true, the inactiveRatio fo this block is 100%
   private boolean fIsFree = false;
+  private long fRevision;
 
   public Block(long position) {
     this(-1, position);
@@ -180,4 +182,11 @@ public class Block {
     if(fManager != null)fManager.inactiveRatioChanged(this);
   }
 
+  public long getRevision() {
+    return fRevision;
+  }
+
+  public void setRevision(long revision) {
+    fRevision = revision;
+  }
 }

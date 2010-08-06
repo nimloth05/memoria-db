@@ -16,19 +16,28 @@
 
 package org.memoriadb.core.file.write;
 
-import java.io.IOException;
-import java.util.*;
-
 import org.memoriadb.OpenConfig;
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
-import org.memoriadb.core.block.*;
+import org.memoriadb.block.Block;
+import org.memoriadb.block.IBlockManager;
+import org.memoriadb.core.IObjectRepository;
+import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.core.block.BlockRepository;
+import org.memoriadb.core.block.SurvivorAgent;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.core.file.HeaderHelper;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.collection.CompoundIterator;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class TransactionWriter {
 
@@ -191,9 +200,10 @@ public final class TransactionWriter {
     writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
 
     Block survivorsBlock = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(survivorAgent.getActiveObjectData(), survivorAgent.getActiveDeleteMarkers()), tabooBlocks, mode, decOGC);
+    survivorsBlock.setRevision(revision);
 
-    updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveObjectData());
-    updateObjectInfo(revision, survivorsBlock, survivorAgent.getActiveDeleteMarkers());
+    updateObjectInfo(survivorsBlock, survivorAgent.getActiveObjectData());
+    updateObjectInfo(survivorsBlock, survivorAgent.getActiveDeleteMarkers());
     
   }
 
@@ -202,42 +212,37 @@ public final class TransactionWriter {
     oldBlock.incrementInactiveObjectDataCount();
   }
 
-  private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block, long revision) {
+  private void updateInfoAfterAdd(Set<ObjectInfo> infos, Block block) {
     for (ObjectInfo info : infos) {
       fBlockRepo.update(info, block);
-      info.setRevision(revision);
     }
   }
 
-  private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block, long revision) {
+  private void updateInfoAfterDelete(Set<ObjectInfo> infos, Block block) {
     for (ObjectInfo info : infos) {
       Block oldBlock = fBlockRepo.update(info, block);
       setObjectInactive(info, oldBlock);
-      info.setRevision(revision);
       info.incrementOldGenerationCount();
     }
   }
 
-  private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block, long revision) {
+  private void updateInfoAfterUpdate(Set<ObjectInfo> infos, Block block) {
     for (ObjectInfo info : infos) {
       Block oldBlock = fBlockRepo.update(info, block);
       setObjectInactive(info, oldBlock);
-      info.setRevision(revision);
       info.incrementOldGenerationCount();
     }
   }
 
   /**
    * Updates the revision and block of the given {@link ObjectInfo}s 
-   * @param revision
    * @param newBlock
    * @param activeObjectData
    */
-  private void updateObjectInfo(long revision, Block newBlock, Iterable<ObjectInfo> activeObjectData) {
+  private void updateObjectInfo(Block newBlock, Iterable<ObjectInfo> activeObjectData) {
     for (ObjectInfo info : activeObjectData) {
       Block oldBlock = fBlockRepo.update(info, newBlock);
       setObjectInactive(info, oldBlock);
-      info.setRevision(revision);
     }
   }
 
@@ -268,12 +273,7 @@ public final class TransactionWriter {
   /**
    * Called recursively
    * @param trxData
-   * @param trxData
-   * @param objectDataCount
-   * @param objectDataCount
    * @param tabooBlocks
-   * @param tabooBlocks
-   * @param mode
    * @param mode
    * @param decOGC Contains all objectInfos whose OldGenerationCount must be decremented.
    * @throws Exception
@@ -314,10 +314,11 @@ public final class TransactionWriter {
 
     List<ObjectInfo> decOGC = new ArrayList<ObjectInfo>();
     Block block = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(add, update, delete), tabooBlocks, mode, decOGC);
-    
-    updateInfoAfterAdd(add, block, revision);
-    updateInfoAfterUpdate(update, block, revision);
-    updateInfoAfterDelete(delete, block, revision);
+    block.setRevision(revision);
+
+    updateInfoAfterAdd(add, block);
+    updateInfoAfterUpdate(update, block);
+    updateInfoAfterDelete(delete, block);
 
     // must done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {

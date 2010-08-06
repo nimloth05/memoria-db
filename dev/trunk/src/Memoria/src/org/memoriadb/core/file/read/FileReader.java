@@ -72,8 +72,8 @@ public class FileReader {
     while (fStream.available() > 0) {
       Block block = new Block(fStream.getReadBytes());
       IBlockErrorHandler errorHandler = createErrorHandler(fStream.getReadBytes(), block, handler);
-      blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
-      fHeadRevision = Math.max(fHeadRevision, blockReader.getRevision());
+      long revision = blockReader.readBlock(fStream, block, idFactory, handler, errorHandler);
+      fHeadRevision = Math.max(fHeadRevision, revision);
     }
 
     fStream.close();

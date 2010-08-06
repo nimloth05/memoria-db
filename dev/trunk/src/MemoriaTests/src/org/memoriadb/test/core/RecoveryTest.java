@@ -19,9 +19,11 @@ package org.memoriadb.test.core;
 import org.memoriadb.CreateConfig;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
 import org.memoriadb.core.exception.FileCorruptException;
-import org.memoriadb.core.file.*;
+import org.memoriadb.core.file.FileLayout;
+import org.memoriadb.core.file.InMemoryFile;
 import org.memoriadb.id.IObjectId;
-import org.memoriadb.testutil.*;
+import org.memoriadb.testutil.AbstractMemoriaTest;
+import org.memoriadb.testutil.FileStructure;
 
 public class RecoveryTest extends AbstractMemoriaTest {
 
@@ -99,10 +101,10 @@ public class RecoveryTest extends AbstractMemoriaTest {
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getBodyStartPosition());
 
-    assertEquals(4, getObjectInfo(id).getRevision());
+    assertEquals(4, getRevision(id));
     reopen();
 
-    assertEquals(3, getObjectInfo(id).getRevision());
+    assertEquals(3, getRevision(id));
   }
 
   public void test_corrupt_transaction_in_last_written_with_garbage() {
@@ -117,32 +119,32 @@ public class RecoveryTest extends AbstractMemoriaTest {
     assertEquals(2, getBlockManager().getBlockCount());
     assertBlocks(getBlock(1), getBlockForObjectId(id1));
     assertBlocks(getBlock(1), getBlockForObjectId(id2));
-    assertEquals(2, getObjectInfo(id1).getRevision());
-    assertEquals(2, getObjectInfo(id2).getRevision());
+    assertEquals(2, getRevision(id1));
+    assertEquals(2, getRevision(id2));
 
     save(o1);
     // |~o1, o2|o1'|
     assertEquals(3, getBlockManager().getBlockCount());
     assertBlocks(getBlock(2), getBlockForObjectId(id1));
     assertBlocks(getBlock(1), getBlockForObjectId(id2));
-    assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(2, getObjectInfo(id2).getRevision());
+    assertEquals(3, getRevision(id1));
+    assertEquals(2, getRevision(id2));
 
     save(o1);
     // |o1'',garbage|~o1'|o2'|
     assertEquals(4, getBlockManager().getBlockCount());
     assertBlocks(getBlock(1), getBlockForObjectId(id1));
     assertBlocks(getBlock(3), getBlockForObjectId(id2));
-    assertEquals(4, getObjectInfo(id1).getRevision());
-    assertEquals(5, getObjectInfo(id2).getRevision());
+    assertEquals(4, getRevision(id1));
+    assertEquals(5, getRevision(id2));
 
     FileStructure fs = new FileStructure(getFile());
     corruptFile(fs.getBlock(1).getBodyStartPosition());
 
     reopen();
 
-    assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(5, getObjectInfo(id2).getRevision());
+    assertEquals(3, getRevision(id1));
+    assertEquals(5, getRevision(id2));
   }
 
   public void test_file_too_small() {

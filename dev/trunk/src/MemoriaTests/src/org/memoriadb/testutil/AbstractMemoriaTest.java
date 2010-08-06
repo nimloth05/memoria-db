@@ -16,21 +16,24 @@
 
 package org.memoriadb.testutil;
 
-import java.io.*;
-import java.util.List;
-
 import junit.framework.TestCase;
-
-import org.memoriadb.*;
+import org.memoriadb.CreateConfig;
+import org.memoriadb.Memoria;
+import org.memoriadb.TestMode;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.mode.*;
+import org.memoriadb.core.mode.DataStore;
+import org.memoriadb.core.mode.ObjectStore;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.IObjectId;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public abstract class AbstractMemoriaTest extends TestCase {
   
@@ -236,6 +239,14 @@ public abstract class AbstractMemoriaTest extends TestCase {
   
   private DataStore openStoreDataMode(IMemoriaFile file, CreateConfig config) {
     return (DataStore) Memoria.openInDataMode(config, file);
+  }
+
+  protected long getRevision(IObjectId id) {
+    return getBlockForObjectId(id).getRevision();
+  }
+
+  protected long getRevision(IObjectInfo info) {
+    return getRevision(info.getId());
   }
   
 }

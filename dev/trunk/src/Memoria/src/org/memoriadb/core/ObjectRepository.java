@@ -16,12 +16,15 @@
 
 package org.memoriadb.core;
 
-import java.util.*;
-
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.*;
-import org.memoriadb.core.util.collection.identity.*;
-import org.memoriadb.id.*;
+import org.memoriadb.core.meta.IMemoriaClass;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.IObjectIdFactory;
+
+import java.util.*;
 
 /**
  * Holds the main-indexes.
@@ -67,8 +70,6 @@ public class ObjectRepository implements IObjectRepository {
   /**
    * This method is only used for bootstrapping
    * @param id
-   * @param id
-   * @param object
    * @param object
    */
   public void add(IObjectId id, IMemoriaClass object) {

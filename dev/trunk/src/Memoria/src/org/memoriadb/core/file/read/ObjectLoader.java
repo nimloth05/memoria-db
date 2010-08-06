@@ -16,18 +16,22 @@
 
 package org.memoriadb.core.file.read;
 
-import java.io.*;
-import java.util.*;
-
-import org.memoriadb.block.*;
-import org.memoriadb.core.*;
+import org.memoriadb.block.Block;
+import org.memoriadb.block.IBlockManager;
+import org.memoriadb.core.ObjectInfo;
+import org.memoriadb.core.ObjectRepository;
 import org.memoriadb.core.block.BlockRepository;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.handler.IBindable;
-import org.memoriadb.id.*;
+import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.IObjectIdFactory;
 import org.memoriadb.instantiator.IInstantiator;
+
+import java.io.DataInput;
+import java.io.IOException;
+import java.util.*;
 
 public final class ObjectLoader implements IReaderContext {
 
@@ -144,41 +148,36 @@ public final class ObjectLoader implements IReaderContext {
     return fRepo.getIdFactory().createFrom(input);
   }
 
-  private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId, long revision) {
+  private void addDeletionMarker(Map<IObjectId, HydratedInfo> container, IObjectId id, IObjectId deletionTypeId) {
     fIdFactory.adjustId(id);
 
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, deletionTypeId, null, revision, fCurrentBlock));
+      container.put(id, new HydratedInfo(id, deletionTypeId, null, fCurrentBlock));
       return;
     }
     
     // object already loaded in other version, newer version survives
-    info.update(fCurrentBlock, null, deletionTypeId, revision);
-    if (info.getVersion() != revision) throw new MemoriaException(id + ": DeletionMarker(" + revision + ") has lower revision then last objectData(" + info.getVersion() + ")");
+    info.update(fCurrentBlock, null, deletionTypeId);
   }
 
   /**
    * @param container
-   * @param container
    * @param object
    *          null if deleteMarker was encountered
    * @param id
-   * @param id
-   * @param version
-   * @param version
    */
-  private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id, long version) {
+  private void addHydratedObject(Map<IObjectId, HydratedInfo> container, HydratedObject object, IObjectId id) {
     fIdFactory.adjustId(id);
 
     HydratedInfo info = container.get(id);
     if (info == null) {
-      container.put(id, new HydratedInfo(id, object.getTypeId(), object, version, fCurrentBlock));
+      container.put(id, new HydratedInfo(id, object.getTypeId(), object, fCurrentBlock));
       return;
     }
     
     // object already loaded in other version, newer version survives
-    info.update(fCurrentBlock, object, object.getTypeId(), version);
+    info.update(fCurrentBlock, object, object.getTypeId());
   }
 
   private void bindObjects() {
@@ -206,7 +205,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   private void dehydrateObject(HydratedInfo info) throws Exception {
-    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getVersion(), info.getOldGenerationCount());
+    ObjectInfo objectInfo = new ObjectInfo(info.getObjectId(), info.getMemoriaClassId(), info.getObject(this), info.getOldGenerationCount());
     
     fBlockRepository.add(info.getObjectId(), info.getCurrentBlock());
     
@@ -243,23 +242,23 @@ public final class ObjectLoader implements IReaderContext {
       }
 
       @Override
-      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
-        addHydratedObject(fHydratedMetaClasses, metaClass, id, version);
+      public void memoriaClass(HydratedObject metaClass, IObjectId id, int size) {
+        addHydratedObject(fHydratedMetaClasses, metaClass, id);
       }
 
       @Override
-      public void memoriaClassDeleted(IObjectId id, long version) {
-        addDeletionMarker(fHydratedMetaClasses, id, fRepo.getIdFactory().getMemoriaClassDeletionMarker(), version);
+      public void memoriaClassDeleted(IObjectId id) {
+        addDeletionMarker(fHydratedMetaClasses, id, fRepo.getIdFactory().getMemoriaClassDeletionMarker());
       }
 
       @Override
-      public void object(HydratedObject object, IObjectId id, long version, int size) {
-        addHydratedObject(fHydratedObjects, object, id, version);
+      public void object(HydratedObject object, IObjectId id, int size) {
+        addHydratedObject(fHydratedObjects, object, id);
       }
 
       @Override
-      public void objectDeleted(IObjectId id, long version) {
-        addDeletionMarker(fHydratedObjects, id, fRepo.getIdFactory().getObjectDeletionMarker(), version);
+      public void objectDeleted(IObjectId id) {
+        addDeletionMarker(fHydratedObjects, id, fRepo.getIdFactory().getObjectDeletionMarker());
       }
 
     });

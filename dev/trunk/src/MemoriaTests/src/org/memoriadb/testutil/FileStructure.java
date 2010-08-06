@@ -37,6 +37,7 @@ import java.util.List;
 public class FileStructure {
 
   public static class BlockInfo {
+    
     private final Block fBlock;
     private final List<ObjectInfo> fObjectInfos = new ArrayList<ObjectInfo>();
 
@@ -80,17 +81,15 @@ public class FileStructure {
 
     boolean fIsClass;
     IObjectId fId;
-    long fVersion;
     int fSize;
 
-    public ObjectInfo(boolean isClass, IObjectId id, long version) {
-      this(isClass, id, version, DEL_MARKER);
+    public ObjectInfo(boolean isClass, IObjectId id) {
+      this(isClass, id, DEL_MARKER);
     }
 
-    public ObjectInfo(boolean isClass, IObjectId id, long version, int size) {
+    public ObjectInfo(boolean isClass, IObjectId id, int size) {
       this.fIsClass = isClass;
       this.fId = id;
-      this.fVersion = version;
       this.fSize = size;
     }
 
@@ -100,10 +99,6 @@ public class FileStructure {
 
     public int getSize() {
       return fSize;
-    }
-
-    public long getVersion() {
-      return fVersion;
     }
 
     public boolean isClass() {
@@ -160,23 +155,23 @@ public class FileStructure {
       }
 
       @Override
-      public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
-        fCurrentBlock.add(new ObjectInfo(true, id, version, size));
+      public void memoriaClass(HydratedObject metaClass, IObjectId id, int size) {
+        fCurrentBlock.add(new ObjectInfo(true, id, size));
       }
 
       @Override
-      public void memoriaClassDeleted(IObjectId id, long version) {
-        fCurrentBlock.add(new ObjectInfo(true, id, version));
+      public void memoriaClassDeleted(IObjectId id) {
+        fCurrentBlock.add(new ObjectInfo(true, id));
       }
 
       @Override
-      public void object(HydratedObject object, IObjectId id, long version, int size) {
-        fCurrentBlock.add(new ObjectInfo(false, id, version, size));
+      public void object(HydratedObject object, IObjectId id, int size) {
+        fCurrentBlock.add(new ObjectInfo(false, id, size));
       }
 
       @Override
-      public void objectDeleted(IObjectId id, long version) {
-        fCurrentBlock.add(new ObjectInfo(false, id, version));
+      public void objectDeleted(IObjectId id) {
+        fCurrentBlock.add(new ObjectInfo(false, id));
       }
 
     });

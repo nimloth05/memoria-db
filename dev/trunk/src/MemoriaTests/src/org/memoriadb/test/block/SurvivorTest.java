@@ -219,9 +219,9 @@ public class SurvivorTest extends AbstractMemoriaTest {
     delete(get(id1));
     // |~o1,o2|d1|
 
-    assertEquals(3, getObjectInfo(id1).getRevision());
+    assertEquals(3, getRevision(id1));
     assertEquals(1, getObjectInfo(id1).getOldGenerationCount());
-    assertEquals(2, getObjectInfo(id2).getRevision());
+    assertEquals(2, getRevision(id2));
     assertEquals(0, getObjectInfo(id2).getOldGenerationCount());
 
     assertEquals(3, getBlockManager().getBlockCount());
@@ -244,9 +244,9 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(100, getBlock(2).getInactiveRatio());
     assertEquals(0, getBlock(3).getInactiveRatio());
 
-    assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(5, getObjectInfo(id2).getRevision());
-    assertEquals(4, getObjectInfo(id3).getRevision());
+    assertEquals(3, getRevision(id1));
+    assertEquals(5, getRevision(id2));
+    assertEquals(4, getRevision(id3));
 
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));
@@ -270,9 +270,9 @@ public class SurvivorTest extends AbstractMemoriaTest {
     assertEquals(100, getBlock(2).getInactiveRatio());
     assertEquals(0, getBlock(3).getInactiveRatio());
 
-    assertEquals(3, getObjectInfo(id1).getRevision());
-    assertEquals(5, getObjectInfo(id2).getRevision());
-    assertEquals(4, getObjectInfo(id3).getRevision());
+    assertEquals(3, getRevision(id1));
+    assertEquals(5, getRevision(id2));
+    assertEquals(4, getRevision(id3));
 
     assertFalse(fObjectStore.containsId(id1));
     assertTrue(fObjectStore.containsId(id2));

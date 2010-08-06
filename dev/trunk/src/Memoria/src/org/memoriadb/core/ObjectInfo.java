@@ -17,7 +17,6 @@
 package org.memoriadb.core;
 
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.util.Constants;
 import org.memoriadb.id.IObjectId;
 
 /**
@@ -36,8 +35,6 @@ public class ObjectInfo implements IObjectInfo {
   private Object fObj;
   private final IObjectId fId;
   private final IObjectId fMemoriaClassId;
-  // TODO kann zum Block verschoben werden
-  private long fRevision;
   private int fOldGenerationCount;
   
   /**
@@ -45,10 +42,9 @@ public class ObjectInfo implements IObjectInfo {
    * @param id
    * @param memoriaClassId
    * @param obj
-   * @param currentBlock
    */
   public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj) {
-    this(id, memoriaClassId, obj, Constants.INITIAL_HEAD_REVISION, 0);
+    this(id, memoriaClassId, obj, 0);
     if(obj == null) throw new MemoriaException("new object can not be null");
   }
 
@@ -57,18 +53,15 @@ public class ObjectInfo implements IObjectInfo {
    * @param id
    * @param memoriaClassId
    * @param obj
-   * @param currentBlock
-   * @param version
    * @param oldGenerationCount
    */
-  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, long version, int oldGenerationCount) {
+  public ObjectInfo(IObjectId id, IObjectId memoriaClassId, Object obj, int oldGenerationCount) {
     if (memoriaClassId == null) throw new IllegalArgumentException("MemoriaClassId is null.");
     
     fObj = obj;
     
     fId = id;
     fMemoriaClassId = memoriaClassId;
-    fRevision = version;
     fOldGenerationCount = oldGenerationCount;
   }
 
@@ -98,11 +91,6 @@ public class ObjectInfo implements IObjectInfo {
     return fOldGenerationCount;
   }
 
-  @Override
-  public long getRevision() {
-    return fRevision;
-  }
-
   public void incrementOldGenerationCount() {
     ++fOldGenerationCount;
   }
@@ -120,14 +108,10 @@ public class ObjectInfo implements IObjectInfo {
     fObj = obj;
   }
   
-  public void setRevision(long revision) {
-    fRevision = revision;
-  }
-
   @Override
   public String toString() {
-    if (isDeleted()) return fId + " DELETED rev " + fRevision; 
-    return fId + " " + fObj.getClass().getName() + " rev " + fRevision;
+    if (isDeleted()) return fId + " DELETED"; 
+    return fId + " " + fObj.getClass().getName();
   }
   
 }

@@ -534,11 +534,11 @@ public abstract class BasicCrudTest extends AbstractMemoriaTest {
     WeakOwner ref = new WeakOwner(obj);
 
     save(obj);
-    long expectedRevision = fObjectStore.getObjectInfo(obj).getRevision();
+    long expectedRevision = getRevision(fObjectStore.getObjectInfo(obj));
 
     saveAll(ref);
 
-    assertEquals(expectedRevision, fObjectStore.getObjectInfo(obj).getRevision());
+    assertEquals(expectedRevision, getRevision(fObjectStore.getObjectInfo(obj)));
   }
 
   private void test_aggregated_primitive(Object primitive) {

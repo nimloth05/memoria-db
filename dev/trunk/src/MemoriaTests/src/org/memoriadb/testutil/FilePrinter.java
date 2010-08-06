@@ -36,23 +36,23 @@ public class FilePrinter {
     }
 
     @Override
-    public void memoriaClass(HydratedObject metaClass, IObjectId id, long version, int size) {
-      System.out.println("  memoriaClassObject id " + id + " typeId " + metaClass.getTypeId() + " version " + version);
+    public void memoriaClass(HydratedObject metaClass, IObjectId id, int size) {
+      System.out.println("  memoriaClassObject id " + id + " typeId " + metaClass.getTypeId());
     }
 
     @Override
-    public void memoriaClassDeleted(IObjectId id, long version) {
-      System.out.println("  memoriaClassObject deleted id " + id + " version " + version);
+    public void memoriaClassDeleted(IObjectId id) {
+      System.out.println("  memoriaClassObject deleted id " + id);
     }
 
     @Override
-    public void object(HydratedObject object, IObjectId id, long version, int size) {
-      System.out.println("  object id " + id + " typeId " + object.getTypeId() + " version " + version);
+    public void object(HydratedObject object, IObjectId id, int size) {
+      System.out.println("  object id " + id + " typeId " + object.getTypeId());
     }
 
     @Override
-    public void objectDeleted(IObjectId id, long version) {
-      System.out.println("  object deleted id " + id + " version " + version);
+    public void objectDeleted(IObjectId id) {
+      System.out.println("  object deleted id " + id);
     }
     
   }
