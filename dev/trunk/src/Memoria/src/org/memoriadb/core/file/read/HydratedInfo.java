@@ -89,7 +89,7 @@ public class HydratedInfo {
       block.incrementInactiveObjectDataCount();
       return;
     }
-    
+
     fHydratedObject = hydratedObject;
     fTypeId = typeId;
     

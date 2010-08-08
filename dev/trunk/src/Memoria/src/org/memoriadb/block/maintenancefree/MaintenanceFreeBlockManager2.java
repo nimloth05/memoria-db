@@ -17,40 +17,38 @@
 package org.memoriadb.block.maintenancefree;
 
 import org.memoriadb.block.Block;
+import org.memoriadb.block.BlockManagerUtil;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.file.FileLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
-public class MaintenanceFreeBlockManager implements IBlockManagerExt {
+/**
+ * @author Sandro
+ */
+public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
 
   private final int fInactiveThreshold;
-  private final int fSizeThreshold;
   private final List<Block> fBlocks = new ArrayList<Block>();
-  private final TreeSet<BlockBucket> fRecycleList = new TreeSet<BlockBucket>(new BlockBucketComparator());
+  private final ArrayList<List<Block>> fRecycleList = new ArrayList<List<Block>>(8);
 
   /**
-   * 
+   *
    * Recommandation: A inactiveRatio equal or below 50% can lead to very poor performance, because the algorithm may not
-   * converge.
-   * 
+   * come to an end findind a block.
+   *
    * @param inactiveThreshold
    *          0..100%. 0 means: at leat on ObjectData must be inactive. 100 means: all (100%) of the ObjectDatas must be
    *          inactive
-   * 
-   * @param sizeThreshold
-   *          0..100%: 0 means: every block qualifies for recycling, 100% means: A block only qualifies for recycling
-   *          when it's size matches the requested size.
+   *
    */
-  public MaintenanceFreeBlockManager(int inactiveThreshold, int sizeThreshold) {
+  public MaintenanceFreeBlockManager2(int inactiveThreshold) {
     checkIsPercent(inactiveThreshold);
-    checkIsPercent(sizeThreshold);
 
     fInactiveThreshold = inactiveThreshold;
-    fSizeThreshold = sizeThreshold;
   }
 
   @Override
@@ -62,32 +60,16 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
 
   @Override
   public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
-    // create a block as search-prototype
+    long currentSize = BlockManagerUtil.getNextAlignedBlockSize(blockSize + FileLayout.BLOCK_OVERHEAD);
+    int index = BlockManagerUtil.getIndexForAlignedBlockSize(currentSize);
+    if (index >= fRecycleList.size()) return null;
+    
+    List<Block> blocks = fRecycleList.get(index);
+    if (blocks == null) return null;
 
-    long currentSize = blockSize;
-
-    while (true) {
-      BlockBucket blockBucket = fRecycleList.ceiling(new BlockBucket(currentSize));
-      if (blockBucket == null) return null; // no block with the requested size in the recycle list.
-
-      long ratio = currentSize * 100 / blockBucket.getSize();
-      if (ratio >= fSizeThreshold) {
-        Block result = getBlock(blockBucket, tabooBlocks);
-        if (blockBucket.isEmpty()) fRecycleList.remove(blockBucket);
-        if (result != null) return result;
-      }
-      else {
-        // sizeThreshold exceeded
-        return null;
-      }
-
-      
-      // This guarantees that the algorithm does not stop making progress. 
-      // If a BlockBucket is found with the right size but all it's Blocks are
-      // contained in the taboo-list, the next bigger BlockBucket must be taken to check if
-      // it's size still fits in the given sizeThreshold.
-      currentSize = Math.max(currentSize + 1, blockBucket.getSize());
-    }
+    if (blocks.isEmpty()) return null;
+    Block block = blocks.remove(0);
+    return block;
   }
 
   @Override
@@ -103,8 +85,9 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   @Override
   public int getRecyclingBlockCount() {
     int result = 0;
-    for (BlockBucket bucket : fRecycleList) {
-      result += bucket.getBlockCount();
+    for (List<Block> blocks : fRecycleList) {
+      if (blocks == null) continue;
+      result += blocks.size();
     }
     return result;
   }
@@ -113,21 +96,33 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
   public void inactiveRatioChanged(Block block) {
     if (!blockQualifiesForRecycling(block)) return;
 
-    BlockBucket prototype = new BlockBucket(block.getBodySize());
-    BlockBucket bucket = fRecycleList.ceiling(prototype);
-    if (bucket == null || bucket.getSize() != block.getBodySize()) {
-      // no BlockBucket with exactly the requested bodySize was found. Add the created prototype.
-      bucket = prototype;
-      fRecycleList.add(bucket);
-    }
+    int index = BlockManagerUtil.getIndexForAlignedBlockSize(block.getWholeSize());
+    ensureCapacity(index);
 
-    bucket.add(block);
+    List<Block> blocks = fRecycleList.get(index);
+    if (blocks == null) {
+      blocks = new ArrayList<Block>();
+      fRecycleList.set(index, blocks);
+    }
+    
+    blocks.add(block);
+  }
+
+  private void ensureCapacity(final int index) {
+    int sizeDiff = fRecycleList.size() - index;
+    if (sizeDiff > 0) return;
+    if (sizeDiff == 0) sizeDiff = 2;
+
+    int elementsToAdd = (int)BlockManagerUtil.getNextPowerOfTwo(-1 * sizeDiff);
+    for(int i = 0; i < elementsToAdd; ++i) {
+      fRecycleList.add(null);
+    }
   }
 
   private boolean blockQualifiesForRecycling(Block block) {
     if (block.isFree()) return true;
 
-    // if the inactiveThreshold is 0, a single inactive ObjectData qualifies the block for recycling.
+    // if the inactiveThreshold is 0, a single inactive Object qualifies the block for recycling.
     if (fInactiveThreshold == 0) return block.getInactiveObjectDataCount() > 0;
 
     return block.getInactiveRatio() >= fInactiveThreshold;
@@ -145,5 +140,4 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     }
     return null;
   }
-
 }

@@ -55,10 +55,8 @@ public class CreateConfig extends OpenConfig {
   }
   
   /**
-   * @param handlerClass
-   *          The IHandler subclass.
-   * @param objectClass
-   *          java-type which is handled by the given handler.
+   * @param handler
+   *          The handler for a specific java-class.
    */
   public void addCustomHandler(IHandler handler) {
     fCustomHandlers.add(handler);

@@ -35,6 +35,7 @@ public class AllTests {
     suite.addTestSuite(TestInactiveObjectDataCount.class);
     suite.addTestSuite(MaintenanceFreeBlockManagerTest.class);
     suite.addTestSuite(LastWrittenBlockAfterCrashTest.class);
+    suite.addTestSuite(BlockManagerUtilTest.class);
     //$JUnit-END$
     return suite;
   }

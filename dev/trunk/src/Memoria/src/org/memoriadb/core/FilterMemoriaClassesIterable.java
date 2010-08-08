@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
 
 public class FilterMemoriaClassesIterable implements Iterable<Object> {
   
-  
   private static class FilterMemoriaClassIterator implements Iterator<Object> {
 
     private final Iterator<Object> fIterator;

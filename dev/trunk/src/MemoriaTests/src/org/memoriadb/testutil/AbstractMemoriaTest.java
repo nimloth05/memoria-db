@@ -22,6 +22,7 @@ import org.memoriadb.Memoria;
 import org.memoriadb.TestMode;
 import org.memoriadb.block.Block;
 import org.memoriadb.core.IObjectInfo;
+import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.meta.IMemoriaClass;
@@ -30,10 +31,13 @@ import org.memoriadb.core.mode.ObjectStore;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.IObjectId;
+import org.memoriadb.id.loong.LongId;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractMemoriaTest extends TestCase {
   
@@ -248,5 +252,12 @@ public abstract class AbstractMemoriaTest extends TestCase {
   protected long getRevision(IObjectInfo info) {
     return getRevision(info.getId());
   }
-  
+
+  protected Set<ObjectInfo> createObjectIdSet(int count) {
+    Set<ObjectInfo> result = new HashSet<ObjectInfo>(count);
+    for(int i=0; i<count; ++i) {
+      result.add(new ObjectInfo(new LongId(i), new LongId(123), new Object()));
+    }
+    return result;
+  }
 }

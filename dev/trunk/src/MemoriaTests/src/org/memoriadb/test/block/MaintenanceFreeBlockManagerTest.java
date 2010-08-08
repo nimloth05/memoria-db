@@ -16,15 +16,14 @@
 
 package org.memoriadb.test.block;
 
-import java.util.*;
-
 import org.memoriadb.block.Block;
 import org.memoriadb.block.maintenancefree.MaintenanceFreeBlockManager;
-import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.block.IBlockManagerExt;
-import org.memoriadb.id.loong.LongId;
+import org.memoriadb.testutil.AbstractMemoriaTest;
 
-public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
+import java.util.HashSet;
+
+public class MaintenanceFreeBlockManagerTest extends AbstractMemoriaTest {
   
   /**
    * One inactive object is enough to make ready for recycling
@@ -215,14 +214,6 @@ public class MaintenanceFreeBlockManagerTest extends junit.framework.TestCase {
     HashSet<Block> hashSet = new HashSet<Block>();
     hashSet.add(b);
     assertNull(manager.allocatedRecyclebleBlock(10, hashSet));
-  }
-  
-  private Set<ObjectInfo> createObjectIdSet(int count) {
-    Set<ObjectInfo> result = new HashSet<ObjectInfo>(count);
-    for(int i=0; i<count; ++i) {
-      result.add(new ObjectInfo(new LongId(i), new LongId(123), new Object()));
-    }
-    return result;
   }
 
 }
