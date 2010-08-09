@@ -119,7 +119,8 @@ public class TableModel extends AbstractTableModel {
     }
     
     if (columnIndex == 1) {
-      return objectInfo.getRevision();
+      //return objectInfo.getRevision();
+      return -1;
     }
     
     if (columnIndex == 2) {

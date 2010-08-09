@@ -53,7 +53,8 @@ public class TableFormat implements ca.odell.glazedlists.gui.TableFormat<IFieldb
       return fOpenStore.getObjectInfo(baseObject).getId();
     }
     if (column == 1) {
-      return fOpenStore.getObjectInfo(baseObject).getRevision();
+      //return fOpenStore.getObjectInfo(baseObject).getRevision();
+      return -1;
     }
     if (column == 2) {
       return baseObject.getMemoriaClassId();
