@@ -16,19 +16,15 @@
 
 package org.memoriadb.core.file.read;
 
+import java.io.*;
+import java.util.Arrays;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
-import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import org.memoriadb.id.*;
 
 /**
  * Reads in a block, assuming that the given stream is consistent with the given position in the file.
@@ -43,10 +39,12 @@ public class BlockReader {
 
   private final ICompressor fCompressor;
 
+  private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
   public BlockReader(ICompressor compressor) {
     fCompressor = compressor;
   }
-
+  
   /**
    * @return Number of read bytes in this function
    * @throws IOException
@@ -106,6 +104,13 @@ public class BlockReader {
     return revision;
   }
 
+  private byte[] copyDataRange(byte[] data, int from, int to) {
+    if (from == to) {
+      return EMPTY_BYTE_ARRAY;
+    }
+    return Arrays.copyOfRange(data, from, to);
+  }
+
   private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
     DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
 
@@ -113,8 +118,6 @@ public class BlockReader {
     IObjectId objectId = idFactory.createFrom(stream);
     
     block.addObjectId(objectId);
-
-    byte[] objectData = Arrays.copyOfRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
 
     if (idFactory.isObjectDeletionMarker(typeId)) {
       handler.objectDeleted(objectId);
@@ -126,6 +129,7 @@ public class BlockReader {
     }
 
     // no deleteMarker encountered
+    byte[] objectData = copyDataRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
       handler.memoriaClass(new HydratedObject(typeId, objectData), objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
