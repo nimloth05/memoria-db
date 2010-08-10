@@ -19,19 +19,19 @@ package org.memoriadb.handler.value;
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
+import java.io.*;
 
 public abstract class LangValueObjectHandler implements IHandler {
 
   public static class BooleanValueObjectHandler extends LangValueObjectHandler {
 
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       boolean value = input.readBoolean();
       return context.isInDataMode() ? new LangValueObject<Boolean>(value, typeId) : Boolean.valueOf(value);
     }
@@ -51,7 +51,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class ByteValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       byte value = input.readByte();
       return context.isInDataMode() ? new LangValueObject<Byte>(value, typeId) : Byte.valueOf(value);
     }
@@ -72,7 +72,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class CharacterValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       char value = input.readChar();
       return context.isInDataMode() ? new LangValueObject<Character>(value, typeId) : Character.valueOf(value);
     }
@@ -93,7 +93,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class DoubleValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       double value = input.readDouble();
       return context.isInDataMode() ? new LangValueObject<Double>(value, typeId) : Double.valueOf(value);
     }
@@ -114,7 +114,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class FloatValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       float value = input.readFloat();
       return context.isInDataMode() ? new LangValueObject<Float>(value, typeId) : Float.valueOf(value);
     }
@@ -135,7 +135,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class IntegerValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       int value = input.readInt();
       return context.isInDataMode() ? new LangValueObject<Integer>(value, typeId) : Integer.valueOf(value);
     }
@@ -156,7 +156,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class LongValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       long value = input.readLong();
       return context.isInDataMode() ? new LangValueObject<Long>(value, typeId) : Long.valueOf(value);
     }
@@ -177,7 +177,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class ShortValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       short value = input.readShort();
       return context.isInDataMode() ? new LangValueObject<Short>(value, typeId) : Short.valueOf(value);
     }
@@ -198,7 +198,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public static class StringValueObjectHandler extends LangValueObjectHandler {
     
     @Override
-    public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+    public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
       String value = input.readUTF();
       return context.isInDataMode() ? new LangValueObject<String>(value, typeId) : String.valueOf(value);
     }
@@ -220,7 +220,7 @@ public abstract class LangValueObjectHandler implements IHandler {
   public final void checkCanInstantiateObject(String className, IInstantiator instantiator) {}
 
   @Override
-  public abstract Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception;
+  public abstract Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception;
 
   @Override
   public abstract void serialize(Object obj, DataOutput output, IWriterContext context) throws Exception;

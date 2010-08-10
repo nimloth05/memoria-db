@@ -16,14 +16,13 @@
 
 package org.memoriadb.test.core.backend;
 
-import junit.framework.TestCase;
-import org.memoriadb.core.file.InMemoryFile;
-import org.memoriadb.core.util.ByteUtil;
-import org.memoriadb.core.util.Constants;
+import java.io.*;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import junit.framework.TestCase;
+
+import org.memoriadb.core.file.InMemoryFile;
+import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.io.LightDataInputStream;
 
 public class InMemoryFileTest extends TestCase {
   private InMemoryFile fFile;
@@ -63,7 +62,7 @@ public class InMemoryFileTest extends TestCase {
     fFile.append(ByteUtil.asByteArray(1));
     fFile.append(ByteUtil.asByteArray(2));
     
-    DataInputStream stream = new DataInputStream(fFile.getInputStream(Constants.INT_LEN));
+    LightDataInputStream stream = new LightDataInputStream(fFile.getInputStream(Constants.INT_LEN));
     assertEquals(2, stream.readInt());
     stream.close();
   }

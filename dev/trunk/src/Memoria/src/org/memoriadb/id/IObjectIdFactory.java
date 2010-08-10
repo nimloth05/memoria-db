@@ -16,15 +16,16 @@
 
 package org.memoriadb.id;
 
-import java.io.DataInput;
 import java.io.IOException;
+
+import org.memoriadb.core.util.io.IDataInput;
 
 
 public interface IObjectIdFactory extends IIdProvider {
   
   public void adjustId(IObjectId id);
 
-  public IObjectId createFrom(DataInput input) throws IOException;
+  public IObjectId createFrom(IDataInput input) throws IOException;
   
   public IObjectId createNextId();
   

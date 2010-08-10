@@ -16,22 +16,19 @@
 
 package org.memoriadb.core.file.read;
 
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.ObjectInfo;
-import org.memoriadb.core.ObjectRepository;
+import java.io.*;
+import java.util.*;
+
+import org.memoriadb.block.*;
+import org.memoriadb.core.*;
 import org.memoriadb.core.block.BlockRepository;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.ICompressor;
 import org.memoriadb.core.mode.IModeStrategy;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IBindable;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
+import org.memoriadb.id.*;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInput;
-import java.io.IOException;
-import java.util.*;
 
 public final class ObjectLoader implements IReaderContext {
 
@@ -144,7 +141,7 @@ public final class ObjectLoader implements IReaderContext {
   }
 
   @Override
-  public IObjectId readObjectId(DataInput input) throws IOException {
+  public IObjectId readObjectId(IDataInput input) throws IOException {
     return fRepo.getIdFactory().createFrom(input);
   }
 

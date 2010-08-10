@@ -16,21 +16,19 @@
 
 package org.memoriadb.handler.array;
 
+import java.io.*;
+import java.lang.reflect.Array;
+
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.ITypeVisitor;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ArrayTypeInfo;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.lang.reflect.Array;
 
 public class ArrayHandler implements IHandler {
 
@@ -38,7 +36,7 @@ public class ArrayHandler implements IHandler {
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {}
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
     
     IArray array = ArrayTypeInfo.readTypeInfo(input, context);
     ArrayTypeInfo arrayTypeInfo = array.getTypeInfo();
@@ -100,7 +98,7 @@ public class ArrayHandler implements IHandler {
     return new ObjectArray(obj);
   }
 
-  private void readContent(DataInputStream input, IReaderContext context, Type componentType, IArray array) throws Exception {
+  private void readContent(IDataInput input, IReaderContext context, Type componentType, IArray array) throws Exception {
     if (componentType.isPrimitive()) {
       readPrimitives(input, context, array, componentType);
     }
@@ -109,7 +107,7 @@ public class ArrayHandler implements IHandler {
     }
   }
 
-  private void readObject(DataInputStream input, final IReaderContext context, final IArray array, final int index) {
+  private void readObject(IDataInput input, final IReaderContext context, final IArray array, final int index) {
     Type.readValueWithType(input, context, new ITypeVisitor() {
 
       @Override
@@ -135,13 +133,13 @@ public class ArrayHandler implements IHandler {
     });
   }
 
-  private void readObjects(DataInputStream input, IReaderContext context, IArray array) {
+  private void readObjects(IDataInput input, IReaderContext context, IArray array) {
     for (int i = 0; i < array.length(); ++i) {
       readObject(input, context, array, i);
     }
   }
 
-  private void readPrimitive(DataInputStream input, IReaderContext context, final IArray array, final int index, Type componentType) throws Exception {
+  private void readPrimitive(IDataInput input, IReaderContext context, final IArray array, final int index, Type componentType) throws Exception {
     componentType.readValue(input, context, new ITypeVisitor() {
 
       @Override
@@ -167,7 +165,7 @@ public class ArrayHandler implements IHandler {
     });
   }
 
-  private void readPrimitives(DataInputStream input, IReaderContext context, IArray array, Type componentType) throws Exception {
+  private void readPrimitives(IDataInput input, IReaderContext context, IArray array, Type componentType) throws Exception {
     for (int i = 0; i < array.length(); ++i) {
       readPrimitive(input, context, array, i, componentType);
     }

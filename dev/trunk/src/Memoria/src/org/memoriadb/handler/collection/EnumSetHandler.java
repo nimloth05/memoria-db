@@ -21,11 +21,11 @@ import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.collection.CollectionHandler.SetHandler;
 import org.memoriadb.id.IObjectId;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
+import java.io.*;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ public class EnumSetHandler extends SetHandler {
   }
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
     IObjectId enumClassId = context.readObjectId(input);
     fEnumClass = (IMemoriaClass) context.getExistingObject(enumClassId);
     return super.deserialize(input, context, typeId);

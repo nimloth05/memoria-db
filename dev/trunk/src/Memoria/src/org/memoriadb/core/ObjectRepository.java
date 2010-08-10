@@ -142,12 +142,12 @@ public class ObjectRepository implements IObjectRepository {
   public Iterable<Object> getAllUserSpaceObjects() {
     return new FilterMemoriaClassesIterable(getAllObjects());
   }
-
+  
   @Override
   public Iterable<Object> getAllUserSpaceObjects(Class<?> clazz) {
     return fObjectsByClassIndex.getObjects(clazz);
   }
-  
+
   @Override
   public IObjectId getExistingId(Object obj) {
     IObjectId result = getId(obj);
@@ -240,11 +240,11 @@ public class ObjectRepository implements IObjectRepository {
   public boolean isMemoriaClass(Object obj) {
     return obj instanceof IMemoriaClass;
   }
-
+  
   public boolean isNullReference(IObjectId objectId) {
     return fIdFactory.isNullReference(objectId);
   }
-  
+
   @Override
   public void removeFromIndex(IObjectInfo objectInfo) {
     if (!objectInfo.isDeleted() || !fDeletedMap.containsKey(objectInfo.getId())) throw new MemoriaException("object is not deleted"+objectInfo);
@@ -254,7 +254,7 @@ public class ObjectRepository implements IObjectRepository {
   private IObjectId generateId() {
     return fIdFactory.createNextId();
   }
-
+  
   private void insertIntoClassIndex(Object object) {
     fObjectsByClassIndex.add(object);
   }

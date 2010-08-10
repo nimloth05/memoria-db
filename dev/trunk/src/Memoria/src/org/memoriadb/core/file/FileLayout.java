@@ -16,12 +16,12 @@
 
 package org.memoriadb.core.file;
 
-import org.memoriadb.core.mode.AbstractStore;
-import org.memoriadb.core.util.Constants;
-
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+
+import org.memoriadb.core.mode.AbstractStore;
+import org.memoriadb.core.util.Constants;
+import org.memoriadb.core.util.io.IDataInput;
 
 /**
  * Sizes are always gross-values. The BlockSize for example includes it's data as well as its block-tag and size.
@@ -79,7 +79,7 @@ public final class FileLayout {
     return OBJECT_SIZE_LEN + 2 * objectStore.getIdSize();
   }
 
-  public static boolean testBlockTag(DataInputStream stream) throws IOException {
+  public static boolean testBlockTag(IDataInput stream) throws IOException {
     if (stream.available() < BLOCK_TAG_LEN) return false;
     byte[] tagBuffer = new byte[BLOCK_TAG_LEN];
     stream.readFully(tagBuffer);

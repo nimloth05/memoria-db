@@ -23,7 +23,7 @@ import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
 import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.MemoriaCRC32;
-import org.memoriadb.core.util.io.MemoriaDataInputStream;
+import org.memoriadb.core.util.io.*;
 import org.memoriadb.id.*;
 
 /**
@@ -49,7 +49,7 @@ public class BlockReader {
    * @return Number of read bytes in this function
    * @throws IOException
    */
-  public long readBlock(MemoriaDataInputStream stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IBlockErrorHandler errorHandler) throws IOException {
+  public long readBlock(IDataInput stream, Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IBlockErrorHandler errorHandler) throws IOException {
     if (!FileLayout.testBlockTag(stream)) {
       errorHandler.blockTagCorrupt(stream, block);
       return REVISION_FOR_ERROR_CONDITION;
@@ -90,7 +90,7 @@ public class BlockReader {
     // now expand the transaction
     body = fCompressor.decompress(body);
 
-    DataInputStream dis = new DataInputStream(new ByteArrayInputStream(body));
+    IDataInput dis = new LightDataInputStream(new ByteArrayInputStream(body));
     long revision = dis.readLong(); // transaction-revision
     block.setRevision(revision);
 
@@ -112,7 +112,7 @@ public class BlockReader {
   }
 
   private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
-    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, size));
+    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
@@ -144,7 +144,7 @@ public class BlockReader {
    * @return The number of read ObjectData
    */
   private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, long objectDataCount) throws IOException {
-    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
+    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
     for (int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
       byte[] objectData = new byte[size];

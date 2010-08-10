@@ -16,13 +16,11 @@
 
 package org.memoriadb.core.util.io;
 
+import java.io.*;
+
 import org.memoriadb.core.util.ByteUtil;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-public class MemoriaDataInputStream extends DataInputStream {
+public class MemoriaDataInputStream extends LightDataInputStream  {
 
   private static class CountInputStream extends InputStream {
 
@@ -46,7 +44,7 @@ public class MemoriaDataInputStream extends DataInputStream {
     public long getReadBytes() {
       return fByteCounter;
     }
-
+    
     @Override
     public int read() throws IOException {
       ++fByteCounter;

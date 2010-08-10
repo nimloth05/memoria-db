@@ -16,19 +16,18 @@
 
 package org.memoriadb.core.meta;
 
+import java.io.*;
+
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.field.ClassInheritanceBinding;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 public class HandlerClassHandler implements IHandler {
 
@@ -39,7 +38,7 @@ public class HandlerClassHandler implements IHandler {
   }
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws IOException {
     String javaClassName = input.readUTF();
     String handlerName = input.readUTF();
     boolean hasValueObjectAnnotation = input.readBoolean();

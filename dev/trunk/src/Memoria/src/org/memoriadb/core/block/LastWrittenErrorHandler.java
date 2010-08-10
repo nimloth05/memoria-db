@@ -18,8 +18,8 @@ package org.memoriadb.core.block;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.file.read.IFileReaderHandler;
+import org.memoriadb.core.util.io.IDataInput;
 
-import java.io.DataInputStream;
 
 public class LastWrittenErrorHandler extends AbstractBlockErrorHandler {
 
@@ -28,7 +28,7 @@ public class LastWrittenErrorHandler extends AbstractBlockErrorHandler {
   }
   
   @Override
-  public void transactionCorrupt(DataInputStream input, Block block) {
+  public void transactionCorrupt(IDataInput input, Block block) {
    //BlockReader.skip(input, block.getBodySize() - transactionSize - FileLayout.TRX_OVERHEAD);
   }
 

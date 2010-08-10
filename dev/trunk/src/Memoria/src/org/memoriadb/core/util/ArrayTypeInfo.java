@@ -16,18 +16,14 @@
 
 package org.memoriadb.core.util;
 
+import java.io.*;
+
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.meta.Type;
-import org.memoriadb.handler.array.DataArray;
-import org.memoriadb.handler.array.IArray;
-import org.memoriadb.handler.array.ObjectArray;
+import org.memoriadb.core.meta.*;
+import org.memoriadb.core.util.io.IDataInput;
+import org.memoriadb.handler.array.*;
 import org.memoriadb.id.IObjectId;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 // FIXME allenfalls 2 Klassen für primitive und nicht-primitive
 public class ArrayTypeInfo {
@@ -38,7 +34,7 @@ public class ArrayTypeInfo {
   // if the ComponentType is clazz, the java class must be saved.
   private final String fClassName;
 
-  public static IArray readTypeInfo(DataInputStream input, IReaderContext context) throws IOException {
+  public static IArray readTypeInfo(IDataInput input, IReaderContext context) throws IOException {
     int dimension = input.readInt();
     int length = input.readInt();
     Type componentType = Type.values()[input.readByte()];
@@ -46,7 +42,7 @@ public class ArrayTypeInfo {
     return instantiateArray(input, context, dimension, length, componentType);
   }
 
-  private static IArray instantiateArray(DataInputStream input, IReaderContext context, int dimension, int length, Type componentType)
+  private static IArray instantiateArray(IDataInput input, IReaderContext context, int dimension, int length, Type componentType)
       throws IOException {
 
     if (componentType.isPrimitive()) {

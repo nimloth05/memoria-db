@@ -16,13 +16,12 @@
 
 package org.memoriadb.block;
 
+import java.util.*;
+
 import org.memoriadb.core.ObjectInfo;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.FileLayout;
 import org.memoriadb.id.IObjectId;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A Block can not change its position. It can not grow or shrink. It's data can just be moved to another block to
@@ -125,10 +124,14 @@ public class Block {
     return fPosition;
   }
   
+  public long getRevision() {
+    return fRevision;
+  }
+
   public long getWholeSize() {
     return fBodySize + FileLayout.BLOCK_OVERHEAD;
   }
-
+  
   public void incrementInactiveObjectDataCount() {
     // FIXME experimental
     //if(fInactiveObjectDataCount == fObjectDataCount) return;
@@ -143,7 +146,7 @@ public class Block {
   public boolean isFree() {
     return fIsFree;
   }
-  
+
   /**
    * Is called after all survivors were safed.
    */
@@ -165,6 +168,10 @@ public class Block {
     notifyBlockManager();
   }
 
+  public void setRevision(long revision) {
+    fRevision = revision;
+  }
+
   /**
    * The size of this block (header + body)
    * @param blockSize
@@ -180,13 +187,5 @@ public class Block {
 
   private void notifyBlockManager() {
     if(fManager != null)fManager.inactiveRatioChanged(this);
-  }
-
-  public long getRevision() {
-    return fRevision;
-  }
-
-  public void setRevision(long revision) {
-    fRevision = revision;
   }
 }

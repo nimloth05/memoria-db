@@ -16,11 +16,11 @@
 
 package org.memoriadb.id.guid;
 
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.id.AbstractIdFactory;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.IObjectIdFactory;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 public class GuidIdFactory extends AbstractIdFactory implements IObjectIdFactory {
@@ -39,7 +39,7 @@ public class GuidIdFactory extends AbstractIdFactory implements IObjectIdFactory
   public void adjustId(IObjectId id) {}
 
   @Override
-  public IObjectId createFrom(DataInput input) throws IOException {
+  public IObjectId createFrom(IDataInput input) throws IOException {
     return GuidId.readFrom(input);
   }
 

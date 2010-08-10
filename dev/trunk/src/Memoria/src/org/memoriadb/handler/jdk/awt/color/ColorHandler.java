@@ -16,19 +16,18 @@
 
 package org.memoriadb.handler.jdk.awt.color;
 
+import java.awt.*;
+import java.io.*;
+
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.jdk.JDKDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.awt.*;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 public class ColorHandler implements IHandler {
   
@@ -38,7 +37,7 @@ public class ColorHandler implements IHandler {
   }
   
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
      Color color = deserializeColor(input);
     
     return !context.isInDataMode() ? color : JDKDataObject.create(typeId, color);
@@ -58,7 +57,7 @@ public class ColorHandler implements IHandler {
   @Override
   public void traverseChildren(Object obj, IObjectTraversal traversal) {}
   
-  private Color deserializeColor(DataInputStream input) throws IOException {
+  private Color deserializeColor(IDataInput input) throws IOException {
     int value = input.readInt();
     boolean hasAlpha = input.readBoolean();
     return new Color(value, hasAlpha);

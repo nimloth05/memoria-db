@@ -23,13 +23,13 @@ import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.core.meta.ITypeVisitor;
 import org.memoriadb.core.meta.Type;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -115,7 +115,7 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   }
 
   @Override
-  public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, final IReaderContext context, IObjectId typeId) throws Exception {
     final T collection = createCollection(context.isInDataMode());
     int size = input.readInt();
     

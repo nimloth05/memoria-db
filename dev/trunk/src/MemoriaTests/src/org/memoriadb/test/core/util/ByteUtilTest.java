@@ -16,10 +16,12 @@
 
 package org.memoriadb.test.core.util;
 
-import junit.framework.TestCase;
-import org.memoriadb.core.util.ByteUtil;
-
 import java.io.*;
+
+import junit.framework.TestCase;
+
+import org.memoriadb.core.util.ByteUtil;
+import org.memoriadb.core.util.io.MemoriaDataInputStream;
 
 public class ByteUtilTest extends TestCase {
   
@@ -64,7 +66,7 @@ public class ByteUtilTest extends TestCase {
 
   private long read(byte[] data) throws IOException {
     ByteArrayInputStream bis = new ByteArrayInputStream(data);
-    DataInputStream dis = new DataInputStream(bis);
+    MemoriaDataInputStream dis = new MemoriaDataInputStream(bis);
     return ByteUtil.readUnsignedLong(dis);
   }
   

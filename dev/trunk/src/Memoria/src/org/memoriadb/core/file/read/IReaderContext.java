@@ -16,11 +16,11 @@
 
 package org.memoriadb.core.file.read;
 
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 
@@ -69,6 +69,6 @@ public interface IReaderContext {
   
   public boolean isRootClassId(IObjectId superClassId);
 
-  public IObjectId readObjectId(DataInput input) throws IOException;
+  public IObjectId readObjectId(IDataInput input) throws IOException;
 
 }

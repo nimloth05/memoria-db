@@ -16,19 +16,17 @@
 
 package org.memoriadb.handler.field;
 
+import java.io.*;
+
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.MemoriaClass;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 /**
  * Handler which persists FieldBasedHandlers. This handler will always return a complete memoriaClass.
@@ -42,7 +40,7 @@ public class FieldBasedHandlerHandler implements IHandler {
   }
   
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws IOException {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws IOException {
     String className = input.readUTF();
     boolean hasValueObjectAnnotation = input.readBoolean();
 

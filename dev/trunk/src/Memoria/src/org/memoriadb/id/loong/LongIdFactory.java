@@ -17,11 +17,11 @@
 package org.memoriadb.id.loong;
 
 import org.memoriadb.core.util.Constants;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.id.AbstractIdFactory;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.id.IObjectIdFactory;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory {
@@ -45,7 +45,7 @@ public class LongIdFactory extends AbstractIdFactory implements IObjectIdFactory
   }
 
   @Override
-  public IObjectId createFrom(DataInput input) throws IOException {
+  public IObjectId createFrom(IDataInput input) throws IOException {
     long id = input.readLong();
     return new LongId(id);
   }

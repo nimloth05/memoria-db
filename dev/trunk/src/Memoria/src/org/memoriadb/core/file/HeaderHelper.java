@@ -16,26 +16,20 @@
 
 package org.memoriadb.core.file;
 
-import org.memoriadb.CreateConfig;
-import org.memoriadb.Memoria;
-import org.memoriadb.block.Block;
-import org.memoriadb.core.exception.FileCorruptException;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.util.ByteUtil;
-import org.memoriadb.core.util.Constants;
-import org.memoriadb.core.util.MemoriaCRC32;
-import org.memoriadb.core.util.Version;
-import org.memoriadb.core.util.io.MemoriaDataOutputStream;
-
 import java.io.*;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
+
+import org.memoriadb.*;
+import org.memoriadb.block.Block;
+import org.memoriadb.core.exception.*;
+import org.memoriadb.core.util.*;
+import org.memoriadb.core.util.io.*;
 
 public class HeaderHelper {
 
   public static final long NO_CURRENT_BLOCK = -1;
   
-  public static Header getHeader(DataInputStream stream) throws IOException {
+  public static Header getHeader(IDataInput stream) throws IOException {
     checkMemoriaTag(stream);
 
     LastWrittenBlockInfo readCurrentBlockInfo = readLastWrittenBlockInfo(stream);
@@ -87,10 +81,10 @@ public class HeaderHelper {
     file.append(stream.toByteArray());
   }
 
-  private static void checkMemoriaTag(DataInputStream stream) throws IOException {
+  private static void checkMemoriaTag(IDataInput stream) throws IOException {
     if (stream.available() < FileLayout.MEMORIA_TAG.length) throw new FileCorruptException("file too short for beeing a memoria file");
     byte[] buffer = new byte[FileLayout.MEMORIA_TAG.length];
-    stream.read(buffer);
+    stream.readFully(buffer);
     if (!Arrays.equals(FileLayout.MEMORIA_TAG, buffer)) throw new FileCorruptException("not a memoria file");
   }
 
@@ -112,7 +106,7 @@ public class HeaderHelper {
 
   private static Header readHeaderInfo(LastWrittenBlockInfo readCurrentBlockInfo, int headerInfoSize, byte[] headerInfo)
       throws IOException {
-    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(headerInfo));
+    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(headerInfo));
     UUID thisUuid = readUuid(stream);
     UUID hostUuid = readUuid(stream);
     long hostBranchVersion = stream.readLong();
@@ -129,7 +123,7 @@ public class HeaderHelper {
         defaultInstantiatorClassName, FileLayout.getHeaderSize(headerInfoSize), readCurrentBlockInfo, compressor);
   }
 
-  private static LastWrittenBlockInfo readLastWrittenBlockInfo(DataInputStream stream) throws IOException {
+  private static LastWrittenBlockInfo readLastWrittenBlockInfo(IDataInput stream) throws IOException {
     int writeMode = stream.readInt();
     long currentBlock = stream.readLong();
 
@@ -142,11 +136,11 @@ public class HeaderHelper {
     return new LastWrittenBlockInfo(writeMode, currentBlock);
   }
 
-  private static UUID readUuid(DataInputStream stream) throws IOException {
+  private static UUID readUuid(IDataInput stream) throws IOException {
     return new UUID(stream.readLong(), stream.readLong());
   }
 
-  private static Version readVersion(DataInputStream stream) throws IOException {
+  private static Version readVersion(IDataInput stream) throws IOException {
     return new Version(stream.readInt(), stream.readInt(), stream.readInt());
   }
 

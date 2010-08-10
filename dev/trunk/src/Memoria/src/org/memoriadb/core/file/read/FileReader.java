@@ -16,21 +16,15 @@
 
 package org.memoriadb.core.file.read;
 
+import java.io.IOException;
+
 import org.memoriadb.block.Block;
-import org.memoriadb.core.block.AlwaysThrowErrorHandler;
-import org.memoriadb.core.block.IBlockErrorHandler;
-import org.memoriadb.core.block.LastAppendedErrorHandler;
-import org.memoriadb.core.block.LastWrittenErrorHandler;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.Header;
-import org.memoriadb.core.file.HeaderHelper;
-import org.memoriadb.core.file.ICompressor;
-import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.util.Constants;
 import org.memoriadb.core.util.io.MemoriaDataInputStream;
 import org.memoriadb.id.IObjectIdFactory;
-
-import java.io.IOException;
 
 /**
  * Reads the content of a {@link IMemoriaFile}.

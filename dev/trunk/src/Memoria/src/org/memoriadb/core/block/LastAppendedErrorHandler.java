@@ -16,12 +16,12 @@
 
 package org.memoriadb.core.block;
 
+import java.io.IOException;
+
 import org.memoriadb.block.Block;
 import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.read.IFileReaderHandler;
-
-import java.io.DataInputStream;
-import java.io.IOException;
+import org.memoriadb.core.util.io.IDataInput;
 
 /**
  * 
@@ -40,23 +40,23 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
   }
 
   @Override
-  public void blockSizeCorrupt(DataInputStream input, Block block) throws IOException {
+  public void blockSizeCorrupt(IDataInput input, Block block) throws IOException {
     freeCorruptBlock(input, block);
     skipToEnd(input);
   }
 
   @Override
-  public void blockTagCorrupt(DataInputStream input, Block block) throws IOException {
+  public void blockTagCorrupt(IDataInput input, Block block) throws IOException {
     freeCorruptBlock(input, block);
     skipToEnd(input);
   }
 
   @Override
-  public void transactionCorrupt(DataInputStream input, Block block) throws IOException {
+  public void transactionCorrupt(IDataInput input, Block block) throws IOException {
     freeCorruptBlock(input, block);
   }
 
-  private void freeCorruptBlock(DataInputStream input, Block block) throws IOException {
+  private void freeCorruptBlock(IDataInput input, Block block) throws IOException {
     long size = fFile.getSize() - block.getPosition();
     block.setWholeSize(size);
     block.setIsFree();
@@ -66,7 +66,7 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
     
   }
 
-  private void skipToEnd(DataInputStream input) throws IOException {
+  private void skipToEnd(IDataInput input) throws IOException {
     // skip stream to the end
     input.skip(Long.MAX_VALUE);
   }

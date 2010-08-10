@@ -16,21 +16,19 @@
 
 package org.memoriadb.handler.map;
 
+import java.io.DataOutput;
+import java.util.Map;
+
 import org.memoriadb.core.IObjectTraversal;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.exception.SchemaException;
+import org.memoriadb.core.exception.*;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.ITypeVisitor;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ReflectionUtil;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.util.Map;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
@@ -63,7 +61,7 @@ public class MapHandler implements IHandler {
   }
   
   @Override
-  public Object deserialize(DataInputStream input, final IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, final IReaderContext context, IObjectId typeId) throws Exception {
     Map<Object, Object> map = createMap();
     
     int size = input.readInt();
@@ -115,7 +113,7 @@ public class MapHandler implements IHandler {
     return (Map<?,?>) obj;
   }
 
-  private IObjectResolver readNextElement(DataInputStream input, final IReaderContext context) {
+  private IObjectResolver readNextElement(IDataInput input, final IReaderContext context) {
     return Type.readValueWithType(input, context, new ITypeVisitor() {
 
       private IObjectResolver fResult;

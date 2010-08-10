@@ -16,12 +16,11 @@
 
 package org.memoriadb.core.util;
 
-import org.memoriadb.core.exception.MemoriaException;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
 import java.util.UUID;
+
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.util.io.IDataInput;
 
 public final class ByteUtil {
   
@@ -64,7 +63,7 @@ public final class ByteUtil {
     return ((int1 << 24) + (int2 << 16) + (int3 << 8) + (int4 << 0));
   }
 
-  public static long readUnsignedLong(DataInput in) throws IOException {
+  public static long readUnsignedLong(IDataInput in) throws IOException {
     long result=0;
     int shift = 0;
     byte b;
@@ -78,7 +77,7 @@ public final class ByteUtil {
     return result;
   }
   
-  public static UUID readUUID(DataInput input) throws IOException {
+  public static UUID readUUID(IDataInput input) throws IOException {
     return new UUID(input.readLong(), input.readLong());
   }
 

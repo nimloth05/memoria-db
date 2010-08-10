@@ -17,16 +17,16 @@
 package org.memoriadb.core.block;
 
 import org.memoriadb.block.Block;
+import org.memoriadb.core.util.io.IDataInput;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 
 public interface IBlockErrorHandler {
   
-  public void blockSizeCorrupt(DataInputStream input, Block block) throws IOException;
+  public void blockSizeCorrupt(IDataInput input, Block block) throws IOException;
   
-  public void blockTagCorrupt(DataInputStream input, Block block) throws IOException;
+  public void blockTagCorrupt(IDataInput input, Block block) throws IOException;
   
-  public void transactionCorrupt(DataInputStream input, Block block) throws IOException;
+  public void transactionCorrupt(IDataInput input, Block block) throws IOException;
   
 }

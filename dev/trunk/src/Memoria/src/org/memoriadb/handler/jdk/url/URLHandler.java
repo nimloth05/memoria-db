@@ -20,13 +20,13 @@ import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.jdk.JDKDataObject;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
+import java.io.*;
 import java.net.URL;
 
 public class URLHandler implements IHandler {
@@ -37,7 +37,7 @@ public class URLHandler implements IHandler {
   }
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
     String url = input.readUTF();
     URL urlObject = new URL(url); 
     

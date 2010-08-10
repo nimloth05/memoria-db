@@ -16,13 +16,12 @@
 
 package org.memoriadb.id.guid;
 
-import org.memoriadb.core.util.ByteUtil;
-import org.memoriadb.id.IObjectId;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
 import java.util.UUID;
+
+import org.memoriadb.core.util.ByteUtil;
+import org.memoriadb.core.util.io.IDataInput;
+import org.memoriadb.id.IObjectId;
 
 public class GuidId implements IObjectId {
 
@@ -36,7 +35,7 @@ public class GuidId implements IObjectId {
     return new GuidId(UUID.randomUUID());
   }
 
-  public static IObjectId readFrom(DataInput input) throws IOException {
+  public static IObjectId readFrom(IDataInput input) throws IOException {
     return new GuidId(ByteUtil.readUUID(input));
   }
 
