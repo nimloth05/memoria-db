@@ -37,6 +37,7 @@ public class AllTests {
     suite.addTestSuite(TypeInfoTest.class);
     suite.addTestSuite(ModeTest.class);
     suite.addTestSuite(RecoveryTest.class);
+    suite.addTestSuite(ObjectsByClassIndexTest.class);
     suite.addTestSuite(DefaultInstantiatorTest.class);
     suite.addTestSuite(ObjectRepoTest.class);
     //$JUnit-END$
