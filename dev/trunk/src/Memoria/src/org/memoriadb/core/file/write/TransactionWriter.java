@@ -16,28 +16,19 @@
 
 package org.memoriadb.core.file.write;
 
+import java.io.IOException;
+import java.util.*;
+
 import org.memoriadb.OpenConfig;
-import org.memoriadb.block.Block;
-import org.memoriadb.block.IBlockManager;
-import org.memoriadb.core.IObjectRepository;
-import org.memoriadb.core.ObjectInfo;
-import org.memoriadb.core.block.BlockRepository;
-import org.memoriadb.core.block.SurvivorAgent;
+import org.memoriadb.block.*;
+import org.memoriadb.core.*;
+import org.memoriadb.core.block.*;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.FileLayout;
-import org.memoriadb.core.file.HeaderHelper;
-import org.memoriadb.core.file.ICompressor;
-import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.*;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.MemoriaCRC32;
-import org.memoriadb.core.util.collection.CompoundIterator;
+import org.memoriadb.core.util.collection.CompoundIterable;
 import org.memoriadb.core.util.io.MemoriaDataOutputStream;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public final class TransactionWriter {
 
@@ -199,7 +190,10 @@ public final class TransactionWriter {
     writeAddOrUpdate(survivorAgent.getActiveObjectData(), tabooBlocks, serializer);
     writeDelete(survivorAgent.getActiveDeleteMarkers(), tabooBlocks, serializer);
 
-    Block survivorsBlock = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(survivorAgent.getActiveObjectData(), survivorAgent.getActiveDeleteMarkers()), tabooBlocks, mode, decOGC);
+    List<Set<ObjectInfo>> iterables = new ArrayList<Set<ObjectInfo>>();
+    iterables.add(survivorAgent.getActiveObjectData());
+    iterables.add(survivorAgent.getActiveDeleteMarkers());
+    Block survivorsBlock = write(stream.toByteArray(), CompoundIterable.create(iterables), tabooBlocks, mode, decOGC);
     survivorsBlock.setRevision(revision);
 
     updateObjectInfo(survivorsBlock, survivorAgent.getActiveObjectData());
@@ -313,7 +307,9 @@ public final class TransactionWriter {
     writeDelete(delete, tabooBlocks, serializer);
 
     List<ObjectInfo> decOGC = new ArrayList<ObjectInfo>();
-    Block block = write(stream.toByteArray(), new CompoundIterator<ObjectInfo>(add, update, delete), tabooBlocks, mode, decOGC);
+    @SuppressWarnings("unchecked")
+    CompoundIterable<ObjectInfo> objectInfos = new CompoundIterable<ObjectInfo>(add, update, delete);
+    Block block = write(stream.toByteArray(), objectInfos, tabooBlocks, mode, decOGC);
     block.setRevision(revision);
 
     updateInfoAfterAdd(add, block);

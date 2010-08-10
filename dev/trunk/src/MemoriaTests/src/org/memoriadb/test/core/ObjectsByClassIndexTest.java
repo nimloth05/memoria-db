@@ -51,6 +51,8 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class));
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class);
+    
     
     fIndex.add(fA2);
     fIndex.add(fC1);
@@ -63,6 +65,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class), fC1);
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1, fA2, fC1);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class, ClassC.class);
     
     fIndex.add(fB2);
     fIndex.add(fC2);
@@ -75,6 +78,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1,fB2);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class), fC1,fC2);
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1, fA2, fC1, fB2, fC2);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class, ClassC.class);
   }
   
   public void test_empty_index() {
@@ -85,6 +89,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     assertEquals(0, count(fIndex.getObjects(ClassA.class)));
     assertEquals(0, count(fIndex.getObjects(ClassB.class)));
     assertEquals(0, count(fIndex.getObjects(ClassC.class)));
+    assertEquals(0, count(fIndex.getClassesWithRegisteredObjects()));
   }
   
   public void test_remove() {
@@ -103,6 +108,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1,fB2);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class), fC1,fC2);
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1, fA2, fC1, fB2, fC2);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class, ClassC.class);
 
     fIndex.remove(fB2);
     fIndex.remove(fC2);
@@ -115,6 +121,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class), fC1);
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1, fA2, fC1);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class, ClassC.class);
    
     fIndex.remove(fA2);
     fIndex.remove(fC1);
@@ -128,6 +135,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     CollectionUtil.containsAll(fIndex.getObjects(ClassB.class), fB1);
     CollectionUtil.containsAll(fIndex.getObjects(ClassC.class));
     CollectionUtil.containsAll(fIndex.getObjects(Object.class), fA1, fB1);
+    CollectionUtil.containsAll(fIndex.getClassesWithRegisteredObjects(), ClassA.class, ClassB.class);
     
     fIndex.remove(fA1);
     fIndex.remove(fB1);
@@ -139,7 +147,7 @@ public class ObjectsByClassIndexTest extends AbstractMemoriaTest {
     assertEquals(0, count(fIndex.getObjects(ClassA.class)));
     assertEquals(0, count(fIndex.getObjects(ClassB.class)));
     assertEquals(0, count(fIndex.getObjects(ClassC.class)));
-    
+    assertEquals(0, count(fIndex.getClassesWithRegisteredObjects()));
   }
 
   @Override

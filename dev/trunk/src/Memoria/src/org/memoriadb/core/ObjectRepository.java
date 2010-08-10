@@ -257,7 +257,6 @@ public class ObjectRepository implements IObjectRepository {
 
   private void insertIntoClassIndex(Object object) {
     fObjectsByClassIndex.add(object);
-    
   }
   
   private void internalPut(ObjectInfo info) {

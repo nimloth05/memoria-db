@@ -1,50 +1,87 @@
+/*
+ * Copyright 2010 Micha Riser
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package org.memoriadb.core;
 
 import java.util.*;
 
-import org.memoriadb.core.util.collection.identity.IdentityHashSet;
+import org.memoriadb.core.util.collection.*;
 
 public class ObjectsByClassIndex {
+  
+  private final MultiMapOrdered<Class<?>, Class<?>> fSubclasses = new MultiMapOrdered<Class<?>, Class<?>>();
 
-   private final Map<Class<?>, Set<Object>> fObjectsByClass = new HashMap<Class<?>, Set<Object>>();
-//  private final MultiMapUnOrdered<Class<?>, Object> fObjectsByClass = new MultiMapUnOrdered<Class<?>, Object>();
-
+  private final MultiMapUnOrdered<Class<?>, Object> fObjectsByClass = new MultiMapUnOrdered<Class<?>, Object>() {
+    @Override
+    protected java.util.Set<Object> createSet() {
+      return Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>(8));
+    };
+  };
+  
   public void add(Object object) {
-    insertIntoClassIndex(object, object.getClass());
+    Class<? extends Object> clazz = object.getClass();
+    if (!fObjectsByClass.contains(clazz)) {
+      addClass(clazz);
+    }
+    fObjectsByClass.put(clazz, object);
+  }
+  
+  public Iterable<Class<?>> getClassesWithRegisteredObjects() {
+    return fObjectsByClass.keyIterable();
   }
 
   public Iterable<Object> getObjects(Class<?> clazz) {
-    Set<Object> setByClass = fObjectsByClass.get(clazz);
-    if (setByClass == null) { return new ArrayList<Object>(); }
-    return setByClass;
-
+    List<Iterable<Object>> iterables = new ArrayList<Iterable<Object>>();
+    for(Class<?> subclazz: fSubclasses.get(clazz)) {
+      iterables.add(fObjectsByClass.get(subclazz));
+    }
+    return new CompoundIterable<Object>(iterables);
   }
 
   public void remove(Object object) {
-    removeFromClassIndex(object, object.getClass());
-  }
-
-  private void insertIntoClassIndex(Object object, Class<?> clazz) {
-    if (clazz == null) { return; }
-    Set<Object> set = fObjectsByClass.get(clazz);
-    if (set == null) {
-      set = IdentityHashSet.create();
-      fObjectsByClass.put(clazz, set);
-    }
-    set.add(object);
-    // fObjectsByClass.put(clazz, object);
-    insertIntoClassIndex(object, clazz.getSuperclass());
-    for (Class<?> intf : clazz.getInterfaces()) {
-      insertIntoClassIndex(object, intf);
+    Class<? extends Object> clazz = object.getClass();
+    fObjectsByClass.remove(clazz, object);
+    if (!fObjectsByClass.contains(clazz)) {
+      removeClass(clazz);
     }
   }
 
-  private void removeFromClassIndex(Object object, Class<?> clazz) {
-    if (clazz == null) { return; }
-    fObjectsByClass.get(clazz).remove(object);
-    removeFromClassIndex(object, clazz.getSuperclass());
+  private void addClass(Class<?> clazz) {
+    for(Class<?> superClassOrInterface: getAllSuperclassesAndinterfaces(clazz)) {
+      fSubclasses.put(superClassOrInterface, clazz);
+    }
+  }
+
+  private void addSuperclasses(Class<?> clazz, Set<Class<?>> result) {
+    if (clazz == null || !result.add(clazz)) return;
+    addSuperclasses(clazz.getSuperclass(), result);
     for (Class<?> intf : clazz.getInterfaces()) {
-      removeFromClassIndex(object, intf);
+      addSuperclasses(intf, result);
+    }
+  }
+
+  private Set<Class<?>> getAllSuperclassesAndinterfaces(Class<?> clazz) {
+    Set<Class<?>> result = new HashSet<Class<?>>();
+    result.add(Object.class);
+    addSuperclasses(clazz, result);
+    return result;
+  }
+  
+  private void removeClass(Class<?> clazz) {
+    for(Class<?> superClassOrInterface: getAllSuperclassesAndinterfaces(clazz)) {
+      fSubclasses.remove(superClassOrInterface, clazz);
     }
   }
 
