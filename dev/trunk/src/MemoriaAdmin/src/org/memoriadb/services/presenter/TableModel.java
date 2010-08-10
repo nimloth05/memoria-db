@@ -16,18 +16,16 @@
 
 package org.memoriadb.services.presenter;
 
+import java.util.*;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.RowSorter;
+import javax.swing.table.*;
+
 import org.memoriadb.IDataStore;
 import org.memoriadb.core.IObjectInfo;
 import org.memoriadb.handler.IDataObject;
 import org.memoriadb.id.IObjectId;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 public class TableModel extends AbstractTableModel {
   
@@ -119,8 +117,7 @@ public class TableModel extends AbstractTableModel {
     }
     
     if (columnIndex == 1) {
-      //return objectInfo.getRevision();
-      return -1;
+      return fStore.getRevision(objectInfo.getId());
     }
     
     if (columnIndex == 2) {

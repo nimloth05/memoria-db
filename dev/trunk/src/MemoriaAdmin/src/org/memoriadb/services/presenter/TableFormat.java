@@ -16,11 +16,10 @@
 
 package org.memoriadb.services.presenter;
 
+import java.util.*;
+
 import org.memoriadb.IDataStore;
 import org.memoriadb.handler.field.IFieldbasedObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TableFormat implements ca.odell.glazedlists.gui.TableFormat<IFieldbasedObject> {
   
@@ -53,8 +52,7 @@ public class TableFormat implements ca.odell.glazedlists.gui.TableFormat<IFieldb
       return fOpenStore.getObjectInfo(baseObject).getId();
     }
     if (column == 1) {
-      //return fOpenStore.getObjectInfo(baseObject).getRevision();
-      return -1;
+      return fOpenStore.getRevision(fOpenStore.getObjectInfo(baseObject).getId());
     }
     if (column == 2) {
       return baseObject.getMemoriaClassId();
