@@ -16,15 +16,12 @@
 
 package org.memoriadb.core;
 
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.meta.IMemoriaClass;
-import org.memoriadb.core.meta.IMemoriaClassConfig;
-import org.memoriadb.core.util.collection.identity.IdentityHashSet;
-import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
-import org.memoriadb.id.IObjectId;
-import org.memoriadb.id.IObjectIdFactory;
-
 import java.util.*;
+
+import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.meta.*;
+import org.memoriadb.core.util.collection.identity.MemoriaIdentityHashMap;
+import org.memoriadb.id.*;
 
 /**
  * Holds the main-indexes.
@@ -55,11 +52,11 @@ public class ObjectRepository implements IObjectRepository {
    * MataClass index
    */
   private final Map<String, IMemoriaClassConfig> fMemoriaClasses = new HashMap<String, IMemoriaClassConfig>();
-
+  
   /**
    * Index by Class. Contains only user space objects
    */
-  private final Map<Class<?>, Set<Object>> fObjectsByClass = new HashMap<Class<?>, Set<Object>>();
+  private final ObjectsByClassIndex fObjectsByClassIndex = new ObjectsByClassIndex();
 
   private final IObjectIdFactory fIdFactory;
 
@@ -148,11 +145,7 @@ public class ObjectRepository implements IObjectRepository {
 
   @Override
   public Iterable<Object> getAllUserSpaceObjects(Class<?> clazz) {
-    Set<Object> setByClass = fObjectsByClass.get(clazz);
-    if (setByClass == null) {
-      return new ArrayList<Object>();
-    }
-    return setByClass;
+    return fObjectsByClassIndex.getObjects(clazz);
   }
   
   @Override
@@ -263,24 +256,10 @@ public class ObjectRepository implements IObjectRepository {
   }
 
   private void insertIntoClassIndex(Object object) {
-    insertIntoClassIndex(object, object.getClass());
+    fObjectsByClassIndex.add(object);
+    
   }
-  private void insertIntoClassIndex(Object object, Class<?> clazz) {
-    if (clazz == null) {
-      return;
-    }
-    Set<Object> set = fObjectsByClass.get(clazz);
-    if (set == null) {
-      set = IdentityHashSet.create();
-      fObjectsByClass.put(clazz, set);
-    }
-    set.add(object);
-    insertIntoClassIndex(object, clazz.getSuperclass());
-    for (Class<?> intf: clazz.getInterfaces()) {
-      insertIntoClassIndex(object, intf);
-    }
-  }
-
+  
   private void internalPut(ObjectInfo info) {
     Object previousMapped = fObjectMap.put(info.getObject(), info);
     if (previousMapped != null) throw new MemoriaException("double registration in object-map " + info);
@@ -296,23 +275,12 @@ public class ObjectRepository implements IObjectRepository {
       insertIntoClassIndex(info.getObject());
     }
 
- // adjustId here for bootstrapped objects
+    // adjustId here for bootstrapped objects
     fIdFactory.adjustId(info.getId());
   }
 
   private void removeFromClassIndex(Object object) {
-    removeFromClassIndex(object, object.getClass());
-  }
-
-  private void removeFromClassIndex(Object object, Class<?> clazz) {
-    if (clazz == null) {
-      return;
-    }
-    fObjectsByClass.get(clazz).remove(object);
-    removeFromClassIndex(object, clazz.getSuperclass());
-    for (Class<?> intf: clazz.getInterfaces()) {
-      removeFromClassIndex(object, intf);
-    }
+    fObjectsByClassIndex.remove(object);
   }
 
 }
