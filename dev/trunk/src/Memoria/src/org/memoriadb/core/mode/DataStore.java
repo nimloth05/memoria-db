@@ -16,19 +16,17 @@
 
 package org.memoriadb.core.mode;
 
-import org.memoriadb.IDataStore;
-import org.memoriadb.IFilter;
-import org.memoriadb.IRefactor;
+import java.util.List;
+
+import org.memoriadb.*;
+import org.memoriadb.block.Block;
 import org.memoriadb.core.TransactionHandler;
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClassConfig;
 import org.memoriadb.core.query.DataModeQueryStrategy;
 import org.memoriadb.core.refactor.RefactorApi;
 import org.memoriadb.handler.IDataObject;
-import org.memoriadb.id.IIdProvider;
-import org.memoriadb.id.IObjectId;
-
-import java.util.List;
+import org.memoriadb.id.*;
 
 public class DataStore extends AbstractStore implements IDataStore {
 
@@ -86,10 +84,19 @@ public class DataStore extends AbstractStore implements IDataStore {
     return new RefactorApi(this); 
   }
   
+  @Override
+  public long getRevision(IObjectId id) {
+    Block block = fTransactionHandler.getBlockRepository().getBlock(id);
+    if (block == null) {
+      return -1;
+    }
+    return block.getRevision();
+  }
+ 
   public IMemoriaClassConfig internalGetMemoriaClass(String klass) {
     return fTransactionHandler.internalGetMemoriaClass(klass);
   }
- 
+
   @Override
   public <T extends IDataObject> List<T> query(String clazz) {
     return fQueryStrategy.query(fTransactionHandler.getObjectRepo(), clazz);
@@ -111,11 +118,11 @@ public class DataStore extends AbstractStore implements IDataStore {
     if(root == null) throw new MemoriaException("can not save null");
     return fTransactionHandler.saveAll(root);
   }
-
+  
   public void writePendingChanges() {
     fTransactionHandler.writePendingChanges();
   }
-  
+
   void internalDelete(Object obj) {
     fTransactionHandler.internalDelete(obj);
   }

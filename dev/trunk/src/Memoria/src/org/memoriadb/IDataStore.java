@@ -16,12 +16,11 @@
 
 package org.memoriadb;
 
+import java.util.List;
+
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.handler.IDataObject;
-import org.memoriadb.id.IIdProvider;
-import org.memoriadb.id.IObjectId;
-
-import java.util.List;
+import org.memoriadb.id.*;
 
 /**
  * Facade to a memoria DB
@@ -76,10 +75,12 @@ public interface IDataStore extends IStore {
   
   public IRefactor getRefactorApi();
   
+  public long getRevision(IObjectId id);
+  
   public <T extends IDataObject> List<T> query(String clazz);
   
   public <T extends IDataObject> List<T> query(String clazz, IFilter<T> filter);
-  
+
   /**
    * Adds the given object to the store or performs an update if the given object is already contained.
    * 
