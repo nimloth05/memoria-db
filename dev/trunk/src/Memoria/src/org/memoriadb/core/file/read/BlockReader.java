@@ -18,7 +18,6 @@ package org.memoriadb.core.file.read;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
@@ -39,8 +38,6 @@ public class BlockReader {
   private static final long REVISION_FOR_ERROR_CONDITION = 0;
 
   private final ICompressor fCompressor;
-
-  private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
   public BlockReader(ICompressor compressor) {
     fCompressor = compressor;
@@ -105,15 +102,10 @@ public class BlockReader {
     return revision;
   }
 
-  private byte[] copyDataRange(byte[] data, int from, int to) {
-    if (from == to) {
-      return EMPTY_BYTE_ARRAY;
-    }
-    return Arrays.copyOfRange(data, from, to);
-  }
-
   private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
-    IDataInput stream = new ByteBufferDataInput(ByteBuffer.wrap(data, offset, size));
+    
+    ByteBuffer buffer = ByteBuffer.wrap(data, offset, size);
+    IDataInput stream = new ByteBufferDataInput(buffer);
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
@@ -129,13 +121,14 @@ public class BlockReader {
       return;
     }
 
-    // no deleteMarker encountered
-    byte[] objectData = copyDataRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
+    ByteBuffer objectData = ByteBuffer.wrap(data, offset + 2* idFactory.getIdSize(), (offset + size) - (offset + 2 * idFactory.getIdSize()));
+    HydratedObject hydratedObject = new HydratedObject(typeId, objectData);
+    
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, ByteBuffer.wrap(objectData)), objectId, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.memoriaClass(hydratedObject, objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, ByteBuffer.wrap(objectData)), objectId, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.object(hydratedObject, objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
   }
 

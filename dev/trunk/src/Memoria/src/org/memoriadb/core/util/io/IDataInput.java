@@ -16,6 +16,7 @@
 package org.memoriadb.core.util.io;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 
 public interface IDataInput extends DataInput {
   
@@ -23,5 +24,13 @@ public interface IDataInput extends DataInput {
    * @return the number of remaining bytes avaiable 
    */
   public int available() throws IOException;
+
+//  /**
+//   * Processes the next n bytes and creates a sub-input from these
+//   * @param byteCount the number of bytes to use
+//   */
+//  public IDataInput subInput(int byteCount);
+
+  public ByteBuffer readBytes(int byteCount) throws IOException;
 
 }

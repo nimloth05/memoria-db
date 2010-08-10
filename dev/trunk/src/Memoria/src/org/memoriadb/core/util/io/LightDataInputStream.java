@@ -16,6 +16,7 @@
 package org.memoriadb.core.util.io;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 public class LightDataInputStream extends FilterInputStream implements IDataInput {
 
   private static final ThreadLocal<byte[]> sLongBuffer = new ThreadLocal<byte[]>() {
@@ -57,6 +58,13 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
     int ch = in.read();
     if (ch < 0) throw new EOFException();
     return (byte) (ch);
+  }
+
+  @Override
+  public ByteBuffer readBytes(int byteCount) throws IOException {
+    byte[] data = new byte[byteCount];
+    readFully(data);
+    return ByteBuffer.wrap(data);
   }
 
   @Override
