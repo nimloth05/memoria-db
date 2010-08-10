@@ -16,7 +16,7 @@
 
 package org.memoriadb.core.file.read;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import org.memoriadb.block.*;

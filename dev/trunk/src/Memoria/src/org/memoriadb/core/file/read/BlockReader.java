@@ -132,10 +132,10 @@ public class BlockReader {
     // no deleteMarker encountered
     byte[] objectData = copyDataRange(data, offset + 2 * idFactory.getIdSize(), offset + size);
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
-      handler.memoriaClass(new HydratedObject(typeId, objectData), objectId, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.memoriaClass(new HydratedObject(typeId, ByteBuffer.wrap(objectData)), objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
     else {
-      handler.object(new HydratedObject(typeId, objectData), objectId, size + FileLayout.OBJECT_SIZE_LEN);
+      handler.object(new HydratedObject(typeId, ByteBuffer.wrap(objectData)), objectId, size + FileLayout.OBJECT_SIZE_LEN);
     }
   }
 

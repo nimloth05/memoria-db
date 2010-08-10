@@ -16,6 +16,8 @@
 
 package org.memoriadb.core.file.read;
 
+import java.nio.ByteBuffer;
+
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.io.*;
@@ -32,9 +34,9 @@ import org.memoriadb.id.IObjectId;
 public class HydratedObject {
   
   private final IObjectId fTypeId;
-  private final byte[] fData;
+  private final ByteBuffer fData;
   
-  public HydratedObject(IObjectId typeId, byte[] data) {
+  public HydratedObject(IObjectId typeId, ByteBuffer data) {
     fTypeId = typeId;
     fData = data;
   }
@@ -56,6 +58,7 @@ public class HydratedObject {
   }
   
   private Object instantiate(IReaderContext context, IMemoriaClass classObject) throws Exception {
+    fData.rewind();
     IDataInput input = new ByteBufferDataInput(fData);
     Object deserializedObject = classObject.getHandler().deserialize(input, context, fTypeId);
     if (context.isInDataMode() && !(deserializedObject instanceof IDataObject)) throw new MemoriaException("IHandler must return a IDataObject in DBMode.data. Handler for " + classObject.getJavaClassName() + " returned " + deserializedObject); 
