@@ -26,6 +26,7 @@ public class AllTests {
     //$JUnit-BEGIN$
     suite.addTestSuite(ByteUtilTest.class);
     suite.addTestSuite(UtilTest.class);
+    suite.addTestSuite(ByteBufferDataInputTest.class);
     suite.addTestSuite(IdentityHashSetTest.class);
     //$JUnit-END$
     return suite;

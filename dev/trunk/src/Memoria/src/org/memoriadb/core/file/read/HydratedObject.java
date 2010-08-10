@@ -16,8 +16,6 @@
 
 package org.memoriadb.core.file.read;
 
-import java.io.ByteArrayInputStream;
-
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.core.util.io.*;
@@ -58,7 +56,7 @@ public class HydratedObject {
   }
   
   private Object instantiate(IReaderContext context, IMemoriaClass classObject) throws Exception {
-    IDataInput input = new LightDataInputStream(new ByteArrayInputStream(fData));
+    IDataInput input = new ByteBufferDataInput(fData);
     Object deserializedObject = classObject.getHandler().deserialize(input, context, fTypeId);
     if (context.isInDataMode() && !(deserializedObject instanceof IDataObject)) throw new MemoriaException("IHandler must return a IDataObject in DBMode.data. Handler for " + classObject.getJavaClassName() + " returned " + deserializedObject); 
     return deserializedObject;

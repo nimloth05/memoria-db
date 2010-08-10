@@ -68,7 +68,7 @@ public class LastAppendedErrorHandler extends AbstractBlockErrorHandler {
 
   private void skipToEnd(IDataInput input) throws IOException {
     // skip stream to the end
-    input.skip(Long.MAX_VALUE);
+    input.skipBytes(Integer.MAX_VALUE);
   }
 
 }

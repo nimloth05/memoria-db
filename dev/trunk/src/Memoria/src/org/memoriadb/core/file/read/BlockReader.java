@@ -16,7 +16,8 @@
 
 package org.memoriadb.core.file.read;
 
-import java.io.*;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.memoriadb.block.Block;
@@ -90,7 +91,7 @@ public class BlockReader {
     // now expand the transaction
     body = fCompressor.decompress(body);
 
-    IDataInput dis = new LightDataInputStream(new ByteArrayInputStream(body));
+    IDataInput dis = new ByteBufferDataInput(body);
     long revision = dis.readLong(); // transaction-revision
     block.setRevision(revision);
 
@@ -112,7 +113,7 @@ public class BlockReader {
   }
 
   private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
-    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(data, offset, size));
+    IDataInput stream = new ByteBufferDataInput(ByteBuffer.wrap(data, offset, size));
 
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
@@ -144,7 +145,7 @@ public class BlockReader {
    * @return The number of read ObjectData
    */
   private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, long objectDataCount) throws IOException {
-    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(data, offset, data.length - offset));
+    IDataInput stream = new ByteBufferDataInput(ByteBuffer.wrap(data, offset, data.length - offset));
     for (int i = 0; i < objectDataCount; ++i) {
       int size = stream.readInt();
       byte[] objectData = new byte[size];

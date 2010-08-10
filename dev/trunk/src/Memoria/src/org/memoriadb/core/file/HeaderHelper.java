@@ -106,7 +106,7 @@ public class HeaderHelper {
 
   private static Header readHeaderInfo(LastWrittenBlockInfo readCurrentBlockInfo, int headerInfoSize, byte[] headerInfo)
       throws IOException {
-    IDataInput stream = new LightDataInputStream(new ByteArrayInputStream(headerInfo));
+    IDataInput stream = new ByteBufferDataInput(headerInfo);
     UUID thisUuid = readUuid(stream);
     UUID hostUuid = readUuid(stream);
     long hostBranchVersion = stream.readLong();
