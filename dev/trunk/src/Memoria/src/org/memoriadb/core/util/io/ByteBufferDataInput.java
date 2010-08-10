@@ -175,16 +175,9 @@ public class ByteBufferDataInput implements IDataInput {
   @Override
   public String readUTF() throws IOException {
     int bytes = readUnsignedShort();
-    String result;
-    if (fBuffer.hasArray()) {
-      result = new String(fBuffer.array(), fBuffer.arrayOffset() + fBuffer.position(), bytes, CHARSET_UFT8); 
-    } else {
-      byte[] data = new byte[bytes];
-      fBuffer.get(data);
-      result = new String(data);
-    }
-    skipBytes(bytes);
-    return result;
+    byte[] data = new byte[bytes];
+    fBuffer.get(data);
+    return new String(data, CHARSET_UFT8);
   }
 
   @Override

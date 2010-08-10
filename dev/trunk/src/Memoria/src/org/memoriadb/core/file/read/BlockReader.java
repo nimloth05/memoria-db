@@ -97,16 +97,12 @@ public class BlockReader {
     // no state was changed before this line!
     handler.block(block);
 
-    readObjects(block, idFactory, handler, body, FileLayout.TRX_OVERHEAD, objectDataCount);
+    readObjects(block, idFactory, handler, dis, objectDataCount);
 
     return revision;
   }
 
-  private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, int size) throws IOException {
-    
-    ByteBuffer buffer = ByteBuffer.wrap(data, offset, size);
-    IDataInput stream = new ByteBufferDataInput(buffer);
-
+  private void readObject(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IDataInput stream, int size) throws IOException {
     IObjectId typeId = idFactory.createFrom(stream);
     IObjectId objectId = idFactory.createFrom(stream);
     
@@ -121,7 +117,7 @@ public class BlockReader {
       return;
     }
 
-    ByteBuffer objectData = ByteBuffer.wrap(data, offset + 2* idFactory.getIdSize(), (offset + size) - (offset + 2 * idFactory.getIdSize()));
+    ByteBuffer objectData = stream.readBytes(stream.available());
     HydratedObject hydratedObject = new HydratedObject(typeId, objectData);
     
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
@@ -137,14 +133,11 @@ public class BlockReader {
    * @param objectDataCount
    * @return The number of read ObjectData
    */
-  private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, byte[] data, int offset, long objectDataCount) throws IOException {
-    IDataInput stream = new ByteBufferDataInput(ByteBuffer.wrap(data, offset, data.length - offset));
+  private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IDataInput input, long objectDataCount) throws IOException {
     for (int i = 0; i < objectDataCount; ++i) {
-      int size = stream.readInt();
-      byte[] objectData = new byte[size];
-      stream.readFully(objectData);
-
-      readObject(block, idFactory, handler, objectData, 0, size);
+      int size = input.readInt();
+      ByteBufferDataInput subInput = new ByteBufferDataInput(input.readBytes(size));
+      readObject(block, idFactory, handler, subInput, size);
     }
     return 0;
   }
