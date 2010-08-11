@@ -16,6 +16,7 @@
 package org.memoriadb.core.util.io;
 
 import java.io.*;
+
 public class LightDataInputStream extends FilterInputStream implements IDataInput {
 
   private static final ThreadLocal<byte[]> sLongBuffer = new ThreadLocal<byte[]>() {
@@ -36,31 +37,31 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final int read(byte b[]) throws IOException {
+  public int read(byte b[]) throws IOException {
     return in.read(b, 0, b.length);
   }
 
   @Override
-  public final int read(byte b[], int off, int len) throws IOException {
+  public int read(byte b[], int off, int len) throws IOException {
     return in.read(b, off, len);
   }
 
   @Override
-  public final boolean readBoolean() throws IOException {
+  public boolean readBoolean() throws IOException {
     int ch = in.read();
     if (ch < 0) throw new EOFException();
     return (ch != 0);
   }
 
   @Override
-  public final byte readByte() throws IOException {
+  public byte readByte() throws IOException {
     int ch = in.read();
     if (ch < 0) throw new EOFException();
     return (byte) (ch);
   }
 
   @Override
-  public final char readChar() throws IOException {
+  public char readChar() throws IOException {
     int ch1 = in.read();
     int ch2 = in.read();
     if ((ch1 | ch2) < 0) throw new EOFException();
@@ -68,22 +69,22 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final double readDouble() throws IOException {
+  public double readDouble() throws IOException {
     return Double.longBitsToDouble(readLong());
   }
 
   @Override
-  public final float readFloat() throws IOException {
+  public float readFloat() throws IOException {
     return Float.intBitsToFloat(readInt());
   }
 
   @Override
-  public final void readFully(byte b[]) throws IOException {
+  public void readFully(byte b[]) throws IOException {
     readFully(b, 0, b.length);
   }
 
   @Override
-  public final void readFully(byte b[], int off, int len) throws IOException {
+  public void readFully(byte b[], int off, int len) throws IOException {
     if (len < 0) throw new IndexOutOfBoundsException();
     int n = 0;
     while (n < len) {
@@ -94,7 +95,7 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final int readInt() throws IOException {
+  public int readInt() throws IOException {
     int ch1 = in.read();
     int ch2 = in.read();
     int ch3 = in.read();
@@ -104,12 +105,12 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final String readLine() {
+  public String readLine() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public final long readLong() throws IOException {
+  public long readLong() throws IOException {
     byte[] longBuffer = getLongBuffer();
     readFully(longBuffer, 0, 8);
     return (((long) longBuffer[0] << 56) + ((long) (longBuffer[1] & 255) << 48) + ((long) (longBuffer[2] & 255) << 40)
@@ -118,7 +119,7 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final short readShort() throws IOException {
+  public short readShort() throws IOException {
     int ch1 = in.read();
     int ch2 = in.read();
     if ((ch1 | ch2) < 0) throw new EOFException();
@@ -126,14 +127,14 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final int readUnsignedByte() throws IOException {
+  public int readUnsignedByte() throws IOException {
     int ch = in.read();
     if (ch < 0) throw new EOFException();
     return ch;
   }
 
   @Override
-  public final int readUnsignedShort() throws IOException {
+  public int readUnsignedShort() throws IOException {
     int ch1 = in.read();
     int ch2 = in.read();
     if ((ch1 | ch2) < 0) throw new EOFException();
@@ -141,12 +142,12 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
   }
 
   @Override
-  public final String readUTF() {
-    throw new UnsupportedOperationException();
+  public String readUTF() throws IOException {
+    return DataInputStream.readUTF(this);
   }
 
   @Override
-  public final int skipBytes(int n) throws IOException {
+  public int skipBytes(int n) throws IOException {
     int total = 0;
     int cur = 0;
 

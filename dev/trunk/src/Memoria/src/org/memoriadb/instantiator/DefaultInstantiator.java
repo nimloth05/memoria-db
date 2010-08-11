@@ -16,9 +16,15 @@
 
 package org.memoriadb.instantiator;
 
+import java.lang.reflect.Constructor;
+import java.util.*;
+
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.ReflectionUtil;
 
 public class DefaultInstantiator implements IInstantiator {
+  
+  private final Map<String, Constructor<?>> fConstructorMap = new HashMap<String, Constructor<?>>();
 
   @Override
   public void checkCanInstantiateObject(String className) throws CannotInstantiateException {
@@ -39,7 +45,25 @@ public class DefaultInstantiator implements IInstantiator {
 
   @Override
   public <T> T newInstance(String className) {
-    return ReflectionUtil.<T>createInstance(className);
+    try {
+      Constructor<T> constructor = getConstructor(className);
+      return constructor.newInstance();
+    }
+    catch (Exception e) {
+      throw new MemoriaException(e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> Constructor<T> getConstructor(String className) throws SecurityException, NoSuchMethodException {
+    Constructor<?> ctor = fConstructorMap.get(className);
+    if (ctor == null) {
+      Class<?> clazz = ReflectionUtil.getClass(className);
+      ctor = clazz.getDeclaredConstructor();
+      ctor.setAccessible(true);
+      fConstructorMap.put(className, ctor);
+    }
+    return (Constructor<T>) ctor;
   }
 
 }

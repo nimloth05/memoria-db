@@ -16,22 +16,20 @@
 
 package org.memoriadb.handler.collection;
 
+import java.io.DataOutput;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import org.memoriadb.core.IObjectTraversal;
 import org.memoriadb.core.exception.SchemaException;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
-import org.memoriadb.core.meta.ITypeVisitor;
-import org.memoriadb.core.meta.Type;
+import org.memoriadb.core.meta.*;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.core.util.io.IDataInput;
-import org.memoriadb.handler.IDataObject;
-import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.*;
 import org.memoriadb.id.IObjectId;
 import org.memoriadb.instantiator.IInstantiator;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Handles all subclasses of {@link java.util.List}.
@@ -98,13 +96,19 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
 
   }
 
+  private final Class<?> fClass;
   private final String fClassName;
 
   public <X extends Collection<?>> CollectionHandler(Class<X> clazz) {
-    this(clazz.getName());
+    this(clazz, clazz.getName());
   }
 
   public CollectionHandler(String className) {
+    this(ReflectionUtil.getClass(className), className);
+  }
+  
+  private CollectionHandler(Class<?> clazz, String className) {
+    fClass = clazz;
     fClassName = className;
   }
 
@@ -187,7 +191,7 @@ public abstract class CollectionHandler<T extends Collection<Object>> implements
   }
 
   protected T createCollectionForObjectMode() {
-    return ReflectionUtil.<T>createInstance(getClassName());
+    return ReflectionUtil.<T>createInstance(fClass);
   }
 
   protected abstract IDataObject createDataObject(T collection, IObjectId typeId);

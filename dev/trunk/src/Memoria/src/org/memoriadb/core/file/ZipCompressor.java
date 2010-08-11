@@ -16,21 +16,62 @@
 
 package org.memoriadb.core.file;
 
+import java.util.zip.*;
+
 import org.memoriadb.core.util.ZipUtil;
 
 public final class ZipCompressor implements ICompressor {
+  
+  private static boolean REUSE_FLATERS = true;
+  
+  private Inflater fInflater = null;
+  private Deflater fDeflater = null;
 
   public ZipCompressor() {
+    if (REUSE_FLATERS) {
+      fInflater = new Inflater();
+      fDeflater = new Deflater();
+    }
   }
   
   @Override
   public byte[] compress(byte[] input) {
-    return ZipUtil.compress(input);
+    Deflater deflater = getDeflater();
+    try {
+      return ZipUtil.compress(input, deflater);
+    } finally {
+      if (!REUSE_FLATERS) {
+        deflater.end();
+      }
+    }
   }
-
+  
   @Override
   public byte[] decompress(byte[] input) {
-    return ZipUtil.decompress(input);
+    Inflater inflater = getInflater();
+    try {
+      return ZipUtil.decompress(input, inflater);
+    } finally {
+      if (!REUSE_FLATERS) {
+        inflater.end();
+      }
+    }
+  }
+  
+  private Deflater getDeflater() {
+    if (REUSE_FLATERS) {
+      fDeflater.reset();
+      return fDeflater;
+    }
+    return new Deflater();
+  }
+
+  private Inflater getInflater() {
+    if (REUSE_FLATERS) {
+      fInflater.reset();
+      return fInflater;
+    }
+    return new Inflater();
   }
 
 }

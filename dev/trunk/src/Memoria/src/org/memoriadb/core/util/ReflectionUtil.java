@@ -16,15 +16,11 @@
 
 package org.memoriadb.core.util;
 
-import org.memoriadb.ValueObject;
-import org.memoriadb.WeakRef;
-import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.exception.SchemaException;
-import org.memoriadb.core.meta.Type;
+import java.lang.reflect.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import org.memoriadb.*;
+import org.memoriadb.core.exception.*;
+import org.memoriadb.core.meta.Type;
 
 public final class ReflectionUtil {
 
@@ -34,9 +30,8 @@ public final class ReflectionUtil {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> T createInstance(String className) {
+  public static <T> T createInstance(Class<?> clazz) {
     try {
-      Class<?> clazz = getClass(className);
       Constructor<?> ctor = clazz.getDeclaredConstructor();
       ctor.setAccessible(true);
       return (T) ctor.newInstance();
@@ -44,6 +39,11 @@ public final class ReflectionUtil {
     catch (Exception e) {
       throw new MemoriaException(e);
     }
+  }
+
+  public static <T> T createInstance(String className) {
+    Class<?> clazz = getClass(className);
+    return createInstance(clazz);
   }
 
   /**

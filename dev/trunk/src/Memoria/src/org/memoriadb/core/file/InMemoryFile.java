@@ -48,32 +48,6 @@ public class InMemoryFile extends AbstractMemoriaFile {
   }
 
   @Override
-  public InputStream doGetInputStream(final long position) {
-    
-    return new InputStream() {
-      long fCursor = position;
-      
-      @Override
-      public int available(){
-        return (int)(getSize() - fCursor);
-      }
-
-      @Override
-      public void close() throws IOException {
-        streamClosed();
-        super.close();
-      }
-
-      @Override
-      public int read()  {
-        if(fCursor == fSize) return -1;
-        return get(fCursor++);
-      }
-      
-    };
-  }
-  
-  @Override
   public long doGetSize() {
     return fSize;
   }
@@ -106,7 +80,7 @@ public class InMemoryFile extends AbstractMemoriaFile {
     if(newSize >= getSize()) throw new MemoriaException("shrink size too big:" + newSize);
     fSize = newSize;
   }
-
+  
   @Override
   public void sync() {
     // always in sync
@@ -115,6 +89,32 @@ public class InMemoryFile extends AbstractMemoriaFile {
   @Override
   public String toString() {
     return "in memory file";
+  }
+
+  @Override
+  protected InputStream doGetInputStream(final long position) {
+    
+    return new InputStream() {
+      long fCursor = position;
+      
+      @Override
+      public int available(){
+        return (int)(getSize() - fCursor);
+      }
+
+      @Override
+      public void close() throws IOException {
+        streamClosed();
+        super.close();
+      }
+
+      @Override
+      public int read()  {
+        if(fCursor == fSize) return -1;
+        return get(fCursor++);
+      }
+      
+    };
   }
   
 }
