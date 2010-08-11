@@ -23,7 +23,7 @@ import org.memoriadb.id.IObjectId;
 public class FieldbasedObject implements IFieldbasedObject {
 
   private final Object fObejct;
-  private IObjectId fMemoriaClassId;
+  private IObjectId fMemoriaClassId = null;
 
   public FieldbasedObject(Object object) {
     fObejct = object;
@@ -57,6 +57,7 @@ public class FieldbasedObject implements IFieldbasedObject {
 
   @Override
   public void set(String fieldName, Object value) {
+    // TODO this takes a lot of time because the Field has to be search again each time!
     ReflectionUtil.setValueForField(fObejct, fieldName, value); 
   }
 

@@ -33,6 +33,12 @@ import org.memoriadb.instantiator.*;
 
 /**
  * Persists normal objects via Java Reflection.
+ * 
+ * NOTE: This class is performance critical while opening the repository.
+ * Therefore, the deserialization method now first tests if it is in data mode.
+ * If not it use a special method which sets the field using cached Fields from
+ * the fFields map. It would be nicer to have different handlers for the different modes!
+ * 
  */
 public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
@@ -40,12 +46,17 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
   private String fClassName;
 
-  private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>();
-  private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>();
+  private final Map<Integer, MemoriaField> fFieldIdToInfo = new HashMap<Integer, MemoriaField>(4);
+  private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>(4);
+  private final Map<Integer, Field> fFields = new HashMap<Integer, Field>(4);
+
+  static int invocations = 0;
+
+  static int cached = 0;
 
   public static FieldbasedObjectHandler createNewType(Class<?> klass) {
-    if(klass.isArray()) throw new IllegalArgumentException("Array not allowed. This is an internal error.");
-    
+    if (klass.isArray()) throw new IllegalArgumentException("Array not allowed. This is an internal error.");
+
     FieldbasedObjectHandler handler = new FieldbasedObjectHandler(klass.getName());
     handler.initializeMetaInfo(klass);
     return handler;
@@ -72,11 +83,16 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
   @Override
   public Object deserialize(final IDataInput input, final IReaderContext context, IObjectId typeId) throws Exception {
-    final IFieldbasedObject result = createObject(context, typeId);
 
+    if (context.isInDataMode()) {
+      FieldbasedDataObject result = createDataObject(context, typeId);
+      deserializeDataObject(result, input, context);
+      return result;
+    }
+
+    Object result = createObject(context, typeId);
     deserializeObject(result, input, context);
-
-    return result.getObject();
+    return result;
   }
 
   @Override
@@ -91,7 +107,7 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
   public int getFieldCount() {
     return fFieldIdToInfo.values().size();
   }
-  
+
   public Iterable<MemoriaField> getFields() {
     return fFieldIdToInfo.values();
   }
@@ -132,16 +148,17 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
       Object referencee = fFieldObject.get(field.getName());
       if (referencee == null) continue;
 
-      //Primitives werden nicht mehr berücksichtigt beim Traversal. 
-      //Das erhaltene Objekt kann immer noch ein Primitive oder ein enum sein. Auch in diesem Fall muss NICHT traversiert werden! (bug #1749) msc
+      // Primitives werden nicht mehr berücksichtigt beim Traversal.
+      // Das erhaltene Objekt kann immer noch ein Primitive oder ein enum sein. Auch in diesem Fall muss NICHT
+      // traversiert werden! (bug #1749) msc
       if (Type.isPrimitive(referencee)) continue;
 
       try {
         traversal.handle(referencee);
       }
       catch (Exception e) {
-        throw new MemoriaException("Exception during object traversel. Java Class: '" + getClassName()
-          + "' Java-Field: '" + field + "' type of the field: '" + field.getFieldType() + "'", e);
+        throw new MemoriaException("Exception during object traversel. Java Class: '" + getClassName() + "' Java-Field: '" + field
+            + "' type of the field: '" + field.getFieldType() + "'", e);
       }
     }
 
@@ -150,12 +167,16 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
     }
   }
 
-  private IFieldbasedObject createObject(IReaderContext context, IObjectId typeId) {
-    if (context.isInDataMode()) { return new FieldbasedDataObject(typeId); }
-    return new FieldbasedObject(context.getDefaultInstantiator().newInstance(getClassName()));
+  private FieldbasedDataObject createDataObject(IReaderContext context, IObjectId typeId) {
+    return new FieldbasedDataObject(typeId);
   }
 
-  private void deserializeObject(IFieldbasedObject object, IDataInput input, final IReaderContext context) throws Exception {
+  private Object createObject(IReaderContext context, IObjectId typeId) {
+    return context.getDefaultInstantiator().newInstance(getClassName());
+  }
+  
+  private void deserializeDataObject(IFieldbasedObject object, IDataInput input, final IReaderContext context) throws Exception {
+
     final IFieldbasedObject result = object;
 
     for (int i = 0; i < getFieldCount(); ++i) {
@@ -166,7 +187,7 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
         @Override
         public void visitClass(Type type, IObjectId objectId) {
-          context.addGenOneBinding(new ObjectFieldReference(result, field.getName(), objectId));
+          context.addGenOneBinding(new DataObjectFieldReference(result, field.getName(), objectId));
         }
 
         @Override
@@ -189,7 +210,70 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
 
     if (fSuperClass == null) return;
     FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fSuperClass.getHandler();
-    superHandler.deserializeObject(object, input, context);
+    superHandler.deserializeDataObject(object, input, context);
+  }
+  
+  private void deserializeObject(final Object result, IDataInput input, final IReaderContext context) throws Exception {
+
+    for (int i = 0; i < getFieldCount(); ++i) {
+      int fieldId = input.readInt();
+      MemoriaField memoriaField = getField(fieldId);
+      final Field field = getField(result, memoriaField);
+
+      memoriaField.getFieldType().readValue(input, context, new ITypeVisitor() {
+
+        @Override
+        public void visitClass(Type type, IObjectId objectId) {
+          context.addGenOneBinding(new ObjectFieldReference(result, field, objectId));
+        }
+
+        @Override
+        public void visitNull() {
+          try {
+            field.set(result, null);
+          }
+          catch (Exception e) {
+            throw new MemoriaException(e);
+          }
+        }
+
+        @Override
+        public void visitPrimitive(Type type, Object value) {
+          try {
+            field.set(result, value);
+          }
+          catch (Exception e) {
+            throw new MemoriaException(e);
+          }
+
+        }
+
+        @Override
+        public void visitValueObject(Object value) {
+          try {
+            field.set(result, value);
+          }
+          catch (Exception e) {
+            throw new MemoriaException(e);
+          }
+        }
+
+      });
+    }
+
+    if (fSuperClass == null) return;
+    FieldbasedObjectHandler superHandler = (FieldbasedObjectHandler) fSuperClass.getHandler();
+    superHandler.deserializeObject(result, input, context);
+  }
+
+  private Field getField(Object result, MemoriaField memoriaField) {
+    Field field = fFields.get(memoriaField.getId());
+    if (field == null) {
+      field = ReflectionUtil.getField(result.getClass(), memoriaField.getName());
+      field.setAccessible(true);
+      fFields.put(memoriaField.getId(), field);
+    } 
+    return field;
   }
 
   private IFieldbasedObject getFieldObject(Object obj) {

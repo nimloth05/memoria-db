@@ -16,28 +16,26 @@
 
 package org.memoriadb.handler.field;
 
-import java.lang.reflect.Field;
-
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.handler.IBindable;
 import org.memoriadb.id.IObjectId;
 
 
-public class ObjectFieldReference implements IBindable {
+public class DataObjectFieldReference implements IBindable {
   
-  private final Field fField;
-  private final Object fSource;
+  private final String fFieldName;
+  private final IFieldbasedObject fSource;
   private final IObjectId fTargetObjectId;
 
-  public ObjectFieldReference(Object source, Field field, IObjectId targetObjectId){
+  public DataObjectFieldReference(IFieldbasedObject source, String fieldName, IObjectId targetObjectId){
     fSource = source;
-    fField = field;
+    fFieldName = fieldName;
     fTargetObjectId = targetObjectId;
   }
 
   @Override
   public void bind(IReaderContext context) throws Exception {
-    fField.set(fSource, context.getObject(fTargetObjectId));
+    fSource.set(fFieldName, context.getObject(fTargetObjectId));
   }
   
 }
