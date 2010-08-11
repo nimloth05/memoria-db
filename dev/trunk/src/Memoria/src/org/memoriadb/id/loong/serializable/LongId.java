@@ -61,10 +61,7 @@ public final class LongId implements IObjectId, IIntegralId, Serializable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (int) (fValue ^ (fValue >>> 32));
-    return result;
+    return (int) (fValue ^ (fValue >>> 32));
   }
 
   @Override

@@ -16,11 +16,9 @@
 
 package org.memoriadb.id.loong;
 
-import org.memoriadb.id.IIntegralId;
-import org.memoriadb.id.IObjectId;
+import java.io.*;
 
-import java.io.DataOutput;
-import java.io.IOException;
+import org.memoriadb.id.*;
 
 public final class LongId implements IObjectId, IIntegralId {
 
@@ -61,10 +59,7 @@ public final class LongId implements IObjectId, IIntegralId {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + (int) (fValue ^ (fValue >>> 32));
-    return result;
+    return (int) (fValue ^ (fValue >>> 32));
   }
 
   @Override
