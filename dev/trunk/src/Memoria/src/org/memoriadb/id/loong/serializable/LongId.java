@@ -61,7 +61,7 @@ public final class LongId implements IObjectId, IIntegralId, Serializable {
 
   @Override
   public int hashCode() {
-    return (int) (fValue + (fValue >>> 32));
+    return (int) (fValue ^ (fValue >>> 32));
   }
 
   @Override
