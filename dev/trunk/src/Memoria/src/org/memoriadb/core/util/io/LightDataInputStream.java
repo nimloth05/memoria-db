@@ -26,6 +26,10 @@ public class LightDataInputStream extends FilterInputStream implements IDataInpu
     }
   };
 
+  public LightDataInputStream(byte[] body) {
+    this(new ByteArrayInputStream(body));
+  }
+
   /**
    * Creates a DataInputStream that uses the specified underlying InputStream.
    * 

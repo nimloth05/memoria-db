@@ -18,6 +18,10 @@ package org.memoriadb.core.util.io;
 import java.io.*;
 import java.nio.*;
 
+/**
+ * A {@link ByteBufferDataInput} can be used instead of a {@link LightDataInputStream}
+ * whenever the data is already in the memory, either as byte array or in a {@link ByteBuffer}. 
+ */
 public class ByteBufferDataInput implements IDataInput {
 
 //  public static final Charset CHARSET_UFT8 = Charset.forName("UTF-8");
