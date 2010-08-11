@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Sandro Orlando
+ * Copyright 2010 Sandro Orlando, Micha Riser
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,62 +16,60 @@
 
 package org.memoriadb.core.util;
 
+import java.io.*;
+import java.util.zip.*;
+
 import org.memoriadb.core.exception.MemoriaException;
+import org.memoriadb.core.util.io.IOUtil;
 
-import java.io.ByteArrayOutputStream;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
-
+/**
+ * NOTE: Do not use {@link Deflater} and {@link Inflater} directly because of a performance bug as
+ * described in bug 6751338 of the sun bug database. 
+ */
 public final class ZipUtil {
   
   public static byte[] compress(byte[] input) {
-    
-    // Create the compressor with highest level of compression
-    Deflater compressor = new Deflater();
-    
-    // Give the compressor the data to compress
-    compressor.setInput(input);
-    compressor.finish();
-    
-    // Create an expandable byte array to hold the compressed data.
-    // You cannot use an array that's the same size as the orginal because
-    // there is no guarantee that the compressed data will be smaller than
-    // the uncompressed data.
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
-    
-    // Compress the data
-    byte[] buf = new byte[1024];
-    while (!compressor.finished()) {
-        int count = compressor.deflate(buf);
-        bos.write(buf, 0, count);
+    Deflater deflater = new Deflater();
+    try {
+      return compress(input, deflater);
+    } finally {
+      deflater.end();
     }
-    
-    // Get the compressed data
-    return bos.toByteArray();
+  }
+  
+  public static byte[] compress(byte[] input, Deflater deflater) {
+    ByteArrayInputStream in = new ByteArrayInputStream(input);
+    ByteArrayOutputStream out = new ByteArrayOutputStream(input.length);
+    DeflaterOutputStream deflatingStream = new DeflaterOutputStream(out, deflater, 4*1024);
+    try {
+      IOUtil.copyInputStreamToOutputStream(in, deflatingStream);
+      return out.toByteArray();
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
   }
   
   public static byte[] decompress(byte[] input) {
-    // Create the decompressor and give it the data to compress
-    Inflater decompressor = new Inflater();
-    decompressor.setInput(input);
-    
-    // Create an expandable byte array to hold the decompressed data
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
-    
-    // Decompress the data
-    byte[] buf = new byte[1024];
-    while (!decompressor.finished()) {
-        try {
-            int count = decompressor.inflate(buf);
-            bos.write(buf, 0, count);
-        } catch (DataFormatException e) {
-          throw new MemoriaException(e);
-        }
+    Inflater inflater = new Inflater();
+    try {
+      return decompress(input, inflater);
+    } finally {
+      inflater.end();
     }
-    
-    // Get the decompressed data
-    return bos.toByteArray();
+  }
+  
+  public static byte[] decompress(byte[] input, Inflater inflater) {
+    ByteArrayInputStream in = new ByteArrayInputStream(input);
+    ByteArrayOutputStream out = new ByteArrayOutputStream(input.length);
+    InflaterInputStream inflatingStream = new InflaterInputStream(in, inflater, 4*1024);
+    try {
+      IOUtil.copyInputStreamToOutputStream(inflatingStream, out);
+      return out.toByteArray();
+    }
+    catch (IOException e) {
+      throw new MemoriaException(e);
+    }
   }
   
   private ZipUtil() {}

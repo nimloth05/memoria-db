@@ -16,10 +16,9 @@
 
 package org.memoriadb.core.util.io;
 
-import org.memoriadb.core.exception.MemoriaException;
+import java.io.*;
 
-import java.io.Closeable;
-import java.io.IOException;
+import org.memoriadb.core.exception.MemoriaException;
 
 public final class IOUtil {
 
@@ -33,6 +32,40 @@ public final class IOUtil {
       throw new MemoriaException(e);
     }
     
+  }
+  
+  /**
+   * Closes the given {@link Closeable} ignoring the I/O exception that might occur.
+   * Does nothing if <code>null</code> is given as argument.
+   */
+  public static void closeSilently(Closeable closeable) {
+    if (closeable == null) return;
+    try {
+      closeable.close();
+    } catch (IOException e) {
+      // ignore
+    }
+  }
+  
+  /**
+   * Copies the data from the given input stream to the given output stream.
+   * Closes both streams in any case.
+   * 
+   * @param in stream to read from
+   * @param out stream to write to
+   * @throws IOException if any I/O exception occurs during reading or writing
+   */
+  public static final void copyInputStreamToOutputStream(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[1024 * 4];
+    try {
+      int len;
+      while ((len = in.read(buffer)) >= 0) {
+        out.write(buffer, 0, len);
+      }
+    } finally {
+      closeSilently(in);
+      closeSilently(out);
+    }
   }
   
   private IOUtil() {}
