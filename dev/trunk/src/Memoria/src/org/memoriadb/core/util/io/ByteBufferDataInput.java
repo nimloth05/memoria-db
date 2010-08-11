@@ -15,13 +15,12 @@
  */
 package org.memoriadb.core.util.io;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.*;
-import java.nio.charset.Charset;
 
 public class ByteBufferDataInput implements IDataInput {
 
-  public static final Charset CHARSET_UFT8 = Charset.forName("UTF-8");
+//  public static final Charset CHARSET_UFT8 = Charset.forName("UTF-8");
 
   private final ByteBuffer fBuffer;
 
@@ -54,19 +53,6 @@ public class ByteBufferDataInput implements IDataInput {
       return fBuffer.get();
     }
     catch (BufferUnderflowException e) {
-      throw new IOException(e);
-    }
-  }
-
-  @Override
-  public ByteBuffer readBytes(int byteCount) throws IOException {
-    try {
-      ByteBuffer result = fBuffer.slice();
-      result.limit(byteCount);
-      skipBytes(byteCount);
-      return result;
-    }
-    catch (IllegalArgumentException e) {
       throw new IOException(e);
     }
   }
@@ -174,10 +160,11 @@ public class ByteBufferDataInput implements IDataInput {
 
   @Override
   public String readUTF() throws IOException {
-    int bytes = readUnsignedShort();
-    byte[] data = new byte[bytes];
-    fBuffer.get(data);
-    return new String(data, CHARSET_UFT8);
+    return DataInputStream.readUTF(this);
+//    int bytes = readUnsignedShort();
+//    byte[] data = new byte[bytes];
+//    fBuffer.get(data);
+//    return new String(data, CHARSET_UFT8);
   }
 
   @Override
@@ -185,6 +172,19 @@ public class ByteBufferDataInput implements IDataInput {
     int skipBytes = Math.min(n, fBuffer.remaining());
     fBuffer.position(fBuffer.position() + skipBytes);
     return skipBytes;
+  }
+
+  @Override
+  public IDataInput subInput(int byteCount) throws IOException {
+    try {
+      ByteBuffer subBuffer = fBuffer.slice();
+      subBuffer.limit(byteCount);
+      skipBytes(byteCount);
+      return new ByteBufferDataInput(subBuffer);
+    }
+    catch (IllegalArgumentException e) {
+      throw new IOException(e);
+    }
   }
 
 }

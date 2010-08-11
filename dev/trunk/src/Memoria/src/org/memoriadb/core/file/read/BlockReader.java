@@ -17,7 +17,6 @@
 package org.memoriadb.core.file.read;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.memoriadb.block.Block;
 import org.memoriadb.core.block.IBlockErrorHandler;
@@ -117,8 +116,8 @@ public class BlockReader {
       return;
     }
 
-    ByteBuffer objectData = stream.readBytes(stream.available());
-    HydratedObject hydratedObject = new HydratedObject(typeId, objectData);
+    IDataInput objectInput = stream.subInput(stream.available());
+    HydratedObject hydratedObject = new HydratedObject(typeId, objectInput);
     
     if (idFactory.isMemoriaFieldClass(typeId) || idFactory.isMemoriaHandlerClass(typeId)) {
       handler.memoriaClass(hydratedObject, objectId, size + FileLayout.OBJECT_SIZE_LEN);
@@ -136,8 +135,7 @@ public class BlockReader {
   private int readObjects(Block block, IObjectIdFactory idFactory, IFileReaderHandler handler, IDataInput input, long objectDataCount) throws IOException {
     for (int i = 0; i < objectDataCount; ++i) {
       int size = input.readInt();
-      ByteBufferDataInput subInput = new ByteBufferDataInput(input.readBytes(size));
-      readObject(block, idFactory, handler, subInput, size);
+      readObject(block, idFactory, handler, input.subInput(size), size);
     }
     return 0;
   }

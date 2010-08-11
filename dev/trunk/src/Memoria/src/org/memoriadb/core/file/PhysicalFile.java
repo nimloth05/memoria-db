@@ -16,13 +16,10 @@
 
 package org.memoriadb.core.file;
 
+import java.io.*;
+
 import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.util.io.BufferedRandomInputStream;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
 
 /**
  * Encapsulates a RandomAccessFile. No explicit locking is done.
@@ -69,19 +66,26 @@ public class PhysicalFile extends AbstractMemoriaFile {
   public InputStream doGetInputStream(long position) {
     try {
       fRandomAccessFile.seek(position);
+//      return new BufferedInputStream(new FileInputStream(fRandomAccessFile.getFD()) {
+//        
+//        @Override
+//        public void close() throws IOException {
+//          streamClosed();
+//          super.close();
+//        }
+//        
+//      }, 1024*100);
+      return new BufferedRandomInputStream(fRandomAccessFile, getBufferSize()) {
+        @Override
+        public void close()  {
+          streamClosed();
+          super.close();
+        }
+      };
     }
     catch (IOException e) {
       throw new MemoriaException(e);
     }
-
-    return new BufferedRandomInputStream(fRandomAccessFile, getBufferSize()) {
-      @Override
-      public void close()  {
-        streamClosed();
-        super.close();
-      }
-    };
-
   }
 
   @Override
@@ -118,13 +122,8 @@ public class PhysicalFile extends AbstractMemoriaFile {
     return fPath.toString();
   }
   
-  /**
-   * ATTENION: The buffer must be big enough to avoid the recursive read in the 
-   *           BufferedRandomInputStream to generate a StackoverflowException.
-   * @return
-   */
   private int getBufferSize() {
-    return (int) Runtime.getRuntime().freeMemory() / 64;
+    return 100*1024;
   }
 
   private void internalWrite(byte[] data, long offset) {
