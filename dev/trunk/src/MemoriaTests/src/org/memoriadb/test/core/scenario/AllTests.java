@@ -25,6 +25,7 @@ public class AllTests {
     TestSuite suite = new TestSuite("Test for org.memoriadb.test.core.scenario");
     //$JUnit-BEGIN$
     suite.addTestSuite(CompositeTest.class);
+    suite.addTestSuite(ZipUtilTest.class);
     //$JUnit-END$
     return suite;
   }
