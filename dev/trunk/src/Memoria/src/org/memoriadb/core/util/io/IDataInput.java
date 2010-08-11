@@ -20,7 +20,7 @@ import java.io.*;
 public interface IDataInput extends DataInput {
   
   /**
-   * @return the number of remaining bytes avaiable 
+   * @return the number of total remaining bytes available 
    */
   public int available() throws IOException;
 

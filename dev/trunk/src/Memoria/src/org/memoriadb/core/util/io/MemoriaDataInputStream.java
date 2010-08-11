@@ -67,6 +67,9 @@ public class MemoriaDataInputStream extends LightDataInputStream  {
   
   @Override
   public int available() throws IOException {
+    // FIXME diese implementierung basiert darauf, dass die available()-Methode des InputStreams
+    // die Gesamtzahl der noch verbleibenden Bytes zurückgibt. Diese Methode darf laut interface
+    // aber auch 0 zurückgeben, selbst wenn der Stream noch nicht das Ende erreicht hat!
     return ((CountInputStream)in).available();
   }
   
