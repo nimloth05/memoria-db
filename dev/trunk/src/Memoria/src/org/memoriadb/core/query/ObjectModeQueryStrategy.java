@@ -16,12 +16,11 @@
 
 package org.memoriadb.core.query;
 
-import org.memoriadb.IFilter;
-import org.memoriadb.IFilterControl;
+import java.util.List;
+
+import org.memoriadb.*;
 import org.memoriadb.core.IObjectRepository;
 import org.memoriadb.core.util.ReflectionUtil;
-
-import java.util.List;
 
 public class ObjectModeQueryStrategy {
 
@@ -41,13 +40,10 @@ public class ObjectModeQueryStrategy {
     FilterControl<T> control = new FilterControl<T>();
 
     for (Object object : objectRepository.getAllUserSpaceObjects(clazz)) {
-      if (!clazz.isInstance(object)) continue;
-
       T currentObject = (T) object;
       if (filter.accept(currentObject, control)) control.add(currentObject);
       
       if(control.isAbort()) break;
-      
     }
     return control.getResult();
   }
