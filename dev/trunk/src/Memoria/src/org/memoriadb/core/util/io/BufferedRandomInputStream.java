@@ -36,17 +36,21 @@ public class BufferedRandomInputStream extends InputStream {
   private long fFilePointer;
 
   private byte fBuffer[];
+  
+  private final long fLength;
 
-  public BufferedRandomInputStream(RandomAccessFile file, int bufferSize) {
+  public BufferedRandomInputStream(RandomAccessFile file, int bufferSize) throws IOException {
     fInputFile = file;
     fBuffer = new byte[bufferSize];
     fFilePointer = 0;
+    fLength = file.length();
     resetBuffer();
   }
 
   @Override
-  public int available() throws IOException {
-    return (int) (fInputFile.length() - (fBufferStart + fBufferPos));
+  public int available() {
+    // TODO if the file is really large, this could overflow 
+    return (int) (fLength - (fBufferStart + fBufferPos));
   }
 
   @Override
