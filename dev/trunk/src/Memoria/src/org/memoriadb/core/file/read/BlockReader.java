@@ -116,6 +116,7 @@ public class BlockReader {
       return;
     }
 
+    // no deleteMarker encountered
     IDataInput objectInput = stream.subInput(stream.available());
     HydratedObject hydratedObject = new HydratedObject(typeId, objectInput);
     
