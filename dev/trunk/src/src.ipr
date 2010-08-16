@@ -85,8 +85,8 @@
   <component name="IdProvider" IDEtalkID="A03E054C8CFA452DB8D4AAC110EAD90D" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_PROFILE" value="true" />
-    <version value="1.0" />
+    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
+    <scopes />
     <profiles>
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
@@ -94,10 +94,10 @@
       </profile>
     </profiles>
     <list size="4">
-      <item index="0" class="java.lang.String" itemvalue="INFO" />
-      <item index="1" class="java.lang.String" itemvalue="WARNING" />
-      <item index="2" class="java.lang.String" itemvalue="ERROR" />
-      <item index="3" class="java.lang.String" itemvalue="SERVER PROBLEM" />
+      <item index="0" class="java.lang.String" itemvalue="SERVER PROBLEM" />
+      <item index="1" class="java.lang.String" itemvalue="INFO" />
+      <item index="2" class="java.lang.String" itemvalue="WARNING" />
+      <item index="3" class="java.lang.String" itemvalue="ERROR" />
     </list>
   </component>
   <component name="JavacSettings">
@@ -258,16 +258,10 @@
   </component>
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
-    <option name="state" value="project://C:\projects\rep_memoria\dev\trunk\src\src.ipr" />
+    <option name="state" value="https://svn.empros.ch/svn/rep_memoria/dev/trunk/src/src.ipr" />
   </component>
   <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/Example/Example.iml" filepath="$PROJECT_DIR$/Example/Example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MemoriaAdmin/MemoriaAdmin.iml" filepath="$PROJECT_DIR$/MemoriaAdmin/MemoriaAdmin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MemoriaTests/MemoriaTests.iml" filepath="$PROJECT_DIR$/MemoriaTests/MemoriaTests.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Spikes/Spikes.iml" filepath="$PROJECT_DIR$/Spikes/Spikes.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Memoria/org.memoria.iml" filepath="$PROJECT_DIR$/Memoria/org.memoria.iml" />
-    </modules>
+    <modules />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
@@ -314,13 +308,13 @@
     </option>
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
+  <component name="TestDoxConfiguration">
+    <option name="createTestIfMissing" value="true" />
+    <option name="deletePackageOccurrences" value="true" />
+  </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
-  <component name="XPathView.XPathProjectComponent">
-    <history />
-    <find-history />
-  </component>
 </project>
 
