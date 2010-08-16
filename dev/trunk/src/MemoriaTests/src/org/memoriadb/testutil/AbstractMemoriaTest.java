@@ -77,12 +77,16 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
 
   /**
-   * Overwrite to change the memoria-configuration for opening a db. 
+   * Overwrite to change the memoria-configuration for initial opening a db.
+   *
+   * @param config the config for the initial opening.
    */
   protected void configureOpen(CreateConfig config) {}
   
   /**
-   * Overwrite to change the memoria-configuration for reopening a db. 
+   * Overwrite to change the memoria-configuration for reopening a db.
+   *
+   * @param config the config for the reopening  
    */
   protected void configureReopen(CreateConfig config) {}
   
@@ -99,7 +103,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
   }
 
   protected <T> T get(IObjectId id) {
-    return fObjectStore.<T>get(id);
+    return fObjectStore.get(id);
   }
   
   protected Block getBlock(int index) {
@@ -163,6 +167,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
     closeStores();
     
     CreateConfig config = new CreateConfig();
+    //config.setBlockManager(new MaintenanceFreeBlockManager2(70));
     configureReopen(config);
     
     if (getTestMode() == TestMode.memory) {
@@ -202,13 +207,14 @@ public abstract class AbstractMemoriaTest extends TestCase {
   @Override
   protected void setUp() {
    CreateConfig config = new CreateConfig();
+// config.setBlockManager(new MaintenanceFreeBlockManager2(70));
    configureOpen(config);
    
    if (getTestMode() == TestMode.memory) {
      fObjectStore = openStore(new InMemoryFile(), config);
    } 
    else {
-     PATH.delete(); 
+     if (!PATH.delete()) throw new IllegalStateException("could not delete old db file from tests"); 
      fObjectStore = openStore(createPhysicalFile(), config);
    }
   }

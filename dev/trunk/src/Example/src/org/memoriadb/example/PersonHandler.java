@@ -3,6 +3,7 @@ package org.memoriadb.example;
 import java.io.*;
 
 import org.memoriadb.core.IObjectTraversal;
+import org.memoriadb.core.util.io.IDataInput;
 import org.memoriadb.core.file.IWriterContext;
 import org.memoriadb.core.file.read.IReaderContext;
 import org.memoriadb.handler.*;
@@ -16,7 +17,7 @@ public class PersonHandler implements IHandler {
   public void checkCanInstantiateObject(String className, IInstantiator instantiator) {}
 
   @Override
-  public Object deserialize(DataInputStream input, IReaderContext context, IObjectId typeId) throws Exception {
+  public Object deserialize(IDataInput input, IReaderContext context, IObjectId typeId) throws Exception {
     IFieldbasedObject object = creeateObject(context, typeId);
     object.set(Person.NAME_FIELD, input.readUTF());
     return object.getObject();
