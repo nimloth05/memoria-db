@@ -62,4 +62,9 @@ public class AppendBlockManager implements IBlockManagerExt {
   public void inactiveRatioChanged(Block block) {
   }
 
+  @Override
+  public long getBlockSize(final int length) {
+    return length;
+  }
+
 }

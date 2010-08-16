@@ -20,7 +20,6 @@ import org.memoriadb.block.Block;
 import org.memoriadb.block.BlockManagerUtil;
 import org.memoriadb.core.block.IBlockManagerExt;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.FileLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,7 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
 
   @Override
   public Block allocatedRecyclebleBlock(long blockSize, Set<Block> tabooBlocks) {
-    long currentSize = BlockManagerUtil.getNextAlignedBlockSize(blockSize + FileLayout.BLOCK_OVERHEAD);
+    long currentSize = BlockManagerUtil.getNextAlignedBlockSize(blockSize);
     int index = BlockManagerUtil.getIndexForAlignedBlockSize(currentSize);
     if (index >= fRecycleList.size()) return null;
     
@@ -69,6 +68,7 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
 
     if (blocks.isEmpty()) return null;
     Block block = blocks.remove(0);
+    if (block.getBodySize() != currentSize) throw new MemoriaException("wrong block for size. needed block size: " + currentSize + " block: " +block.getBodySize());
     return block;
   }
 
@@ -96,7 +96,7 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
   public void inactiveRatioChanged(Block block) {
     if (!blockQualifiesForRecycling(block)) return;
 
-    int index = BlockManagerUtil.getIndexForAlignedBlockSize(block.getWholeSize());
+    int index = BlockManagerUtil.getIndexForAlignedBlockSize(block.getBodySize());
     ensureCapacity(index);
 
     List<Block> blocks = fRecycleList.get(index);
@@ -108,12 +108,17 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
     blocks.add(block);
   }
 
+  @Override
+  public long getBlockSize(final int bodySize) {
+    return BlockManagerUtil.getNextAlignedBlockSize(bodySize);
+  }
+
   private void ensureCapacity(final int index) {
-    int sizeDiff = fRecycleList.size() - index;
-    if (sizeDiff > 0) return;
+    int sizeDiff = index - fRecycleList.size() + 1;
+    if (sizeDiff < 0) return;
     if (sizeDiff == 0) sizeDiff = 2;
 
-    int elementsToAdd = (int)BlockManagerUtil.getNextPowerOfTwo(-1 * sizeDiff);
+    int elementsToAdd = (int)BlockManagerUtil.getNextPowerOfTwo(sizeDiff);
     for(int i = 0; i < elementsToAdd; ++i) {
       fRecycleList.add(null);
     }
@@ -132,12 +137,4 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
     if (value < 0 || value > 100) throw new MemoriaException("not in [0..100]:" + value);
   }
 
-  private Block getBlock(BlockBucket blockBucket, Set<Block> tabooBlocks) {
-    for (Block block : blockBucket.getBlocks()) {
-      if (tabooBlocks.contains(block)) continue;
-      blockBucket.remove(block);
-      return block;
-    }
-    return null;
-  }
 }

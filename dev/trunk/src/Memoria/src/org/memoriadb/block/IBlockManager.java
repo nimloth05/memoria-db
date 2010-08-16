@@ -42,4 +42,5 @@ public interface IBlockManager {
    */
   public void inactiveRatioChanged(Block block);
 
+  public long getBlockSize(int bodySize);
 }

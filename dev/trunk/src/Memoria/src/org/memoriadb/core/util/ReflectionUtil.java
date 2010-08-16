@@ -43,7 +43,7 @@ public final class ReflectionUtil {
 
   public static <T> T createInstance(String className) {
     Class<?> clazz = getClass(className);
-    return createInstance(clazz);
+    return ReflectionUtil.<T>createInstance(clazz);
   }
 
   /**

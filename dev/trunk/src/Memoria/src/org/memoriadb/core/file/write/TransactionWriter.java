@@ -96,18 +96,23 @@ public final class TransactionWriter {
 
     stream.write(FileLayout.BLOCK_START_TAG);
 
+    final long transactionSize = fBlockManager.getBlockSize(compressedTrx.length);
+    byte[] garbage = new byte[(int)(transactionSize - compressedTrx.length)];
+
     MemoriaCRC32 crc = new MemoriaCRC32();
-    stream.writeLong(compressedTrx.length);
-    crc.updateLong(compressedTrx.length);
+    stream.writeLong(transactionSize);
+    crc.updateLong(transactionSize);
     stream.writeLong(crc.getValue());
     
     stream.write(compressedTrx);
+    stream.write(garbage);
     crc = new MemoriaCRC32();
     crc.update(compressedTrx);
+    crc.update(garbage);
     stream.writeLong(crc.getValue());
     
     // first create the block...
-    Block block = new Block(compressedTrx.length, fFile.getSize());
+    Block block = new Block(transactionSize, fFile.getSize());
     
     block.addObjectIds(objectInfos);
     fBlockManager.add(block);
@@ -117,7 +122,7 @@ public final class TransactionWriter {
     markAsLastWrittenBlock(block, FileLayout.WRITE_MODE_APPEND);
     // ... then add the data to the file.
     fFile.append(stream.toByteArray());
-    
+
     // the block si written, synchronize.
     fFile.sync();
 
@@ -316,7 +321,7 @@ public final class TransactionWriter {
     updateInfoAfterUpdate(update, block);
     updateInfoAfterDelete(delete, block);
 
-    // must done at the end of the write-process to avoid abnormities.
+    // must be done at the end of the write-process to avoid abnormities.
     for(ObjectInfo info: decOGC) {
       info.decrementOldGenerationCount();
       

@@ -124,6 +124,11 @@ public class MaintenanceFreeBlockManager implements IBlockManagerExt {
     bucket.add(block);
   }
 
+  @Override
+  public long getBlockSize(final int length) {
+    return length;
+  }
+
   private boolean blockQualifiesForRecycling(Block block) {
     if (block.isFree()) return true;
 
