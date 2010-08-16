@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 Sandro Orlando, Micha Riser
+ * Copyright 2010 memoria db projet
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License
  */
 
 package org.memoriadb.core.util;
@@ -24,7 +24,10 @@ import org.memoriadb.core.util.io.IOUtil;
 
 /**
  * NOTE: Do not use {@link Deflater} and {@link Inflater} directly because of a performance bug as
- * described in bug 6751338 of the sun bug database. 
+ * described in bug 6751338 of the sun bug database.
+ *
+ * @author Sandro
+ * @author Micha 
  */
 public final class ZipUtil {
   

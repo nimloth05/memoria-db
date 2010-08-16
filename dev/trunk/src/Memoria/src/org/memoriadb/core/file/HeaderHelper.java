@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 Sandro Orlando
+ * Copyright 2010 memoria db projet
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License
  */
 
 package org.memoriadb.core.file;
@@ -25,7 +25,10 @@ import org.memoriadb.core.exception.*;
 import org.memoriadb.core.util.*;
 import org.memoriadb.core.util.io.*;
 
-public class HeaderHelper {
+/**
+ * @author Sandro
+ */
+public final class HeaderHelper {
 
   public static final long NO_CURRENT_BLOCK = -1;
   
@@ -51,7 +54,8 @@ public class HeaderHelper {
   }
 
   /**
-   * Stores the position of the last updated block in the file-header. 
+   * Stores the position of the last updated block in the file-header.
+   *  
    * @param writeMode {@link FileLayout#WRITE_MODE_APPEND} or {@link FileLayout#WRITE_MODE_UPDATE}
    */
   public static void updateBlockInfo(IMemoriaFile file, Block block, int writeMode) throws IOException {
@@ -180,5 +184,7 @@ public class HeaderHelper {
     stream.writeInt(version.getMinor());
     stream.writeInt(version.getService());
   }
+
+  private HeaderHelper() {}
 
 }

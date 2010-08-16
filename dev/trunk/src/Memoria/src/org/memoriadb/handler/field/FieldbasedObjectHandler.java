@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 Sandro Orlando
+ * Copyright 2010 memoria db projet
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License
  */
 
 package org.memoriadb.handler.field;
@@ -37,7 +37,10 @@ import org.memoriadb.instantiator.*;
  * NOTE: This class is performance critical while opening the repository.
  * Therefore, the deserialization method now first tests if it is in data mode.
  * If not it use a special method which sets the field using cached Fields from
- * the fFields map. It would be nicer to have different handlers for the different modes!
+ * the fFields map.
+ *
+ * @author Sandro
+ * @author Micha
  * 
  */
 public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
@@ -50,9 +53,8 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
   private final Map<String, MemoriaField> fFieldNameToInfo = new HashMap<String, MemoriaField>(4);
   private final Map<Integer, Field> fFields = new HashMap<Integer, Field>(4);
 
-  static int invocations = 0;
-
-  static int cached = 0;
+//  static int invocations = 0;
+//  static int cached = 0;
 
   public static FieldbasedObjectHandler createNewType(Class<?> klass) {
     if (klass.isArray()) throw new IllegalArgumentException("Array not allowed. This is an internal error.");
