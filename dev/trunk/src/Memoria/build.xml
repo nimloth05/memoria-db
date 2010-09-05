@@ -22,7 +22,6 @@
   <property name="destdir" value="build/"/>
   <property name="srcdir" value="./src/"/>
 	
-	
   <!--*********************************************************** -->
   <!-- clean                                                    * -->
   <!--*********************************************************** -->
@@ -35,7 +34,7 @@
   <!--*********************************************************** -->
   <!--               Compile                                    * -->            
   <!--*********************************************************** -->
-  <target name="compile" description="Compile">
+  <target name="compile" description="Compile" depends="clean">
   	<mkdir dir="${destdir}"/>
     <javac srcdir="${srcdir}"
        destdir="${destdir}"
@@ -51,7 +50,7 @@
   <!--*********************************************************** -->
   <!--               Build Jar                                  * -->            
   <!--*********************************************************** -->
-  <target name="buildJar" description="Build jar">
+  <target name="buildJar" description="Build jar" depends="compile">
     <delete file="${jar-name}"/>
     <jar destfile="${jar-name}">
       <fileset dir="${destdir}">
@@ -74,15 +73,10 @@
     </zip>
   </target>
 	
-	
-
-	
   <!--*********************************************************** -->
   <!--               Build Main Target                          * -->            
   <!--*********************************************************** -->
-  <target name="build" description="Build Sajotris">
-    <antcall target="clean"/>
-  	<antcall target="compile"/>
+  <target name="build" description="Build Memoria">
   	<antcall target="buildJar"/>
   	<antcall target="buildSrcZip" />
   </target>
