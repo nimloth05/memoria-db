@@ -40,7 +40,7 @@ public final class MaintenanceFreeBlockManager2  implements IBlockManagerExt {
    * come to an end findind a block.
    *
    * @param inactiveThreshold
-   *          0..100%. 0 means: at leat on ObjectData must be inactive. 100 means: all (100%) of the ObjectDatas must be
+   *          0..100%. 0 means: at leat on ObjectData must be inactive. 100% means: all (100%) of the ObjectDatas must be
    *          inactive
    *
    */

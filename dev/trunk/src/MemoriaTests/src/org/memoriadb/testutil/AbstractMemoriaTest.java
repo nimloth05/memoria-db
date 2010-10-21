@@ -214,7 +214,7 @@ public abstract class AbstractMemoriaTest extends TestCase {
      fObjectStore = openStore(new InMemoryFile(), config);
    } 
    else {
-     if (!PATH.delete()) throw new IllegalStateException("could not delete old db file from tests"); 
+     if (PATH.exists() && !PATH.delete()) throw new IllegalStateException("could not delete old db file from tests"); 
      fObjectStore = openStore(createPhysicalFile(), config);
    }
   }
