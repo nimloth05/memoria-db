@@ -22,6 +22,6 @@ import org.memoriadb.core.meta.IMemoriaClass;
 @ImplementedBy(ClassRendererService.class)
 public interface IClassRendererService {
 
-  public IClassRenderer getRednerer(IMemoriaClass memoriaClass);
+  public IClassRenderer getRenderer(IMemoriaClass memoriaClass);
 
 }

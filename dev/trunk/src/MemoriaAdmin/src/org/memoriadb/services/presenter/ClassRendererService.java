@@ -18,6 +18,7 @@ package org.memoriadb.services.presenter;
 
 import org.memoriadb.core.meta.IMemoriaClass;
 import org.memoriadb.handler.IHandler;
+import org.memoriadb.handler.enu.EnumHandler;
 import org.memoriadb.handler.field.FieldbasedObjectHandler;
 
 import javax.swing.*;
@@ -25,8 +26,13 @@ import javax.swing.*;
 public class ClassRendererService implements IClassRendererService {
   
   @Override
-  public IClassRenderer getRednerer(IMemoriaClass memoriaClass) {
+  public IClassRenderer getRenderer(IMemoriaClass memoriaClass) {
     IHandler handler = memoriaClass.getHandler();
+
+    if (handler instanceof EnumHandler) {
+      return new EnumRenderer();
+    }
+    
     if (handler instanceof FieldbasedObjectHandler) {
       return new FieldbasedObjectRenderer(); 
     }
@@ -44,5 +50,5 @@ public class ClassRendererService implements IClassRendererService {
       }
     };
   }
-  
+
 }

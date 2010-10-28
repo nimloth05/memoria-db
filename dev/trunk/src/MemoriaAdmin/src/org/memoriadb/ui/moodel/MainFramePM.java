@@ -185,7 +185,7 @@ public class MainFramePM {
   }
   
   private TableModel createTableModel(IMemoriaClass memoriaClass, List<IDataObject> result) {
-    IClassRenderer renderer = fService.getRednerer(memoriaClass);
+    IClassRenderer renderer = fService.getRenderer(memoriaClass);
     ITableModelDecorator tableModelDecorator = renderer.getTableModelDecorator(memoriaClass);
     
     return TableModel.create(result, tableModelDecorator, fOpenStore);
