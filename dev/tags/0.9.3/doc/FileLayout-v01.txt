@@ -1,0 +1,14 @@
+file:              fileHeader (block)*
+fileHeader:        GUID memoriaVersion
+memoriaVersion:    int.int.int
+block:             blockHeader transaction endBlock
+blockHeader:       blockStartTag blockSize
+transaction:       transactionHeader (object)* endTransaction
+transactionHeader: transactionStartTag transactionSize
+object:            size typeId objectId (objectData|metaData)
+objectData:        (field)*
+field:             fielId data
+metaData:          className (metaFields)*
+metaField:         id name typeOrdinal
+
+ 
