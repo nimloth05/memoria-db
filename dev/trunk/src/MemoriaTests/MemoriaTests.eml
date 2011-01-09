@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<excludeFolder url="file://$MODULE_DIR$/bin"/>
+		<excludeFolder url="file://$MODULE_DIR$/bin"/>
+	</contentEntry>
+	<lib name="easymock.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/MemoriaTests/libs/easyMock/easymock.jar!/"/>
+	</lib>
+</component>

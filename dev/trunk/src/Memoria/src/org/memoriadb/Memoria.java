@@ -38,8 +38,8 @@ import java.io.IOException;
  */
 public final class Memoria {
 
-  private static final Version fVersion = new Version(0, 0, 0);
-  private static final int fFileLayoutVersion = 0;
+  private static final Version fVersion = new Version(0, 9, 3);
+  private static final int fFileLayoutVersion = 1;
 
   /**
    * @return The Version of the file-layout. Stays stable as long as possible.
