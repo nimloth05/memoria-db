@@ -33,6 +33,7 @@ import org.memoriadb.handler.IHandler;
 import org.memoriadb.handler.collection.*;
 import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.handler.jdk.awt.color.ColorHandler;
+import org.memoriadb.handler.jdk.date.DateHandler;
 import org.memoriadb.handler.jdk.url.URLHandler;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.handler.value.LangValueObjectHandler;
@@ -96,6 +97,7 @@ public final class Bootstrap {
 
     registerHandler(trxHandler, new URLHandler(), true);
     registerHandler(trxHandler, new ColorHandler(), true);
+    registerHandler(trxHandler, new DateHandler(), true);
   }
 
   private static void addValueClasses(TransactionHandler transactionHandler, Iterable<Class<?>> valueClasses) {
