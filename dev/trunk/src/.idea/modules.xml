@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Example/Example.iml" filepath="$PROJECT_DIR$/Example/Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Memoria/Memoria.iml" filepath="$PROJECT_DIR$/Memoria/Memoria.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MemoriaAdmin/MemoriaAdmin.iml" filepath="$PROJECT_DIR$/MemoriaAdmin/MemoriaAdmin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MemoriaTests/MemoriaTests.iml" filepath="$PROJECT_DIR$/MemoriaTests/MemoriaTests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Spikes/Spikes.iml" filepath="$PROJECT_DIR$/Spikes/Spikes.iml" />
+    </modules>
+  </component>
+</project>
+
