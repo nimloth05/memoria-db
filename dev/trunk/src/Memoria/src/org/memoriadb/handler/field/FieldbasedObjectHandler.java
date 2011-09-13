@@ -159,7 +159,7 @@ public class FieldbasedObjectHandler implements IHandler, IHandlerConfig {
         traversal.handle(referencee);
       }
       catch (Exception e) {
-        throw new MemoriaException("Exception during object traversel. Java Class: '" + getClassName() + "' Java-Field: '" + field
+        throw new MemoriaException("Exception during object traversal. Java Class: '" + getClassName() + "' Java-Field: '" + field
             + "' type of the field: '" + field.getFieldType() + "'", e);
       }
     }

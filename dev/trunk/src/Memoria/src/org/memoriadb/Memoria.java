@@ -38,7 +38,7 @@ import java.io.IOException;
  */
 public final class Memoria {
 
-  private static final Version fVersion = new Version(0, 9, 3);
+  private static final Version fVersion = new Version(0, 9, 4);
   private static final int fFileLayoutVersion = 1;
 
   /**
