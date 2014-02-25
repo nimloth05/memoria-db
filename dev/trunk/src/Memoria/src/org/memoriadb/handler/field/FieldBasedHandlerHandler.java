@@ -77,7 +77,7 @@ public class FieldBasedHandlerHandler implements IHandler {
     output.writeBoolean(classObject.isValueObject());
     
     IObjectId superClassId = context.getRootClassId();
-    if (classObject.getSuperClass() != null) superClassId = context.getExistingtId(classObject.getSuperClass());
+    if (classObject.getSuperClass() != null) superClassId = context.getExistingId(classObject.getSuperClass());
     superClassId.writeTo(output);
     
     for(MemoriaField field: handler.getFields()) {

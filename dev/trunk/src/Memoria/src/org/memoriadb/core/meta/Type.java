@@ -286,7 +286,7 @@ public enum Type {
       
       output.writeByte(Constants.OBJECT_REFERENCE);
       if (!context.contains(value)) throw new MemoriaException("trying to save reference to unsaved object (use saveAll): " + value);
-      context.getExistingtId(value).writeTo(output);
+      context.getExistingId(value).writeTo(output);
     }
 
     private void readValueObject(IDataInput input, ITypeVisitor visitor, IReaderContext context) throws Exception {
@@ -297,7 +297,7 @@ public enum Type {
     }
 
     private void writeValueObject(IMemoriaClass memoriaClass, Object value, DataOutput output, IWriterContext context) throws Exception {
-      context.getExistingtId(memoriaClass).writeTo(output);
+      context.getExistingId(memoriaClass).writeTo(output);
       memoriaClass.getHandler().serialize(value, output, context);
     }
 

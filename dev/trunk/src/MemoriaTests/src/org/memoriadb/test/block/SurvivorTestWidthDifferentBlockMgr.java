@@ -50,7 +50,7 @@ public class SurvivorTestWidthDifferentBlockMgr extends AbstractMemoriaTest {
     beginUpdate();
     IObjectId id3 = save(o3);
     IObjectId id4 = save(o4);
-    endUpdate(); // crashed befor the increment of iodc for obsolete DMs was done inside teh recursion.
+    endUpdate(); // crashed before the increment of ids for obsolete DMs was done inside the recursion.
    
     // |d1'|o3,o4|o2'|
     assertEquals(4, getBlockManager().getBlockCount());

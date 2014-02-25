@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 memoria db projet
+ * Copyright 2010 memoria db project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ public interface IWriterContext {
   public boolean contains(Object obj);
 
   /**
-   * @param object
+   * Get the id of an object. Throws an error if the object does not have an id.
+   * @param object instance
    * @return The id for the given <tt>obj</tt>
    * @throw {@link MemoriaException} if the given <tt>obj</tt> is not found.
-   * @param object
    */
-  public IObjectId getExistingtId(Object object);
+  public IObjectId getExistingId(Object object);
   
   public IMemoriaClass getMemoriaClass(IObjectId id);
   
@@ -45,10 +45,9 @@ public interface IWriterContext {
   public IMemoriaClass getMemoriaClass(Object object);
 
   /**
-   * @param javaClassName
+   * @param javaClassName classname
    * @return ObjectId of the MemoriaClass representing the given java-class
    * @throws MemoriaException if no class is found.
-   * @param javaClassName
    */
   public IObjectId getMemoriaClassId(String javaClassName);
   

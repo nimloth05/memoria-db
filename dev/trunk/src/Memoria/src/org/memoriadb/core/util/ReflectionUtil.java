@@ -84,7 +84,7 @@ public final class ReflectionUtil {
 
         if (parameterTypes.length == 1 && parameterTypes[0].equals(String.class)) { return (T) ctor.newInstance(arg); }
       }
-      throw new MemoriaException("Could not find a default ctor or a ctro with a single String argument");
+      throw new MemoriaException("Could not find a default ctor or a ctor with a single String argument in class " + clazz);
     }
     catch (Exception e) {
       throw new MemoriaException(e);

@@ -71,7 +71,7 @@ public class HandlerClassHandler implements IHandler {
     
     IObjectId superClassId = context.getRootClassId();
     if (classObject.getSuperClass() != null) {
-      superClassId = context.getExistingtId(classObject.getSuperClass());
+      superClassId = context.getExistingId(classObject.getSuperClass());
     }
     superClassId.writeTo(output);
   }

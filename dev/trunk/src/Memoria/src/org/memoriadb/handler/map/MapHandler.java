@@ -47,10 +47,11 @@ public class MapHandler implements IHandler {
   
   /**
    * Called from Memoria
+   * Only public to allow subclassing.
    * @param className
    * @param className
    */
-  private MapHandler(String className) {
+  public MapHandler(String className) {
     fClassName = className;
   }
 

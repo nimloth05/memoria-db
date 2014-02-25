@@ -67,8 +67,6 @@ public interface IHandler {
    * Sends all direct children to the given traversal. For Arrays, or Lists, all contained elements are visited. 
    * For non-Containers, all referenced objects are visited
    * @param obj
-   * @param obj
-   * @param traversal
    * @param traversal
    */
   public void traverseChildren(Object obj, IObjectTraversal traversal);

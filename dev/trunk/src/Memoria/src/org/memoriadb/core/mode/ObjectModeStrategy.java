@@ -40,7 +40,7 @@ public final class ObjectModeStrategy implements IModeStrategy {
 
   @Override
   public void checkCanInstantiateObject(TransactionHandler transactionHandler, IObjectId memoriaClassId, IInstantiator instantiator) {
-    IMemoriaClass memoriaClass = (IMemoriaClass) transactionHandler.getObject(memoriaClassId);
+    IMemoriaClass memoriaClass = transactionHandler.getObject(memoriaClassId);
     memoriaClass.getHandler().checkCanInstantiateObject(memoriaClass.getJavaClassName(), instantiator);
   }
   
