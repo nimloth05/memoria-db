@@ -52,7 +52,6 @@ public interface IMemoriaFile {
    * 
    * @param position
    * @return Stream for reading the whole content of the file.
-   * @param position
    */
   public InputStream getInputStream(long position);
   
@@ -66,8 +65,6 @@ public interface IMemoriaFile {
   /**
    * The given offset plus the size of the given byte-array must not exceed the file-site.
    * @param data
-   * @param data
-   * @param offset
    * @param offset
    */
   public void write(byte[] data, long offset);

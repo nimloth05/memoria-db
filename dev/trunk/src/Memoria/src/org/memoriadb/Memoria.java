@@ -17,6 +17,7 @@
 package org.memoriadb;
 
 import org.memoriadb.core.Bootstrap;
+import org.memoriadb.core.exception.MemoriaException;
 import org.memoriadb.core.file.IMemoriaFile;
 import org.memoriadb.core.file.InMemoryFile;
 import org.memoriadb.core.file.PhysicalFile;
@@ -58,7 +59,6 @@ public final class Memoria {
   /**
    * @param config
    * @return An ObjectStore backed with an in-memory file
-   * @param config
    */
   public static IObjectStore open(CreateConfig config) {
     return open(config, new InMemoryFile());
@@ -69,7 +69,13 @@ public final class Memoria {
   }
   
   public static IObjectStore open(CreateConfig config, IMemoriaFile file) {
-    return new ObjectStore(Bootstrap.openOrCreate(config, file, new ObjectModeStrategy()));
+    try {
+      return new ObjectStore(Bootstrap.openOrCreate(config, file, new ObjectModeStrategy()));
+    } catch (Exception e) {
+      //for some reason, the db file could not be opened or created. Still, we have to close the file handle.
+      file.close();
+      throw new MemoriaException(e);
+    }
   }
 
   public static IObjectStore open(CreateConfig config, String path) throws IOException {
@@ -83,7 +89,6 @@ public final class Memoria {
   /**
    * @param config
    * @return An ObjectStore backed with an in-memory file
-   * @param config
    */
   public static IDataStore openInDataMode(CreateConfig config) {
     return openInDataMode(config, new InMemoryFile());
@@ -94,7 +99,12 @@ public final class Memoria {
   }
 
   public static IDataStore openInDataMode(CreateConfig config, IMemoriaFile file) {
-    return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
+    try {
+      return new DataStore(Bootstrap.openOrCreate(config, file, new DataModeStrategy()));
+    } catch (Exception e) {
+      //for some reason, the db file could not be opened or created. Still, we have to close the file handle.
+      throw new MemoriaException(e);
+    }
   }
   
   private Memoria() {}

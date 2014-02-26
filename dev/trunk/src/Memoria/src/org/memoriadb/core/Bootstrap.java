@@ -16,21 +16,24 @@
 
 package org.memoriadb.core;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
-
-import org.memoriadb.*;
+import org.memoriadb.CreateConfig;
+import org.memoriadb.OpenConfig;
 import org.memoriadb.core.block.BlockRepository;
 import org.memoriadb.core.exception.MemoriaException;
-import org.memoriadb.core.file.*;
-import org.memoriadb.core.file.read.*;
+import org.memoriadb.core.file.Header;
+import org.memoriadb.core.file.HeaderHelper;
+import org.memoriadb.core.file.ICompressor;
+import org.memoriadb.core.file.IMemoriaFile;
+import org.memoriadb.core.file.read.FileReader;
+import org.memoriadb.core.file.read.ObjectLoader;
 import org.memoriadb.core.file.write.TransactionWriter;
-import org.memoriadb.core.meta.*;
+import org.memoriadb.core.meta.IMemoriaClassConfig;
+import org.memoriadb.core.meta.MemoriaClass;
 import org.memoriadb.core.mode.IModeStrategy;
 import org.memoriadb.core.util.ReflectionUtil;
 import org.memoriadb.handler.IHandler;
-import org.memoriadb.handler.collection.*;
+import org.memoriadb.handler.collection.CollectionHandler;
+import org.memoriadb.handler.collection.EnumSetHandler;
 import org.memoriadb.handler.field.ReflectionHandlerFactory;
 import org.memoriadb.handler.jdk.awt.color.ColorHandler;
 import org.memoriadb.handler.jdk.date.DateHandler;
@@ -39,6 +42,23 @@ import org.memoriadb.handler.jdk.sql.TimestampHandler;
 import org.memoriadb.handler.jdk.url.URLHandler;
 import org.memoriadb.handler.map.MapHandler;
 import org.memoriadb.handler.value.LangValueObjectHandler;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author Sandro
@@ -49,7 +69,7 @@ public final class Bootstrap {
     if (file == null) throw new IllegalArgumentException("File was null");
     //file = new AsynchronousFile(file);
 
-    if(file.isEmpty())  return createDb(config, file, strategy);
+    if (file.isEmpty()) return createDb(config, file, strategy);
 
     return openDb(config, file, strategy);
   }
@@ -64,7 +84,7 @@ public final class Bootstrap {
     // These classObjects don't need a fix known ID.
     IMemoriaClassConfig objectMemoriaClass = ReflectionHandlerFactory.createNewType(Object.class, trxHandler.getDefaultIdProvider().getFieldMetaClass());
     trxHandler.save(objectMemoriaClass);
-    
+
     registerHandler(trxHandler, new LangValueObjectHandler.BooleanValueObjectHandler(), true);
     registerHandler(trxHandler, new LangValueObjectHandler.CharacterValueObjectHandler(), true);
     registerHandler(trxHandler, new LangValueObjectHandler.ByteValueObjectHandler(), true);
@@ -106,12 +126,12 @@ public final class Bootstrap {
 
   private static void addValueClasses(TransactionHandler transactionHandler, Iterable<Class<?>> valueClasses) {
     // classes may already be registered, when they are handler-classes
-    for(Class<?> clazz: valueClasses) {
+    for (Class<?> clazz : valueClasses) {
       transactionHandler.addMemoriaClassIfNecessary(clazz);
     }
 
-    for(Class<?> clazz: valueClasses) {
-      ((MemoriaClass)transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
+    for (Class<?> clazz : valueClasses) {
+      ((MemoriaClass) transactionHandler.getMemoriaClass(clazz.getName())).setValueObject(true);
     }
 
   }
@@ -123,9 +143,9 @@ public final class Bootstrap {
 
     // bootstap memoriaClasses
     transactionHandler.beginUpdate();
-      addDefaultMetaClasses(transactionHandler);
-      addCustomHandlers(transactionHandler, config.getCustomHandlers());
-      addValueClasses(transactionHandler, config.getValueClasses());
+    addDefaultMetaClasses(transactionHandler);
+    addCustomHandlers(transactionHandler, config.getCustomHandlers());
+    addValueClasses(transactionHandler, config.getValueClasses());
     transactionHandler.endUpdate();
 
     return transactionHandler;
@@ -151,24 +171,23 @@ public final class Bootstrap {
   private static Header readHeader(FileReader fileReader) {
     try {
       return fileReader.readHeader();
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new MemoriaException(e);
     }
   }
 
   /**
-   * @param transactionHandler the current transactionHandler 
-   * @param handler to handle objects of type <tt>className</tt>.
+   * @param transactionHandler the current transactionHandler
+   * @param handler            to handle objects of type <tt>className</tt>.
    */
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler) {
     registerHandler(transactionHandler, handler, false);
   }
-  
+
   private static void registerHandler(TransactionHandler transactionHandler, IHandler handler, boolean isValueObject) {
     IMemoriaClassConfig classConfig = new MemoriaClass(handler, transactionHandler.getDefaultIdProvider().getHandlerMetaClass(), isValueObject);
     transactionHandler.save(classConfig);
-    
+
     Class<?> clazz = ReflectionUtil.getClass(classConfig.getJavaClassName());
     TypeHierarchyBuilder.recursiveAddTypeHierarchy(transactionHandler, clazz, classConfig);
   }
@@ -176,12 +195,12 @@ public final class Bootstrap {
   private static void writeHeader(CreateConfig config, IMemoriaFile file) {
     try {
       HeaderHelper.writeHeader(file, config);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new MemoriaException("error writing header " + file);
     }
   }
 
-  private Bootstrap() {}
+  private Bootstrap() {
+  }
 
 }

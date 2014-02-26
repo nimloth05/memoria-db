@@ -64,7 +64,6 @@ public class InMemoryFile extends AbstractMemoriaFile {
   /**
    * @param index
    * @return The byte at the given index-position as int
-   * @param index
    */
   public int get(long index) {
     return fData[(int)index] & 0xFF;
@@ -76,7 +75,6 @@ public class InMemoryFile extends AbstractMemoriaFile {
   
   /**
    * Shrinks the file to the given size.
-   * @param newSize
    * @param newSize
    */
   public void shrink(int newSize) {
