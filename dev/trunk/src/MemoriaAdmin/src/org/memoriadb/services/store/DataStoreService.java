@@ -30,7 +30,7 @@ import java.io.IOException;
 
 @Singleton
 public final class DataStoreService implements IDataStoreService {
-  
+
   private final ListenerList<IChangeListener> fListeners = new ListenerList<IChangeListener>();
   private IDataStore fCurrentStore;
   private final ClassPathManager fManager = new ClassPathManager();
@@ -44,9 +44,9 @@ public final class DataStoreService implements IDataStoreService {
   public void change(Configuration configuration) {
     fManager.configure(configuration.getClasspathsAsURL());
     IDataStore dataStore = openStore(configuration);
-    
+
     dispose();
-      
+
     fCurrentStore = dataStore;
     notifyPostOpen();
   }
@@ -59,7 +59,7 @@ public final class DataStoreService implements IDataStoreService {
     fCurrentStore = null;
     fManager.resetClassLoader();
   }
-  
+
   private void notifyPostOpen() {
     for(IChangeListener listener: fListeners) {
       listener.postOpen(fCurrentStore);
@@ -74,8 +74,7 @@ public final class DataStoreService implements IDataStoreService {
 
   private IDataStore openStore(Configuration configuration) {
     try {
-      IDataStore  dataStore = Memoria.openInDataMode(new CreateConfig(), new File(configuration.getDbPath()));
-      return dataStore;
+      return Memoria.openInDataMode(new CreateConfig(), new File(configuration.getDbPath()));
     }
     catch (IOException e) {
       throw new RuntimeException("DB-File could not be opened", e);
